@@ -54,6 +54,16 @@ class TallyCheckTest(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("differs from the model output", result.stderr)
 
+    def test_removed_readme_block_is_caught(self):
+        path = self.tmp / "README.md"
+        text = path.read_text(encoding="utf-8")
+        begin = "<!-- BEGIN GENERATED score callout: examples/scoring/tally.py -->"
+        self.assertIn(begin, text)
+        path.write_bytes(text.replace(begin, "").encode("utf-8"))
+        result = self.check()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("missing its generated-block markers", result.stdout + result.stderr)
+
     def test_hand_edited_scorecard_is_caught(self):
         path = self.tmp / "examples" / "SCORECARD.md"
         text = path.read_text(encoding="utf-8")

@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600" role="img" aria-labelledby="t d">
+  <title id="t">Layer map: build the skeleton before the skin</title>
+  <desc id="d">Six layers, built bottom-up in dependency order: 1 Blueprint (Tradeoff gates), 2 Cells (primitives), 3 Energy (infra and CI/CD), 4 Skeleton (the walking skeleton), 5 Organs (features and services), 6 Skin (UI and polish, built last). Four cross-cutting threads, security, observability, reproducibility and resilience, run through every layer from the first commit.</desc>
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif; }
+    .title { font-size: 24px; font-weight: 700; fill: #1f2328; }
+    .sub { font-size: 14px; fill: #59636e; }
+    .head { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; fill: #59636e; }
+    .stage { font-size: 16px; font-weight: 700; }
+    .soft { font-size: 15px; font-weight: 600; }
+    .cap { font-size: 12.5px; }
+    .num { font-size: 13px; font-weight: 700; fill: #1f2328; }
+    .thread { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; fill: #ffffff; }
+    .foot { font-size: 13px; fill: #3d444d; }
+    .note { font-size: 11.5px; fill: #59636e; }
+    .dark { fill: #ffffff; }
+    .dark-cap { fill: #d1d9e0; }
+    .light { fill: #1f2328; }
+    .light-cap { fill: #3d444d; }
+  </style>
+
+  <!-- card (opaque, so it reads on light and dark GitHub themes) -->
+  <rect x="0.5" y="0.5" width="899" height="599" rx="16" fill="#ffffff" stroke="#d1d9e0"/>
+
+  <text class="title" x="40" y="50">Skeleton before skin</text>
+  <text class="sub" x="40" y="76">Build what everything stands on first. The most visible layer is built last.</text>
+
+  <!-- build-order axis -->
+  <line x1="60" y1="520" x2="60" y2="142" stroke="#8c959f" stroke-width="2"/>
+  <polygon points="60,128 53.5,142 66.5,142" fill="#8c959f"/>
+  <text class="head" transform="translate(48 330) rotate(-90)" text-anchor="middle">BUILD ORDER</text>
+
+  <!-- column heads -->
+  <text class="head" x="132" y="112">BODY</text>
+  <text class="head" x="316" y="112">SOFTWARE</text>
+  <text class="head" x="772" y="112" text-anchor="middle">IN EVERY LAYER</text>
+
+  <!-- 6 Skin (built last) -->
+  <rect x="88" y="124" width="776" height="60" rx="10" fill="#f6f8fa" stroke="#afb8c1" stroke-dasharray="5 4"/>
+  <circle cx="112" cy="154" r="13" fill="#ffffff" stroke="#afb8c1"/><text class="num" x="112" y="158.5" text-anchor="middle">6</text>
+  <text class="stage light" x="132" y="150">Skin</text>
+  <text class="cap light-cap" x="132" y="170">the visible surface</text>
+  <text class="soft light" x="316" y="150">UI, polish, the demo layer</text>
+  <text class="cap light-cap" x="316" y="170">built last: visibility is not priority</text>
+
+  <!-- 5 Organs -->
+  <rect x="88" y="192" width="776" height="60" rx="10" fill="#d1d9e0"/>
+  <circle cx="112" cy="222" r="13" fill="#ffffff" stroke="#afb8c1"/><text class="num" x="112" y="226.5" text-anchor="middle">5</text>
+  <text class="stage light" x="132" y="218">Organs</text>
+  <text class="cap light-cap" x="132" y="238">specialized functions</text>
+  <text class="soft light" x="316" y="218">Features and services</text>
+  <text class="cap light-cap" x="316" y="238">added one at a time, in dependency order</text>
+
+  <!-- 4 Skeleton (the spine) -->
+  <rect x="88" y="260" width="776" height="60" rx="10" fill="#1a7f37"/>
+  <circle cx="112" cy="290" r="13" fill="#ffffff"/><text class="num" x="112" y="294.5" text-anchor="middle">4</text>
+  <text class="stage dark" x="132" y="286">Skeleton</text>
+  <text class="cap" x="132" y="306" fill="#dafbe1">the frame organs hang on</text>
+  <text class="soft dark" x="316" y="286">Walking skeleton</text>
+  <text class="cap" x="316" y="306" fill="#dafbe1">one real request through every tier, in prod, monitored</text>
+
+  <!-- 3 Energy -->
+  <rect x="88" y="328" width="776" height="60" rx="10" fill="#4b535d"/>
+  <circle cx="112" cy="358" r="13" fill="#ffffff"/><text class="num" x="112" y="362.5" text-anchor="middle">3</text>
+  <text class="stage dark" x="132" y="354">Energy</text>
+  <text class="cap dark-cap" x="132" y="374">metabolism, plumbing</text>
+  <text class="soft dark" x="316" y="354">Infra and CI/CD</text>
+  <text class="cap dark-cap" x="316" y="374">the deploy-and-run substrate</text>
+
+  <!-- 2 Cells -->
+  <rect x="88" y="396" width="776" height="60" rx="10" fill="#32383f"/>
+  <circle cx="112" cy="426" r="13" fill="#ffffff"/><text class="num" x="112" y="430.5" text-anchor="middle">2</text>
+  <text class="stage dark" x="132" y="422">Cells</text>
+  <text class="cap dark-cap" x="132" y="442">smallest units that must work</text>
+  <text class="soft dark" x="316" y="422">Primitives</text>
+  <text class="cap dark-cap" x="316" y="442">data model, core service, deploy unit</text>
+
+  <!-- 1 Blueprint (decided first) -->
+  <rect x="88" y="464" width="776" height="60" rx="10" fill="#1f2328"/>
+  <circle cx="112" cy="494" r="13" fill="#ffffff"/><text class="num" x="112" y="498.5" text-anchor="middle">1</text>
+  <text class="stage dark" x="132" y="490">Blueprint (DNA)</text>
+  <text class="cap dark-cap" x="132" y="510">read by every later cell</text>
+  <text class="soft dark" x="316" y="490">Tradeoff gates</text>
+  <text class="cap dark-cap" x="316" y="510">irreversible decisions, made once: default + flip condition</text>
+
+  <!-- cross-cutting threads: drawn over every band -->
+  <g>
+    <rect x="704" y="120" width="28" height="408" rx="14" fill="#cf222e"/>
+    <rect x="740" y="120" width="28" height="408" rx="14" fill="#9a6700"/>
+    <rect x="776" y="120" width="28" height="408" rx="14" fill="#8250df"/>
+    <rect x="812" y="120" width="28" height="408" rx="14" fill="#0969da"/>
+    <text class="thread" transform="translate(722 324) rotate(-90)" text-anchor="middle">SECURITY</text>
+    <text class="thread" transform="translate(758 324) rotate(-90)" text-anchor="middle">OBSERVABILITY</text>
+    <text class="thread" transform="translate(794 324) rotate(-90)" text-anchor="middle">REPRODUCIBILITY</text>
+    <text class="thread" transform="translate(830 324) rotate(-90)" text-anchor="middle">RESILIENCE</text>
+  </g>
+
+  <text class="foot" x="88" y="556">Immune + nervous system = cross-cutting concerns: woven through every layer from the first commit, never a final phase.</text>
+  <text class="note" x="88" y="578">Teaching analogy from reference/layer-map.md. Where the metaphor and engineering disagree, engineering wins.</text>
+</svg>
