@@ -43,11 +43,12 @@ Run the skill against each; score with the rubric.
 ## With-skill vs without-skill baseline
 
 For the same prompt, compare:
-- **Without skill:** a plan written feature-first / by visibility. Typical score **5–9/20** —
-  flashy components first, tradeoffs assumed silently, observability and security bolted on at
-  the end, no walking skeleton.
+- **Without skill:** the same model, same prompt, no skill. Measured scores, per dimension, are in
+  [`examples/SCORECARD.md`](../examples/SCORECARD.md). The recurring gaps there: no thin
+  end-to-end slice in production first, reproducible builds and environments mostly missing, and
+  tradeoffs stated without flip conditions.
 - **With skill:** dependency-ordered, skeleton-first, gates up front, cross-cutting threaded.
   Target **>=16/20**.
 
-The delta (with minus without) is the skill's measured accuracy lift. A healthy skill shows a
-clear positive delta on every test prompt, especially the AI ones (P1, P4).
+The delta (with minus without) is the skill's measured lift on this rubric. A healthy skill
+shows a clear positive delta on every test prompt, especially the AI ones (P1, P4).

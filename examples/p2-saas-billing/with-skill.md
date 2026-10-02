@@ -1,0 +1,366 @@
+> **P2** · **with the skill** (`/dependency-first-architect`, skill at commit `3ba6b70`)  
+> Prompt: *"Architect a multi-tenant SaaS billing system."*  
+> Generated 2026-10-02 with `claude-opus-5-5` (effort max) in an isolated session. One run per arm, not cherry-picked.  
+> Everything below the line is the model's output, verbatim. Judged score: [SCORECARD.md](../SCORECARD.md).
+
+---
+
+# BUILD PLAN: multi-tenant SaaS billing platform
+
+## 1. Classification
+- **What:** I read this as a billing platform sold as multi-tenant SaaS. Each tenant is a B2B SaaS company that sets up its own products and prices. It then bills its own customers through subscriptions, usage charges, invoices and collected payments. *If you meant the billing part of your own SaaS product, see the Build-vs-buy flip in §2. It changes most of this plan.*
+- **Type:** Software. It's a transactional backend with heavy external integrations: payment processor (PSP), tax and email. There is no AI in it (§6).
+- **Dominant constraint:** **Correctness.** Every cent must be computed exactly, recorded in a ledger and provable to an auditor. Compliance (PCI, tax and invoicing law, GDPR) comes a close second.
+- **Worst failure:** **A silent wrong charge at scale.** For example, a retried billing run charges cards twice across many tenants, and no ledger trail exists to detect, explain or reverse it.
+
+## 2. Tradeoff gates (resolved up front)
+
+| Decision | Default (chosen now) | Flip condition |
+|---|---|---|
+| Consistency vs availability | **Consistency first (CP) for anything that touches money.** Invoices, ledger and payment state live in one single-primary Postgres (RDS Multi-AZ, synchronous standby). If the primary goes down, we stop finalizing and charging. A late charge can be fixed, and Stripe retries webhooks for 3 days. A wrong charge can't be undone cleanly. **Usage ingestion gets a contract that tolerates outages:** at-least-once delivery, an idempotent `event_id`, and aggregation later. That lets a buffer queue be added later without breaking any client. | Money writes never flip to availability-first. Usage ingestion flips to a *consistent* balance check in the request path only for meters with real-time hard spend caps or prepaid blocking. Put a queue in front of ingestion once its uptime target has to be higher than Postgres's. |
+| Monolith vs services | **Modular monolith.** One repo, one image, one Postgres. It runs as an `api` process and a `worker` process, with `ingest` added in Phase 6. Each module owns its tables and talks to others through interfaces and outbox events. ArchUnit checks the boundaries in CI. | Split a module out when it needs to scale differently (ingest above roughly 2.5k events/s sustained), a team needs independent deploys, or compliance needs isolation. The ledger is split out last, if ever. |
+| Sync vs async | **Sync** for commands that only touch our own database (create customer, create subscription, preview), each in one transaction. **Async** for anything external or bulk: PSP calls, tax commits, email, webhooks and billing runs. Async work goes through a transactional outbox and a Postgres job queue (`FOR UPDATE SKIP LOCKED`). The state change and the job commit together, so no write can land without its job. | Go sync where a person is waiting on the PSP (checkout, card authentication). Forward the outbox to SQS when job load competes with normal database traffic. Adopt Temporal when timer-heavy workflows (dunning, trials, scheduled plan changes) outgrow hand-written state machines. |
+| Build vs buy | **Build the core:** catalog, subscriptions, metering, rating, invoicing and the ledger. That is the product. **Buy the rest:** payments (Stripe Connect), tax (Anrok or Avalara, Phase 7), email (Postmark), human single sign-on (WorkOS, Phase 9) and observability (Grafana Cloud). Infrastructure is managed AWS (RDS, ECS Fargate, KMS), not self-run Kubernetes or Postgres. | Add a second PSP behind the `PaymentProvider` interface when a market needs direct debit or Adyen, or when a single PSP blocks a customer's procurement review. **If this is billing for your own SaaS, flip the whole gate:** buy Stripe Billing or Chargebee and build only metering, entitlements and a ledger mirror. The plan then shrinks to roughly Phases 0–2 and 6. |
+| Funds flow | **We never hold customer money.** Tenants connect their own Stripe account (Connect Standard, direct charges) and stay the legal seller. That keeps us outside money-transmitter licensing. PCI scope is limited to card tokens. | If the business decides to earn money on payment volume or run payouts, we become a payment facilitator (Connect Custom or Adyen for Platforms). That brings KYC/AML checks, a real-cash ledger and a separate compliance environment. |
+| Tenant isolation | **Shared tables.** `tenant_id` is the first column of every primary key, unique key and foreign key. Postgres row-level security (RLS) is forced on, the app role doesn't own the tables, and each transaction sets the tenant with `SET LOCAL app.tenant_id`. If the tenant isn't set, queries return 0 rows. A tenant-to-cell routing table exists from day one, with one cell. A cell is a full copy of the stack. Test mode is a sibling tenant tied to PSP test keys, so there's no `livemode` column to forget. | Move a tenant to its own cell (same stack, own database or region) for a data-residency contract, contractual isolation, or more than about 20% of cluster load. Because every key starts with `tenant_id`, the move is a data copy, not a rewrite. |
+| Money representation | **Integers in the currency's smallest unit (`bigint`) plus the ISO-4217 code**, respecting each currency's decimals (JPY 0, USD 2, KWD 3). Unit prices are `NUMERIC(28,12)` so sub-cent usage rates work. Rounding happens **once per line**, half-up, and the rounding policy version is stamped on every invoice. All arithmetic goes through one `Money` type. | If we ever need amounts below the smallest unit (crypto, micropayment netting), widen to `NUMERIC(38,18)`. Having a single `Money` type keeps that migration contained. |
+| Source of truth for money | **Append-only double-entry ledger** in the same Postgres. Entries must balance per currency at commit. Updates and deletes are blocked, and corrections are reversing entries. **Finalized invoices never change**; corrections are credit notes. Customers and subscriptions are ordinary tables plus an audit log, not event-sourced. | Move to TigerBeetle or Modern Treasury Ledgers when sustained postings near the ceiling measured in Phase 2 (initial guess about 5k/s), or when a few heavily used accounts become a bottleneck. Adopt event sourcing only if rebuilding a subscription's state at any past moment becomes a product feature. |
+| (AI) prompt+RAG vs fine-tune | N/A: there is no model in this system, and billing math must be deterministic and auditable. | Only relevant if an AI feature is added outside the money path (§7). |
+| (AI) hosted API vs self-host | N/A, for the same reason. | Same trigger. A privacy boundary for personal and payment data would then be the first gate. |
+
+## 3. Walking skeleton (Phase 0)
+
+**The one real request.** An internal *canary* tenant sends `POST /v1/invoices` with an `Idempotency-Key` header and this body:
+
+`{customer:"cus_canary", currency:"usd", lines:[{description:"skeleton", amount:100}], auto_charge:true}`
+
+**The real response.** `201 {id:"inv_…", number:"CANARY-000042", status:"open", total:100}`. Within 60 s the invoice is `paid`, and a signed `invoice.paid` webhook has reached the canary's receiver.
+
+**The 8 steps it passes through (each in its simplest real form):**
+1. Route 53 → load balancer (TLS only) with AWS WAF managed rules.
+2. `api` service: Kotlin and Spring Boot on ECS Fargate. Kotlin is chosen for `BigDecimal` and strong types; any typed language with a real decimal type would do. It checks the API key, sets the tenant and checks idempotency.
+3. RDS Postgres 17, in **one transaction**: the invoice, its line, a journal entry (debit receivables 100, credit revenue 100) and an outbox row. `tenant_id` and RLS are already on these tables.
+4. `worker` (same image) picks up the job using `SKIP LOCKED`.
+5. Stripe, in test mode on the canary's connected account: one PaymentIntent, with the invoice ID as its idempotency key.
+6. Stripe calls `POST /webhooks/stripe`. We verify the signature and store the raw event, unique on Stripe's event ID.
+7. `worker` marks the invoice `paid`, posts a journal entry (debit PSP clearing, credit receivables) and writes an outbox `invoice.paid` event.
+8. A dispatcher sends the HMAC-signed webhook to the canary receiver, a Lambda outside our network.
+
+**How it's deployed:**
+- GitHub Actions runs a Gradle build with locked, checksum-verified dependencies.
+- Jib builds an image tagged with the git SHA and pushes it to ECR, where tags can't be overwritten.
+- Flyway runs migrations that only add things, never remove them.
+- ECS does a rolling deploy with its circuit breaker, which rolls back automatically.
+- All infrastructure is Terraform, and staging and prod use the same modules.
+
+**How it's logged:** one JSON line per request or job, with `trace_id`, `tenant_id`, `request_id` and `invoice_id`. A filter in the logger strips API keys and email addresses.
+
+**How it's monitored:**
+- OpenTelemetry sends everything to Grafana Cloud.
+- The trace context is carried in the outbox row and the PaymentIntent `metadata`. That gives **one trace from the POST through Stripe to the outgoing webhook**.
+- Metrics:
+  - request rate, errors and latency per route;
+  - queue depth and the age of the oldest job;
+  - Stripe latency and errors;
+  - `ledger_unbalanced_entries`, which must be 0;
+  - the canary's `time_to_paid`.
+- A k6 synthetic check runs the canary every 5 minutes.
+- PagerDuty pages on two canary failures in a row, any ledger imbalance, or a job older than 5 minutes.
+
+**Exit check:** a real request returns a real response in prod, with a trace and a metric visible. Concretely:
+- the canary stays green for 72 h;
+- one trace shows all 8 steps;
+- killing the worker mid-run pages on-call, and after restart the run finishes with exactly one PaymentIntent;
+- a deliberately broken deploy rolls itself back.
+
+## 4. Phases (ordered by dependency; within a phase, widest blast radius first)
+
+**Strict from day zero, because everything rests on them:** tenant isolation, the `Money` type, the append-only balanced ledger, unchangeable finalized invoices, and idempotency.
+
+**Kept flexible until proven (feature flags, interfaces, config):** pricing models, proration rules, dunning schedules, the job runner, usage storage, the tax provider and the UI.
+
+Each task has a tag in parentheses showing how much would need rework if that task were wrong.
+
+### Phase 1: Tenancy, identity and API contract
+- **Unlocks:** onboarding real tenants. Every later module gets isolation, auth, idempotency and versioning for free.
+- **Depends on:** the Phase 0 pipeline, database and tracing, proven in prod.
+- **Tasks:**
+  1. *(every table, forever)* Make cross-tenant data impossible at the schema level:
+     - `tenant_id` comes first in every primary, unique and foreign key, so a row can't reference another tenant's row;
+     - RLS is forced on every tenant table, and the app role has no `BYPASSRLS`;
+     - only the database layer sets the tenant, using `SET LOCAL` (safe with PgBouncer transaction pooling);
+     - add the tenant-to-cell routing table.
+  2. *(every request)* Auth model:
+     - Secret, restricted (scoped) and publishable API keys. They use different prefixes for live and test, are stored as SHA-256 hashes, are shown once, and can be rotated with an overlap period.
+     - Roles are defined now: owner, admin, finance, developer, read-only. Human login comes in Phase 9.
+     - Staff access is break-glass only: time-limited, tied to a ticket, and audited.
+  3. *(every endpoint, public contract)* An OpenAPI 3.1 spec is the source of truth:
+     - prefixed UUIDv7 IDs;
+     - `Idempotency-Key` required on every POST, with the request hash and response kept for 7 days (same key with a different body returns 422);
+     - one error format and cursor pagination;
+     - API versions pinned by date per tenant;
+     - webhook payloads signed with HMAC-SHA256 over `timestamp.body`.
+  4. *(every change)* An append-only audit log, written in the same transaction as the change.
+  5. *(per API key)* Token-bucket rate limits that return 429 with `Retry-After`.
+  6. *(single feature)* Tenant onboarding API and settings (default currency, timezone, invoice prefix, legal entity).
+- **Exit check:**
+  - An isolation test suite runs in CI and nightly in prod with two internal tenants. Tenant B's key on any of tenant A's resources returns **404, not 403** (403 would confirm the resource exists). App-role SQL with no tenant set returns 0 rows.
+  - CI rejects any migration that adds a table without RLS or without `tenant_id`-first keys.
+  - Replaying a request with the same idempotency key returns an identical response.
+  - `oasdiff` blocks breaking API changes.
+
+### Phase 2: Money foundation (`Money` type, ledger, customers)
+- **Unlocks:** anything that records or moves money, and anything billed to someone.
+- **Depends on:** the Phase 1 isolation suite passing, since ledger accounts and customers belong to tenants.
+- **Tasks:**
+  1. *(every amount in the codebase)* The `Money` type from §2. An ArchUnit rule bans raw arithmetic on amounts. Mixing currencies throws an error and never converts silently.
+  2. *(every money movement)* The ledger:
+     - accounts for receivables per customer, revenue, deferred revenue, tax payable, PSP clearing and customer credit;
+     - each journal entry is unique on its `source_event` (e.g. `invoice_finalized:inv_…`), so a replay can't post twice;
+     - a database trigger checks at commit that each entry balances per currency;
+     - balances are a nightly snapshot plus postings since, so no single heavily updated balance row becomes a bottleneck.
+  3. *(every billable object)* Customers:
+     - a tenant-unique `external_id`, which usage events will reference later;
+     - address, tax IDs, timezone and locale;
+     - currency, which locks after the first invoice;
+     - personal-data columns tagged in the schema, which drives log redaction, data export and erasure;
+     - erasure replaces personal data with a tombstone but keeps the invoice fields the law requires.
+  4. *(read-only safety net)* Reconciliation v1, run nightly:
+     - the trial balance is 0 per tenant and currency;
+     - customer receivables equal open invoices;
+     - any difference pages someone and opens a ticket;
+     - each later phase adds its own checks.
+- **Exit check:**
+  - Property tests run a million random posting sequences, and none ever unbalances or drifts.
+  - The app role can't update or delete postings.
+  - The prod trial balance is 0 for every tenant.
+  - A ledger load test measures the real posting ceiling, replacing the guess in §2.
+
+### Phase 3: Invoicing (draft, finalize, then locked, numbered and booked)
+- **Unlocks:** one-off invoicing through the API, which is the first thing a tenant can actually use, and something for payments to collect.
+- **Depends on:** the ledger rules and customers passing the Phase 2 exit check.
+- **Tasks:**
+  1. *(the legal document everything else reads)* The invoice schema:
+     - lines, tax lines, slots for discounts and credits, and a flag for tax-inclusive or tax-exclusive pricing;
+     - a snapshot of seller and buyer legal details, using EN 16931-compatible fields so e-invoicing can be added later without a schema change;
+     - a `pricing_engine_version` field;
+     - a **fixed order for computing totals:** lines, then discounts, then tax, then total, then credits, then amount due (discounts and credits do nothing until Phase 7);
+     - states: `draft → open → paid | void | uncollectible`;
+     - a trigger rejects changes to financial columns once an invoice is finalized.
+  2. *(every finalized invoice, legally binding)* Finalizing is **one transaction**:
+     - compute the totals;
+     - take the next **gap-free invoice number** from a per-tenant, per-series counter row, locked with `FOR UPDATE` (Postgres sequences leave gaps when a transaction rolls back, and several tax authorities object to gaps);
+     - write the journal entry;
+     - write the outbox `invoice.finalized` event.
+  3. *(the corrections path)* Credit notes with their own number series, linked to the original invoice and booked as reversing entries. Voiding is allowed only before payment. Nothing edits a finalized invoice.
+  4. *(swappable)* A `TaxProvider` interface with a `ManualRates` implementation, where tenants set their own rates. The rates used are saved on the invoice at finalization.
+  5. *(single feature)* Invoice PDF and email:
+     - the PDF is deterministic, so the same invoice and template version always give the same bytes, and the file hash is stored;
+     - PDFs are kept in S3 with Object Lock, so they can't be altered or deleted;
+     - the invoice email goes out through Postmark.
+- **Exit check:**
+  - 1,000 simultaneous finalizations in one series produce numbers 1 to 1,000, with no gaps or duplicates.
+  - Reference totals match for USD, JPY and KWD, with both tax-inclusive and tax-exclusive pricing.
+  - The trial balance stays 0 through cycles of finalizing and issuing credit notes.
+  - Editing a finalized invoice fails through the API and through SQL.
+
+### Phase 4: Payments (collect money without ever touching a card)
+- **Unlocks:** actually collecting cash, which subscriptions, dunning and self-serve all need.
+- **Depends on:** finalized, booked invoices from Phase 3. A payment only ever settles a finalized invoice.
+- **Tasks:**
+  1. *(how funds flow and PCI scope; hard to reverse)*
+     - Tenants connect through Stripe Connect OAuth (Standard accounts, direct charges).
+     - Their OAuth tokens are encrypted per tenant with KMS.
+     - Everything goes through a `PaymentProvider` interface.
+     - Card details are collected only through Stripe Elements and SetupIntents, so we hold `pm_…` tokens and never a card number.
+  2. *(every charge; the main guard against the worst failure)*
+     - **Exactly one PaymentIntent per invoice**, created with the invoice ID as its idempotency key and saved *before* it's confirmed.
+     - Retries and dunning confirm that same PaymentIntent again, so Stripe itself guarantees it succeeds at most once.
+     - On an unclear result (timeout or 5xx), look the payment up in Stripe by `metadata.invoice_id`. Never create a new one blindly, because Stripe idempotency keys expire after 24 h.
+     - A **global and per-tenant switch to stop all charging** is checked before every PSP call.
+  3. *(incoming status from Stripe)* Connect webhooks:
+     - verify the signature;
+     - map `event.account` to a tenant, and set aside events from unknown accounts;
+     - store the raw event, unique on its event ID;
+     - acknowledge immediately and process in the background;
+     - handle duplicates and out-of-order events by re-fetching the object and only ever moving its state forward.
+  4. *(money going back)* Refunds become a credit note plus reversing entries. Disputes get their own loss postings. Payments that need card authentication (`requires_action`) get a hosted payment link.
+  5. *(read-only checks and a single feature)*
+     - Daily PSP reconciliation matches every Stripe balance transaction to a ledger posting by PSP ID, and anything unmatched in either direction pages someone.
+     - A read-only staff console shows each object's history (request, ledger, PSP, webhooks). It sits behind company sign-on and is audited.
+- **Exit check:**
+  - A chaos test suite does the following:
+    - forces timeouts *after* Stripe has already succeeded;
+    - kills workers mid-charge;
+    - replays every webhook three times, out of order.
+
+    Result: **zero duplicate charges and zero untracked payments**.
+  - Reconciliation shows no unexplained differences for 14 days in a row.
+  - A real $1 charge to a company card goes through end to end and is refunded.
+
+### Phase 5: Catalog, subscriptions and the billing run
+- **Unlocks:** recurring revenue, the core product.
+- **Depends on:** Phase 4 reconciliation passing. The billing run repeats whatever payments does, right or wrong, across every subscription.
+- **Tasks:**
+  1. *(every future invoice line)* The catalog:
+     - products and prices, with the pricing model stored as data;
+     - flat and per-seat pricing first, then tiered, volume and package pricing behind the same `PricingModel` interface;
+     - a price can't change once it's been used, so editing creates a new version, and every line records its `price_version_id`.
+  2. *(timing of every recurring charge)*
+     - A subscription state machine: `trialing → active → past_due → canceled`, plus `paused`.
+     - Billing periods are stored as explicit `subscription_periods` rows, computed in the billing timezone. Month-end start dates clamp: Jan 31, then Feb 28, then back to Mar 31.
+     - The clock is passed in, and domain code never calls `now()`.
+  3. *(bulk money movement, where the worst failure would happen)* The billing run:
+     - finds the periods that are due;
+     - creates invoices so a re-run can't duplicate them (unique on tenant, subscription and period start), while holding a lock on the subscription so a plan change made at the same moment can't produce a stale invoice;
+     - finalizes them and queues the charges, sharing capacity fairly between tenants;
+     - has a **dry-run mode**;
+     - rolls out to internal canary tenants first, then 5% of tenants, then everyone;
+     - has an **automatic stop** that halts a tenant's run if its total is more than ±30% off its average for the last 3 periods;
+     - restarting after a stop, and every tenant's first real run, needs a person with the finance role to approve it and give a reason.
+  4. *(policy, kept flexible)* Plan changes take effect at the end of the period at first. Immediate upgrades with proration come later, behind a per-tenant flag, once billing periods are proven. Also trials, and cancelling now or at period end.
+  5. *(onboarding and a single feature)* Importing existing subscriptions with their original start dates and paid-through dates. An upcoming-invoice preview that uses the same rating code with `dry_run=true`.
+- **Exit check:**
+  - A simulated clock runs 36 months of every combination of plan, start date, timezone and plan change in CI, and the invoices match reference outputs.
+  - A dry run on design partners' imported subscriptions matches their current billing system's next invoices to the cent.
+  - A synthetic run of 1 million subscriptions finishes in under 2 h without pushing API latency past its target.
+  - The first real run needs zero manual corrections.
+
+### Phase 6: Usage metering and rating
+- **Unlocks:** usage-based and hybrid pricing.
+- **Depends on:** subscription periods and the rating code from Phase 5. Usage only means something inside the period of a price.
+- **Tasks:**
+  1. *(public data contract that tenants will hard-code)* `POST /v1/events`, plus a batch version of up to 1,000 events:
+     - body: `{event_id, customer_external_id, event_name, timestamp, properties}`;
+     - returns **`202 Accepted`**;
+     - events may arrive more than once, and duplicates are dropped by `(tenant_id, event_id)` for 35 days;
+     - timestamps can be up to 5 min in the future and up to 35 days in the past.
+  2. *(every metered price)* Meters: an `event_name` plus an aggregation (`sum`, `count`, `max`, `unique_count` or `latest`) over a property, with optional filters. A meter can't change once a price uses it.
+  3. *(what happens at period boundaries)*
+     - A period closes at its end plus the tenant's grace window (default 1 h).
+     - Invoices finalize only after the period closes.
+     - Events that arrive for an already-closed period become an adjustment line on the next invoice, naming the original period.
+  4. *(storage, deliberately kept flexible)*
+     - a separate `ingest` process;
+     - raw events in monthly partitions, with a separate table for duplicate checks, because unique indexes on a partitioned table must include the partition key;
+     - hourly rollups for previews, while the official numbers are recomputed from raw events at period close;
+     - raw events archived to S3 as Parquet.
+  5. *(single feature)* An API for current usage and estimated cost.
+- **Exit check:**
+  - A replay test sends 10 million events, with 5% duplicates, 3% out of order and 1% late. The totals match an independent reference calculation **exactly**.
+  - It handles 1k events/s sustained with 5× bursts, at under 150 ms for 99% of requests. Every accepted event is either stored or explicitly rejected.
+  - A design partner's usage invoice matches their own count.
+
+### Phase 7: Collections and revenue operations
+- **Unlocks:** correct tax, reliable tenant integrations, and recovering failed payments.
+- **Depends on:** payments, subscriptions and usage all proven (Phases 4–6).
+- **Tasks:**
+  1. *(tax on every invoice)* Anrok or Avalara behind the `TaxProvider` interface:
+     - get a tax quote on the draft;
+     - commit it when the invoice is finalized;
+     - reverse it on a credit note;
+     - if the provider is down, finalization **waits** and never guesses the tax.
+  2. *(every tenant integration)* Harden outgoing webhooks:
+     - retry for 72 h with growing delays;
+     - add a sequence number per object;
+     - pause endpoints that keep failing and notify the tenant;
+     - add a replay API;
+     - rotate signing secrets by signing with both old and new during the overlap;
+     - send all outgoing calls through Smokescreen so tenant URLs can't reach our internal network.
+  3. *(every failed payment and the subscription state it causes)* Dunning:
+     - retry schedules per tenant based on decline codes, never retrying hard declines;
+     - moves subscriptions from `past_due` to `unpaid` or `canceled`;
+     - warns customers before their card expires.
+  4. *(used only on some invoices)* Credit balances and prepaid credits backed by the ledger, plus coupons and discounts. They plug into the discount and credit steps set up in Phase 3.
+  5. *(single feature)* Branded, translated customer emails: receipts, renewal notices, failed payments.
+- **Exit check:**
+  - A month of tax matches the provider's filing report to the cent.
+  - Healthy endpoints get at least 99.9% of webhooks within 1 h.
+  - Simulated dunning recovers the expected share of soft declines.
+  - In a tax-provider outage drill, no invoice is finalized with wrong tax, and the backlog clears once it recovers.
+
+### Phase 8: Reporting and exports
+- **Unlocks:** monthly and annual recurring revenue (MRR/ARR) movements, churn, receivables aging, revenue reports and tenant data exports.
+- **Depends on:** a stable ledger and a retained log of domain events (Phases 2–7).
+- **Tasks:**
+  1. *(every report reads it)* Reporting tables built from the event log and the ledger, on an RDS read replica, never the primary.
+  2. *(metric definitions are a contract)* Versioned definitions for MRR movements: new, expansion, contraction, churn, reactivation. Currency conversion happens **only here**, using daily ECB rates saved per day. It never happens when charging.
+  3. *(single feature)* Exports to CSV, S3 and Snowflake data sharing, plus receivables aging.
+- **Exit check:**
+  - Rebuilding the reporting tables from scratch gives the same result as the incremental updates.
+  - Reported revenue matches ledger revenue to the cent, per tenant, per month.
+
+### Phase 9: User-facing surfaces (dashboard, hosted invoice page, customer portal, checkout)
+- **Unlocks:** finance users working without engineers, and end customers serving themselves.
+- **Depends on:** a frozen, contract-tested public API. The UI is just another client of it.
+- **Tasks:**
+  1. *(human login)*
+     - WorkOS single sign-on and user provisioning, with multi-factor auth required for admin and finance roles;
+     - permissions enforced on the server, with the UI only hiding things;
+     - hosted pages use signed, narrowly scoped tokens that expire.
+  2. *(every screen)* A Next.js dashboard built on the generated SDK: customers, subscriptions, invoices, catalog versions, webhooks, API keys and the audit log.
+  3. *(where end customers pay)* A hosted invoice page and a customer portal. Card updates use Stripe's Payment Element. Plan changes follow each tenant's policy.
+  4. *(single feature, the most visible)* Checkout and an embeddable pricing table.
+- **Exit check:**
+  - There are no private endpoints: every UI call is in the OpenAPI spec.
+  - An external penetration test finds nothing high or critical.
+  - A design partner's finance lead closes the month without help.
+
+## 5. Cross-cutting concerns (per phase, from the first commit)
+
+| Phase | Security | Observability | Reproducibility | Resilience |
+|---|---|---|---|---|
+| 0 Skeleton | TLS-only load balancer with WAF; AWS Secrets Manager; minimal permissions per service; gitleaks and Trivy in CI; canary key limited to one test tenant | One trace across all 8 steps; JSON logs with trace and tenant IDs; latency, error, queue-age and ledger-imbalance metrics; 5-minute canary paging through PagerDuty | All infrastructure in Terraform; locked, checksum-verified dependencies; one Jib image per commit, tags can't be overwritten; local stack with docker-compose and stripe-mock | RDS Multi-AZ (no data loss on failover, recovery under 1 h) with point-in-time recovery and snapshots copied to another region; ECS auto-rollback; jobs from a killed worker get picked up again; idempotency key on the PSP call |
+| 1 Tenancy | Forced RLS and tenant-first foreign keys; hashed API keys; 404 rather than 403; break-glass staff access | `tenant_id`, `key_id` and `api_version` on every trace span and log line (not as metric labels, to keep metric volume manageable); searchable audit log | OpenAPI generates server stubs, SDK and contract tests; seeded multi-tenant test data; CI check on migrations | Idempotency store makes every POST safe to retry; per-key rate limits and 429s stop one tenant from crowding out others |
+| 2 Money | No update or delete rights on ledger tables; personal-data tags drive automatic redaction and erasure | `trial_balance_nonzero` metric pages above 0; every journal entry stores `source_event` and `trace_id`, so any money movement leads back to its request | Seeded property tests that log the seed on failure; rounding-policy version on every entry; balances can be rebuilt from postings | Journal entries can't be posted twice for the same event; nightly reconciliation catches drift within 24 h; quarterly restore drill checked against the trial balance |
+| 3 Invoicing | Database blocks changes to finalized invoices; PDFs encrypted with KMS and under Object Lock; short-lived signed download links | Invoice lifecycle metrics; finalize time and invoice-number lock wait; history view per invoice | Engine, template and tax-rate versions stamped on each invoice, so recomputing gives identical totals and identical PDF bytes; reference-output tests | Finalizing either fully succeeds or fully fails; PDF and email run in the background with retries and never block finalizing; a lock timeout fails loudly and never skips a number |
+| 4 Payments | Card tokens only, never card numbers; per-tenant encrypted OAuth tokens; webhook signatures checked with a 5-minute replay window; only the worker holds PSP credentials | Payment success rate by decline code against each tenant's 7-day baseline; PSP latency; webhook delay; reconciliation differences | Stripe API version pinned; stripe-mock and recorded webhooks in CI; table-driven tests for the payment state machine | One PaymentIntent per invoice; look up rather than recreate on unclear results; automatic pause when Stripe errors spike; global and per-tenant stop switch; webhooks safe against duplicates and reordering |
+| 5 Subscriptions | Catalog and subscription changes need the right role and are audited; restarting a stopped run needs the finance role and a reason | Per-tenant run funnel (due, invoiced, finalized, charged); automatic stops; **page if a due period goes uninvoiced for more than 2 h**, since that is revenue lost silently | Clock passed in, plus simulated clocks; dry run shows exactly what the real run will do; price versions never change | Invoice creation can't duplicate a period, so re-runs are safe; staged rollout; automatic anomaly stop; one tenant's failure never blocks the others |
+| 6 Metering | Ingest-only API keys; size and schema limits on events; event properties never logged | Ingestion delay; accepted, duplicate and rejected counts by reason; late-event rate; check that events received equals events counted | Raw event archive lets any total be recomputed; replay test with an independent reference in CI; versioned meters | Duplicates dropped, delivery may repeat; the `202` contract lets a queue be added without client changes; 429s plus SDK-side buffering; a period doesn't close until ingestion has caught up |
+| 7 Collections | Email authentication (SPF, DKIM, DMARC); outgoing calls through Smokescreen; per-tenant encrypted tax credentials | Dunning recovery rate; webhook delivery per endpoint; tax-provider latency; email bounce rate | Tax responses saved on the invoice; versioned dunning schedules; stored events can be replayed | Tax outage means wait, never guess; failing webhook endpoints paused, with 72 h of retries; email retries with a dead-letter queue |
+| 8 Reporting | RLS on reporting tables; separate export storage per tenant; signed, audited exports | Reporting delay and data freshness shown on every report; check that MRR ties out to the ledger | Reporting tables can be rebuilt from the event log; exchange rates saved per day; versioned metric definitions | Runs on the replica, so reporting can't slow billing; rebuild jobs can be safely resumed and repeated |
+| 9 Surfaces | Multi-factor auth required; content security policy plus inventory and tamper detection for scripts on payment pages (PCI DSS v4 6.4.3 and 11.6.1); external penetration test | Sentry in the browser; browser trace headers join clicks to backend traces; conversion funnel for hosted payment pages | UI only uses the generated SDK; Playwright end-to-end tests on seeded preview environments | Each Pay click sends its own idempotency key; if the backend is degraded, show the cached invoice and disable Pay when payment state is uncertain |
+
+## 6. AI layer (AI/agentic systems only)
+**N/A.** There is no model anywhere in this system, and billing math has to stay deterministic and auditable. Any AI feature added later (see §7) stays outside the money path. It would get the full AI layer (guardrails, budgets, human approval) before any capability work.
+
+## 7. Deliberately deferred
+- **More cells or EU data residency:** build when the first residency contract arrives or one tenant passes about 20% of load. The routing table and tenant-first keys are already in place.
+- **A warm standby in a second region:** build when a contract requires recovery in under 4 h. Until then, cross-region snapshots and restore drills cover it.
+- **Kafka or Redpanda plus ClickHouse for usage:** build when ingestion passes about 2.5k events/s sustained, or when period-close aggregation takes longer than the grace window.
+- **Temporal:** adopt when timer-driven workflows start causing bugs, or there are more than about 5 hand-written state machines.
+- **A second PSP or direct debit (Adyen, GoCardless):** add when a tenant's market or procurement needs it.
+- **Holding funds as a payment facilitator:** only after an explicit business decision. It flips the Funds flow gate.
+- **Revenue recognition (ASC 606 / IFRS 15):** build for the first tenant that needs audit-grade schedules. Until then, export to their ERP.
+- **ERP sync (NetSuite, QuickBooks, Xero):** build when 3 or more design partners ask, or when its absence loses a deal.
+- **E-invoicing (EN 16931 / Peppol, Italy SDI, Poland KSeF, France):** build for the first tenant selling to businesses in a country that requires it. The invoice schema already has the fields.
+- **Real-time spend caps or prepaid blocking:** build when a tenant needs usage blocked at a $0 balance. It flips the ingestion side of the consistency gate.
+- **Sales-led contracts (quotes, ramps, commitments with drawdown, parent–child accounts):** build for the first enterprise tenant with those contracts.
+- **A dedicated ledger engine:** adopt when postings approach the Postgres ceiling measured in Phase 2.
+- **An entitlements API:** build when tenants ask to gate product features by plan in real time.
+- **A formal SOC 2 Type II report:** pursue when the first enterprise deal requires it. The controls are already built in (audit log, break-glass access, infrastructure as code, change review). Collecting evidence with Vanta or Drata from Phase 1 keeps the audit window short.
+- **AI features (help triaging billing-run anomalies, smarter retry timing):** consider after at least 6 months of labeled payment outcomes. This brings in the AI layer.
+
+## 8. Eval score: **20/20** (ship at 16 or above)
+
+| # | Dimension | Score | Note |
+|---|---|---|---|
+| 1 | Dependency ordering | 2 | Each phase's "Depends on" points to a passed exit check from an earlier phase. User-facing screens come last. Human login was moved to Phase 9 because nothing needs it earlier. |
+| 2 | Walking skeleton first | 2 | A $1 invoice runs through all 8 steps in prod, traced and checked every 5 minutes, before any feature work. |
+| 3 | Tradeoff gates up front | 2 | 8 gates plus 2 AI gates marked N/A, each with a default and a flip condition. The two readings of the prompt are handled as a flip rather than assumed. |
+| 4 | Blast-radius ordering | 2 | Every task is tagged by how much it affects. Contracts and rules come before implementation, for example the late-event policy before usage storage. |
+| 5 | Security threaded | 2 | A specific security step every phase, from TLS and WAF in Phase 0 to the penetration test in Phase 9. |
+| 6 | Observability from day zero | 2 | Phase 0 has an end-to-end trace and a canary. Each later phase adds a money-specific signal: ledger imbalance, uninvoiced periods, events received versus counted. |
+| 7 | Reproducibility threaded | 2 | Locked builds and infrastructure as code from the start, then version stamps, simulated clocks, a replay test and rebuildable reports. |
+| 8 | Resilience threaded | 2 | Idempotency, the stop switch, automatic pauses and restore drills from Phase 0 on. |
+| 9 | AI layer correctness | 2 | Marked N/A with a reason and a trigger, not silently left out. |
+| 10 | Deferred work explicit | 2 | 15 items, each with the condition that would bring it forward. |
+
+**Weakest dimension: #3.** The numbers in the flip conditions (about 2.5k events/s, about 5k postings/s, about 20% of load, the ±30% stop) are educated guesses, not measurements. The load tests in Phases 2, 5 and 6 are there to replace them.
+
+**Changes made while scoring:**
+- Human single sign-on moved from Phase 1 to Phase 9.
+- The fixed order for computing invoice totals moved into Phase 3, so Phase 7 discounts and credits slot in rather than changing invoice math.
+- Phase 7 tasks were reordered by blast radius: tax, then webhooks, then dunning.
+
+A self-score is generous by nature, so the real test is the exit checks.

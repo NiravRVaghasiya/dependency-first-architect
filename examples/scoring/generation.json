@@ -1,0 +1,257 @@
+{
+  "date": "2026-10-02",
+  "model": "claude-opus-5-5",
+  "effort": "max",
+  "claude_cli": "2.1.287.1066",
+  "skill": "3ba6b70",
+  "runs": [
+    {
+      "prompt": "P1",
+      "arm": "without",
+      "run_dir": "w07",
+      "turns": 11,
+      "sha256": "cc14fa58721b9b287c748d1839b35e505a28154a11c5b76b2a5d5e809c0da940",
+      "tool_calls": [
+        {
+          "tool": "Read",
+          "path": "w07",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w07/README.md",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w07/package.json",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w07/pyproject.toml",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w07/requirements.txt",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w07/docs",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w07/help-center",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w07/src",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w07/data",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w07/.git",
+          "ok": false
+        }
+      ]
+    },
+    {
+      "prompt": "P1",
+      "arm": "with",
+      "run_dir": "w02",
+      "turns": 4,
+      "sha256": "3efc06637e013d7b9d42a2f1711ef5cd15c3f07d8609af645dd09466369570ea",
+      "tool_calls": [
+        {
+          "tool": "Read",
+          "path": "plugin/skills/dependency-first-architect/reference/plan-template.md",
+          "ok": true
+        },
+        {
+          "tool": "Read",
+          "path": "plugin/skills/dependency-first-architect/reference/ai-systems.md",
+          "ok": true
+        },
+        {
+          "tool": "Read",
+          "path": "plugin/skills/dependency-first-architect/reference/evals.md",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "prompt": "P2",
+      "arm": "without",
+      "run_dir": "w04",
+      "turns": 3,
+      "sha256": "9bb000d82d524a5aa2f1ffb34e2f2fbe233a162e5bd925c486520b1f1ea0ad5c",
+      "tool_calls": [
+        {
+          "tool": "Read",
+          "path": "w04",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w04/README.md",
+          "ok": false
+        }
+      ]
+    },
+    {
+      "prompt": "P2",
+      "arm": "with",
+      "run_dir": "w09",
+      "turns": 3,
+      "sha256": "0c4ba343d03173f7437519d705e6abfa001db345d8689a42e2c69cc036886e02",
+      "tool_calls": [
+        {
+          "tool": "Read",
+          "path": "plugin/skills/dependency-first-architect/reference/plan-template.md",
+          "ok": true
+        },
+        {
+          "tool": "Read",
+          "path": "plugin/skills/dependency-first-architect/reference/evals.md",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "prompt": "P3",
+      "arm": "without",
+      "run_dir": "w10",
+      "turns": 1,
+      "sha256": "59faee3ce736e9a58c6c3dbf100aeda6d0a4c6f83495191efe8d15ec371742ff",
+      "tool_calls": []
+    },
+    {
+      "prompt": "P3",
+      "arm": "with",
+      "run_dir": "w05",
+      "turns": 3,
+      "sha256": "e3b403065115e159dce890ab600f9dcec7124194fe187618e58144c3bc4f1c42",
+      "tool_calls": [
+        {
+          "tool": "Read",
+          "path": "plugin/skills/dependency-first-architect/reference/plan-template.md",
+          "ok": true
+        },
+        {
+          "tool": "Read",
+          "path": "plugin/skills/dependency-first-architect/reference/evals.md",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "prompt": "P4",
+      "arm": "without",
+      "run_dir": "w01",
+      "turns": 9,
+      "sha256": "7389b30a4887e381311af76e079f22e696228eca4da8698dc9219cd1b3686801",
+      "tool_calls": [
+        {
+          "tool": "Read",
+          "path": "w01",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w01/README.md",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w01/package.json",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w01/pyproject.toml",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w01/.git/config",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w01/CLAUDE.md",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w01/requirements.txt",
+          "ok": false
+        },
+        {
+          "tool": "Read",
+          "path": "w01/go.mod",
+          "ok": false
+        }
+      ]
+    },
+    {
+      "prompt": "P4",
+      "arm": "with",
+      "run_dir": "w08",
+      "turns": 4,
+      "sha256": "0d0c79e23dc2a0d41d58893ea6d6462933b7c20a81a57b9b759f0d3df9178a34",
+      "tool_calls": [
+        {
+          "tool": "Read",
+          "path": "plugin/skills/dependency-first-architect/reference/plan-template.md",
+          "ok": true
+        },
+        {
+          "tool": "Read",
+          "path": "plugin/skills/dependency-first-architect/reference/ai-systems.md",
+          "ok": true
+        },
+        {
+          "tool": "Read",
+          "path": "plugin/skills/dependency-first-architect/reference/evals.md",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "prompt": "P5",
+      "arm": "without",
+      "run_dir": "w03",
+      "turns": 1,
+      "sha256": "5808abb26da1cbd5bcf0d15bcecead137b1655ab85584e7e72ec19b6af38fd61",
+      "tool_calls": []
+    },
+    {
+      "prompt": "P5",
+      "arm": "with",
+      "run_dir": "w06",
+      "turns": 3,
+      "sha256": "293e880b6304752539e73743b60318b265f8a8397a22b5ac7707d06bc7fe0f55",
+      "tool_calls": [
+        {
+          "tool": "Read",
+          "path": "plugin/skills/dependency-first-architect/reference/plan-template.md",
+          "ok": true
+        },
+        {
+          "tool": "Read",
+          "path": "plugin/skills/dependency-first-architect/reference/evals.md",
+          "ok": true
+        }
+      ]
+    }
+  ]
+}

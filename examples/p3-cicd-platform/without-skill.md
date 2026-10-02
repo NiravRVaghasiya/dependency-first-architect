@@ -1,0 +1,107 @@
+> **P3** · **without the skill** (cold: plain `claude --bare -p`, no skill, empty directory)  
+> Prompt: *"Sequence building a CI/CD platform for 50 microservices."*  
+> Generated 2026-10-02 with `claude-opus-5-5` (effort max) in an isolated session. One run per arm, not cherry-picked.  
+> Everything below the line is the model's output, verbatim. Judged score: [SCORECARD.md](../SCORECARD.md).
+
+---
+
+The order that works best is to make the decisions that are hard to undo first, then get one service all the way to production, then migrate the rest in waves grouped by service type, and turn on enforcement last.
+
+**Assumptions:** the services are (or will be) in containers on Kubernetes, code is on GitHub or GitLab, and a platform team of 4–6 people is doing the work. If any of that is different, the order mostly stays the same but the timings change.
+
+### Timeline (~8 months)
+
+```
+Week          0    5    10   15   20   25   30   35
+Discover      ███
+Foundations     ██████
+Pilot to prod       ██████
+Templates               ██████
+Wave 1 (~7)               ████
+Wave 2 (~30)                  ██████████
+Wave 3 (~12)                          ██████████
+Gates/canary                      ██████████████→
+```
+
+### Phase 0: Discover and decide (weeks 0–3)
+- **List all 50 services:** language and build tool, how well tested they are, how they deploy today, databases and migrations, how critical they are, owning team and dependencies.
+- **Sort them into 4–6 types**, such as Java API, Node API, Go service, worker, frontend or scheduled job. This is what makes 50 manageable: you build about 5 shared pipeline templates instead of 50 separate pipelines.
+- **Measure today's numbers before changing anything:** deploy frequency, lead time, change failure rate and time to recover (the DORA metrics). Rough figures from logs and tickets are fine. Without a "before," you can't show the platform helped.
+- **Write down the decisions that are expensive to reverse:**
+  - **One repo or many.** In a single repo you'll need to build only what changed (Nx, Bazel or path filters).
+  - **How deploys happen.** I'd recommend GitOps (Argo CD or Flux) at this scale: it detects drift, keeps an audit trail and makes rollback a `git revert`.
+  - **Build once, deploy the same artifact everywhere.** Tag images with the git commit and promote that exact image through every environment. Never rebuild per environment.
+  - **Environments, branching and access:** which environments exist, trunk-based branching, and CI signing into the cloud with short-lived tokens (OIDC) instead of stored keys.
+  - Leave easy-to-change choices, like which scanner to buy, for later.
+- **Pick a pilot service:** a common type, medium criticality, a willing team, and ideally one with a database so migrations get solved early.
+
+**Done when:** decisions are approved, the service types and pilot are chosen, and success metrics are agreed.
+
+### Phase 1: Foundations (weeks 2–8)
+Build everything as infrastructure-as-code, and give the platform its own pipeline from day one.
+- **CI runners** that are created fresh per job, scale automatically and cache builds. Size them for peak load, not the daily total: 50 services × ~15 runs a day × ~10 minutes, with 3× peaks during working hours, is about 50 pipelines running at once.
+- **Image and package registry** with retention rules.
+- **Secrets manager**, plus OIDC trust between CI and the cloud.
+- **Clusters or namespaces** per environment, with networking, DNS, certificates and the GitOps controller.
+- **Metrics, logs and tracing** for both the services and the pipelines.
+- **Single sign-on, role-based access and audit logs.**
+
+**Done when:** the platform team can take a test service from commit to production, with the production approval as the only manual step.
+
+### Phase 2: Pilot service to production (weeks 6–12)
+- **First pipeline template:** build → unit tests → lint → secret scan (blocking from day one, because it rarely gives false alarms and leaks are serious) → container image → vulnerability scans (**report only**) → software bill of materials → sign → push.
+- **Promotion** goes dev → staging → production through pull requests to the config repo. Keep a manual production approval for now.
+- **Database migrations** run before each deploy using expand/contract (add new schema first, remove old schema later). That way rolling back the app never means rolling back the database.
+- **Smoke tests** after each deploy, and a rollback you've actually practiced.
+- **Cutover:** run the old and new pipelines side by side briefly, then switch.
+
+**Done when:** the pilot has shipped through the platform for 2+ weeks, a rollback drill has passed, and lead time has been compared with the baseline.
+
+**Why one service to production before many to dev:** production is where the real requirements show up (network rules, secret rotation, approvals, migrations, rollback). If you go wide first, you move 50 services onto something that may not work in production.
+
+### Phase 3: Turn the pilot into a standard path (weeks 10–16)
+- **Templates for the other service types**, with extension points so unusual cases don't need their own copies.
+- **Version the templates before 50 services depend on them.** Services pin a version, and a bot like Renovate opens upgrade pull requests. Test each release against sample services and roll it out to a small group first. One careless change to an unversioned template can break all 50 pipelines at once.
+- **Onboarding kit:** a generator for new services, a migration checklist and docs. From now on, **every new service starts on the platform**, so the backlog stops growing.
+- **Contract tests** (e.g., Pact) check that services still agree on their APIs. They let services deploy independently. Keep full end-to-end tests to a small set of critical user flows.
+- **Pipeline stats:** duration, queue time, success rate and flaky tests.
+
+**When a service counts as migrated:** it uses a pinned template version, deploys through GitOps to every environment, ships a signed image, reads secrets from the manager, has dashboards, alerts and a tested rollback, and **its old pipeline is deleted**.
+
+### Phase 4: Migrate in waves (weeks 12–34)
+
+| Wave | Services | Which ones | Support |
+|---|---|---|---|
+| 1 | ~7 | At least one of each type, low–medium criticality, willing teams | Platform engineers work alongside each team |
+| 2 | ~30 | Grouped by type, standard cases | Teams use the kit, with office hours |
+| 3 | ~12 | Most critical (auth, payments), stateful, unusual builds, compliance-heavy, weak tests | Close support, template extensions |
+
+- Put each wave's lessons into a template release before the next wave starts.
+- End each wave by deleting the old pipelines by a fixed date. Running old and new side by side indefinitely is where most migrations stall.
+- Move the most critical services last, when ~35 services are already running on the platform. Gather their requirements in Phase 0 so the templates don't need rework.
+- Don't have the platform team migrate all 50 services itself (it doesn't scale and teams never learn the platform). Don't just hand over docs either (few teams will adopt). Work alongside the first team of each type, then let the rest self-serve.
+
+### Phase 5: Safer releases and enforcement (from ~week 20, service by service)
+Each step needs something in place first:
+- **Block critical vulnerabilities**, with time-limited exceptions. *Needs:* existing findings fixed during Waves 1–2. Blocking on day one just makes teams work around the platform.
+- **Cluster admission rules** (Kyverno or Gatekeeper): only signed images from your registry, no `:latest` tags, resource limits required. Run in audit mode first. *Needs:* signed images, so enforce namespace by namespace as services migrate, and cluster-wide after Wave 3.
+- **Gradual rollouts (canary or blue-green) with automatic health checks** (Argo Rollouts or Flagger), plus feature flags. *Needs:* key health metrics and targets for each service.
+- **Temporary environments per pull request**, but only where they're worth the cost.
+- **Remove manual production approvals** (continuous deployment), last. *Needs:* contract tests, gradual rollouts, and a change failure rate below an agreed threshold.
+
+### Phase 6: Run it like a product (ongoing)
+- Targets for the platform itself: availability, queue time, and CI duration under 10–15 minutes.
+- DORA metrics per service, compared against the Phase 0 baseline.
+- Quarantine flaky tests and keep an eye on runner costs.
+- Add a developer portal only after the standard path is proven.
+
+### What blocks what
+**Main sequence:** decisions → runners, registry, access and GitOps → pilot in production → versioned templates → Wave 1 → 2 → 3.
+
+**Parallel work, with deadlines:**
+- **Monitoring:** before gradual rollouts.
+- **Vulnerability scanning:** findings fixed before blocking starts.
+- **Contract tests:** before manual approvals go away.
+- **Developer portal:** after Wave 1, and never allowed to delay the main sequence.
+
+If you tell me your CI tool, where the services run, how your repos are laid out and your team size, I can turn this into a concrete backlog with estimates.

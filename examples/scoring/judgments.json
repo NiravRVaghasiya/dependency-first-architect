@@ -1,0 +1,2571 @@
+{
+  "rubric": "reference/evals.md (10 dimensions, 0-2 each, /20)",
+  "date": "2026-10-02",
+  "model": "claude-opus-5-5, effort max, isolated `claude --bare -p` sessions",
+  "judges_per_plan": 3,
+  "dimensions": [
+    "Dependency ordering",
+    "Walking skeleton first",
+    "Tradeoff gates up front",
+    "Blast-radius ordering",
+    "Security threaded",
+    "Observability from day zero",
+    "Reproducibility threaded",
+    "Resilience threaded",
+    "AI layer correctness",
+    "Deferred work explicit"
+  ],
+  "claude_cli": "2.1.287.1066",
+  "plans": [
+    {
+      "prompt": "P1",
+      "title": "RAG support chatbot",
+      "kind": "AI",
+      "arm": "without",
+      "file": "p1-rag-chatbot/without-skill.md",
+      "self_score": null,
+      "judges": [
+        {
+          "judge": 1,
+          "scores": [
+            2,
+            0,
+            2,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "evidence": [
+            "1. Doc loading, search, test harness | 2 wk | Right article in the top 5 for ≥ 90% of answerable questions",
+            "0. Coverage audit, test set, choose the stack | 1–2 wk | Upper limit known, ≥ 200 test cases",
+            "Building makes sense if you need control over the model, the data or cost at high volume … The rest of this plan assumes you build.",
+            "This sets your upper limit: if only 35% are answerable from docs, the bot can't deflect more than 35%.",
+            "Index only public articles, or store the permissions and filter on them. Leaking internal-only articles is the most common failure here.",
+            "2. Answer generation, safeguards, handoff, logging",
+            "Keep prompts in version control. For every conversation turn, log the rewritten query, the retrieved IDs and scores, the prompt, index and model versions",
+            "If it fails, replace it with a safe fallback message and offer a human.",
+            "Phase 3 is the cheapest way to reduce risk: the bot sees real questions, customers never see its answers",
+            "Later (v2): have a vision model describe key screenshots, since many steps only appear in images."
+          ],
+          "rationale": [
+            "The phases build up from the coverage audit and test set, to retrieval, to generation, to internal agent assist, to a customer beta, and each has an exit gate that proves the layer below before the next one starts.",
+            "Phase 0 has no running system, retrieval and generation are built and tuned offline as separate layers, and nothing handles real traffic until Phase 3 agent assist, after every feature is built.",
+            "Assumptions are stated openly, build-vs-buy is decided in week 0 with conditions, key defaults have revisit triggers (agentic retrieval only if tests fail, the LLM chosen on the test set), and the closing questions say which decisions each answer would change.",
+            "Some highest-impact work comes first (the coverage audit that caps deflection, and permission leakage named as the top ingestion risk), but phase contents are unordered lists, and logging, which every component depends on, is listed last in Phase 2.",
+            "Security is built into ingestion (visibility filtering, forum posts excluded), the test set (personal data removed, adversarial cases) and the Phase 2 security review, but Phases 3–5 have none, and rate limits and spend caps sit only in a separate section.",
+            "Per-turn logging is detailed and post-launch feedback tracking is strong, but logging isn't scheduled until Phase 2, and nothing earlier monitors ingestion and sync or raises alerts.",
+            "Versioned prompts, logged index and model versions, and evals that block regressions give partial reproducibility, but there is nothing on reproducible environments, pinned dependencies or model snapshots, or rebuilding the index, and none of it is tied to phases.",
+            "Failures in content and answers are handled in the design (nightly reconcile for missed webhooks and deletes, answerability gate, safe fallback, handoff), but outages, timeouts and retries for the LLM, embedding and reranker APIs are never addressed, and the beta and launch phases have no rollback or kill-switch criteria.",
+            "Every layer is present (testing before the bot exists, retrieval proven before generation, small-model routing, a fixed pipeline, agent assist before customers, feedback last), but safeguards and handoff are built in Phase 2 alongside generation, after retrieval, budgets are never placed in a phase, and memory, orchestration and routing aren't sequenced.",
+            "Deferrals are explicit (docs-only v1, no forum posts, screenshots in v2, a fixed pipeline), but only agentic and contextual retrieval have clear pull-forward triggers; the screenshot and forum items have none, and account actions get only an open question."
+          ],
+          "note": "A strong RAG design that writes tests first and proves each layer before the next, but it builds layer by layer with no early end-to-end slice, and security, observability, reproducibility and resilience sit in their own sections instead of running through every rollout phase."
+        },
+        {
+          "judge": 2,
+          "scores": [
+            2,
+            0,
+            2,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "evidence": [
+            "1. Doc loading, search, test harness | 2 wk | Right article in the top 5 for ≥ 90% of answerable questions",
+            "0. Coverage audit, test set, choose the stack | 1–2 wk | Upper limit known, ≥ 200 test cases",
+            "Building makes sense if you need control over the model, the data or cost at high volume... The rest of this plan assumes you build.",
+            "2. Answer generation, safeguards, handoff, logging",
+            "Test targets met, security review passed",
+            "For every conversation turn, log the rewritten query, the retrieved IDs and scores, the prompt, index and model versions, token counts, latency and user feedback.",
+            "Keep prompts in version control.",
+            "If it fails, replace it with a safe fallback message and offer a human.",
+            "the bot sees real questions, customers never see its answers, and every agent edit becomes a labeled test case.",
+            "Only let the model run its own searches (\"agentic\" retrieval) if tests show multi-part questions failing."
+          ],
+          "rationale": [
+            "The phases build upward from the audit and test set to ingestion and retrieval, and retrieval must pass a top-5 gate before generation is added, followed by agent-assist, beta and launch; the one small wrinkle is 'choose the stack' in Phase 0, while the LLM is to be picked 'by running the test set' on a harness built later.",
+            "Phase 0 is research and setup with nothing running, and the first production path is the Phase 3 agent-assist, which comes only after retrieval, generation, safeguards and handoff are fully built.",
+            "Assumptions are stated at the top, build-vs-buy is decided in week 0 with stated criteria, and defaults come with revisit triggers (fixed pipeline unless multi-part questions fail, LLM chosen by test set, a list of questions that would change the plan), though the plan never marks which decisions are hard to reverse.",
+            "The plan never reasons about order within a phase; Phases 0–1 happen to list the foundational item first, but in Phase 2 the cross-cutting safeguards and logging come after generation.",
+            "The security content is substantive (PII-scrubbed test set, permission filtering at ingestion, log masking, injection handling, rate and spend caps), but it sits in the architecture and a standalone section, and the rollout ties it only to a Phase 2 review gate, with nothing for agent-assist, beta or launch.",
+            "Per-turn logging is specified in detail but only arrives in Phase 2, and Phases 0–1 have no monitoring of ingestion sync or index freshness, though later phases add feedback and A/B measurement.",
+            "Versioned prompts, logged index and model versions, and CI regression gates on prompt, model, chunking or embedding changes give some reproducibility of evals, but nothing makes environments or builds reproducible (IaC, pinned dependencies, index snapshots), and none of it is tied to phases.",
+            "Fallbacks for bad answers are solid (answerability gate, commitment-check fallback, human handoff, nightly reconcile, staged rollout), but there is no handling for LLM, reranker or embedding outages, timeouts, retries or a kill switch, and none of it is carried through the phases.",
+            "Every layer is present and mostly in order: adversarial and handoff test cases exist before the bot does, retrieval is proven before generation, safeguards and handoff are gated before human-reviewed agent-assist and then customers, and feedback loops come last, though budgets (rate and spend caps) aren't placed in a phase and conversation memory is thin.",
+            "Deferred scope is explicit (docs-only v1, no forums, vision descriptions in v2), and the most important deferrals have pull-forward triggers (agentic retrieval, contextual retrieval, account actions via Q5), though the vision and forum deferrals have no condition."
+          ],
+          "note": "A strong, AI-savvy plan with gated dependency ordering, testing that starts before the bot exists, and a well-ordered AI layer, but it has no walking skeleton and keeps security, observability, reproducibility and resilience in standalone sections instead of carrying them through each phase."
+        },
+        {
+          "judge": 3,
+          "scores": [
+            2,
+            0,
+            2,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            1
+          ],
+          "evidence": [
+            "1. Doc loading, search, test harness | 2 wk | Right article in the top 5 for ≥ 90% of answerable questions",
+            "0. Coverage audit, test set, choose the stack | 1–2 wk | Upper limit known, ≥ 200 test cases",
+            "Building makes sense if you need control over the model, the data or cost at high volume",
+            "This sets your upper limit: if only 35% are answerable from docs, the bot can't deflect more than 35%.",
+            "Index only public articles, or store the permissions and filter on them. Leaking internal-only articles is the most common failure here.",
+            "2. Answer generation, safeguards, handoff, logging",
+            "Keep prompts in version control.",
+            "If it fails, replace it with a safe fallback message and offer a human.",
+            "the bot sees real questions, customers never see its answers, and every agent edit becomes a labeled test case.",
+            "Later (v2): have a vision model describe key screenshots, since many steps only appear in images."
+          ],
+          "rationale": [
+            "The phases run audit and test set, then ingestion and retrieval (gated on top-5 recall), then generation (gated on test targets and a security review), then agent assist, beta and launch, so each layer is proven before the next one is built on it.",
+            "Phase 0 is analysis only and Phase 1 builds retrieval with no generation or UI; the first real-traffic path is Phase 3 agent assist, after the features exist, so this is a layered build with no early end-to-end production slice.",
+            "Assumptions are stated up front, build-vs-buy is decided in week 0 with explicit conditions, and key defaults (pgvector, fixed pipeline, LLM chosen by test set, docs-only scope) each come with a flip trigger or a question that would change the plan.",
+            "Some work is ordered by impact (the coverage audit that caps deflection comes first, and ingestion comes before search), but phase contents are unordered lists, with cross-cutting logging last in Phase 2 and safeguards listed after generation.",
+            "The design treats security concretely (visibility filtering, leaving out forums to limit prompt injection, PII masking, DPA, rate and spend caps, adversarial tests), but the rollout only gates on it in Phase 2, Phases 3–5 get nothing, and much of it sits in a standalone section.",
+            "Evaluation starts in week 0 and the per-turn logging spec plus Langfuse is detailed, but logging is scheduled for Phase 2 rather than day zero, and there is no ingestion/sync monitoring or alerting.",
+            "Prompt version control, per-turn logging of prompt/index/model versions, and CI that blocks regressions give partial reproducibility, but environments, builds, index snapshots and test-set versioning are not covered, and none of it is tied to phases.",
+            "Graceful degradation is concrete in ingestion (nightly reconcile including deletes), retrieval (answerability gate, locale fallback), generation (fallback when the commitment check fails, human handoff) and rollout (agent assist before customers, 5–10% beta), but LLM/reranker/embedding outages, timeouts, retries and rollback/kill switch are never addressed.",
+            "Every layer is present and in a sensible order (adversarial test set and human-checked grader before the bot exists, retrieval proven before generation, safeguards, handoff and a security review gating any exposure, human review via agent assist before customers, then feedback loops), with minor slippage: safeguards are built alongside generation and spend caps aren't assigned to a phase.",
+            "Deferrals are stated inline (v2 screenshot descriptions, forum posts and account actions out of v1, agentic and contextual retrieval), but only the two retrieval upgrades have pull-forward triggers, and there is no consolidated deferred list."
+          ],
+          "note": "Total 12/20: strong on eval-first dependency gating, stated tradeoffs and AI-layer ordering, but there's no walking skeleton, and security, observability, reproducibility and resilience sit in the design rather than in each rollout phase."
+        }
+      ],
+      "audit": {
+        "role": "advocate",
+        "auditors": [
+          {
+            "auditor": 1,
+            "proposed": [
+              2,
+              0,
+              2,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2,
+              1
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "No score is too low, so all medians stand: Phase 0 is an audit and the first live path is Phase 3, after every feature (D2 is 0); security, logging, reproducibility and failure handling show up mainly in Phases 0–2 or in standalone sections, with logging not until Phase 2 and nothing on LLM outages or rollback (D5–D8 are 1); only agentic and contextual retrieval have deferral triggers, while the v2 vision work, forum posts and account actions have none (D10 is 1)."
+          },
+          {
+            "auditor": 2,
+            "proposed": [
+              2,
+              0,
+              2,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2,
+              1
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "No raises: the plan's first phase isn't an end-to-end production slice, logging only arrives in Phase 2, Phases 3–5 have no security work of their own, nothing handles LLM/API outages or reproducible builds and environments, and the screenshot (vision) and forum deferrals have no pull-forward trigger."
+          },
+          {
+            "auditor": 3,
+            "proposed": [
+              2,
+              0,
+              2,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2,
+              1
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "No raises are warranted. There is no walking skeleton (no end-to-end prod path until the Phase 3 shadow mode). Security, logging, reproducibility and failure handling sit in the design sections and Phases 0–2 rather than every phase; Phases 3–5 add no new security work, logging only arrives in Phase 2, LLM-provider outages and timeouts are never covered, and nothing makes builds or environments reproducible. Two deferrals (v2 screenshot descriptions, forum posts) have no condition for pulling them forward."
+          }
+        ]
+      }
+    },
+    {
+      "prompt": "P1",
+      "title": "RAG support chatbot",
+      "kind": "AI",
+      "arm": "with",
+      "file": "p1-rag-chatbot/with-skill.md",
+      "self_score": 20,
+      "judges": [
+        {
+          "judge": 1,
+          "scores": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "Phase 2's measured retrieval, so wrong answers can be blamed on generation rather than retrieval.",
+            "A staff question in production returns an answer citing the real article.",
+            "pgvector/full-text query p95 above 300 ms at peak after tuning, or more than ~5M chunks → OpenSearch/Qdrant/Vespa behind the same retrieval interface",
+            "Build order inside Phase 0 (biggest rework risk first)",
+            "Secrets in a secrets manager, no keys in the browser; requests only from the help-center domain; staff-only flag",
+            "OpenTelemetry traces with one span per tier (widget → api → embed → retrieve → llm → persist)",
+            "Terraform; images pinned by digest; lockfiles; pinned model and embedding IDs; prompt in git; chunk IDs derived from content hashes",
+            "Revoking the LLM key in staging produces the links-only fallback and fires an alert.",
+            "P0 skeleton → P1 guards, budgets, handoff → P2 retrieval → P3 model access → P4 memory + orchestration → P5 routing → P6 feedback.",
+            "Build when at least 25% of handoffs are account questions the docs can't answer."
+          ],
+          "rationale": [
+            "Every phase states what it depends on and why, and provisional items (the abstain threshold, per-stage budgets, blocking on injection results) wait for the phase that proves them, so nothing is fixed before its dependency is shown to work.",
+            "Phase 0 is a real thin slice through the widget, WAF/load balancer, API, embedding + pgvector, a single LLM call, redacted persistence and server-built citations, deployed to production behind a staff-only flag and exit-checked there.",
+            "An 11-row table covers consistency, topology, sync/async, streaming, build/buy, fine-tuning, hosting, privacy boundary, store/embedding, answer posture and tenancy, each with a concrete default and a measurable flip condition, and assumptions are stated so they can be checked.",
+            "Phase 0 is ordered by rework risk with reasons (contract, schemas, infra, retrieval, widget last), and each later phase starts with the shared piece everything else reads (trust rules, chunk schema, answer format, retention rules, routing format, feedback schema) before leaf work.",
+            "Each phase has its own concrete controls: secrets, WAF, origin limits, redaction and scanning in P0; guards in P1; SQL visibility filters in P2; server-built links and number checks in P3; untrusted history plus a PII exit test in P4; routing that cannot skip gates in P5; human-approved feedback in P6.",
+            "P0 ships traces, Langfuse, latency/token/cost metrics, two alerts and a smoke eval that can block deploys, and each later phase adds concrete signals: the budget_exceeded metric, freshness/dead-letter alerts, per-call version data, per-step spans, per-route cost and the feedback funnel.",
+            "Every phase does concrete reproducibility work: pinned artifacts in P0, versioned test sets in P1, hashed index versions with an identical-rebuild exit check in P2, dated models and triple eval runs in P3, session replay in P4, recomputable routing in P5 and traceable test-set additions in P6.",
+            "Failure handling starts in P0 with timeouts, fallbacks and a key-revocation test, then continues phase by phase: idempotent outbox and fail-closed guards (P1), mass-delete abort and index rollback (P2), circuit breaker and fallback provider (P3), degraded mode and kill switch (P4), safest-path routing (P5) and auto-paused rollout (P6).",
+            "Defenses, budgets and human handoff are built and exit-tested in P1 before any capability work, then retrieval, model access, memory, orchestration, routing and feedback follow in exactly the required order, each with concrete tasks and checks.",
+            "Section 7 names nine deferred items (account actions, internal content, agent drafts, cross-session memory, streaming/fine-tuning/self-hosting, caching, channels, languages, multi-agent), mostly with measurable pull-forward triggers or links to the section 2 flip conditions."
+          ],
+          "note": "Very strong plan that earns full marks on substance; small issues only: some vendor/cloud choices are left open ('Cloud Run or ECS'), a few deferred items list prerequisites rather than triggers, a parse retry plus live judging could exceed the 3-call budget, and the canary thumbs-down gate can't apply to the first ramp step."
+        },
+        {
+          "judge": 2,
+          "scores": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "Depends on: Phase 2's measured retrieval, so wrong answers can be blamed on generation rather than retrieval.",
+            "A staff question in production returns an answer citing the real article.",
+            "pgvector/full-text query p95 above 300 ms at peak after tuning, or more than ~5M chunks → OpenSearch/Qdrant/Vespa behind the same retrieval interface",
+            "Build order inside Phase 0 (biggest rework risk first):",
+            "Secrets in a secrets manager, no keys in the browser; requests only from the help-center domain; staff-only flag; zero-retention LLM terms; public articles only",
+            "OpenTelemetry traces with one span per tier (widget → api → embed → retrieve → llm → persist), sent to Datadog, Honeycomb or Grafana.",
+            "Terraform; images pinned by digest; lockfiles; pinned model and embedding IDs; prompt in git; chunk IDs derived from content hashes",
+            "Revoking the LLM key in staging produces the links-only fallback and fires an alert.",
+            "P0 skeleton → P1 guards, budgets, handoff → P2 retrieval → P3 model access → P4 memory + orchestration → P5 routing → P6 feedback.",
+            "Account-aware answers and actions (order status, refunds, plan changes). Build when at least 25% of handoffs are account questions the docs can't answer."
+          ],
+          "rationale": [
+            "Every phase lists what it depends on from earlier phases (retrieval is measured before generation is tuned, single-turn accuracy before multi-turn, per-model scorecards before routing), and gates such as injection blocking and the 'I don't know' threshold only switch on once the thing they depend on exists.",
+            "Phase 0 is a real thin slice running in production behind a staff-only flag, deployed with Terraform and CI, and it passes through every tier: widget, firewall and load balancer, API, embedding, pgvector, LLM, and storage. Its exit check is a real cited answer, and no feature work comes before it.",
+            "A table at the start settles eleven hard-to-reverse decisions, each with a default and a measurable flip condition, and the plan's assumptions are written out so they can be checked.",
+            "Phase 0 has an explicit build order (API contract, then schemas, then infrastructure, then retrieval and the model call, then the widget). Each later phase starts with the thing most other work depends on (test sets, chunk schema, answer format, retention rules, routing and feedback formats) and leaves small, isolated work like the widget for last.",
+            "Every phase has its own concrete security controls, starting in Phase 0 (secrets, firewall and origin limits, redaction, image scanning) and running through injection guards, visibility filters enforced in SQL, server-built links, session handling, routing that cannot skip the gates, and feedback that a person must approve.",
+            "Phase 0 ships a trace span per tier, LLM tracing, latency, token and cost metrics, two alerts, and a smoke eval that can block a deploy. Every later phase adds its own metrics, trace fields, alerts or dashboards.",
+            "Reproducibility starts in Phase 0 and continues in every phase: versioned test sets, deterministic index rebuilds (checked at the Phase 2 exit), dated model versions, replayable sessions, and routing decisions that can be recomputed from logs.",
+            "Every phase designs and tests failure handling: a links-only fallback, ticket creation that cannot duplicate, a sync that aborts mass deletes, index rollback, provider failover with a circuit breaker, a kill switch and load test, a safest-path default for routing, and a rollout that pauses itself.",
+            "Phase 1 builds defenses, budgets and human handoff before any capability is expanded. After that come retrieval, model access, memory then orchestration, routing and feedback, in the required order and each with concrete exit checks.",
+            "A dedicated deferred section covers account actions, internal content, agent drafting, memory across sessions, caching, new channels, other languages, multi-agent loops and the tradeoff-table flips, each with a measurable trigger or stated prerequisites."
+          ],
+          "note": "Strong plan that scores 2 on every dimension, backed by concrete mechanisms and testable exit checks rather than labels; the gaps are minor: the Phase 0 production API has origin limits and a firewall but no rate limit or spend cap until Phase 1, webhook authentication is never mentioned, the answer format is defined in Phase 3 although Phase 1 guards and handoff read it, and the cloud choice (Cloud Run or ECS) is left open."
+        },
+        {
+          "judge": 3,
+          "scores": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "Depends on: Phase 2's measured retrieval, so wrong answers can be blamed on generation rather than retrieval.",
+            "On the production help center, a staff member asks \"How do I reset my password?\"",
+            "pgvector/full-text query p95 above 300 ms at peak after tuning, or more than ~5M chunks → OpenSearch/Qdrant/Vespa behind the same retrieval interface",
+            "Build order inside Phase 0 (biggest rework risk first): 1. API event contract (every client depends on it).",
+            "Secrets in a secrets manager, no keys in the browser; requests only from the help-center domain; staff-only flag; zero-retention LLM terms",
+            "OpenTelemetry traces with one span per tier (widget → api → embed → retrieve → llm → persist)",
+            "Index version = hash of article snapshot + chunking config + embedding model; snapshots kept in versioned S3; rebuilds are deterministic",
+            "Revoking the LLM key in staging produces the links-only fallback and fires an alert.",
+            "P1 guards, budgets, handoff → P2 retrieval → P3 model access → P4 memory + orchestration → P5 routing → P6 feedback",
+            "Account-aware answers and actions (order status, refunds, plan changes). Build when at least 25% of handoffs are account questions the docs can't answer."
+          ],
+          "rationale": [
+            "Each phase names prerequisites proven in earlier phases (P0 schema on 20 articles, P1 eval sets, P2 measured retrieval, P3 scorecards), and provisional values like the abstain threshold and per-stage budgets are only fixed once the phase that can measure them exists.",
+            "Phase 0 is a real thin slice (widget, WAF, API, embedding, pgvector, LLM call, persistence) deployed to production behind a staff flag, and its exit check requires a production question to return a cited answer.",
+            "Section 2 lists eleven consequential decisions (store, build/buy, fine-tune, hosting, privacy boundary, streaming, answer posture, and others), each with a concrete default and a measurable flip condition, and Section 1 states its assumptions openly.",
+            "Every phase puts shared contracts and schemas first and says why (event contract, chunk schema, answer format, retention rules, routing format, feedback schema), and pushes leaf work like the widget to the end.",
+            "Security gets concrete, phase-specific work from P0 (WAF, CORS, redaction, image scanning) through P6 (untrusted feedback, human approval, role-based access), both in the per-phase table and in phase tasks and exit checks (for example, the card-number test in P4 and routing that can never skip the gates in P5).",
+            "Phase 0 ships traces, Langfuse, latency and cost metrics, two alerts and a CI smoke eval, and each later phase adds specific signals (guard counters, freshness lag, per-call prompt and model versions, per-step spans, route reasons, a feedback funnel).",
+            "Reproducibility is concrete in every phase: Terraform, digest-pinned images and pinned models in P0; versioned test sets in P1; deterministic index rebuilds with their own exit check in P2; dated models and archived outputs in P3; replayable sessions and versioned routing and test sets in P4–P6.",
+            "Failure handling is built and tested in every phase: P0 fallbacks plus a key-revocation drill, P1 idempotent outbox and guards that fail safe, P2 mass-delete abort and index rollback, P3 circuit breaker and tested fallback provider, P4 kill switch and load test, P5 safest-path default, P6 async feedback and automatic rollout pause.",
+            "Defenses, budgets and human handoff all arrive in P1, before any capability is built out beyond the skeleton; the remaining layers follow the required order exactly, each with its own concrete exit check.",
+            "Section 7 lists deferred items (account actions, internal content, agent drafts, cross-session memory, caching, channels, languages, multi-agent), most with measurable pull-forward triggers, and points to the Section 2 flip conditions for the rest."
+          ],
+          "note": "An exceptionally strong plan: dependencies are explicit, Phase 0 is a real production skeleton, every gate has a flip condition, and cross-cutting concerns get concrete per-phase treatment; only minor nits remain ('immediate' unpublishing vs. a 1-minute exit check; a few deferrals written as prerequisites rather than triggers)."
+        }
+      ],
+      "audit": {
+        "role": "skeptic",
+        "auditors": [
+          {
+            "auditor": 1,
+            "proposed": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "All ten medians hold: the phase order, Phase 0 skeleton, gate table, per-phase cross-cutting rows, AI-layer order and deferred triggers are concrete and consistent; two nits (Phase 0's exit check expects an alert on the links-only fallback before Phase 3 adds a fallback-rate alert, and §1's \"traffic sized in Phase 0\" has no Phase 0 task) don't break any rubric bar."
+          },
+          {
+            "auditor": 2,
+            "proposed": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "All ten medians hold: the tensions found (streaming flip vs. the Phase 3 p95 ≤ 6 s exit, Phase 3 answer format read by Phase 0–1 parts, 3-call cap vs. live judge plus retry, 5% delete-abort vs. immediate unpublish, undefined Phase 0 fallback alert) are minor edge cases, not shortfalls against the bar."
+          },
+          {
+            "auditor": 3,
+            "proposed": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "I'm keeping all ten scores at 2. Every one holds up when checked against the plan's own content; I found three small slips, but none is big enough to lower a dimension. (1) Phase 0's exit check says a revoked LLM key \"fires an alert,\" but neither of the two Phase 0 alerts (server errors, slow responses) covers a working links-only fallback; the fallback-rate alert first appears in Phase 3. (2) Phase 1 requires 100% on false-promise attack cases, but \"promise checks\" are only listed in Phase 3's security row. (3) The plan names services from both AWS and Google Cloud without choosing a cloud."
+          }
+        ]
+      }
+    },
+    {
+      "prompt": "P2",
+      "title": "Multi-tenant SaaS billing",
+      "kind": "non-AI",
+      "arm": "without",
+      "file": "p2-saas-billing/without-skill.md",
+      "self_score": null,
+      "judges": [
+        {
+          "judge": 1,
+          "scores": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1
+          ],
+          "evidence": [
+            "Foundation: versioned catalog, flat and per-seat subscriptions, cards, invoices, basic dunning, the tax adapter, entitlements, and the ledger.",
+            "none",
+            "If your tenants are instead merchants billing their own customers (billing-as-a-service), see §12.",
+            "Adding a ledger later is painful.",
+            "Automated tests try to read another tenant's data through every API.",
+            "Business-level alerts: billing-run delay, drafts stuck > 2 h, payment success rate, reconciliation mismatches",
+            "UsageSnapshot stores the quantity per meter, dimension, and period, plus a hash of the query and a watermark marking which events were included.",
+            "If the tax engine is down, invoices wait in draft. Never finalize without tax.",
+            "none",
+            "Design keys for sharding from day one, but only shard (Citus, by customer_id) when you need to."
+          ],
+          "rationale": [
+            "The phases run Foundation → Usage → Enterprise → Global, which is a sensible order with no dependency inversions, but they are short feature lists: no phase places the tenancy or infrastructure substrate, and nothing requires a layer to be proven before the next one is built.",
+            "There is no thin end-to-end slice deployed to production first; the first phase is a broad feature bundle covering catalog, subscriptions, cards, dunning, tax, entitlements and the ledger.",
+            "Assumptions are stated up front with a flip to the §12 variant, and several decisions have a default and a trigger (pooled-default isolation tiers, numbering series, build vs. buy), but they are scattered rather than listed as gates, build vs. buy only appears in §11, and some choices are left as 'decide' with no default.",
+            "Work inside each phase is not sequenced, though the plan does pull a few wide-impact, hard-to-reverse items early: the ledger in Phase 1, shard-ready tenant-first keys, separate credit types, and simulated clocks from day one.",
+            "Security is concrete in the design (RLS via SET LOCAL, cross-tenant tests, PCI SAQ A tokenization, per-tenant KMS keys, vaulted secrets), but it sits in architecture sections and a standalone §9 and is never assigned to any build phase.",
+            "The plan specifies concrete business alerts, reconciliation monitors and staleness alerts, but the first phase has no observability baseline (metrics, logs, traces) and none of the phases mention it.",
+            "Data reproducibility is strong (pure rating function, versioned prices, recomputable invoices, hashed and watermarked snapshots, simulated clocks), but builds and environments are not covered and none of it is tied to the phases.",
+            "Failure handling runs through almost every component design (idempotent jobs, outbox, unknown payment state, fail-open entitlements, holding drafts when tax is down), but the phase list never includes it, so it is not threaded phase by phase.",
+            "The plan never says an AI layer is not applicable; its only AI mentions are example token-priced usage events, which are billing inputs, not AI components.",
+            "Later phases and some conditional pieces (sharding, silo and regional cells, a dedicated numbering service) are explicitly deferred, but most have no pull-forward trigger, and the triggers that exist are vague, like 'when you need to'."
+          ],
+          "note": "Total 8/20: a strong, detailed reference architecture with excellent correctness and resilience design, but weak as a build plan: phasing is a four-bullet appendix with no walking skeleton, cross-cutting concerns aren't threaded through the phases, and it never says the AI layer is N/A."
+        },
+        {
+          "judge": 2,
+          "scores": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            0,
+            1
+          ],
+          "evidence": [
+            "Foundation: versioned catalog, flat and per-seat subscriptions, cards, invoices, basic dunning, the tax adapter, entitlements, and the ledger. Adding a ledger later is painful.",
+            "none",
+            "Who pays: a B2B SaaS that bills its tenants (orgs/workspaces). If your tenants are instead merchants billing their own customers (billing-as-a-service), see §12.",
+            "Promotional and prepaid credits are taxed and recognized as revenue differently. Model them as separate types from the start.",
+            "RLS then hides all other customers' rows, so a missing WHERE clause can't leak data.",
+            "Business-level alerts: billing-run delay, drafts stuck > 2 h, payment success rate, reconciliation mismatches",
+            "That lets you explain and recompute any invoice number during a dispute.",
+            "Every operation is safe to repeat. That covers API writes, usage events, scheduled jobs, payment-provider calls, and webhook handlers.",
+            "none",
+            "Design keys for sharding from day one, but only shard (Citus, by customer_id) when you need to."
+          ],
+          "rationale": [
+            "The phase order (foundation, then usage, enterprise, global) makes sense and explains why the ledger comes early, but each phase is a one-line feature list with no exit criteria, and the tenancy, gateway and outbox groundwork is never placed in any phase.",
+            "No thin end-to-end slice reaches production first: Phase 1 is a broad bundle of features (dunning, tax, entitlements, ledger), it never mentions production deployment, and it leaves out the metering path entirely.",
+            "Assumptions are stated up front with a flip to §12, and some choices have a default plus flip condition (isolation tiers, numbering series, sharding), but the irreversible decisions are scattered, build-vs-buy only comes at the end, and several choices are left open with no default (\"Decide whether…\").",
+            "Items within each phase are unordered (Phase 1 even lists the ledger last), so the only blast-radius thinking is a few scattered 'from day one / from the start' notes that move wide-impact schema decisions early.",
+            "Concrete controls exist (row-level security, PCI tokenization, per-tenant KMS keys, webhook signature checks), but they sit in component sections and a standalone §9 that the phase list never references, and the Phase 3 enterprise work gets no security treatment.",
+            "Reconciliation, staleness and business alerts are concrete, but there is no day-zero logging, metrics or tracing foundation, no way to measure the stated SLOs, and no observability tied to any phase.",
+            "Data and computation reproducibility is strong (pinned price versions, frozen usage snapshots with query hashes, simulated clocks), but reproducible builds and environments are never addressed and none of this is linked to phases.",
+            "Failure handling is built into the components each phase delivers: idempotent billing runs, the outbox, 'unknown' payment state on timeout, and entitlements that keep working when billing is down (P1); durable, deduplicated metering (P2); bank reconciliation (P3); regional cells that contain outages (P4).",
+            "The plan never says that no AI layer applies (its llm.tokens example is only a metered event type), so the required N/A declaration is missing.",
+            "Some deferred items come with conditions (sharding, regional and silo cells, a numbering service for single-series countries), but there is no explicit list of deferred work, Phases 2–4 have no pull-forward triggers, and 'when you need to' is vague."
+          ],
+          "note": "Strong correctness-first reference architecture with a four-line build plan tacked on: no walking skeleton, decision gates scattered with build-vs-buy last, cross-cutting concerns organized by component instead of phase (only resilience is truly pervasive), and the AI layer never declared N/A."
+        },
+        {
+          "judge": 3,
+          "scores": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1
+          ],
+          "evidence": [
+            "the tax adapter, entitlements, and the ledger. Adding a ledger later is painful.",
+            "Foundation: versioned catalog, flat and per-seat subscriptions, cards, invoices, basic dunning",
+            "If your tenants are instead merchants billing their own customers (billing-as-a-service), see §12.",
+            "Promotional and prepaid credits are taxed and recognized as revenue differently. Model them as separate types from the start.",
+            "every database transaction runs SET LOCAL app.customer_id. RLS then hides all other customers' rows, so a missing WHERE clause can't leak data.",
+            "Business-level alerts: billing-run delay, drafts stuck > 2 h, payment success rate, reconciliation mismatches",
+            "UsageSnapshot stores the quantity per meter, dimension, and period, plus a hash of the query and a watermark marking which events were included.",
+            "Every operation is safe to repeat. That covers API writes, usage events, scheduled jobs, payment-provider calls, and webhook handlers.",
+            "none",
+            "Design keys for sharding from day one, but only shard (Citus, by customer_id) when you need to."
+          ],
+          "rationale": [
+            "The phases build up in a sensible order (a foundation that includes the ledger, then usage, enterprise and global), but each phase is a one-line feature list that never places the substrate (gateway, RLS, outbox) and has no exit criteria proving a layer works before the next one builds on it.",
+            "The first phase does set up a complete flat/seat billing path before usage and enterprise work, but it is a broad feature bundle that leaves out metering and never mentions production, so it is not a thin skeleton.",
+            "Assumptions are stated up front with a flip to §12, and some decisions have triggers (shard when needed, numbering service, build-vs-buy), but these are scattered, build-vs-buy only appears in §11, and several choices are left as 'decide' with no default.",
+            "The plan names hard-to-reverse, wide-impact work to do first (ledger, sharding keys, credit types, simulated clocks) but never orders work within any phase.",
+            "Security is concrete in the design (RLS, tenant-scoped tokens, PCI SAQ A, per-tenant KMS keys, webhook signatures, separation of duties) but sits in the component sections and §9, and no phase schedules any security work.",
+            "Business alerts, reconciliation alerts, staleness alerts and logs tagged by tenant all exist, but there is no day-zero observability setup and none of it is tied to Phase 1 or any later phase.",
+            "Data reproducibility is excellent (pure rating function, pinned price versions, immutable watermarked snapshots, simulated clocks), but build and environment reproducibility is missing and none of it is mapped to phases.",
+            "Failure handling runs through the component designs and §7 (idempotency, outbox, PSP 'unknown' state, fail-open entitlements, tax-down drafts), but the phase list never says when that work lands, so it is not shown phase by phase.",
+            "The plan never says the AI layer does not apply; llm.tokens and per-token prices appear only as examples of things to bill.",
+            "Later phases and several deferrals (sharding, pulling out modules, numbering service, revenue tool) are explicit, but pull-forward triggers are vague or scattered, and the Usage and Enterprise phases have none."
+          ],
+          "note": "Total 9/20: a deep, correctness-focused architecture, but the build plan is a four-line phasing appendix where security, observability, reproducibility and resilience are designed in yet never mapped to phases, there is no thin production skeleton, and the AI layer is never declared N/A."
+        }
+      ],
+      "audit": {
+        "role": "advocate",
+        "auditors": [
+          {
+            "auditor": 1,
+            "proposed": [
+              1,
+              0,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2,
+              0,
+              1
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "Phase 1: §6.4 bill_cycle \"safe to run N times\"; §6.5 \"A timeout means \"unknown,\" not \"failed.\"\". Phase 2: §6.3 metering. Phase 3: §11 \"bank reconciliation\". Phase 4: §4.2 cells \"limiting the impact of outages\".",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "The phases in §11 build components whose designs include concrete failure handling, starting in Phase 1 (idempotent billing runs, PSP timeouts, webhook dedup, dunning, tax-down drafts, fail-open entitlements) and continuing through each later phase, so resilience runs through the plan rather than being added at the end.",
+              "stands",
+              "stands"
+            ],
+            "note": "One score raised: D8 goes from 1 to 2 because every phase concretely handles failures, from Phase 1 onward. All other medians stand, and D9 stays 0 because the plan never says the AI layer doesn't apply."
+          },
+          {
+            "auditor": 2,
+            "proposed": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              0,
+              1
+            ],
+            "evidence": [
+              "stands",
+              "§11, Phase 1: \"Foundation: versioned catalog, flat and per-seat subscriptions, cards, invoices, basic dunning, the tax adapter, entitlements, and the ledger.\"",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "The first build phase already runs the whole billing loop end to end (subscribe, invoice, tax, card charge, ledger, entitlements) on the simplest pricing, before any usage, enterprise or global work, so a skeleton is partly present; it is feature-heavy and never framed as a thin production slice, so it does not reach 2.",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "One raise: D2 goes from 0 to 1 because Phase 1 is large but runs end to end. D5–D8 stay at 1 because the four-line §11 phase list never assigns the strong per-component security, alerting, reproducibility or failure-handling work (or the DR target) to any phase. D9 stays at 0 because the plan never says the AI layer is N/A."
+          },
+          {
+            "auditor": 3,
+            "proposed": [
+              1,
+              0,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              0,
+              1
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "I'm keeping all ten median scores; none is too low. The component architecture is strong, but the phasing is a four-line list in §11. Phase 1 builds eight components with no thin slice and no production deployment, so D2 stays 0. The decisions with defaults and flip conditions are spread through the document, and the build-vs-buy gate doesn't come until §11, so D3 stays 1. Security, observability, reproducibility and resilience are designed into each component, but the phases never say when they get built, so D5–D8 stay 1. D8 was the closest call. The plan never says an AI layer doesn't apply, so D9 stays 0."
+          }
+        ]
+      }
+    },
+    {
+      "prompt": "P2",
+      "title": "Multi-tenant SaaS billing",
+      "kind": "non-AI",
+      "arm": "with",
+      "file": "p2-saas-billing/with-skill.md",
+      "self_score": 20,
+      "judges": [
+        {
+          "judge": 1,
+          "scores": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "Depends on: Phase 4 reconciliation passing. The billing run repeats whatever payments does, right or wrong, across every subscription.",
+            "Within 60 s the invoice is paid, and a signed invoice.paid webhook has reached the canary's receiver.",
+            "We never hold customer money. … If the business decides to earn money on payment volume or run payouts, we become a payment facilitator",
+            "(every table, forever) Make cross-tenant data impossible at the schema level … (single feature) Tenant onboarding API and settings",
+            "TLS-only load balancer with WAF; AWS Secrets Manager; minimal permissions per service; gitleaks and Trivy in CI; canary key limited to one test tenant",
+            "One trace across all 8 steps; JSON logs with trace and tenant IDs; latency, error, queue-age and ledger-imbalance metrics; 5-minute canary paging through PagerDuty",
+            "All infrastructure in Terraform; locked, checksum-verified dependencies; one Jib image per commit, tags can't be overwritten; local stack with docker-compose and stripe-mock",
+            "killing the worker mid-run pages on-call, and after restart the run finishes with exactly one PaymentIntent",
+            "N/A. There is no model anywhere in this system, and billing math has to stay deterministic and auditable.",
+            "A warm standby in a second region: build when a contract requires recovery in under 4 h."
+          ],
+          "rationale": [
+            "Each phase names a dependency on the previous phase's proven exit check, and the order builds upward: skeleton, tenancy, ledger, invoicing, payments, subscriptions, usage, collections, reporting, then UI.",
+            "Phase 0 is a real thin slice deployed to prod (load balancer, API, Postgres transaction, worker, Stripe, incoming webhook, outgoing webhook), with concrete exit checks: a canary green for 72 h, a worker-kill drill and a deploy that rolls itself back.",
+            "The §2 table gives each hard-to-reverse choice (consistency, monolith, sync/async, build/buy, funds flow, tenancy, money type, ledger) a concrete default and a flip trigger, and the plan also points out the two possible readings of the request.",
+            "Every task has a rework-scope tag, and in every phase the tasks run from schema- or contract-wide work down to single-feature leaf work.",
+            "Every phase from 0 to 9 gets concrete, phase-specific security controls, both in the phase text and in the per-phase table; the only nit is that the SSRF egress proxy and SPF/DKIM arrive in Phase 7, after outgoing calls and email have started.",
+            "Phase 0 delivers end-to-end tracing, metrics, a synthetic canary and paging, and every later phase adds its own specific metrics and alerts (for example, a page when a due period goes uninvoiced, and reporting freshness).",
+            "Reproducible builds and environments start in Phase 0, and data reproducibility carries through every phase: seeded tests, version stamps, deterministic PDFs, a pinned Stripe API version, simulated clocks, raw-event replay, rebuildable reports and seeded preview environments.",
+            "Every phase handles failure concretely: Multi-AZ, point-in-time recovery and a kill drill in Phase 0, then idempotency, reconciliation, chaos tests, an automatic anomaly stop, ingestion backpressure, waiting out a tax-provider outage and a degraded UI mode.",
+            "The plan says outright that no AI layer applies and builds no AI components; possible AI features appear only as gated deferrals that would get guardrails first.",
+            "§7 lists about 15 deferred items, each with a concrete pull-forward trigger such as a load threshold, a contract requirement or a first tenant's need, and some of them point back to the gate they would flip."
+          ],
+          "note": "A very strong plan that holds together and earns full marks on every dimension; the only nits are timing: the SSRF egress proxy and email authentication come in Phase 7, and finance-role human approvals start before human login exists in Phase 9."
+        },
+        {
+          "judge": 2,
+          "scores": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "Depends on: Phase 4 reconciliation passing. The billing run repeats whatever payments does, right or wrong, across every subscription.",
+            "Within 60 s the invoice is `paid`, and a signed `invoice.paid` webhook has reached the canary's receiver.",
+            "Split a module out when it needs to scale differently (ingest above roughly 2.5k events/s sustained), a team needs independent deploys, or compliance needs isolation.",
+            "(every table, forever) Make cross-tenant data impossible at the schema level",
+            "TLS-only load balancer with WAF; AWS Secrets Manager; minimal permissions per service; gitleaks and Trivy in CI; canary key limited to one test tenant",
+            "One trace across all 8 steps; JSON logs with trace and tenant IDs; latency, error, queue-age and ledger-imbalance metrics; 5-minute canary paging through PagerDuty",
+            "All infrastructure in Terraform; locked, checksum-verified dependencies; one Jib image per commit, tags can't be overwritten; local stack with docker-compose and stripe-mock",
+            "killing the worker mid-run pages on-call, and after restart the run finishes with exactly one PaymentIntent",
+            "N/A. There is no model anywhere in this system, and billing math has to stay deterministic and auditable.",
+            "Kafka or Redpanda plus ClickHouse for usage: build when ingestion passes about 2.5k events/s sustained, or when period-close aggregation takes longer than the grace window."
+          ],
+          "rationale": [
+            "Every phase names the earlier phase it builds on and waits for that phase's exit check to pass, so the order runs from the base up: tenancy, then ledger, invoicing, payments, subscriptions, metering, collections, reporting and finally the UI; the only forward references are small (for example, a finance-role approval before human login exists).",
+            "Phase 0 is a real thin slice running in prod before any feature: a canary tenant's request goes through the load balancer, the API, one Postgres transaction, the worker, Stripe and webhooks in both directions, with deploy, logging and monitoring in place and a 72 h green exit check.",
+            "Section 2 lists the real hard-to-reverse decisions (consistency vs availability, monolith, sync/async, build/buy, funds flow, tenant isolation, money representation, ledger), each with a concrete default and a measurable flip trigger; it also states how it read the request and when that reading would flip.",
+            "Each phase's tasks are tagged by how much rework a mistake would cause and run from schema-wide or public-contract work down to single-feature leaf work; checking the tasks confirms the order holds.",
+            "Phase 0 and every later phase have concrete security controls in both the tasks and the per-phase table (RLS, hashed keys, ledger write denial, PCI token scope, ingest-only keys, MFA/CSP/pen test), though the SSRF proxy and SPF/DKIM/DMARC only arrive in Phase 7, after webhooks and emails are already going out.",
+            "Phase 0 delivers end-to-end tracing, metrics, a synthetic canary and paging, and every later phase adds its own metrics and alerts (trial balance, billing-run funnel, ingestion lag, dunning recovery, report freshness, browser traces).",
+            "Reproducible builds and environments start in Phase 0, and every phase adds reproducible data or tests: seeded tests, versions stamped on invoices, pinned Stripe API, simulated clocks, raw-event archives, rebuildable reporting tables and seeded preview environments.",
+            "Every phase has concrete failure handling: Multi-AZ/PITR and a worker-kill test in Phase 0, then idempotency, double-posting guards, restore drills, payment chaos tests, the billing-run anomaly stop, dedup, waiting out tax outages, DLQs, replica isolation and a degraded UI mode.",
+            "The plan says the AI layer is N/A in both the gates table and §6, and only mentions AI features as deferred work with a condition, not something it builds.",
+            "Section 7 lists 15 deferred items (cells, a second region, Kafka/ClickHouse, Temporal, a second PSP, revenue recognition, ERP sync, e-invoicing, SOC 2, AI and others), each with a concrete condition for pulling it forward."
+          ],
+          "note": "Excellent plan, 20/20: a real prod walking skeleton, phases gated on proven exit checks, full tradeoff gates and cross-cutting concerns handled in every phase; the main flaw is that some controls arrive after the features they protect (Smokescreen SSRF egress and SPF/DKIM/DMARC in Phase 7)."
+        },
+        {
+          "judge": 3,
+          "scores": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "Depends on: Phase 4 reconciliation passing. The billing run repeats whatever payments does, right or wrong, across every subscription.",
+            "a real request returns a real response in prod, with a trace and a metric visible. Concretely: the canary stays green for 72 h",
+            "Move to TigerBeetle or Modern Treasury Ledgers when sustained postings near the ceiling measured in Phase 2 (initial guess about 5k/s)",
+            "(every table, forever) Make cross-tenant data impossible at the schema level … (single feature) Tenant onboarding API and settings",
+            "TLS-only load balancer with WAF; AWS Secrets Manager; minimal permissions per service; gitleaks and Trivy in CI; canary key limited to one test tenant",
+            "That gives one trace from the POST through Stripe to the outgoing webhook.",
+            "Engine, template and tax-rate versions stamped on each invoice, so recomputing gives identical totals and identical PDF bytes",
+            "killing the worker mid-run pages on-call, and after restart the run finishes with exactly one PaymentIntent",
+            "N/A. There is no model anywhere in this system, and billing math has to stay deterministic and auditable.",
+            "A warm standby in a second region: build when a contract requires recovery in under 4 h."
+          ],
+          "rationale": [
+            "Each phase names its dependency and waits for the previous phase's exit check, building in order from tenancy to ledger, invoicing, payments, subscriptions, usage, collections, reporting and UI; the only gaps are small leaf-level ones, such as Phase 5 finance-role approvals arriving before Phase 9 human login.",
+            "Phase 0 is a real thin slice, shipped through the real deploy pipeline and proven in prod by a 72 h canary before any feature phase: an idempotent invoice POST passes through WAF, API, Postgres, worker, Stripe, the inbound webhook and a signed outbound webhook.",
+            "§2 settles eight real decisions up front (consistency, monolith, sync/async, build/buy, funds flow, isolation, money representation, ledger), each with a concrete default and a measurable flip condition, and it even turns the ambiguity in the request into a stated flip.",
+            "Every task is tagged with how much rework it would cause if wrong, and every phase puts schema-wide and contract-wide work ahead of tasks tagged 'single feature'.",
+            "Each phase has concrete security controls of its own, from Phase 0 (WAF, secrets, scanning, a scoped canary key) to Phase 9 (MFA, PCI script integrity, pentest), and controls such as forced RLS, KMS-encrypted tokens and signature checks are built into the phase tasks themselves.",
+            "Phase 0 ships end-to-end tracing, named metrics, a synthetic canary and paging, and every later phase adds its own signals, such as trial-balance alerts, billing-run funnels, ingestion lag and browser-to-backend traces.",
+            "Reproducibility starts in Phase 0 (Terraform, locked dependencies, immutable per-commit images, a local stripe-mock stack) and continues in every phase through seeded tests, a pinned Stripe version, an injected clock, versioned meters and rebuildable reporting.",
+            "Failure handling is concrete from Phase 0 (Multi-AZ, PITR, auto-rollback, job re-pickup, a kill-the-worker exit test) and appears in every later phase: no double postings, chaos tests, kill switches, anomaly stops, waiting out tax outages, and a degraded UI mode.",
+            "The plan states in both §2 and §6 that the AI layer does not apply and adds no AI components; it only defers possible AI features behind a trigger and keeps them outside the money path.",
+            "§7 lists fifteen deferred items, each with a concrete pull-forward condition (contract terms, throughput thresholds, tenant demand) and a note on the groundwork already in place."
+          ],
+          "note": "A rigorous plan where each phase waits on the last one being proven, and it scores 2 on all ten dimensions; a few small gaps don't weaken the structure: SSRF egress protection (Smokescreen) only arrives in Phase 7 although tenant webhooks go out earlier, Phase 5 finance-role approvals come before Phase 9 human login, and the Phase 4 hosted payment link may rely on Phase 9 hosted-page controls."
+        }
+      ],
+      "audit": {
+        "role": "skeptic",
+        "auditors": [
+          {
+            "auditor": 1,
+            "proposed": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "All ten median scores hold up on checking: each phase names its dependency and the exit check that proves it, Phase 0 is a real production slice, every gate has a default and a flip condition, tasks run widest-impact first, the §5 table gives concrete per-phase content in all four columns, AI is explicitly N/A, and every deferral has a trigger. The weak spots I found (Phase 5 needs a finance-role approver before human login exists in Phase 9; the Smokescreen webhook proxy and SPF/DKIM/DMARC only arrive in Phase 7) don't break any rubric bar."
+          },
+          {
+            "auditor": 2,
+            "proposed": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "All ten scores of 2 hold up: each phase states what it depends on and has an exit check, the gates give defaults with concrete flip conditions, and every row of the §5 table has phase-specific controls starting in Phase 0. The flaws I found are single controls placed too late, not failures of threading: Smokescreen (SSRF protection) and SPF/DKIM/DMARC email authentication only arrive in Phase 7, but outgoing webhooks run from Phase 0 and invoice emails from Phase 3."
+          },
+          {
+            "auditor": 3,
+            "proposed": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "All 2s hold up against the content; the only nits (SSRF protection only in Phase 7 despite tenant webhooks from Phase 1, email auth after Phase 3 emails, Phase 5 finance-person approval before Phase 9 login) don't break the threading or the overall dependency order."
+          }
+        ]
+      }
+    },
+    {
+      "prompt": "P3",
+      "title": "CI/CD for 50 microservices",
+      "kind": "non-AI",
+      "arm": "without",
+      "file": "p3-cicd-platform/without-skill.md",
+      "self_score": null,
+      "judges": [
+        {
+          "judge": 1,
+          "scores": [
+            2,
+            2,
+            1,
+            2,
+            2,
+            2,
+            2,
+            2,
+            0,
+            2
+          ],
+          "evidence": [
+            "Main sequence: decisions → runners, registry, access and GitOps → pilot in production → versioned templates → Wave 1 → 2 → 3.",
+            "Done when: the platform team can take a test service from commit to production, with the production approval as the only manual step.",
+            "One repo or many. In a single repo you'll need to build only what changed (Nx, Bazel or path filters).",
+            "Version the templates before 50 services depend on them. ... One careless change to an unversioned template can break all 50 pipelines at once.",
+            "secret scan (blocking from day one, because it rarely gives false alarms and leaks are serious) → container image → vulnerability scans (report only)",
+            "Measure today's numbers before changing anything: deploy frequency, lead time, change failure rate and time to recover (the DORA metrics).",
+            "Tag images with the git commit and promote that exact image through every environment. Never rebuild per environment.",
+            "Smoke tests after each deploy, and a rollback you've actually practiced.",
+            "none",
+            "Remove manual production approvals (continuous deployment), last. Needs: contract tests, gradual rollouts, and a change failure rate below an agreed threshold."
+          ],
+          "rationale": [
+            "Phases build upward from decisions to substrate, a production pilot, templates, waves and then enforcement, and every Phase 5 step names its prerequisite under 'Needs:'.",
+            "The first phase that builds anything ends on a commit-to-production path, and a real pilot ships to production with a rollback drill before any other templates, waves or enforcement, with stated reasons for going to production before going wide.",
+            "Hard-to-reverse decisions and assumptions are listed up front and most have defaults (GitOps, build-once, trunk-based branching, OIDC), but the repo-layout choice has no default and no decision has a flip or revisit condition.",
+            "Shared, wide-impact work consistently comes before per-service work (irreversible decisions before easy ones, template versioning before adoption, a template release before each wave), and the plan explains this in blast-radius terms.",
+            "Security is concrete in nearly every phase: OIDC decided in Phase 0, then secrets manager, SSO, role-based access and audit logs, then the pilot's blocking secret scan, SBOM and signing, then signed images and managed secrets required to count as migrated, then staged blocking and admission control; only Phase 6 leaves it out.",
+            "Observability starts with a Phase 0 baseline and runs through every phase: metrics, logs and tracing in foundations, the pilot's lead-time comparison, pipeline stats, dashboards and alerts required to count as migrated, canary health metrics, and platform targets.",
+            "Reproducibility runs through the phases: build once and promote the same image (Phase 0), infrastructure-as-code and fresh per-job runners (Phase 1), GitOps promotion (Phase 2), pinned template versions (Phases 3–4), and admission rules banning :latest tags (Phase 5).",
+            "Failure handling recurs throughout: GitOps chosen for git-revert rollback, runners sized for 3× peaks, expand/contract migrations and a rollback drill in the pilot, staged template rollouts, tested rollback required for migration, and canaries with automatic health checks, though high availability and disaster recovery for the platform itself are thin.",
+            "This is a non-AI request and the plan never states that no AI layer applies, so the rule gives 0.",
+            "Deferred work (blocking vulnerability scans, admission enforcement, canaries, continuous deployment, per-PR environments, developer portal) is named, and each item has a concrete trigger condition; only the scanner choice and per-PR environments are vague."
+          ],
+          "note": "A strong, well-ordered plan that scores 17 of 20: decisions, then foundations, a production pilot, versioned templates, migration waves and gated enforcement, with security, observability, reproducibility and resilience threaded through. It loses points because no decision has a flip condition and it never says the AI layer is N/A."
+        },
+        {
+          "judge": 2,
+          "scores": [
+            2,
+            2,
+            1,
+            2,
+            2,
+            2,
+            2,
+            2,
+            0,
+            2
+          ],
+          "evidence": [
+            "Main sequence: decisions → runners, registry, access and GitOps → pilot in production → versioned templates → Wave 1 → 2 → 3.",
+            "Done when: the platform team can take a test service from commit to production, with the production approval as the only manual step.",
+            "I'd recommend GitOps (Argo CD or Flux) at this scale: it detects drift, keeps an audit trail and makes rollback a `git revert`.",
+            "Version the templates before 50 services depend on them... One careless change to an unversioned template can break all 50 pipelines at once.",
+            "secret scan (blocking from day one, because it rarely gives false alarms and leaks are serious) → container image → vulnerability scans (report only)",
+            "Measure today's numbers before changing anything: deploy frequency, lead time, change failure rate and time to recover (the DORA metrics).",
+            "Tag images with the git commit and promote that exact image through every environment. Never rebuild per environment.",
+            "Smoke tests after each deploy, and a rollback you've actually practiced.",
+            "none",
+            "Remove manual production approvals (continuous deployment), last. Needs: contract tests, gradual rollouts, and a change failure rate below an agreed threshold."
+          ],
+          "rationale": [
+            "The phases build upward from decisions to infrastructure-as-code foundations, then the pilot, templates, waves and enforcement, and the plan includes an explicit map of what blocks what plus a 'Needs:' prerequisite for each enforcement step.",
+            "The first phase that builds anything must end with a test service going all the way to production, and a real pilot then ships to production for 2+ weeks before any templates, waves or enforcement, with a stated reason for doing production first.",
+            "The expensive-to-reverse decisions and the assumptions are listed up front, mostly with defaults, but none has a flip or revisit condition, and the one-repo-or-many choice has no default at all.",
+            "Within each phase, shared work that affects every service (the first template, versioned templates, template releases between waves) comes before per-service migration and cutover, and the plan explains this in blast-radius terms.",
+            "Security gets concrete treatment from Phase 0 onward: OIDC in the decisions, then secrets, SSO, RBAC and audit logs in foundations, scanning, SBOM and signing in the pilot, signed images and managed secrets as part of the migration bar, fixing findings during the waves, and enforcement; only the ongoing phase leaves it out.",
+            "Measurement starts with the Phase 0 DORA baseline, foundations add metrics, logs and tracing, and every later phase has some form of it: the pilot's lead-time comparison, pipeline stats and dashboards/alerts in the migration bar, health metrics for canaries, and platform targets.",
+            "Reproducibility runs through every phase: build-once immutable artifacts, infrastructure-as-code, fresh runners per job, GitOps promotion via the config repo, pinned template versions, admission rules banning :latest, and flaky-test quarantine.",
+            "Failure handling shows up in every phase: rollback by git revert, sizing runners for peak load, expand/contract migrations, rollback drills, side-by-side cutover, small-group template releases, waves ordered by risk, canaries with automatic health checks, and availability targets.",
+            "This is a non-AI system and the plan never says that no AI layer applies, so the rule scores it 0.",
+            "Most deferred work (blocking vulnerabilities, admission enforcement, canaries, removing manual approvals, the developer portal) is named explicitly with the condition that brings it in, though the scanner choice and per-PR environments have weak or missing triggers."
+          ],
+          "note": "A well-ordered plan that gets one service to production first, with security, observability, reproducibility and resilience covered in nearly every phase. It loses points because its expensive-to-reverse decisions have no flip conditions and it never says the AI layer is N/A."
+        },
+        {
+          "judge": 3,
+          "scores": [
+            2,
+            1,
+            1,
+            2,
+            2,
+            2,
+            2,
+            2,
+            0,
+            1
+          ],
+          "evidence": [
+            "Main sequence: decisions → runners, registry, access and GitOps → pilot in production → versioned templates → Wave 1 → 2 → 3.",
+            "Done when: the platform team can take a test service from commit to production, with the production approval as the only manual step.",
+            "I'd recommend GitOps (Argo CD or Flux) at this scale: it detects drift, keeps an audit trail and makes rollback a git revert.",
+            "Version the templates before 50 services depend on them.",
+            "Secrets manager, plus OIDC trust between CI and the cloud.",
+            "Measure today's numbers before changing anything: deploy frequency, lead time, change failure rate and time to recover (the DORA metrics).",
+            "Tag images with the git commit and promote that exact image through every environment. Never rebuild per environment.",
+            "Smoke tests after each deploy, and a rollback you've actually practiced.",
+            "none",
+            "Add a developer portal only after the standard path is proven."
+          ],
+          "rationale": [
+            "Phases build upward from decisions to IaC foundations, the pilot, versioned templates, the migration waves and then enforcement, and each later capability names its prerequisite under an explicit 'Needs:' line, backed by a 'what blocks what' section.",
+            "A real pilot reaches production before any templates, waves or gates, but it is not first or thin: it follows a planning-only Phase 0 and a broad six-week foundations build (all environments, SSO, tracing, runners sized for 50 concurrent pipelines).",
+            "Hard-to-reverse decisions are listed up front, assumptions are stated, and most decisions have a default (GitOps, trunk-based, OIDC, build-once), but the repo layout has no default and no decision has a condition for changing it.",
+            "Within phases the widest-impact work comes first: hard-to-reverse decisions before cheap ones, template versioning before 50 services depend on it, a template release before each wave, and enforcement rolled out audit, then namespace, then cluster.",
+            "Security has concrete content from the first build phase onward (OIDC, secrets manager, SSO/RBAC/audit; a blocking secret scan, SBOM and signing; signed images and managed secrets required for migration; vulnerability blocking and admission policies), with enforcement staged on purpose rather than added at the end.",
+            "Observability starts with a Phase 0 DORA baseline and continues through Phase 1 metrics, logs and tracing, the pilot's comparison with that baseline, pipeline stats, dashboards and alerts as a migration requirement, canary health metrics, and Phase 6 platform targets.",
+            "Reproducibility is concrete across phases: build once and promote the same artifact, infrastructure as code, fresh runners per job, signed images with SBOMs, GitOps promotion, pinned template versions, and admission rules that ban :latest.",
+            "Failure handling appears throughout: GitOps rollback and autoscaling runners sized for peak early on, expand/contract migrations and a rollback drill in the pilot, staged template releases and a tested rollback required for migration, canary health checks, and platform availability targets.",
+            "The request is for a non-AI system, and the plan never states that no AI layer applies.",
+            "Some deferrals have conditions (developer portal after the standard path is proven, continuous deployment after a change-failure-rate threshold, vulnerability blocking after findings are fixed), but there is no explicit not-built list, scanner choice and per-PR environments have missing or vague triggers, and the conditions are prerequisites rather than reasons to pull work forward."
+          ],
+          "note": "A strong, dependency-aware plan with security, observability, reproducibility and resilience woven through every phase; it loses points for building the foundations before a thin end-to-end slice, defaults without conditions for changing them, scattered deferrals, and never stating that the AI layer doesn't apply."
+        }
+      ],
+      "audit": {
+        "role": "advocate",
+        "auditors": [
+          {
+            "auditor": 1,
+            "proposed": [
+              2,
+              2,
+              1,
+              2,
+              2,
+              2,
+              2,
+              2,
+              0,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "I'm keeping every score; none should be raised. D3 stays at 1: Phase 0 lists the hard-to-reverse decisions, but \"One repo or many\" has no default and none of them has a trigger for changing course. The plan's default-then-switch pattern (report-only scans or manual approval, switched off once conditions are met) only covers easy-to-change Phase 5 enforcement. D9 stays at 0 because the plan never says the AI layer doesn't apply. The other eight scores are already at 2."
+          },
+          {
+            "auditor": 2,
+            "proposed": [
+              2,
+              2,
+              1,
+              2,
+              2,
+              2,
+              2,
+              2,
+              0,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "None of the scores are too low. D3 stays at 1: Phase 0 lists the hard-to-reverse decisions and gives defaults for most of them (GitOps, build once, trunk-based branching, OIDC), but none has a flip or revisit condition, and the one-repo-or-many choice has no default. The 'Needs:' gates in Phase 5 have clear flip conditions, but they cover reversible enforcement steps and come late in the plan. D9 stays at 0 because the plan never says the AI layer doesn't apply."
+          },
+          {
+            "auditor": 3,
+            "proposed": [
+              2,
+              2,
+              1,
+              2,
+              2,
+              2,
+              2,
+              2,
+              0,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "I raised no scores. D3 stays at 1 because the Phase 0 list of hard-to-reverse decisions gives no default for one repo versus many and no explicit revisit trigger for any decision (\"at this scale\" is only implied). D9 stays at 0 because the plan never states that no AI layer applies. The other eight are already at the maximum."
+          }
+        ]
+      }
+    },
+    {
+      "prompt": "P3",
+      "title": "CI/CD for 50 microservices",
+      "kind": "non-AI",
+      "arm": "with",
+      "file": "p3-cicd-platform/with-skill.md",
+      "self_score": 19,
+      "judges": [
+        {
+          "judge": 1,
+          "scores": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "The per-version request, error and latency metrics proven in Phase 2. The canary checks can't be written until those queries return real data.",
+            "a developer merges a real, trivial change to `main` of service #1. … Response: in prod, `GET /version` returns the new commit SHA",
+            "Build once, promote the same digest through dev → staging → prod. … A target needs a different binary (FIPS, another CPU architecture) → build a separate artifact",
+            "Widest impact: this is how the worst failure would spread. … Narrowest: per-service hooks, such as custom test commands and cache tuning.",
+            "OIDC to a short-lived role that can only push to one registry repo. No cluster credentials in CI (Argo CD pulls).",
+            "The observability pieces, live before the first pipeline run.",
+            "Platform infra in Terraform (remote state with locking). Argo CD config managed from Git. GitHub Actions pinned to commit SHAs.",
+            "`git revert` rollback drilled in prod. `maxUnavailable: 0` with readiness checks. Old pipeline kept as a fallback.",
+            "N/A. There is no model, retrieval or agent anywhere in this system.",
+            "Self-hosted runners (short-lived, via Actions Runner Controller): bring forward when builds need private-network access, queue time p95 passes 5 min"
+          ],
+          "rationale": [
+            "Every phase names the proven exit it depends on (Phase 0 path → 3 pilot pipelines → template and metrics → canaries → fleet enforcement → self-service), and signing, Enforce and canaries are held back until their prerequisites exist.",
+            "Phase 0 is a real thin slice through every tier into the prod cluster, with an exit check on a real merged commit and with template, staging, signing and canaries explicitly left out.",
+            "Eight real decisions each have a chosen default and a measurable flip trigger, and the main assumptions (existing clusters, existing Prometheus/Grafana/Loki, migration in waves with fallbacks) are stated openly.",
+            "Each phase runs from its widest-impact work (trust boundary, env layout, template, base chart, platform hardening) down to a labeled 'Narrowest' leaf item and gives reasons; the only debatable spot is the fleet-wide vulnerability gate coming late in Phase 4.",
+            "Every phase has concrete security work tied to its tasks and exit checks: no cluster credentials in Phase 0, then AppProjects and External Secrets, signing and provenance, limited bot merges, Kyverno Enforce, and a Backstage behind SSO with no deploy rights.",
+            "Traces, Argo CD metrics, lead time and alerts exist before the first deploy, and each later phase adds concrete signals that the next one relies on (per-version request/error/latency metrics → canary checks, SLOs, DORA).",
+            "Reproducibility is concrete in every phase: IaC and SHA/digest pinning in Phase 0, a same-digest check and masked versioned snapshots in Phase 1, a versioned template with lockfiles and provenance in Phase 2, and a rebuild-from-Git drill in Phase 4.",
+            "Failure handling runs from a rollback drilled in prod in Phase 0 through migration rollback rehearsals, canary template releases, fail-closed canary aborts, HA and DR drills, and a portal kept off the deploy path; one small gap is that per-namespace Enforce in Phase 4 could block the unsigned old-pipeline fallback.",
+            "The plan says there is no AI component in its classification, its tradeoff table and Section 6, and adds no AI features.",
+            "A separate deferred section lists eight items, each with a concrete and mostly measurable pull-forward trigger, and Phase 0 also says what it leaves out on purpose."
+          ],
+          "note": "Scores 20/20: every dimension has real content behind it (a prod walking skeleton, stated dependencies, measurable gates and pull-forward triggers, security/observability/reproducibility/resilience in every phase), with only small inconsistencies such as Phase 4 Enforce vs the old-pipeline fallback."
+        },
+        {
+          "judge": 2,
+          "scores": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "The per-version request, error and latency metrics proven in Phase 2. The canary checks can't be written until those queries return real data.",
+            "A real merged commit reaches prod with one human approval (the env-repo PR) and no other manual step.",
+            "More than 10 services need to bypass core stages → split into 2–4 templates by service type.",
+            "Widest impact: this is how the worst failure would spread.",
+            "OIDC to a short-lived role that can only push to one registry repo. No cluster credentials in CI (Argo CD pulls).",
+            "The observability pieces, live before the first pipeline run.",
+            "Platform infra in Terraform (remote state with locking). Argo CD config managed from Git. GitHub Actions pinned to commit SHAs.",
+            "`git revert` rollback drilled in prod. `maxUnavailable: 0` with readiness checks. Old pipeline kept as a fallback.",
+            "N/A. There is no model, retrieval or agent anywhere in this system.",
+            "Self-hosted runners (short-lived, via Actions Runner Controller): bring forward when builds need private-network access, queue time p95 passes 5 min"
+          ],
+          "rationale": [
+            "Phases build upward in order: skeleton, then environments and promotion, then template and signing, canaries, all-50 enforcement and the portal; each phase's 'Depends on' names what an earlier phase proved (for example, the template is extracted only after three pipelines work).",
+            "Phase 0 is a real thin slice: one real service's commit goes through CI, OIDC, the registry, an env-repo PR, Argo CD and Kubernetes into prod. Template, staging, signing, canaries and the portal are explicitly left out.",
+            "Eight major decisions (integrity vs availability, shared platform, pull-based async, build vs buy, build-once artifacts, rollback and schema changes, K8s target, repo topology) each have a concrete default and a measurable flip trigger, and the main migration assumption is stated openly.",
+            "Every phase orders its tasks from widest to narrowest and gives a concrete reason (sets every app's layout, is how the worst failure spreads, a platform failure hits all 50), ending with per-service tuning.",
+            "Concrete controls appear in every phase: OIDC and immutable tags in P0; tiered Argo CD and External Secrets in P1; signing and SLSA in P2; a scoped merge bot in P3; Kyverno Enforce and break-glass in P4; a portal with no deploy rights in P5. IAM-audit and gitleaks exit checks back them up.",
+            "Pipeline traces, Argo CD metrics, deploy markers, lead time and two alerts are live in Phase 0. Each later phase adds concrete signals: drift alerts, per-version request/error/latency metrics, canary abort rates, platform SLOs and DORA dashboards.",
+            "Reproducibility is concrete in every phase: IaC and digest pinning (P0), same-digest parity checks and versioned masked snapshots (P1), versioned templates, lockfiles and provenance (P2), versioned canary checks (P3), drift detection and rebuild from Git (P4), versioned generators (P5).",
+            "Failure handling appears in every phase: a prod rollback drill and Argo CD outage behaviour (P0), a migration rollback rehearsal (P1), a template canary group and Docker Hub-blocked test (P2), fail-closed automatic canary abort (P3), HA, DR and break-glass drills (P4), and keeping the portal off the deploy path (P5).",
+            "The plan declares the AI layer N/A in the classification, the tradeoff table and §6, and adds no AI components.",
+            "Eight deferred items each have a concrete, mostly measurable pull-forward trigger, and Phase 0 has its own 'deliberately absent' list."
+          ],
+          "note": "A strong, consistent plan that earns full marks, with two small flaws: it never explains how the old-pipeline fallback would avoid being reverted by Argo CD's drift correction, and the vulnerability gate, which blocks promotion for every service, comes after the per-service pipeline retirement."
+        },
+        {
+          "judge": 3,
+          "scores": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "The per-version request, error and latency metrics proven in Phase 2. The canary checks can't be written until those queries return real data.",
+            "A real merged commit reaches prod with one human approval (the env-repo PR) and no other manual step.",
+            "More than 10 services need to bypass core stages → split into 2–4 templates by service type.",
+            "Widest impact: this is how the worst failure would spread.",
+            "OIDC to a short-lived role that can only push to one registry repo. No cluster credentials in CI (Argo CD pulls).",
+            "The observability pieces, live before the first pipeline run.",
+            "Platform infra in Terraform (remote state with locking). Argo CD config managed from Git. GitHub Actions pinned to commit SHAs.",
+            "`git revert` rollback drilled in prod. `maxUnavailable: 0` with readiness checks.",
+            "N/A. There is no model, retrieval or agent anywhere in this system.",
+            "Self-hosted runners (short-lived, via Actions Runner Controller): bring forward when builds need private-network access, queue time p95 passes 5 min"
+          ],
+          "rationale": [
+            "Every phase lists its dependencies, and an earlier exit check proves each one: three working pilots before the template is extracted, per-version metrics before canary checks, and rules stable across all 50 services before self-service.",
+            "Phase 0 is a real thin slice for one real service, running from protected main through CI, OIDC, the registry, an env-repo PR, Argo CD and a smoke Job into prod, with template, staging, signing and canaries explicitly left out.",
+            "Eight hard-to-reverse decisions each have a chosen default and a measurable flip condition, including pull-based deploys, build-once digest promotion, the rollback and schema model, repo topology and the deploy target, and key assumptions such as existing clusters and current shipping are stated outright.",
+            "Every phase starts with the widest-impact task and gives a reason (env layout, template interface, chart Rollout change, platform hardening), and each phase ends with a task explicitly labelled narrowest.",
+            "Every phase has concrete security controls, from Phase 0 (OIDC, no cluster credentials in CI, immutable tags, IAM audit) through trust tiers and External Secrets, signing and provenance, bot merges limited to digest-only PRs, and Kyverno Enforce with credential revocation, to a Backstage with SSO and no deploy rights.",
+            "Pipeline traces, Argo CD metrics, deploy markers and alerts are live in Phase 0, and each later phase adds concrete signals: drift and migration alerts, per-version request/error/latency metrics, canary abort rates, platform SLOs and DORA dashboards.",
+            "Reproducibility is concrete in every phase: IaC plus SHA and digest pinning (Phase 0), same-digest checks and versioned masked snapshots (1), pinned templates, lockfiles and provenance (2), versioned canary checks (3), drift detection and a rebuild-from-Git drill (4), and versioned generators (5).",
+            "Every phase handles failure: a prod rollback drill, a migration rollback rehearsal, canary rollout of template releases with a proxy that survives registry outages, fail-closed canary auto-rollback, and HA plus DR drills; one weak spot is that the old-pipeline fallback is never squared with Argo CD self-heal or per-namespace Kyverno Enforce.",
+            "The plan says there is no AI layer in the classification, the tradeoff table and a dedicated N/A section, and adds no AI components; it only mentions possible future LLM build triage as something to plan separately.",
+            "A dedicated section lists eight deferred items (runners, service mesh, preview environments, contract-test gates, Kargo, multi-region, hermetic builds, early onboarding), each with a concrete and usually numeric pull-forward condition."
+          ],
+          "note": "A strong, well-sequenced plan with real content behind every dimension. The only notable flaw is that the promised 'old pipeline as fallback' would be reverted by Argo CD self-heal and rejected by per-namespace Kyverno Enforce during the Phase 4 migration window."
+        }
+      ],
+      "audit": {
+        "role": "skeptic",
+        "auditors": [
+          {
+            "auditor": 1,
+            "proposed": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "All ten 2s are earned: each phase names its dependency and has an exit check that proves it, Phase 0 deploys a real service to prod, every tradeoff gate has a default and a flip condition, and security, observability, reproducibility and resilience get concrete per-phase treatment in both the phase tasks and §5. One small inconsistency doesn't change any score: the old-pipeline fallback isn't squared with Argo CD reverting drift or with Phase 4 turning on per-namespace Kyverno Enforce before the old pipelines are retired."
+          },
+          {
+            "auditor": 2,
+            "proposed": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "All 2s are earned: each phase states its dependencies and proves them first, Phase 0 reaches prod end to end, every gate has a measurable flip condition, and every phase covers security, observability, reproducibility and resilience concretely. The one inconsistency (per-namespace Enforce in Phase 4 Task 2 disables the old-pipeline fallback kept until 10 clean deploys) is too minor to cost dimension 8 a point."
+          },
+          {
+            "auditor": 3,
+            "proposed": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "All ten 2s stand: each phase names its dependency on the one before, the walking skeleton is a real end-to-end path to production, and security, observability, reproducibility and resilience all get concrete treatment per phase starting at Phase 0. Small flaws found, none enough to lower a score: Phase 2 says runner images are platform-pinned while the plan uses hosted runners (D7); Phase 0 lists the trust boundary before the Terraform that creates it (D1); the Phase 4 vulnerability gate comes after the migration waves (D4)."
+          }
+        ]
+      }
+    },
+    {
+      "prompt": "P4",
+      "title": "GitHub issue agent",
+      "kind": "AI",
+      "arm": "without",
+      "file": "p4-github-issue-agent/without-skill.md",
+      "self_score": null,
+      "judges": [
+        {
+          "judge": 1,
+          "scores": [
+            2,
+            1,
+            1,
+            1,
+            2,
+            2,
+            1,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "Under 5% of decisions reversed for 2 weeks, with no incidents",
+            "A week of live events handled with nothing missed or processed twice (shadow mode only)",
+            "I've stated my assumptions, and the questions at the end are the ones most likely to change the design.",
+            "Sandbox images, agent loop, independent verification, draft PRs, CI-fix rounds; docs and small bugs first",
+            "Only the actuator holds credentials, and it only runs actions the policy engine has approved.",
+            "App, ingress, queue, reconciler, state store, actuator, audit log and tracing",
+            "A throwaway container or microVM, built from the repo's devcontainer or Dockerfile and cached by lockfile hash.",
+            "GitHub doesn't retry failed webhook deliveries, so every ~10 min it checks for issues updated since the last check",
+            "Each action moves from shadow (logged only) to suggest to act based on measured accuracy, and moves back down automatically when accuracy drops.",
+            "Auto-merge, even for docs typos, stays off unless phase-4 data makes an overwhelming case for it."
+          ],
+          "rationale": [
+            "The phases build upward from the event, state and actuator base to shadow triage, then triage that acts, then sandboxed fixes, then expansion, and each phase has a measurable 'Done when' gate before the next one starts.",
+            "Phase 0 runs live in production, but it is a broad infrastructure layer with no agent decision and output in shadow mode only, so it is not a thin slice running from issue to action.",
+            "Assumptions are stated and a few choices have a default and a trigger (auto-merge, Temporal vs a Postgres queue by scale), but the hard-to-reverse choices (language, sandbox, App vs Actions, model provider) are left as 'X or Y' or as open questions at the end, with no flip conditions.",
+            "Some phase lists happen to run from shared work to leaf work (sandbox images before CI-fix rounds), but the plan never orders work within a phase by impact, and Phase 2 lists its cross-cutting safety items last.",
+            "Concrete security controls come with each phase's components: App permission limits, signature checks, a single credential-holding actuator and kill switches (P0); a read-only triager and security screen (P1); policy checks and shutoffs (P2); sandbox, verification and branch-protection and CI-secret rules (P3); and only write-access users can give instructions (P4).",
+            "The audit log and tracing are in Phase 0 and a decision dashboard is in Phase 1; every later phase is gated on measured numbers (reversal rate, fix and merge rates, cost per merged PR), with automatic shutoffs that alert.",
+            "Event replay, fixed test sets, pinned models gated by offline evals, and sandbox images cached by lockfile hash are concrete, but they cluster in Phases 0, 1 and 3, and the plan never addresses reproducible builds or deploys for the agent service itself.",
+            "Failure handling appears in every phase: reconciler, dedupe and a retry-safe actuator (P0); agreement checks that escalate (P1); automatic shutoffs (P2); infrastructure failures kept separate from agent failures, capped rounds and useful notes on failure (P3); and caps on review rounds plus automatic slowdown (P4).",
+            "Capability limits, per-run budgets and shadow-then-suggest-then-act human gating all come before autonomy, and retrieval, model access through a gateway, memory, orchestration, escalation routing and feedback all appear, with learning from past decisions last; only the gateway and policy engine are missing from the roadmap.",
+            "Out-of-scope v1 items and later-phase features are named, with conditions for bringing them in: per-action promotion thresholds (≥95% over ≥200 decisions), the phase gates and the auto-merge condition; only auto-closing has no trigger."
+          ],
+          "note": "Scores total 16/20: a safety-first, phase-gated plan with security, observability and resilience in every phase; it loses points for a Phase 0 with no agent decision, scattered decision gates without flip conditions, unstated ordering within phases, and no reproducibility for the agent service's own build and deploy."
+        },
+        {
+          "judge": 2,
+          "scores": [
+            2,
+            1,
+            1,
+            1,
+            2,
+            2,
+            1,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "Offline accuracy targets met; pilot maintainers find the suggestions useful",
+            "A week of live events handled with nothing missed or processed twice (shadow mode only)",
+            "Assumptions: GitHub.com, one org with one to a few dozen repos, tests that can run in a container, and a hosted frontier LLM.",
+            "Sandbox images, agent loop, independent verification, draft PRs, CI-fix rounds; docs and small bugs first",
+            "The App deliberately gets no Workflows or Administration permission, so it cannot change .github/workflows/ or branch rules.",
+            "App, ingress, queue, reconciler, state store, actuator, audit log and tracing, kill switches, event replay, test sets",
+            "A throwaway container or microVM, built from the repo's devcontainer or Dockerfile and cached by lockfile hash.",
+            "GitHub doesn't retry failed webhook deliveries, so every ~10 min it checks for issues updated since the last check",
+            "Freedom is earned per action type. Each action moves from shadow (logged only) to suggest to act based on measured accuracy",
+            "Auto-merge, even for docs typos, stays off unless phase-4 data makes an overwhelming case for it."
+          ],
+          "rationale": [
+            "Phases build from the event and state substrate up through shadow triage, triage that acts, fixes on request and then expansion, and each phase has a measurable 'done when' gate that proves the layer below, although the policy engine and LLM gateway are never assigned to a phase.",
+            "Phase 0 does run in production on live events, but it is a broad infrastructure layer with no agent decision and nothing written back to GitHub, so it is not a thin end-to-end slice through every layer.",
+            "Assumptions are stated and a few choices have defaults with conditions (Postgres queue at small scale, no network for private repos, auto-merge off), but most irreversible choices (language, sandbox, resolver runtime, standalone service vs. GitHub Actions) are left as options or end-of-plan questions with no default or flip trigger.",
+            "The lists inside each phase loosely follow dependency order (sandbox before agent loop) and keep early scope small, but the plan never orders work by impact, and cross-cutting items such as automatic shutoffs are listed last in Phase 2.",
+            "Security is built into each phase's components from Phase 0 onward (minimal App permissions, signature-checked ingress, one actuator that alone holds credentials, kill switches), then continues with the read-only triager and security screen, policy and comment filters, the sandbox with independent verification, and accepting instructions only from users with write access.",
+            "The audit log and tracing ship in Phase 0, and every later phase uses a measured signal as its gate: the decision dashboard, the reversal rate with automatic shutoffs that alert, fix and merge rates, and then metrics holding as volume grows.",
+            "Reproducibility is strong for evaluation and sandboxes (event replay and test sets in Phase 0, pinned model versions gated by offline tests, sandbox images cached by lockfile hash, verification in a fresh sandbox), but the service's own builds and environments are never covered, and Phases 2 and 4 add nothing concrete.",
+            "Failure handling appears in every phase: the reconciler, deduplication and replay with a nothing-missed, nothing-doubled gate in Phase 0; escalation when repeated runs disagree in Phase 1; automatic fallback to shadow mode in Phase 2; separating infrastructure failures from agent failures, capped CI rounds and useful failure notes in Phase 3; capped review rounds and automatic slowdown in Phase 4.",
+            "Defenses (the LLM proposes and code decides, a sandbox with no secrets, the policy engine), per-run budgets enforced by the gateway, and human oversight (shadow, then suggest, then act; fixes only on request; draft PRs) all come before capabilities, then retrieval feeds the LLM decision, followed by model escalation and durable orchestration, with learning from past accepted decisions last.",
+            "Deferred work is explicit (an out-of-scope list for v1 and features pushed to later phases), and most of it has a condition for pulling it forward (numeric thresholds for promoting actions to act, phase gates for automatic triggers, a data condition for auto-merge), though auto-closing has no trigger."
+          ],
+          "note": "Total 16/20: a strong, safety-first plan with proof-gated phases and security, observability, resilience and human oversight threaded through every phase; weaker on a true end-to-end Phase 0 slice, up-front decisions with defaults and flip conditions, ordering by impact within phases, and reproducible builds for the service itself."
+        },
+        {
+          "judge": 3,
+          "scores": [
+            2,
+            1,
+            1,
+            1,
+            2,
+            2,
+            1,
+            2,
+            1,
+            2
+          ],
+          "evidence": [
+            "Offline accuracy targets met; pilot maintainers find the suggestions useful",
+            "A week of live events handled with nothing missed or processed twice (shadow mode only)",
+            "Assumptions: GitHub.com, one org with one to a few dozen repos, tests that can run in a container, and a hosted frontier LLM.",
+            "Sandbox images, agent loop, independent verification, draft PRs, CI-fix rounds; docs and small bugs first",
+            "The App deliberately gets no Workflows or Administration permission, so it cannot change `.github/workflows/` or branch rules.",
+            "App, ingress, queue, reconciler, state store, actuator, audit log and tracing, kill switches, event replay, test sets",
+            "A throwaway container or microVM, built from the repo's devcontainer or Dockerfile and cached by lockfile hash.",
+            "GitHub doesn't retry failed webhook deliveries, so every ~10 min it checks for issues updated since the last check",
+            "Each action moves from shadow (logged only) to suggest to act based on measured accuracy, and moves back down automatically when accuracy drops.",
+            "Auto-merge, even for docs typos, stays off unless phase-4 data makes an overwhelming case for it."
+          ],
+          "rationale": [
+            "The phases build upward from the event substrate to shadow triage, then triage that acts, then fixes on request, then expansion, and each phase must meet a measurable done-when gate before the next starts, although the policy engine and LLM gateway are never explicitly placed.",
+            "Phase 0 runs real production event intake for a week, but it has no decision component and only shadow actuation, so it never tests a thin issue→decision→GitHub-action path from end to end.",
+            "Assumptions are stated and a few choices have conditions (Temporal vs a Postgres queue at small scale, no network by default, the auto-merge gate), but hard-to-reverse choices like language, sandbox tech, resolver runtime and standalone-vs-Actions are left as unranked options or open questions at the end, with no default or flip trigger.",
+            "Some phase lists start with foundational work (App/ingress in Phase 0, sandbox images in Phase 3), but the order within phases is never stated or justified, and Phase 2 lists wide-impact controls like reversal handling and auto-shutoffs after the leaf actions.",
+            "Each phase's components get concrete security: signature-verified ingress, a least-privilege App, an actuator that alone holds credentials, and kill switches (P0); a security screen, read-only triager and output filtering (P1); allowed-label policy and rate limits (P2); a sandbox with no secrets or network, plus independent verification (P3); and only write-access reviewers' comments treated as instructions (P4).",
+            "The audit log and tracing ship in Phase 0, and every later phase has a concrete observability element: a decision dashboard, reversal-rate gates with metric-driven shutoffs, fix/merge-rate and cost-per-merged-PR metrics, and 'metrics hold as volume grows'.",
+            "Reproducibility is strong in specific places (Phase 0 event replay and test sets, pinned model versions gated by offline evals, lockfile-cached no-network sandboxes in Phase 3), but it isn't tied to Phases 2 and 4, and nothing covers reproducible builds or deployments of the agent service itself.",
+            "Failure handling appears in every phase: reconciler, dedupe and replay with a nothing-missed gate (P0); multi-run agreement with escalation (P1); automatic shutoffs (P2); budgets, separating infrastructure failures from agent failures, CI round caps and useful failure notes (P3); and review-round caps with automatic slowdown (P4).",
+            "All AI layers are present and human review clearly comes before autonomy, but the roadmap never explicitly builds the policy engine or the budget-enforcing LLM gateway before the first LLM phase, auto-shutoffs ship in the same phase as acting, and the retrieval→memory→orchestration→routing→feedback order is only loosely followed (model escalation in Phase 1, memory after orchestration).",
+            "Deferred work is spelled out (the v1 out-of-scope list, auto-triggering in a later phase, no auto-close, the Phase 4 list), and the main deferrals have conditions for pulling them forward, such as the ≥95% accuracy over ≥200 decisions promotion rule and the phase done-when gates, though some conditions are vague ('agreed targets', 'overwhelming case')."
+          ],
+          "note": "Total 15/20. A careful, safety-first plan with gated phases and security, observability and resilience covered in every phase; its weak spots are that Phase 0 isn't a true end-to-end slice, stack choices lack up-front defaults and flip conditions, order within phases is unstated, the agent service's own builds aren't reproducible, and the policy engine and LLM gateway are never placed in a phase."
+        }
+      ],
+      "audit": {
+        "role": "advocate",
+        "auditors": [
+          {
+            "auditor": 1,
+            "proposed": [
+              2,
+              1,
+              1,
+              1,
+              2,
+              2,
+              1,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "I'm keeping all ten median scores; none is too low. D2: Phase 0 processes live events in shadow mode, but it has no agent or LLM call, no policy engine and no write back to GitHub, so it isn't a full end-to-end slice. D3: the stated assumptions, open questions and scattered triggers are real, but the costly choices come without a default and a flip condition: standalone vs Actions, language, sandbox technology. D4: no phase sets an order inside itself, and Phase 2 even lists the shutoffs last. D7: reproducibility shows up in Phases 0, 1 and 3 (event replay, test sets, lockfile-hashed sandboxes) but not in Phases 2 or 4, and the service's own builds aren't covered. D7 is the closest call, and I kept it at 1."
+          },
+          {
+            "auditor": 2,
+            "proposed": [
+              2,
+              1,
+              1,
+              1,
+              2,
+              2,
+              1,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "I'm keeping all four 1s, though D7 was a close call. D2: Phase 0 handles live events but has no agent, LLM gateway or policy engine, and runs shadow-only, so it is a foundations layer, not an end-to-end slice. D3: language, sandbox, gateway and standalone-vs-Actions are left as \"X or Y\" or end-of-plan questions with no default or flip condition. D4: within-phase order is never stated, and Phase 2 lists shutoffs and reversal handling after the leaf actions. D7: reproducibility shows up in Phases 0, 1 and 3 but not in Phases 2 and 4, and the agent service's own builds aren't covered."
+          },
+          {
+            "auditor": 3,
+            "proposed": [
+              2,
+              1,
+              1,
+              1,
+              2,
+              2,
+              1,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "No score is too low, so all medians stand. D2: Phase 0 handles live events but has no agent, policy engine or GitHub action, so it isn't a full end-to-end path. D3: defaults with flip conditions are scattered through the plan, and key choices (language, sandbox, LLM gateway, standalone vs. Actions) have none. D4: the order within phases is never explained, and Phase 2 lists its automatic shutoffs after the features that act on GitHub. D7: reproducibility is concrete in Phases 0, 1 and 3, but missing from Phases 2 and 4 and from the agent service's own builds."
+          }
+        ]
+      }
+    },
+    {
+      "prompt": "P4",
+      "title": "GitHub issue agent",
+      "kind": "AI",
+      "arm": "with",
+      "file": "p4-github-issue-agent/with-skill.md",
+      "self_score": 20,
+      "judges": [
+        {
+          "judge": 1,
+          "scores": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "Depends on: Phase 5 exit (validated benchmark), Phase 4 (thread and repo memory), and Phase 1 (approval gating).",
+            "A real label in production gets the comment within 2 min. ... One trace covers webhook → queue → model → GitHub write",
+            "Move runs to Temporal (a durable workflow engine) when runs waiting days for human approval become the main cause of stuck runs",
+            "Widest blast radius: every capability goes through it.",
+            "Only `issues: write` and `metadata: read`; webhook signature check; keys in secret manager; 1-h tokens; only triage-level users can trigger; fixed-choice output",
+            "One trace from webhook to GitHub write; tokens and cost per run; alerts; hourly canary; golden-set score on every deploy",
+            "OpenTofu infrastructure; signed, digest-pinned image; prompt hash and model snapshot saved per run",
+            "Save before returning 202; drop duplicate deliveries; repeatable writes with a hidden marker; reconciler; ignore own events; kill switch",
+            "Defenses and budgets are stubbed in Phase 0 and completed in Phase 1, before any capability. The capabilities then follow in order.",
+            "Embedding search for code. When text and symbol search miss the real fix's files in more than 30% of localization tasks."
+          ],
+          "rationale": [
+            "Each phase names the earlier exit it depends on and why: P3 waits for P2's measured shadow precision, P6 waits for P5's validated benchmark, and the graph only lets P5 run in parallel after P1, so nothing is built before what it rests on is proven.",
+            "Phase 0 is a real thin slice in production: signed webhook → Postgres queue → worker → schema-limited model call → idempotent GitHub comment, deployed with OpenTofu, with production exit checks and a 72-hour canary.",
+            "Ten up-front gates each have a concrete default and a mostly numeric flip condition, and the plan names which decisions are fixed from day one; the only gap is that the cloud provider (Cloud Run vs ECS) is left open without a gate.",
+            "Each phase opens with its widest-impact contract, with a stated reason (ledger schema, action contract, context contract, gateway, memory write policy, sandbox isolation), and most phases end with tasks explicitly marked as leaf.",
+            "Every phase has concrete security work in its tasks and exit checks, from minimal permissions in P0 through clone hardening (P2), poisoned-memory defense (P4), the sandbox escape suite (P5) and the fork write path (P6), to collaborator-only feedback in P8.",
+            "P0 starts with full traces, per-call cost logs, alerts, a canary and evals, and every later phase adds its own concrete signals (guardrail counters, top-k hit rates, gateway p95, per-stage spans, route mix, outcome rates).",
+            "Every phase has concrete reproducibility: infrastructure-as-code and pinned images (P0), frozen hashed eval sets (P1), versioned indexes (P2), a prompt registry (P3), memory versions (P4), pinned environments with identical reruns (P5), full version pinning (P6), and versioned routing and feedback pipelines (P7–P8).",
+            "Every phase has its own failure handling: idempotency and a kill switch (P0), fail-closed policy (P1), degraded triage when the index is down (P2), a fallback model (P3), rebuildable thread state (P4), structured timeouts (P5), checkpoint-resume tested by killing a worker (P6), human handoff (P7), and automatic demotion (P8).",
+            "Checked against the phase content: minimal defenses, a token budget and a maintainer trigger guard the first model call in P0 and are completed in P1, followed by retrieval (P2) → model gateway (P3) → memory (P4) → orchestration (P6) → routing (P7) → feedback (P8), each with concrete exit checks.",
+            "A dedicated deferred section lists about ten unbuilt items, nearly all with a concrete pull-forward trigger; small gaps are that multi-region points to a §2 flip condition that does not exist and dependency-upgrade PRs have no trigger."
+          ],
+          "note": "A very rigorous plan: a real production skeleton, gated decisions, correct AI-layer order, and security, observability, reproducibility and resilience handled concretely in every phase; the only small gaps are the cloud provider left open and a multi-region flip condition that is cited but never defined."
+        },
+        {
+          "judge": 2,
+          "scores": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "Depends on: Phase 5 exit (validated benchmark), Phase 4 (thread and repo memory), and Phase 1 (approval gating).",
+            "A real label in production gets the comment within 2 min.",
+            "Move runs to Temporal (a durable workflow engine) when runs waiting days for human approval become the main cause of stuck runs",
+            "Widest blast radius: every capability goes through it.",
+            "Only `issues: write` and `metadata: read`; webhook signature check; keys in secret manager; 1-h tokens; only triage-level users can trigger; fixed-choice output",
+            "One trace covers webhook → queue → model → GitHub write, and the run's tokens and cost appear on the dashboard.",
+            "OpenTofu infrastructure; signed, digest-pinned image; prompt hash and model snapshot saved per run",
+            "Save before returning 202; drop duplicate deliveries; repeatable writes with a hidden marker; reconciler; ignore own events; kill switch",
+            "Depends on: Phase 1 exit (the trust boundary wraps retrieved content and the eval sets are frozen).",
+            "Embedding search for code. When text and symbol search miss the real fix's files in more than 30% of localization tasks."
+          ],
+          "rationale": [
+            "Every phase names the earlier exit checks it depends on, and together they form a clear graph from the ledger base up to feedback; the gaps are minor, for example P5 quietly needs the repo read access that P2 grants.",
+            "Phase 0 is a real thin slice in production: a maintainer's label on a real repo travels through a signed webhook, the queue and the model to a recorded GitHub comment, deployed with OpenTofu, watched by a canary and gated on production exit checks.",
+            "Ten decisions are settled up front, each with a concrete default and a measurable flip condition, and the plan says which ones are expensive to reverse; only small choices such as Cloud Run vs ECS stay open.",
+            "Each phase starts with its widest-impact item and says why (ledger, action contract, context contract, memory write policy, bake-off, fixability score), and ends with work labelled as leaf, such as templates.",
+            "Every phase has concrete security controls, from P0's minimal permissions and signature checks through red-team tests, hooks-off cloning, trusted-source memory rules, a sandbox escape suite, fork-only writes and feedback counted from collaborators only.",
+            "P0 ships OTel tracing across every step, per-call cost logging, alerts, a canary and golden-set evals, and each later phase adds its own signals: guardrail hits, top-k hit rates, gateway p95 latency, memory sources in traces, sandbox alerts, the fix funnel, route mix and revert rates.",
+            "Every phase pins something concrete: infrastructure-as-code and digest-pinned images in P0, frozen and hashed evals, an index tied to commit and embedding-model version, a prompt registry, memory versions, sandbox reruns that must give identical results, and per-run version pinning.",
+            "Each phase handles failure concretely: idempotent writes and a kill switch in P0, fail-closed policy, triage that keeps running without the index, a fallback-model outage drill, thread state rebuilt from the timeline, sandbox failures reported as structured results, checkpoint resume and automatic demotion.",
+            "Defenses, budgets and human approval have minimal versions in P0 and are completed in P1 before any capability, followed in the required order by retrieval (P2), the model gateway (P3), memory (P4), orchestration (P6), routing (P7) and feedback (P8).",
+            "A dedicated deferred section gives most items specific pull-forward triggers (auto-merge thresholds, multiple agents, code embeddings, Slack once the median approval wait exceeds 24 h), though 'multi-region' points to a §2 flip condition that does not exist."
+          ],
+          "note": "Excellent plan that does every rubric item in substance, with only minor flaws: multi-region has no real flip condition, the §6 budget exit check depends on a test loop that P5/P6 build, and P5 quietly needs P2's repo read access."
+        },
+        {
+          "judge": 3,
+          "scores": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "Depends on: Phase 5 exit (validated benchmark), Phase 4 (thread and repo memory), and Phase 1 (approval gating).",
+            "A real label in production gets the comment within 2 min.",
+            "Move runs to Temporal (a durable workflow engine) when runs waiting days for human approval become the main cause of stuck runs",
+            "Widest blast radius: every capability goes through it.",
+            "Only `issues: write` and `metadata: read`; webhook signature check; keys in secret manager; 1-h tokens; only triage-level users can trigger; fixed-choice output",
+            "Every model call records the prompt-template hash, model snapshot ID, tokens in and out, dollar cost, and latency.",
+            "OpenTofu infrastructure; signed, digest-pinned image; prompt hash and model snapshot saved per run",
+            "Save before returning 202; drop duplicate deliveries; repeatable writes with a hidden marker; reconciler; ignore own events; kill switch",
+            "Phase 1: Defenses, budgets, human approval, eval data",
+            "Embedding search for code. When text and symbol search miss the real fix's files in more than 30% of localization tasks."
+          ],
+          "rationale": [
+            "Each phase names the earlier exits it depends on, a dependency graph allows only one parallel branch (P5 after P1), and the order is explained by what each phase proves first, such as having a benchmark before building a fixer and knowing the retrieval shape before sizing the gateway.",
+            "Phase 0 is a thin but real production slice: a label webhook passes through a signed ingress, the Postgres queue, the worker and a guarded model call, then posts one idempotent GitHub comment, deployed with OpenTofu and gated on trace, redelivery, kill-switch and canary checks.",
+            "Ten hard-to-reverse decisions (ledger consistency, monolith, async, build/buy, RAG vs fine-tune, hosted model, privacy boundary, autonomy ceiling, App identity, sandbox) each have a concrete default and a measurable flip condition, and numeric thresholds are openly labeled as starting guesses.",
+            "Every phase starts with its widest-impact contract or policy task and says why (ledger schema, action contract, context contract, memory write policy, isolation, bake-off, fixability score), and ends with leaf tasks marked as such, like templates.",
+            "Security gets concrete, phase-specific treatment from P0 through P8 (clone without hooks, per-installation indexes, memory trust rules, an escape suite, fork write path, pull_request_target audit, collaborator-only feedback), both in phase tasks and in the per-phase table.",
+            "Phase 0 ships end-to-end OTel traces, structured logs, per-call cost records, alerts, an hourly canary and a golden-set eval, and every later phase adds specific metrics, trace attributes, pages or dashboards.",
+            "Reproducibility starts in P0 and continues in every phase: frozen, hashed evals and recorded responses, commit- and embedding-version-pinned indexes, a prompt registry, memory versioning, digest-pinned sandbox images with an identical-rerun exit check, and fix runs pinned on every version.",
+            "Failure handling is concrete in every phase: fail-closed policy, degraded triage when the index is down, retries with a fallback model, thread state rebuildable from the timeline, structured sandbox failures, checkpoint resume tested by a kill drill, escalation, and automatic demotion.",
+            "Defenses, budgets and approval gating are stubbed in P0 and completed in P1 before any new capability, followed in the required order by retrieval (P2), model gateway (P3), memory (P4), orchestration (P6), routing (P7) and feedback (P8), each with concrete content and exit checks.",
+            "A dedicated deferred section lists auto-merge, multiple agents, code embeddings, self-revising PRs, issue classes with no automatic check, org-wide rollout and Slack, almost all with measurable pull-forward triggers; only multi-region lacks an explicit trigger."
+          ],
+          "note": "An exceptionally strong plan that does the actual work on all ten dimensions, with only small nits: the P0 task list omits the reconciler, multi-region has no explicit flip condition, and P5's need to read repo contents before P2 grants `contents: read` is left implicit."
+        }
+      ],
+      "audit": {
+        "role": "skeptic",
+        "auditors": [
+          {
+            "auditor": 1,
+            "proposed": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "All ten 2s are earned: Phase 0 is a real production slice with stubbed defenses, the cross-cutting concerns are concrete in every phase, and the AI layers follow the rubric's order. Three small issues do not lower any score: redaction before sending to the provider only lands in Phase 3, after Phase 2's shadow triage; §7 cites a §2 flip condition for multi-region that does not exist; and Phase 5's parallel start comes before the Phase 2 contents:read grant."
+          },
+          {
+            "auditor": 2,
+            "proposed": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "All ten 2s hold up; the only flaws are minor: §7 cites a §2 flip condition for multi-region that doesn't exist, and secret removal before calling the model first appears in the P3 table row although P0–P2 already send issue text. Neither drops a dimension below 'done well'."
+          },
+          {
+            "auditor": 3,
+            "proposed": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "I kept all ten scores at 2 after checking each one against the plan text; I found only small slips, none large enough to lower a score. (1) §7 says multi-region is pulled forward by a §2 flip condition, but §2 has none. (2) Phase 3's exit check counts maintainer label corrections, which Phase 8's outcome capture formally builds. (3) §2 makes redaction before data goes to the provider a day-one default, but §5 lists it under Phase 3, after model calls start in Phase 0."
+          }
+        ]
+      }
+    },
+    {
+      "prompt": "P5",
+      "title": "Collaborative doc editor",
+      "kind": "non-AI",
+      "arm": "without",
+      "file": "p5-collab-editor/without-skill.md",
+      "self_score": null,
+      "judges": [
+        {
+          "judge": 1,
+          "scores": [
+            2,
+            1,
+            1,
+            2,
+            1,
+            1,
+            0,
+            2,
+            0,
+            1
+          ],
+          "evidence": [
+            "Then prove that edits made at the same time merge correctly before building anything on top.",
+            "Done when: two browsers can edit together live, and a dropped connection catches up with nothing lost.",
+            "Use Yjs by default. Pick OT only if you want one authoritative server and don't need offline editing.",
+            "This is the hardest correctness problem, and it's cheapest to test here.",
+            "Enforce owner, editor, commenter and viewer roles on the server. Check every incoming edit against the schema, a size limit and a rate limit.",
+            "Start these at step 3, not step 12.",
+            "none",
+            "Done when: restarting the server loses no edit the server had confirmed.",
+            "none",
+            "Use a placeholder user ID for now."
+          ],
+          "rationale": [
+            "The phases build upward: decisions, then a single-user model on the real schema, a merge engine tested without a network, sync and persistence, then auth and the features that depend on it, with each dependency stated (for example, presence needs the user identities from step 5).",
+            "A thin editor-to-sync-to-storage slice appears in steps 3–4, but Phase 0 builds nothing, the first milestone is a single-user editor, and the plan never describes a production deployment path.",
+            "Phase 0 lists the hard-to-reverse choices first, and the merge engine has a clear default and flip condition, but the framework, schema, targets and Yjs garbage-collection choice have no defaults or revisit triggers, and storage, auth and hosting are never addressed.",
+            "Within each phase the widest-impact work comes first, with reasons given: schema and merge correctness before sync, auth before presence, offline and history before comments and suggestions, and scaling before leaf product features.",
+            "Security is mostly in step 5, with paste cleaning early and client throttling late, but the Phase 1 sync server runs on placeholder IDs and Phase 3 (offline local copies, comments and @mentions) and image uploads get no security treatment.",
+            "Concrete sync metrics start at step 3, but only in a separate cross-cutting section; Phase 0 has none, there is no logging, tracing or alerting, and no later phase adds observability except the Phase 4 drift hashes.",
+            "The plan never covers reproducible builds, pinned dependencies, environments, CI or seeded randomized tests; the append-only edit log is a persistence and history feature, not a reproducibility practice.",
+            "Failure handling is concrete from the first build phase (late, out-of-order and duplicate edits, reconnect catch-up, restart durability) through edit size and rate limits, offline queueing, and Phase 4 throttling, drift detection and fault tests.",
+            "This is a non-AI system, and the plan never states that no AI layer applies, which the rubric requires for credit.",
+            "A few deferrals are explicit (placeholder IDs, with auth required before anyone outside the team uses it; starting with one server), but there is no list of deferred work, and scaling and product features have no pull-forward triggers."
+          ],
+          "note": "Total 11/20. The plan is well ordered, with strong merge-correctness testing and failure handling throughout, but it has no production walking skeleton, only partial tradeoff gates, security and observability limited to some phases, nothing on reproducibility, and no explicit statement that the AI layer is N/A."
+        },
+        {
+          "judge": 2,
+          "scores": [
+            2,
+            1,
+            1,
+            2,
+            1,
+            1,
+            0,
+            2,
+            0,
+            1
+          ],
+          "evidence": [
+            "This comes last among editing features because it touches the schema, permissions, display and history all at once.",
+            "two browsers can edit together live, and a dropped connection catches up with nothing lost.",
+            "Use Yjs by default. Pick OT only if you want one authoritative server and don't need offline editing.",
+            "This is the hardest correctness problem, and it's cheapest to test here.",
+            "Check every incoming edit against the schema, a size limit and a rate limit.",
+            "Start these at step 3, not step 12.",
+            "none",
+            "restarting the server loses no edit the server had confirmed.",
+            "none",
+            "Use a placeholder user ID for now."
+          ],
+          "rationale": [
+            "The order runs from decisions to the schema-based editor, then merge correctness, sync, storage, auth and the features that depend on them, and the dependencies are named (presence needs step 5 identities, suggestion mode goes last).",
+            "A thin editor-to-sync-to-storage path exists by steps 3–4, before any features, but it is built one layer at a time and the plan never deploys it to production.",
+            "Phase 0 raises the irreversible decisions, but only the CRDT/OT choice has both a default and a flip condition; framework, schema and targets are left as open questions, and storage, auth and hosting are never mentioned.",
+            "Inside each phase the widest-impact work comes first: merge correctness early in Phase 1, auth before presence and undo, and scaling before leaf product features.",
+            "Security is concentrated in step 5, plus paste cleaning and later client throttling; Phase 1 runs on a placeholder ID, and the offline local copy, history, comments and uploads get no security treatment.",
+            "Concrete metrics start at step 3, but only in a standalone cross-cutting section: nothing in steps 1–2, no logging, tracing or alerting, and the only phase-specific addition is drift detection in Phase 4.",
+            "The plan never covers reproducible builds, pinned dependencies, environment parity, seeded randomized tests or migration tooling; the snapshot-plus-edit-log design is there for durability, not reproducibility.",
+            "Failure handling appears in every phase that builds: out-of-order and duplicate edits, reconnect catch-up and restart durability in Phase 1, size and rate limits in Phase 2, an offline queue in Phase 3, and fault tests, throttling and drift detection in Phase 4.",
+            "The plan never says that no AI layer applies, so the non-AI rule gives 0, even though it correctly adds no AI components.",
+            "A few deferrals are stated with a condition (auth is required before anyone outside the team uses it; a single server comes before multi-server), but there is no deferred list with pull-forward triggers for scaling, offline, history or product features."
+          ],
+          "note": "Total 11/20: well-ordered and correctness-first, with resilience in every phase. It never deploys to production, security and observability are only partly threaded, reproducibility is missing, and it doesn't say an AI layer is not applicable."
+        },
+        {
+          "judge": 3,
+          "scores": [
+            2,
+            1,
+            1,
+            2,
+            1,
+            1,
+            0,
+            2,
+            0,
+            1
+          ],
+          "evidence": [
+            "Then prove that edits made at the same time merge correctly before building anything on top.",
+            "two browsers can edit together live, and a dropped connection catches up with nothing lost.",
+            "Use Yjs by default. Pick OT only if you want one authoritative server and don't need offline editing.",
+            "This comes last among editing features because it touches the schema, permissions, display and history all at once.",
+            "Check every incoming edit against the schema, a size limit and a rate limit.",
+            "Start these at step 3, not step 12.",
+            "none",
+            "restarting the server loses no edit the server had confirmed.",
+            "none",
+            "Use a placeholder user ID for now."
+          ],
+          "rationale": [
+            "The phases climb from decisions to the schema-bound editor, then merge tests run without a network, then sync and persistence, all before any feature, and the plan gives explicit reasons for the order (for example, presence needs the step-5 identities).",
+            "A thin editor→sync→storage slice exists by the end of Phase 1, before any features, but it is built one component at a time, Phase 0 is decisions only, and the plan never describes deploying to production.",
+            "Phase 0 lists the irreversible decisions up front, but only the merge strategy has both a default and a flip condition; the framework, schema, server setup and targets lack one or both, and the build-vs-buy and history/garbage-collection tradeoffs only come up later.",
+            "Within each phase, widest-impact work comes first (schema first, auth before presence, scaling before product features, suggestion mode after everything it depends on), with only a minor presence-before-undo issue that the parallel-work note softens.",
+            "Security is concrete in Phase 1 (paste cleaning) and Phase 2 (auth, roles, validation, limits), but Phase 3 (offline local copy, history, comments) has none and Phase 4 only throttles clients, so it is not threaded.",
+            "The metrics are concrete but live in a separate cross-cutting section that starts at step 3; Phase 0 has none, and no phase adds its own instrumentation for auth, offline sync or history.",
+            "The plan never covers reproducible builds, pinned CRDT/library versions, matching environments, seeded randomized tests or migration tooling; the edit log and the tests serve durability and correctness, not reproducibility.",
+            "Every building phase handles failure concretely: late, out-of-order and duplicate edit tests plus reconnect and restart durability (P1), size and rate limits (P2), offline queueing (P3), and fault/load tests and drift detection (P4).",
+            "This is a non-AI system and the plan never explicitly says that no AI layer applies, which the rule scores 0.",
+            "A few deferrals are explicit and gated (the placeholder ID until auth is 'Required before anyone outside the team uses it'; one server at first), but there is no deferred-work list, and scaling and product features have no pull-forward triggers."
+          ],
+          "note": "Total 11/20: strong, correctness-first ordering with failure handling throughout; marked down for no production walking skeleton, partial security and observability threading, no reproducibility, and never stating that the AI layer is N/A."
+        }
+      ],
+      "audit": {
+        "role": "advocate",
+        "auditors": [
+          {
+            "auditor": 1,
+            "proposed": [
+              2,
+              1,
+              1,
+              2,
+              1,
+              1,
+              0,
+              2,
+              0,
+              1
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "No raises: D2 builds deep before it builds end to end and never deploys; D3 gives default+flip only for the merge engine; D5 and D6 skip Phase 2–3 work; D7 has no reproducibility content; D9 never declares AI N/A; D10 has no triggers for Phase 4."
+          },
+          {
+            "auditor": 2,
+            "proposed": [
+              2,
+              1,
+              1,
+              2,
+              1,
+              1,
+              0,
+              2,
+              0,
+              1
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "No median is too low: there is no production skeleton, only CRDT-vs-OT has a default plus flip condition, security and metrics are concentrated in step 5 and one cross-cutting section with nothing in Phase 3, build and environment reproducibility is absent, AI is never declared N/A, and scaling and product features have no pull-forward triggers."
+          },
+          {
+            "auditor": 3,
+            "proposed": [
+              2,
+              1,
+              1,
+              2,
+              1,
+              1,
+              0,
+              2,
+              0,
+              1
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "I found no scores that are too low, so all ten stand: D2 is never deployed to production and its first milestone is a single-user editor; D3 gives a default and flip condition only for the merge choice; D5 is mostly in Phase 2, with almost nothing in Phase 3; D6 starts at step 3 and lives in a cross-cutting section; D7 never covers reproducible builds, environments or data; D9 never says AI is N/A; D10 gives conditions only for auth and undo, not for scaling or product features."
+          }
+        ]
+      }
+    },
+    {
+      "prompt": "P5",
+      "title": "Collaborative doc editor",
+      "kind": "non-AI",
+      "arm": "with",
+      "file": "p5-collab-editor/with-skill.md",
+      "self_score": 20,
+      "judges": [
+        {
+          "judge": 1,
+          "scores": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "Phase 1 (moving a document to a new server is just a reconnect + resync, already proven); Phase 2 (reconnects re-check permissions)",
+            "In prod, two real users on different networks edit D together, and the edit survives a forced crash of the server task.",
+            "CRDT overhead blows the budgets after compaction (95th-percentile snapshot > 10 MB, or 95th-percentile load > 2 s on real docs).",
+            "Build order inside Phase 0 (widest impact first): tenant/user/document ID model → `doc_updates` table → login and token handshake",
+            "OIDC login; 5-min token sent as the first message, not in the URL; Origin check against cross-site hijacking; deny by default",
+            "Traces from browser through save and send; request and connection metrics; browser errors; 1-min two-client canary in prod",
+            "Lockfiles; pinned toolchain and base image; one image tagged by commit goes to staging then prod; Terraform for everything; versioned migrations",
+            "Client reconnects with randomized backoff; health checks and auto-restart; RDS across availability zones with point-in-time recovery from day 0",
+            "Not AI or agent-based. The AI layer doesn't apply, so §6 is left out, as the template says.",
+            "Bring forward when over 5% of editing sessions include a disconnect longer than 2 minutes, or when a field-work customer segment signs."
+          ],
+          "rationale": [
+            "The phases build upward: prod skeleton, then frozen format, access control, storage, multiple servers, features, derived features and presence; each phase states what it depends on and unlocks, and work like the fencing column and snapshot pruning waits until its dependency exists.",
+            "Phase 0 is a real thin slice (browser, ALB, one Node container, Postgres), shipped through CI to prod with exit checks for crash survival, auth refusal and rollback before any feature work.",
+            "Eleven real gates (CRDT vs OT, consistency, storage format, schema changes, tenancy, server-readable content, and more) each give a default and a concrete, often numeric, flip condition; only the AWS dependency is assumed without its own gate.",
+            "Every phase runs from 'lock it down' substrate tasks to 'small, last' leaf tasks and says why (comments before mentions, restore before export, permission function before sharing UI).",
+            "The per-phase security column has concrete controls for all eight phases from Phase 0 on, backed by exit checks such as refused cross-tenant connections, a WebSocket pen test, permission matrices and identity checks on presence.",
+            "Phase 0 ships structured logs, OTel traces, metrics and a paging prod canary, and each later phase adds its own signals (divergence detector, revocation latency, queue lag, lease turnover, search delay, presence bandwidth).",
+            "Every phase has concrete reproducibility: pinned builds and IaC, a seeded simulation and Yjs reference set, a generated policy test matrix, rebuildable derived data, chaos tests as code, deterministic exports and fixed presence test data.",
+            "Each phase builds in failure handling (crash-surviving skeleton, confirm-after-save and quarantine, behavior when the permission store is down, snapshot-before-pointer, fencing, database-outage mode, kill switches), checked by crash and chaos exit tests.",
+            "The plan says outright that the system is not AI, marks the AI gates N/A, and lists an AI assistant only as deferred work rather than adding it.",
+            "Section 7 lists eleven deferred items, each with a pull-forward trigger (mostly measurable), and deferrals inside phases (fencing column, snapshot pruning, simple queue and search) are marked with when they get revisited."
+          ],
+          "note": "A strong, well-sequenced plan that scores 2 on every dimension: a real prod walking skeleton, measurable flip conditions, explicit widest-impact-first ordering, and security, observability, reproducibility and resilience handled concretely in every phase; minor nits are the AWS dependency having no gate and reconnect showing up in both Phase 0 and Phase 1."
+        },
+        {
+          "judge": 2,
+          "scores": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "The pruning policy is set in Phase 6, once history defines what it needs; lost history can't be recovered and storage is cheap.",
+            "In prod, two real users on different networks edit D together, and the edit survives a forced crash of the server task.",
+            "CRDT overhead blows the budgets after compaction (95th-percentile snapshot > 10 MB, or 95th-percentile load > 2 s on real docs).",
+            "Build order inside Phase 0 (widest impact first): tenant/user/document ID model → `doc_updates` table → login and token handshake → WebSocket edit path → editor UI",
+            "OIDC login; 5-min token sent as the first message, not in the URL; Origin check against cross-site hijacking; deny by default",
+            "OpenTelemetry traces from the browser through apply, save and send. Metrics: open connections, documents in memory, save time, send time, errors, reconnects.",
+            "Lockfiles; pinned toolchain and base image; one image tagged by commit goes to staging then prod; Terraform for everything; versioned migrations",
+            "RDS across availability zones with point-in-time recovery from day 0; documents reload from Postgres; rollback rehearsed",
+            "Not AI or agent-based. The AI layer doesn't apply, so §6 is left out, as the template says.",
+            "Bring forward when over 5% of editing sessions include a disconnect longer than 2 minutes, or when a field-work customer segment signs."
+          ],
+          "rationale": [
+            "Every phase lists what it depends on and what it unlocks, and the order runs from the base up (format, access, storage, scale, then features); the plan also holds back items like the fencing column and pruning rules until the things they need exist.",
+            "Phase 0 is a thin slice from one keystroke to another user's screen, passing through browser, load balancer, app and Postgres; it ships to prod through the real pipeline, and its exit check requires surviving a crash and a rehearsed rollback.",
+            "A dedicated table settles about a dozen hard-to-reverse decisions (CRDT vs OT, consistency, schema changes, tenancy, end-to-end encryption, permission granularity), each with a concrete default and a flip trigger, most of them measurable.",
+            "Every phase puts its 'lock it down' or widest-impact items first and marks leaf work 'small, last', with reasons given (e.g., comments add a new permission boundary; exports can always be regenerated).",
+            "Security gets concrete work in every phase, from Phase 0 auth and token handling through Phase 7's server-filled presence identity, and it shows up in phase tasks and exit checks too (permission matrix, WebSocket pen test, file-access checks).",
+            "Phase 0 ships traces, metrics, structured logs that never contain document content, a one-minute prod canary and paging; every later phase adds its own signals (divergence detector, revocation latency, queue lag, lease turnover, cursor bandwidth).",
+            "Reproducible builds, data (Yjs reference set, derived data rebuildable with one command, deterministic exports, snapshots checked against the log) and environments (seeded simulations and test tenants, tests as code) are covered in every phase.",
+            "Failure handling starts in Phase 0 and continues in every phase: quarantining bad updates, outbox delivery, writing a snapshot before moving the pointer, fencing epochs, an honest database-outage mode, separate worker pools, and kill switches.",
+            "The plan says plainly that no AI layer applies, marks the AI gates N/A, and puts an AI assistant only on the deferred list instead of building it.",
+            "A dedicated section lists eleven deferred items, each with a pull-forward trigger that is usually measurable, and the phases add further deferrals (fencing column, pruning, presence channel)."
+          ],
+          "note": "The plan scores 2 on all ten dimensions: every phase states its dependencies, Phase 0 is a real end-to-end slice in prod, the tradeoff gates have measurable flip conditions, and each phase's security, observability, reproducibility and resilience work is concrete from Phase 0 onward. The only gaps are small and lower no score: the choice of cloud provider has no gate, and a few triggers are soft ('when partners ask')."
+        },
+        {
+          "judge": 3,
+          "scores": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "evidence": [
+            "Depends on: the frozen Phase 1 format; the Phase 2 permission function (derived data and deletion must respect tenants and permissions).",
+            "In prod, two real users on different networks edit D together, and the edit survives a forced crash of the server task.",
+            "CRDT overhead blows the budgets after compaction (95th-percentile snapshot > 10 MB, or 95th-percentile load > 2 s on real docs)",
+            "Build order inside Phase 0 (widest impact first): tenant/user/document ID model → `doc_updates` table → login and token handshake → WebSocket edit path → editor UI.",
+            "OIDC login; 5-min token sent as the first message, not in the URL; Origin check against cross-site hijacking; deny by default",
+            "OpenTelemetry traces from the browser through apply, save and send. Metrics: open connections, documents in memory, save time, send time, errors, reconnects.",
+            "Lockfiles; pinned toolchain and base image; one image tagged by commit goes to staging then prod; Terraform for everything",
+            "Client reconnects with randomized backoff; health checks and auto-restart; RDS across availability zones with point-in-time recovery from day 0",
+            "Not AI or agent-based. The AI layer doesn't apply, so §6 is left out, as the template says.",
+            "Bring forward when over 5% of editing sessions include a disconnect longer than 2 minutes, or when a field-work customer segment signs."
+          ],
+          "rationale": [
+            "Every phase states what it depends on and what it unlocks. The order climbs from the prod skeleton to format proof, access control, storage, multiple servers, features and presence. Work like fencing and history pruning is held back until the things it relies on are proven.",
+            "Phase 0 is a real thin slice through browser, ALB, one container and Postgres. It is deployed by CI to prod and must pass a two-user check, a crash, an auth refusal and a rehearsed rollback before any feature work starts.",
+            "§2 settles about 11 hard-to-reverse decisions up front, including CRDT vs OT, consistency, storage format, schema changes, tenancy and E2EE. Each has a concrete default and a specific, usually measurable, flip condition.",
+            "Every phase puts its 'lock it down' or widest-impact task first and marks leaf work 'small, last'. The plan gives reasons, for example comments add a new permission boundary and exports can always be regenerated.",
+            "Phases 0–7 each get concrete controls, such as CSP and schema allowlists, the shared can() function with a pen test, KMS, WAF and private subnets, scoped uploads, permission-filtered search and server-filled presence identity. Phase exit checks back these up.",
+            "Phase 0 ships traces, metrics, browser error reports, a two-client prod canary every minute, and paging. Each later phase adds its own signals, such as the divergence detector, revocation latency, queue lag, lease turnover, indexing delay and cursor bandwidth share.",
+            "Phase 0 starts with pinned builds, infrastructure as code and one-command local setup. Later phases add seeded simulations, a reference set of saved documents, a generated permission matrix, scripted restores, chaos tests as code and repeatable exports.",
+            "Every phase handles failure concretely. Examples: confirm-after-save, quarantining updates that break loading, rules for a permission-store outage, writing a snapshot before moving the pointer, fencing epochs, honest 'Saving…' during a database outage, kill switches, isolated worker pools and best-effort presence.",
+            "The plan states plainly that the system has no AI layer and marks the AI gates N/A. An AI assistant appears only as deferred work, so no AI component is built.",
+            "§7 lists 11 deferred items, each with a trigger to bring it forward. Most triggers are measurable (session percentages, connection counts, latency or lag percentiles), and phases also mark interim choices as 'simple for now'."
+          ],
+          "note": "An excellent plan that earns 2 on all 10 dimensions. The one small gap is that the commitment to AWS as the cloud provider gets no flip condition of its own."
+        }
+      ],
+      "audit": {
+        "role": "skeptic",
+        "auditors": [
+          {
+            "auditor": 1,
+            "proposed": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "All ten 2s stand: the plan has a real end-to-end path running in production as Phase 0, a decision table where nearly every default has a measurable revisit trigger, each phase's dependencies checked, and concrete security, observability, reproducibility and resilience work in every phase from 0 to 7. I found only minor nits that don't lower any score: §5 adds encryption for backups (KMS) in Phase 3 even though backups exist from Phase 0 and the decision table makes encryption a day-0 default, and Phase 2 relies on a Phase 1 handshake carrying 'the role and the close codes', which Phase 1 never specifies."
+          },
+          {
+            "auditor": 2,
+            "proposed": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "All ten scores are earned; nothing is lowered. The phases name their dependencies, Phase 0 is a real path running in prod, every gate has a flip condition, and each phase has concrete security, observability, reproducibility and resilience entries. Two small issues don't justify a lower score: Phase 2 email invites come before the Phase 3 job queue that the async gate assigns notifications to, and KMS at-rest encryption is first named in the Phase 3 row."
+          },
+          {
+            "auditor": 3,
+            "proposed": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "evidence": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "reason": [
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands",
+              "stands"
+            ],
+            "note": "All ten 2s are earned; the only problems found are minor (Phase 2 email invites before the Phase 3 job queue, private subnets first named in Phase 4, three vague deferral triggers), and none lowers a dimension."
+          }
+        ]
+      }
+    }
+  ]
+}
