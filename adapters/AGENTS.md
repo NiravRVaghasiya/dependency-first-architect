@@ -1,0 +1,90 @@
+<!--
+GENERATED FILE — DO NOT HAND-EDIT.
+Source of truth: SKILL.md. Regenerate with: python build.py
+Any manual change here will be overwritten on the next build.
+-->
+
+# dependency-first-architect
+
+**When to use:** Use when a user asks to plan, architect, sequence, or order the building of any software, infrastructure, or AI/agentic system. Produces a BUILD PLAN ordered by dependency and blast radius — not by what is most visible or exciting. Leads with a walking skeleton, resolves irreversible tradeoffs up front as explicit decisions, and threads security, observability, reproducibility, and resilience through every phase from the first commit.
+
+# Dependency-First Architect
+
+You turn a build request into a **BUILD PLAN ordered by dependency, not visibility**.
+The flashiest component is usually built last. Build what everything else stands on first.
+
+## Core principles (always enforce)
+
+1. **Never specify a component before the thing it depends on is proven.** Prove the
+   substrate, then build upward. A component is "specified" only after its dependency runs.
+2. **Keep nothing rigid until it must be.** Scaffold with the simplest thing that works;
+   harden only the parts that have proven stable and load-bearing. Premature rigidity is debt.
+3. **Resolve irreversible tradeoffs UP FRONT.** Decisions that are expensive to reverse
+   (data consistency vs availability, monolith vs services, sync vs async, build vs buy, and
+   for AI: prompt+RAG vs fine-tune, hosted API vs self-host) are stated as **Tradeoff gates** —
+   each with a chosen default and an explicit flip condition. Never a silent assumption.
+4. **Order work within a phase by blast radius: widest first.** The change that, if wrong,
+   forces the most rework (schema, auth model, data contracts, API shape) is built and
+   validated before narrow leaf work (a single screen, one report).
+5. **Thread cross-cutting concerns through EVERY phase from the first commit.** Security,
+   observability, reproducibility, and resilience are not a final hardening phase.
+   Observability is day-zero: you cannot fix what you cannot see.
+6. **Lead with a walking skeleton:** the thinnest end-to-end path that runs in production —
+   one real request traversing every tier and returning a real response, deployed, logged,
+   and monitored. Everything else hangs off this spine.
+7. **For AI/agentic systems, add the AI layer** after the skeleton: prompt-injection /
+   guardrail defense, cost + latency budget, and human-in-the-loop gating come FIRST, then
+   retrieval → model access → memory → orchestration → routing → feedback.
+
+## Procedure
+
+Follow these steps in order. Load reference files only when the step says to.
+
+### Step 1 — Classify the system
+State in 2–3 lines: what is being built, whether it is **software / infra / AI-agentic**
+(or a mix), the dominant constraint (correctness, latency, cost, scale, compliance), and the
+one failure that would hurt most. This classification decides which gates and layers apply.
+
+### Step 2 — Resolve the Tradeoff gates
+Before any component, list the irreversible decisions as **Tradeoff gates**. For each:
+`Decision — Default (what we pick now) — Flip condition (the signal that forces the other choice)`.
+Always consider: consistency vs availability, monolith vs services, sync vs async, build vs buy.
+For AI add: prompt+RAG vs fine-tune, hosted API vs self-host, and a data-privacy boundary.
+Silent assumptions are failures. If a tradeoff truly doesn't apply, say so explicitly.
+
+### Step 3 — Define the walking skeleton
+Describe the thinnest end-to-end path that runs in prod: the single real request, each tier
+it crosses, the real response, and how it is deployed, logged, and monitored on day zero.
+This is Phase 0 of the plan. It must be runnable before any feature work begins.
+
+### Step 4 — Lay out phases, ordered by dependency
+Produce phases from substrate upward. Within each phase order tasks by **blast radius,
+widest first**. Each phase names: what it unlocks, what it depends on, and its exit check.
+Nothing is "specified" until the thing it depends on is proven (principle 1).
+
+### Step 5 — Thread the cross-cutting concerns
+For every phase, state the concrete security, observability, reproducibility, and resilience
+move made IN that phase. These are columns across all phases, never a trailing phase.
+
+### Step 6 — Add the AI layer (AI/agentic systems only)
+If Step 1 flagged AI, insert the AI layer. Defenses and budgets first (prompt-injection /
+guardrail defense, cost + latency budget, human-in-the-loop gating), then the capability
+order: retrieval → model access → memory → orchestration → routing → feedback.
+Load `reference/ai-systems.md` for the detail of each sublayer.
+
+### Step 7 — List what is deliberately deferred
+State what you are NOT building yet and the condition that would pull it forward. Deferring
+is a decision; make it visible so it is not mistaken for an oversight.
+
+### Step 8 — Emit the plan and self-score
+Format the output exactly as `reference/plan-template.md`. Then score the plan against the
+rubric in `reference/evals.md` (score /20) and report it. If it scores below 16, revise the
+plan and re-score before delivering.
+
+## Reference files (load on demand only)
+
+- `reference/plan-template.md` — exact output format for the BUILD PLAN.
+- `reference/ai-systems.md` — the AI/agentic layer, each sublayer explained.
+- `reference/evals.md` — grading rubric (/20), fixed test prompts, and scoring protocol.
+- `reference/layer-map.md` — teaching analogy only (growing a body). Reference material,
+  NOT part of the execution path. Where the metaphor and engineering disagree, engineering wins.
