@@ -3,7 +3,7 @@
 The five fixed prompts from [`reference/evals.md`](../reference/evals.md). Each was answered once
 by `claude-opus-5-5` in a clean, isolated session in Claude Code without the skill, and once with
 it. Nothing was edited or cherry-picked: each plan's SHA-256 is recorded, and
-`scoring/tally.py --check` fails if a committed plan changes. Each plan was scored by
+`scoring/tally.py --check` (run in CI) fails if a committed plan changes. Each plan was scored by
 3 judges who were not told which arm wrote it. The breakdown, method and caveats are in
 [SCORECARD.md](SCORECARD.md).
 

@@ -2,10 +2,13 @@
 """Regenerate the Cursor and Codex adapters from the canonical SKILL.md.
 
 Single source of truth: SKILL.md. The adapters are DERIVED — never hand-edit them.
-Run:  python build.py
+Run:  python build.py          regenerate both adapters
+      python build.py --check  write nothing; exit 1 if the adapters drifted from SKILL.md
 No third-party dependencies; standard library only.
 """
 
+import argparse
+import difflib
 import sys
 from pathlib import Path
 
@@ -14,6 +17,9 @@ SKILL = ROOT / "SKILL.md"
 ADAPTERS = ROOT / "adapters"
 CURSOR = ADAPTERS / "cursor-dependency-first-architect.mdc"
 CODEX = ADAPTERS / "AGENTS.md"
+
+# Shared sentinel from SKILL.md that must survive into both adapters.
+SENTINEL = "Tradeoff gates"
 
 BANNER_LINES = [
     "GENERATED FILE — DO NOT HAND-EDIT.",
@@ -92,27 +98,80 @@ def build_codex(name, description, body):
     return f"{note}\n\n{header}\n\n{body.rstrip()}\n"
 
 
-def main():
-    text = SKILL.read_text(encoding="utf-8")
-    name, description, body = parse_skill(text)
-    ADAPTERS.mkdir(exist_ok=True)
+def render():
+    """Generate both adapters in memory from SKILL.md: {path: content}."""
+    name, description, body = parse_skill(SKILL.read_text(encoding="utf-8"))
+    return {
+        CURSOR: build_cursor(name, description, body),
+        CODEX: build_codex(name, description, body),
+    }
 
-    cursor_out = build_cursor(name, description, body)
-    codex_out = build_codex(name, description, body)
 
-    CURSOR.write_text(cursor_out, encoding="utf-8")
-    CODEX.write_text(codex_out, encoding="utf-8")
+def find_drift(outputs):
+    """Diff each generated adapter against the file on disk; return the paths that differ."""
+    drifted = []
+    for path, expected in outputs.items():
+        rel = path.relative_to(ROOT).as_posix()
+        if not path.exists():
+            print(f"DRIFT: {rel} is missing")
+            drifted.append(path)
+            continue
+        # read_text() turns CRLF into LF, so a Windows checkout of identical content is not
+        # drift; any real content change is.
+        actual = path.read_text(encoding="utf-8")
+        if actual != expected:
+            sys.stdout.writelines(difflib.unified_diff(
+                actual.splitlines(keepends=True),
+                expected.splitlines(keepends=True),
+                fromfile=f"{rel} (committed)",
+                tofile=f"{rel} (generated from SKILL.md)",
+            ))
+            drifted.append(path)
+    return drifted
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="Regenerate the adapters from SKILL.md.")
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="write nothing; exit 1 if either adapter differs from what SKILL.md generates",
+    )
+    args = parser.parse_args(argv)
+
+    # Diffs contain non-ASCII (—, →); emit UTF-8 rather than e.g. cp1252 on Windows pipes.
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
+
+    outputs = render()
 
     # Sanity: the shared sentinel from SKILL.md must survive into both adapters.
-    sentinel = "Tradeoff gates"
-    for path, out in ((CURSOR, cursor_out), (CODEX, codex_out)):
-        if sentinel not in out:
-            print(f"ERROR: sentinel '{sentinel}' missing from {path.name}", file=sys.stderr)
+    for path, out in outputs.items():
+        if SENTINEL not in out:
+            print(f"ERROR: sentinel '{SENTINEL}' missing from {path.name}", file=sys.stderr)
             return 1
 
-    print(f"Generated {CURSOR.relative_to(ROOT)}")
-    print(f"Generated {CODEX.relative_to(ROOT)}")
-    print(f"Sentinel '{sentinel}' present in SKILL.md and both adapters: OK")
+    if args.check:
+        drifted = find_drift(outputs)
+        if drifted:
+            print(
+                f"\nERROR: {len(drifted)} adapter(s) out of sync with SKILL.md. "
+                "Run `python build.py` and commit the result.",
+                file=sys.stderr,
+            )
+            return 1
+        for path in outputs:
+            print(f"In sync: {path.relative_to(ROOT).as_posix()}")
+        print(f"Sentinel '{SENTINEL}' present in SKILL.md and both adapters: OK")
+        return 0
+
+    ADAPTERS.mkdir(exist_ok=True)
+    for path, out in outputs.items():
+        # Write bytes so the output is LF on every OS (text mode emits CRLF on Windows).
+        path.write_bytes(out.encode("utf-8"))
+        print(f"Generated {path.relative_to(ROOT)}")
+    print(f"Sentinel '{SENTINEL}' present in SKILL.md and both adapters: OK")
     return 0
 
 

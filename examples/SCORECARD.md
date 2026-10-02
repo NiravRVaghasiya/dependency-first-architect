@@ -7,7 +7,7 @@ judges who were not told which arm wrote it.
 
 Every score on this page is generated from the raw judge scores in
 [`scoring/judgments.json`](scoring/judgments.json) by [`scoring/tally.py`](scoring/tally.py).
-`tally.py --check` fails if the page drifts from the raw scores, or if a committed plan
+`tally.py --check` (run in CI) fails if the page drifts from the raw scores, or if a committed plan
 no longer matches the model output it was scored on. To re-run the whole eval yourself, use
 [`scoring/run_eval.py`](scoring/run_eval.py).
 

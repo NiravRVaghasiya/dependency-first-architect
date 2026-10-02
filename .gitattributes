@@ -1,0 +1,2 @@
+# LF everywhere, so generated adapters are byte-identical on every OS.
+* text=auto eol=lf
