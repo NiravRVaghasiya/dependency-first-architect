@@ -71,8 +71,9 @@ Two things guard against that:
   tests. The `implement` step refuses to start without `--allow-code-execution`.
 - Only the implementation package (`ledger/`) is copied into a fresh directory and tested, in a
   separate Python process with a timeout and a scrubbed environment: only `PATH`, `SYSTEMROOT`,
-  `WINDIR`, `COMSPEC`, `TEMP`, `TMP`, `TMPDIR`, `HOME`, `USERPROFILE`, `LANG` and `LC_ALL` are
-  passed through, so no API key or cloud credential is in the child's environment.
+  `WINDIR`, `COMSPEC`, `TEMP`, `TMP`, `TMPDIR`, `HOME`, `USERPROFILE`, `LANG`, `LC_ALL` and the
+  interpreter's own library path (`LD_LIBRARY_PATH`, `DYLD_LIBRARY_PATH`) are passed through, so
+  no API key or cloud credential is in the child's environment.
 - Before running it, a static screen refuses code that imports common networking or process
   modules (`subprocess`, `socket`, `http.client`, `urllib.request`, …) or calls common
   file-deletion and process functions. It is a heuristic for honest mistakes that misses many

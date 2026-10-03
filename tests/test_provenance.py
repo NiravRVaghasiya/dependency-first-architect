@@ -240,6 +240,23 @@ class TaskPinTest(unittest.TestCase):
         (self.root / "eval" / "outcomes" / "runner.py").write_bytes(b"# changed\n")
         self.assertIn("eval/outcomes/runner.py", outcomes.task_changes(self.run.root, self.root))
 
+    def test_a_finished_run_is_checked_against_its_own_copy_of_the_runner(self):
+        outcomes.pin_task(self.run, self.ocfg, self.root)
+        copy = self.run.root / outcomes.OUTCOMES / outcomes.RUN_RUNNER
+        self.assertEqual(copy.read_bytes(), b"# runner\n")
+        # The shared runner moves on: a finished run still verifies, a running one stops.
+        (self.root / "eval" / "outcomes" / "runner.py").write_bytes(b"# runner v2\n")
+        self.assertEqual(outcomes.task_changes(self.run.root, self.root, finished=True), [])
+        self.assertEqual(outcomes.task_changes(self.run.root, self.root),
+                         ["eval/outcomes/runner.py"])
+        with self.assertRaises(outcomes.OutcomeError):
+            outcomes.pin_task(self.run, self.ocfg, self.root)
+        # An edited copy no longer matches what the run pinned.
+        copy.write_bytes(b"# edited\n")
+        self.assertEqual(outcomes.task_changes(self.run.root, self.root, finished=True),
+                         [f"{outcomes.OUTCOMES}/{outcomes.RUN_RUNNER} (the run's copy of its "
+                          "runner)"])
+
 
 class CheckScopeTest(unittest.TestCase):
     def setUp(self):

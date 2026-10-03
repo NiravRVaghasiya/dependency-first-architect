@@ -5,9 +5,8 @@
         --json results.json
 
 The code under test is model-written, so this script is meant to run in a child process started
-by `run_tests()` (below): `-s -B` (no user site-packages, no bytecode), a scrubbed environment with
-no credentials, and a timeout. Even so it executes untrusted code: only run it in a container or
-VM you can throw away.
+by `run_tests()` (below): isolated mode (-I), a scrubbed environment with no credentials, and a
+timeout. Even so it executes untrusted code: only run it in a container or VM you can throw away.
 
 The task's canonical `ledgerkit` (its environment: the database client and clock) always comes
 first on sys.path, from a private copy, so an implementation cannot change the environment the
@@ -29,19 +28,16 @@ import unittest
 from pathlib import Path
 
 KEEP_ENV = ("PATH", "SYSTEMROOT", "SystemRoot", "WINDIR", "COMSPEC", "TEMP", "TMP", "TMPDIR",
-            "HOME", "USERPROFILE", "LANG", "LC_ALL",
-            # A Python built as a shared library (actions/setup-python, many pyenv builds) finds
-            # its libpython only through these; without them the child cannot even start.
-            "LD_LIBRARY_PATH", "DYLD_LIBRARY_PATH")
+            "HOME", "USERPROFILE", "LANG", "LC_ALL")
 
 
 def scrubbed_env(environ=None):
     """A minimal environment for model-written code: no credentials, tokens, or config.
 
     Keeps only what an interpreter needs to start (PATH, the Windows system directories, temp
-    directories, home, locale, the interpreter's own library path) and sets PYTHONHASHSEED,
-    PYTHONDONTWRITEBYTECODE and PYTHONIOENCODING. Everything else (AWS_*, ANTHROPIC_*,
-    OPENAI_API_KEY, GITHUB_TOKEN, ...) is dropped.
+    directories, home, locale) and sets PYTHONHASHSEED, PYTHONDONTWRITEBYTECODE and
+    PYTHONIOENCODING. Everything else (AWS_*, ANTHROPIC_*, OPENAI_API_KEY, GITHUB_TOKEN, ...) is
+    dropped.
     """
     environ = os.environ if environ is None else environ
     env = {key: environ[key] for key in KEEP_ENV if key in environ}

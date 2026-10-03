@@ -222,6 +222,15 @@ class RunnerIsolationTest(unittest.TestCase):
             self.assertIn(key, env)
         self.assertEqual(env["PYTHONHASHSEED"], "0")
 
+    def test_a_shared_library_python_keeps_its_library_path(self):
+        # actions/setup-python's Linux builds load libpython through LD_LIBRARY_PATH; dropping
+        # it makes the child exit 127 before any test runs (every outcome test failed in CI).
+        env = runner.scrubbed_env({"PATH": "/bin", "LD_LIBRARY_PATH": "/opt/python/lib",
+                                   "DYLD_LIBRARY_PATH": "/opt/python/lib", "LD_PRELOAD": "x.so"})
+        self.assertEqual(env["LD_LIBRARY_PATH"], "/opt/python/lib")
+        self.assertEqual(env["DYLD_LIBRARY_PATH"], "/opt/python/lib")
+        self.assertNotIn("LD_PRELOAD", env)
+
 
 class TaskFileTest(unittest.TestCase):
     def test_task_json_is_consistent(self):

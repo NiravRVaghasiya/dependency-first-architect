@@ -14,7 +14,9 @@ without --allow-code-execution; run it in a container or VM.
 
 Records, under the run directory: outcomes/config.json (the outcomes config),
 outcomes/task-files.json (the SHA-256 of every task file and of the runner, pinned when the run
-starts; a later change makes `implement` and `check` refuse), outcomes/<attempt>.json
+starts; a later change to the task makes `implement` and `check` refuse), outcomes/runner.py
+(the run's copy of the runner it used: `implement` refuses to continue with another runner, and
+`check` verifies the copy, so the shared runner can evolve), outcomes/<attempt>.json
 (schemas.OUTCOME_ATTEMPT), outcomes/<attempt>/round<N>/ (the code after each round, verbatim),
 raw/impl-<attempt>-r<N>.txt (the implementer's raw output), outcomes-summary.json and OUTCOMES.md.
 
@@ -155,9 +157,18 @@ def task_files(repo_root, task_path):
     return {"task": task_path, "files": files, "runner_sha256": file_sha256(runner.read_bytes())}
 
 
-def task_changes(run_dir, repo_root=None):
+RUN_RUNNER = "runner.py"  # the run's own copy of the runner it used, under outcomes/
+
+
+def task_changes(run_dir, repo_root=None, finished=False):
     """What differs between the task files a run recorded and the task as it is now ([] if
-    nothing; a one-item list if the run recorded none)."""
+    nothing; a one-item list if the run recorded none).
+
+    The task files must still be the repository's (a task is immutable once a run used it). The
+    runner is shared by every task, so a run keeps a copy of the one it used (outcomes/runner.py):
+    for a `finished` run (what `check` verifies) that copy must match the pin, and the
+    repository's runner may have moved on; a run that is still going (`implement`) must use the
+    pinned runner itself, so two runner versions never mix within a run."""
     saved = Path(run_dir) / OUTCOMES / TASK_FILES
     if not saved.is_file():
         return [f"{OUTCOMES}/{TASK_FILES} is missing, so the task version these results come "
@@ -166,7 +177,11 @@ def task_changes(run_dir, repo_root=None):
     current = task_files(Path(repo_root) if repo_root else ROOT, recorded["task"])
     changed = sorted(rel for rel in set(recorded["files"]) | set(current["files"])
                      if recorded["files"].get(rel) != current["files"].get(rel))
-    if recorded["runner_sha256"] != current["runner_sha256"]:
+    copy = Path(run_dir) / OUTCOMES / RUN_RUNNER
+    if finished and copy.is_file():
+        if file_sha256(copy.read_bytes()) != recorded["runner_sha256"]:
+            changed.append(f"{OUTCOMES}/{RUN_RUNNER} (the run's copy of its runner)")
+    elif recorded["runner_sha256"] != current["runner_sha256"]:
         changed.append("eval/outcomes/runner.py")
     return changed
 
@@ -180,6 +195,8 @@ def pin_task(run, ocfg, repo_root):
             raise OutcomeError(f"{run.root} has attempts but no {OUTCOMES}/{TASK_FILES}, so the "
                                "task version they ran against is unknown; use a new run directory")
         records.write_json(saved, task_files(repo_root, ocfg["task"]))
+        shutil.copyfile(Path(repo_root) / "eval" / "outcomes" / "runner.py",
+                        run.root / OUTCOMES / RUN_RUNNER)
         return
     changed = task_changes(run.root, repo_root)
     if changed:
