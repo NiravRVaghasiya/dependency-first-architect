@@ -1,100 +1,181 @@
+<div align="center">
+
 # Dependency-First Architect
 
-A planning skill for coding agents (Claude Code, Cursor, Codex). Ask it to plan, architect, or
-sequence a software, infrastructure, or AI build, and it returns a **build plan ordered by what
-everything else depends on**: hard-to-reverse decisions settled first, a thin slice running in
-production as Phase 0, validation gates for the hypotheses the plan rests on, and security,
-observability, reproducibility, and resilience in every phase.
+**Build plans ordered by what everything else depends on, not by what is most visible.**
+
+A planning skill for Claude Code, Cursor, and Codex
 
 [![CI](https://github.com/NiravRVaghasiya/dependency-first-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/NiravRVaghasiya/dependency-first-architect/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## What it is
+[Example](#what-a-plan-looks-like) · [Install](#install) · [How it works](#how-it-works) · [Evidence](#evidence) · [Limits](#limits) · [Contributing](#contributing)
 
-One instruction file, [`SKILL.md`](SKILL.md), plus reference files it loads on demand. The Cursor
-and Codex versions are generated from it, so nothing is maintained twice. A plan has ten sections:
-classification and constraints (with labeled budgets), dependency map, Tradeoff gates, walking
-skeleton (Phase 0), phases, validation gates, cross-cutting concerns, AI layer, methodology
-exceptions, and deliberately deferred work.
+</div>
+
+---
+
+A *skill* is a set of instructions your coding agent loads. This one is for anyone who asks a
+coding agent to plan, architect, or sequence a software, infrastructure, or AI system, new or
+already running.
+
+## What it changes
+
+Asked to plan a system, language models tend to write a tour of components. The skill pushes the
+other way:
+
+| Model-written plans tend to… | With the skill, the plan… |
+|---|---|
+| build the layers one at a time and wire them together at the end | starts with a **walking skeleton** (Phase 0): one real request through every tier, in production, deployed, monitored, and rolled back once |
+| state tradeoffs without saying what would change them | settles hard-to-reverse decisions up front as **Tradeoff gates**: a default chosen now, the assumption behind it, and what would flip it, with effort scaled to reversibility (R1 easy to undo, R2 costly, R3 hard) |
+| present guessed numbers as requirements | labels every budget and threshold **REQUIREMENT**, **BASELINE**, **ASSUMPTION**, or **UNKNOWN** |
+| add security and monitoring in a final phase | puts **security, observability, reproducibility, and resilience** in every phase, from the first commit |
+
+The assumptions a plan rests on (that something is fast, safe, correct, or cheap enough) get
+numbered **validation gates** (V0, V1, …) with pass bars. Work that depends on one can be
+scaffolded, but not finalized, until its gate passes; "it runs" doesn't count. For AI systems,
+injection defenses, cost and latency budgets, and human approval come before new capabilities.
+
+## What a plan looks like
 
 > **You:** Plan a customer-support RAG chatbot over our help-center docs.
 
-Two of the six Tradeoff gates that came back in the v2 pilot (Opus 5.5; verbatim, trimmed;
-[full plan](eval/results/2026-10-03-pilot-core/generations/P1.dfa.opus-5.5.r01.md)):
+Three excerpts from a plan Opus 5.5 wrote with the skill during evaluation (verbatim; … marks
+cuts; [full plan](eval/results/2026-10-03-pilot-core/generations/P1.dfa.opus-5.5.r01.md)):
 
-| Decision | Reversibility | Default (chosen now) | Assumption | Validated by | Flip condition |
-|---|---|---|---|---|---|
-| What gets indexed | R3: a non-public article shown to the public can't be unshown | Index only articles the CMS marks public and published. Filter when indexing, and check visibility again when answering … | The CMS visibility flags are accurate | V1 | Non-public content is needed → retrieval checks the caller's permissions (… login required before Phase 2) |
-| Answer policy | R3: answers customers see can become promises with legal liability | Answer only from retrieved passages, with citations. Decline and offer handoff when retrieval is weak … | Strict grounding keeps unsupported claims within V5 and still resolves enough chats | V5 (safety), V6 (usefulness) | V5 fails on a topic → that topic shows article snippets only … |
+| Part | Excerpt |
+|---|---|
+| **Tradeoff gate** | **What gets indexed**<br>*Reversibility:* R3: a non-public article shown to the public can't be unshown<br>*Default:* Index only articles the CMS marks public and published. …<br>*Assumption:* The CMS visibility flags are accurate<br>*Validated by:* V1<br>*Flip condition:* Non-public content is needed → retrieval checks the caller's permissions … |
+| **Walking skeleton** | **Real request:** A staff member asks in the live help-center widget, "How do I reset my password?" The answer streams back and cites the password-reset article. …<br>**Who can reach it:** Staff only, through an SSO allow-list behind the flag. No customer traffic until V1, V2, V3 and V5 pass. |
+| **Validation gate** | **V5**<br>*Hypothesis:* Answers state only what the cited passages support, and risky or unanswerable questions decline or hand off. …<br>*Acceptance threshold:* ≥ 95% of answers fully supported; 0 unsupported promises in the policy set; … (all ASSUMPTION). Head of Support and legal sign off on the policy set …<br>*Unlocks:* Customer exposure. If it fails: failing topics go snippets-only or human-only, then re-run |
 
-And the gate that guards the worst failure:
+Every plan has the same ten sections ([template](reference/plan-template.md)):
 
-> **V5** · *Hypothesis:* answers state only what the cited passages support, and risky or
-> unanswerable questions decline or hand off. · *Threshold:* ≥ 95% of answers fully supported;
-> 0 unsupported promises in the policy set … (all ASSUMPTION). Head of Support and legal sign off
-> on the policy set. · *If it fails:* failing topics go snippets-only or human-only, then re-run.
+| Sections 1–5 | Sections 6–10 |
+|---|---|
+| 1. Classification and constraints | 6. Validation gates |
+| 2. Dependency map | 7. Cross-cutting concerns |
+| 3. Tradeoff gates | 8. AI layer (AI systems only) |
+| 4. Walking skeleton (Phase 0) | 9. Methodology exceptions |
+| 5. Phases | 10. Deliberately deferred |
 
-## The problem it addresses
+## Install
 
-Asked to plan a system, language models tend to write a tour of components: build the layers one
-at a time, wire them together at the end, add security and monitoring in a final phase, state
-tradeoffs without saying what would change them, and present guessed numbers as requirements. The
-skill pushes the other way:
+**Claude Code**: the full skill, for all your projects (this clones the whole repository, about
+90 MB on disk, mostly evaluation records). Until you ask for a plan, only the skill's ~0.5 KB
+description is in context.
 
-1. **Never start work before what blocks it is met.** "It runs" is not validation: a hypothesis
-   (fast, safe, correct, or cheap enough) is met only when its validation gate passes.
-2. **Keep nothing rigid until it must be**, and scale the plan to the system.
-3. **Resolve hard-to-reverse tradeoffs up front** as Tradeoff gates (Decision → Default →
-   Assumption → Validation → Flip condition), with effort scaled to reversibility (R1 easy to
-   undo, R2 costly, R3 hard).
-4. **Order by blast radius:** rework widest first, exposure smallest first (canary, one site).
-5. **Thread security, observability, reproducibility, and resilience through every phase.**
-6. **Lead with a walking skeleton** in production, deployed, monitored, and rolled back once.
-7. **For AI systems, put defenses and budgets before capabilities.**
-8. **Treat budgets as constraints.** Each is labeled REQUIREMENT, BASELINE, ASSUMPTION, or
-   UNKNOWN, so a guess is never presented as a requirement.
-9. **Bend the method only explicitly**, through a numbered methodology exception (rule bypassed,
-   why it does not apply, replacement validation, evidence required, when the normal method
-   resumes). Brownfield work is the normal method, not an exception.
+```bash
+git clone --depth 1 https://github.com/NiravRVaghasiya/dependency-first-architect ~/.claude/skills/dependency-first-architect
+```
 
-Dependencies come in seven kinds (structural, runtime, decision, validation, risk/security,
-organizational, economic). The rules are in [`SKILL.md`](SKILL.md); worked examples are in
-[`reference/validation.md`](reference/validation.md).
+**Cursor**: run in your project root.
 
-## What it does not guarantee
+```bash
+mkdir -p .cursor/rules && curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/dependency-first-architect/main/adapters/cursor-dependency-first-architect.mdc -o .cursor/rules/dependency-first-architect.mdc
+```
 
-- **A correct architecture.** It shapes how a model plans. The model still supplies the domain
-  knowledge and can still be wrong about technologies, limits, and costs.
-- **Better systems.** No experiment here has shown that systems built from these plans work
-  better; see the evidence below.
-- **The same behavior on every model.** With the skill, Haiku 4.5 wrote plans of about 5,300
-  words (Opus 5.5: about 3,900), and 13 of its 15 plans printed the private self-check the skill
-  says to keep out of the plan (the blinding removed it before judging).
-- **Checks that run themselves.** Validation gates name the checks; someone still has to run them.
+**Codex**: run in your project root. This appends the skill (about 16 KB) to `AGENTS.md`, which
+Codex reads in every session.
+
+```bash
+{ printf '\n'; curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/dependency-first-architect/main/adapters/AGENTS.md; } >> AGENTS.md
+```
+
+To update a Codex install, first delete the old block from `AGENTS.md`, because the command
+appends: from the `<!--` line above `BEGIN dependency-first-architect` through
+`<!-- END dependency-first-architect -->`. Then run it again.
+
+<details>
+<summary><b>Codex: lazy install</b> (about 1 KB in <code>AGENTS.md</code>; not yet tested in Codex)</summary>
+
+Codex reads the whole skill, reference files included, only when a request matches. Update it the
+same way: delete the old block, then run both commands again.
+
+```bash
+mkdir -p .codex && curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/dependency-first-architect/main/adapters/codex/dependency-first-architect.md -o .codex/dependency-first-architect.md
+{ printf '\n'; curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/dependency-first-architect/main/adapters/codex/AGENTS-snippet.md; } >> AGENTS.md
+```
+
+</details>
+
+Then ask your agent to plan something. In Claude Code you can also call it by name:
+`/dependency-first-architect <your request>`. Cursor and the standard Codex install get the method
+without its reference files (plan template, worked examples, AI layer); the lazy Codex install
+includes them.
+
+> [!NOTE]
+> These files are instructions your agent follows. To pin a version, clone with `--branch vX.Y.Z`
+> or put a tag or a full commit SHA in place of `main` in the URLs, and read the diff before you
+> update. See [SECURITY.md](SECURITY.md).
+
+## How it works
+
+Work is ordered by dependency and blast radius: what forces the most rework if it is wrong
+(schema, auth model, data contracts, API shape) is decided up front and validated before the work
+that depends on it, and a rollout reaches a canary, one site, or one tenant first, widening only
+after its check passes.
+
+<p align="center">
+  <img src="docs/layer-map.svg" alt="Layer map: build bottom-up. Blueprint (Tradeoff gates), cells (primitives), energy (infra and CI/CD), skeleton (walking skeleton), organs (features), and skin (UI) last, with security, observability, reproducibility and resilience through every layer">
+</p>
+
+<p align="center"><sub>Use the picture to remember the order; plans follow <a href="SKILL.md">SKILL.md</a> (<a href="reference/layer-map.md">about the analogy</a>).</sub></p>
+
+Plans scale to the system (a small build gets three phases or fewer), and any departure from the
+method is declared as a numbered exception. The full method is in [`SKILL.md`](SKILL.md); worked
+examples are in [`reference/validation.md`](reference/validation.md).
 
 ## Evidence
 
-Every number in the block below is generated from committed run records by
-[`eval/dfa_eval/evidence.py`](eval/dfa_eval/evidence.py), and CI fails if the two disagree. What
-the measures mean:
+The numbers come from the repo's [evaluation harness](eval/README.md), built to make
+overclaiming hard. CI recomputes the full results below from the committed records, and
+`python eval/run.py check` re-checks them offline.
 
-- **Adherence** is the skill author's own rubric (v1, /20). It checks what the skill asks for, so
-  plans written with the skill are expected to score high by construction. It shows the method is
-  followed, nothing more.
+<!-- Hand-copied from the generated block below. No check compares this table or the Limits
+figures with the records, so update them whenever the block changes. -->
+
+| Question | What the runs show |
+|---|---|
+| Do plans follow the method? | **Yes.** Adherence +11.6 of 20 [+10.6, +12.6] over the bare model, with 92% of skill plans at the maximum. That is expected: the rubric checks what the skill asks for, not quality. |
+| Do LLM judges rate them higher? | **Than the bare model's, yes:** engineering quality +8.2 of 44 [+5.3, +11.0]. **Than an independently written planning skill's, no:** slightly lower, −1.2 [−1.9, −0.5], and both judges agree on the sign. |
+| Is it just longer plans? | **Partly.** Skill plans are about 2.7 times as long as the bare model's (the control's, about twice the skill's). Told to stay under 1,500 words, the skill still scored +9.6 [+7.0, +12.2], though its plans ran longer. |
+| Were the judges blind? | **To labels, not to style.** The probe judge could always tell skill plans from the bare model's (leakage AUC 1.00). |
+| Does the skill's plan change the code built from it? | **No measurable difference:** +0.01 [−0.05, +0.07] in hidden-test pass rate against a bare-model plan. The one outcome task is at its ceiling for this implementer, so it cannot yet separate plans ([details](eval/outcomes/README.md#what-the-first-run-showed-about-the-task-itself)). |
+
+<sub>Skill v2.0.0, plans by Opus 5.5, 95% intervals, copied by hand from the generated tables
+below. Rows 1–4: the core pilot (8 prompts × 5 runs; engineering quality judged by Sonnet 5.5 and
+Fable 5, adherence and the leakage probe by Sonnet 5.5); row 3 adds a length-capped run (5 prompts
+× 3 runs). Row 5: the outcome run (one coding task, 5 attempts per arm, Sonnet 5.5
+implementing).</sub>
+
+So the gain over the bare model is not shown to be specific to this method, and nothing here shows
+that systems built with the skill are better.
+
+<details>
+<summary><b>Full results from every committed run</b>, and what each measure means</summary>
+
+- **Adherence** (/20) is the skill author's own rubric. It checks what the skill asks for, so
+  plans written with the skill score high by construction: it shows the method is followed,
+  nothing more.
 - **EQ** (engineering quality, /44) and **EQ-core** (/36, without the two dimensions that overlap
   the method) come from a rubric whose anchors and scoring rules were written by a model session
-  that never saw the skill (the maintainer chose the dimension names). LLM judges
-  score the *written plan*, not a built system. **Checklist** is coverage of per-prompt lists of
-  domain considerations, written the same blind way.
+  that never saw the skill (the maintainer chose the dimension names). LLM judges score the
+  *written plan*, not a built system.
+- **Checklist** (0–1) is coverage of per-prompt lists of domain considerations, written the same
+  blind way.
+- **Words** is plan length, and **EQ per 1k tokens** is engineering quality per 1,000 visible
+  tokens, a guard against "longer is better".
 - **Leakage AUC** is how well a judge can tell from the text alone which plans followed a method
-  (0.5 = cannot tell, 1.0 = always can). Near 1.0, judges effectively know the condition when they
-  score, and their scores may reward the method's recognizable structure.
-- Intervals are 95%, across prompts (5 to 8 of them), so they are wide. No p-values are reported.
-  Every judge is a Claude model.
-- Every committed session ran with the operator's Claude Code user settings, which still apply
-  under `--bare`: the built-in **Concise** output style (recorded in every plan and implementer
-  transcript; the judges ran with the same settings) and permission mode `auto` (Haiku 4.5:
-  `default`). Plan lengths and scores are measured under that style; each run's flags say so.
+  (0.5 = cannot tell, 1.0 = always can). Near 1.0, judges effectively know the condition, and
+  their scores may reward the method's recognizable structure.
+- **Outcome columns** are the share of hidden tests passed by code an implementer built from each
+  plan (or from no plan). Round 1 is the brief; round 2 adds a change request and re-runs every
+  round-1 test (regression). **Rework lines** are lines added plus removed between the rounds.
+- **Intervals** are 95%: t across prompts (5 to 8) for plan scores, a bootstrap over attempts for
+  outcomes. They are wide, and no p-values are reported. Every judge is a Claude model. The v2
+  sessions ran with the operator's Claude Code settings (the built-in Concise output style), and
+  those runs' flags say so.
 
 <!-- BEGIN GENERATED evidence: eval/dfa_eval/evidence.py -->
 
@@ -198,190 +279,57 @@ _Generated from the committed runs by `eval/dfa_eval/evidence.py`; `python eval/
 - recorded cost $7.38
 <!-- END GENERATED evidence -->
 
-The v1.0.0 measurement, kept for comparison:
+Protocol, interpretation, and limitations: [eval/README.md](eval/README.md). Per-agent status:
+[evaluation matrix](docs/evaluation-matrix.md). Run reports: [eval/results/](eval/results/README.md).
+
+The v1.0.0 pilot, kept as published ([plans and scorecard](examples/README.md)). Its judges,
+baseline and self-scoring differ from v2's, so compare the versions through the `dfa − dfa-v1`
+row above (+1.9 EQ [+1.2, +2.5]):
 
 <!-- BEGIN GENERATED score callout: examples/scoring/tally.py -->
 > **v1.0.0, methodology adherence.** In Claude Code (same model, the 5 fixed prompts in [`reference/evals.md`](reference/evals.md), one run per arm, 3 judges on the same model, blind to the arm), plans scored **12.8/20 without the skill and 20.0/20 with it (+7.2)** on the skill's own rubric. On a deliberately skill-unfavorable reading (every dispute from an adversarial audit accepted, and the D9 rubric artifact removed), the difference is still **+5.6**. That rubric checks what the skill asks for, and v1's plans self-scored against it before answering, so this shows the method is followed, not that the plans are better engineering. [Scorecard, method and raw scores →](examples/SCORECARD.md)
 <!-- END GENERATED -->
 
-### What the evidence supports
+</details>
 
-The differences and intervals come from the block above; the counts and per-arm figures come
-from the runs' `REPORT.md` and `OUTCOMES.md`, which `check` recomputes, but this prose itself is
-not compared with them automatically.
+## Limits
 
-- **The method is followed.** Plans written with the skill have its structure: +11.6 adherence
-  points of 20 for Opus 5.5 in the core pilot (+11.7 for Sonnet 5.5, +14.5 for Haiku 4.5). This
-  is expected by construction, and says nothing about quality. (In `pilot-models` every read of
-  the skill's reference files by Haiku 4.5 was refused, so that run's Haiku contrast measures
-  `SKILL.md` alone; `pilot-models-haiku` re-ran Haiku with the files readable, and its numbers
-  are the ones quoted here.)
-- **Judges rate the plans higher than the bare model's, but not higher than those from another
-  detailed planning instruction.** In the core pilot (8 prompts × 5 runs), dfa − baseline is
-  +8.2 EQ [+5.3, +11.0], and both judges put it above zero. The active control, a generic
-  planning skill written independently of this one, scores slightly *higher*: dfa −
-  generic-control is −1.2 EQ [−1.9, −0.5], and both judges agree on the sign. So the gain over
-  the bare model is not specific to this method; under these judges it is what a detailed
-  planning instruction buys.
-- **Length goes with it.** Average plan length is 1,452 words for the bare model, 3,935 with the
-  skill, and 8,306 with the generic control. Per 1,000 tokens, plans with the skill score lower
-  than baseline (−7.9) and higher than the control (+3.6). Capping both arms at 1,500 words
-  (pilot-length) did not equalize length: 2 of 15 capped baseline plans (5 within 10% of it) and
-  none of the 15 capped skill plans stayed within it, and the skill's averaged 429 words more.
-  Under the cap the
-  skill still scored +9.6 EQ, so length is not the whole story, but it was not removed either.
-- **Domain coverage moves little, except for the smallest model.** On the per-prompt checklists of
-  domain considerations, dfa − baseline is +0.04 [−0.06, +0.13] in the core pilot, and the
-  interval includes zero for Opus 5.5 and Sonnet 5.5 in every run; for Haiku 4.5 it is +0.25
-  [+0.04, +0.46]. The control covers slightly more than the skill (−0.05 [−0.07, −0.03]). For the
-  stronger models, the skill changes how a plan is organized, sequenced and validated more than
-  what it covers.
-- **v2 against v1.** v2 scores +1.9 EQ [+1.2, +2.5] above v1.0.0 on the same prompts, and its
-  plans are 704 words longer. Adherence is at its ceiling for both.
-- **Judges can tell the conditions apart.** The leakage AUC is 1.00 against the baseline in every
-  run, and 0.99 between the skill and the control. Judging was blind to labels, not to style.
-  Sonnet 5.5 and Fable 5 rank plans alike (Spearman 0.83 in the core pilot), but Fable scores the
-  same plans about 7 points higher.
-- **Outcomes: no measurable difference.** On the one outcome task, the arms' round-1 pass-rate
-  differences are within ±0.10, with intervals spanning zero. Leaving out four tests that check a
-  status-code convention, every attempt given a plan passed every round-1 test, and so did 4 of 5
-  without one; the fifth crashed on a bug of its own. A plan raised the implementer's cost per
-  attempt by $0.11 (baseline and skill plans) to $0.23 (the control's longer plans). In 6 of
-  the 15 attempts given a plan, and none of the 5 without, the code acknowledged malformed events
-  and quarantined them, a design those four tests count as failures
-  ([details](eval/outcomes/README.md#what-the-first-run-showed-about-the-task-itself)).
+- **It shapes how a model plans, not what it knows.** The model still supplies the domain
+  knowledge and can be wrong about technologies, limits, and costs.
+- **Gates name checks; they don't run them.** Someone still has to.
+- **Behavior varies by model.** With the skill, Haiku 4.5 wrote plans of about 5,300 words (Opus
+  5.5 on the same five prompts: about 4,100), and 13 of its 15 plans included the skill's internal
+  checklist, which is meant to stay out of the plan.
+- **Cursor and Codex are supported, not evaluated.** Their adapters are generated and checked, but
+  no committed run has used them.
+- **Not yet validated:** [production outcomes](eval/outcomes/README.md#what-it-does-not-measure),
+  each rule on its own (no experiment removes one at a time), judges outside the Claude family,
+  expert review of the rubrics, and requests that come with a real codebase. See
+  [Limitations](eval/README.md#limitations).
 
-None of this shows that systems built with the skill are better. It shows that the method is
-followed, and that LLM judges, who can tell which plans followed a method, rate those plans
-higher than the bare model's and slightly lower than a longer generic method's.
+## Contributing
 
-### What is not validated
-
-- **That this method, rather than any detailed planning instruction, is what helps.** The one
-  active control tested scored at least as well on every judged measure except adherence.
-- **System-level outcomes** (deployment, operations, incidents, cost in production). Nothing
-  here measures them, and the one code-level outcome task did not separate the arms.
-- **The newer rules on their own:** dependency kinds, validation gates, labels, reversibility
-  tiers and methodology exceptions are measured only as part of the whole skill; no experiment
-  removes one at a time.
-- **Cursor and Codex.** The adapters are generated and checked, but no committed run used them.
-  The [evaluation matrix](docs/evaluation-matrix.md) shows what is *supported*, *tested*, and
-  *experimentally evaluated*, per agent and model.
-- **Judges outside the Claude family**, and **expert review** of the engineering-quality rubric
-  and the checklists.
-- **Realistic requests.** The benchmark prompts are one-line requests with no codebase or
-  documents around them.
-
-## Install
-
-**Claude Code** (the full skill, for all your projects):
+**`SKILL.md` is the single source of truth.** Change the method in `SKILL.md` or `reference/`,
+run `python build.py`, and commit what it regenerates. Never edit `adapters/` by hand; CI fails on
+drift.
 
 ```bash
-git clone --depth 1 https://github.com/NiravRVaghasiya/dependency-first-architect ~/.claude/skills/dependency-first-architect
+python build.py --check                # adapters and SHA256SUMS match SKILL.md
+python -m unittest discover -s tests   # offline self-tests, no model calls
+python eval/run.py check               # committed runs, reports, matrix, and this README's evidence block
 ```
 
-**Cursor** (run in your project root):
+To try the benchmark against real models, start with the smoke config, a setup check that stops
+at a \$10 cost cap (its last run cost \$1.78). Real runs need the `claude` CLI or an
+OpenAI-compatible endpoint; see [eval/README.md](eval/README.md).
 
 ```bash
-mkdir -p .cursor/rules && curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/dependency-first-architect/main/adapters/cursor-dependency-first-architect.mdc -o .cursor/rules/dependency-first-architect.mdc
+python eval/run.py plan --config eval/experiments/smoke.json                                 # dry run: the calls it would make
+python eval/run.py all  --config eval/experiments/smoke.json --run eval/results/<new-run-id>   # real model calls
 ```
 
-**Codex** (run in your project root). This appends the skill to `AGENTS.md`, which Codex reads in
-every session (about 16 KB):
-
-```bash
-{ printf '\n'; curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/dependency-first-architect/main/adapters/AGENTS.md; } >> AGENTS.md
-```
-
-**Codex, lazy install** (not yet tested in Codex). About 1 KB stays in `AGENTS.md`; Codex reads
-the whole skill, reference files included, only when a request matches:
-
-```bash
-mkdir -p .codex && curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/dependency-first-architect/main/adapters/codex/dependency-first-architect.md -o .codex/dependency-first-architect.md
-{ printf '\n'; curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/dependency-first-architect/main/adapters/codex/AGENTS-snippet.md; } >> AGENTS.md
-```
-
-Then ask: *"Plan a customer-support RAG chatbot over our help-center docs."* In Claude Code you
-can also call it by name: `/dependency-first-architect <your request>`.
-
-- **Pin a version.** These files are instructions your agent follows, so treat an update like a
-  dependency upgrade: install from a release tag (`git clone --branch vX.Y.Z`, or `vX.Y.Z` in
-  place of `main` in the URLs) and read the diff before you update. See [`SECURITY.md`](SECURITY.md).
-- **Update a Codex install.** The commands append, so delete the old block from `AGENTS.md`
-  first: everything from the `<!--` line above `BEGIN dependency-first-architect` through
-  `<!-- END dependency-first-architect -->`. Then run the install again.
-
-### What loads when
-
-| Agent | Always in context | When the skill fires | On demand |
-|---|---|---|---|
-| Claude Code | the description (~0.5 KB) | the `SKILL.md` body (~16 KB) and the plan template it loads at once (~6.6 KB) | the worked examples (~11 KB) and the AI layer (~5.5 KB), when a step calls for them |
-| Cursor | the description (`alwaysApply: false`) | the procedure (~16 KB), without the reference files | — |
-| Codex | the whole procedure (~16 KB), without the reference files | — | — |
-| Codex, lazy | a ~1 KB stub | the whole skill with its reference files (~40 KB) | — |
-
-The adapters leave out the steps only Claude Code can follow (loading reference files), and the
-evaluation rubric is never loaded while planning.
-
-## Evaluate it yourself
-
-```bash
-python -m unittest discover -s tests   # offline, no model calls
-python eval/run.py check               # what CI verifies: provenance, every committed run, the numbers in this README
-python eval/run.py plan --config eval/experiments/smoke.json   # dry run: what a run would call and cost
-python eval/run.py all  --config eval/experiments/smoke.json --run eval/results/<new-run-id>   # about $2
-```
-
-Real runs need the `claude` CLI (with `ANTHROPIC_API_KEY`, or a Bedrock or Vertex
-configuration) or an OpenAI-compatible endpoint. [`eval/README.md`](eval/README.md) covers:
-
-- **the protocol:** isolated sessions, blinding, randomized judging, the leakage probe, the
-  statistics;
-- **how to reproduce** a committed run (`eval/experiments/*.json` hold their exact configs);
-- **how to interpret** the scores, and the limitations.
-
-The outcome benchmark, which asks whether a plan changes the code built from it, is in
-[`eval/outcomes/`](eval/outcomes/README.md). It executes model-written code, so run it in a
-container.
-
-## Extend
-
-- **A new adapter:** add a builder in `build.py`, an entry in `eval/agents.json`, a test in
-  `tests/test_build.py`, and an install command here. It is listed as *supported* until a
-  committed run says more. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
-- **A new benchmark prompt:** add it to `eval/benchmark.json`, with a checklist written by a
-  session that has not seen the skill ([`eval/rubrics/AUTHORING.md`](eval/rubrics/AUTHORING.md)).
-- **A new outcome task:** a brief, starter code, hidden tests by category, reference solutions,
-  and single-defect mutants that the tests must catch. See
-  [`eval/outcomes/README.md`](eval/outcomes/README.md) and [`CONTRIBUTING.md`](CONTRIBUTING.md).
-
-## Project
-
-```
-dependency-first-architect/
-├── SKILL.md          # canonical source: the method; the frontmatter description is the trigger
-├── reference/        # loaded on demand: plan template, worked examples, AI layer, layer-map analogy;
-│                     #   evals.md is the v1 adherence rubric (evaluation only, never loaded to plan)
-├── adapters/         # GENERATED by build.py: Cursor rule, Codex AGENTS.md, Codex lazy install
-├── build.py          # regenerates adapters/ and SHA256SUMS; --check in CI (standard library only)
-├── eval/             # evaluation harness, rubrics, conditions, experiments, committed runs
-├── examples/         # the v1.0.0 measurement: plans, scorecard, and its harness
-├── docs/             # evaluation matrix (generated), layer-map diagram
-├── tests/            # offline tests for all of the above
-└── VERSION  CHANGELOG.md  SHA256SUMS  SECURITY.md  CONTRIBUTING.md  LICENSE
-```
-
-- **Single source of truth.** Change the method in `SKILL.md` or `reference/`, then run
-  `python build.py`. Never edit `adapters/`; CI fails on drift.
-- **Versioning.** The version in `VERSION` follows semantic versioning and is recorded in
-  [`CHANGELOG.md`](CHANGELOG.md): MAJOR when the plan's shape or the procedure changes, MINOR for
-  added guidance, PATCH for wording. Releases are signed tags; verify a checkout with
-  `python build.py --check` and `sha256sum -c SHA256SUMS`.
-
-![Layer map: build bottom-up. Blueprint (Tradeoff gates), cells (primitives), energy (infra and CI/CD), skeleton (walking skeleton), organs (features), and skin (UI) last, with security, observability, reproducibility and resilience through every layer](docs/layer-map.svg)
-
-The diagram is a teaching analogy ([`reference/layer-map.md`](reference/layer-map.md)). Where it
-and engineering disagree, engineering wins.
+Setup, rules, and adding adapters, prompts, or outcome tasks are in
+[CONTRIBUTING.md](CONTRIBUTING.md); changes are in [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 

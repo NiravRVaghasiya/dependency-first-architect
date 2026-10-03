@@ -24,7 +24,9 @@ python -m unittest discover -s tests -v    # self-tests; offline, temp dirs only
 
 After you commit a new run under `eval/results/`, regenerate what is derived from the runs:
 `python eval/run.py matrix` (the evaluation matrix) and `python eval/run.py evidence` (the
-evidence block in `README.md`). `check` fails until both match.
+evidence block in `README.md`). `check` fails until both match. Then update by hand what `check`
+does not compare: the summary table in the Evidence section of `README.md` and the figures in its
+Limits section.
 
 ## Rules
 
