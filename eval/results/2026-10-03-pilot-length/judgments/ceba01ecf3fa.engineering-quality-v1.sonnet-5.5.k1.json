@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ceba01ecf3fa.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "ceba01ecf3fa",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 14,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Integer minor units plus ISO 4217 currency. Decimal rating with one documented rounding rule",
+      "rationale": "Mostly correct (Stripe SAQ A, at-least-once webhooks, RLS, outbox); minor imprecision such as rounding-point assumption vs tax vendor and 'exactly once' framing, and serializable writes on one primary are reasonable."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Buy: payment processor (Stripe; card data never reaches us, so PCI SAQ A) and tax engine. Build: ledger, metering, rating, entitlements",
+      "rationale": "Covers core billing needs and flags the own-tenants vs billing-platform ambiguity with deferral; some areas like dunning policy and tax ID/reverse charge are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Append-only double-entry ledger. Invoices are derived from it. Fixes are credit notes, never edits",
+      "rationale": "Consistent design with clear ownership; minor loose ends like 'Decimal rating' vs single rounding at line, and the tax-vendor rounding trigger."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "10k sandbox charges with injected faults: worker kills, duplicate webhooks, processor timeouts",
+      "rationale": "Validation is tied to specific risks, risky items are gated before live exposure, thresholds labeled ASSUMPTION/UNKNOWN, with shadow run and ongoing reconciliation and anomaly alerts."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Usage ingest throughput | UNKNOWN: product team supplies peak events/sec before Phase 3",
+      "rationale": "Targets labeled ASSUMPTION or UNKNOWN, missing inputs listed, key assumption with how the order changes and revisit triggers."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "10k sandbox charges with injected faults: worker kills, duplicate webhooks, processor timeouts",
+      "rationale": "Duplicates, late events, DLQ, kill switch, isolation failures covered; disputes, out-of-order webhooks and data corruption handling are thin."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Structured logs and an OpenTelemetry trace keyed by tenant and request ID. Alerts for webhook failures and job lag. Rollback is a blue/green switch.",
+      "rationale": "Deploy, rollback, alerts, restore drill, dual-control keys are present; incident ownership and on-call are not detailed."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "cost per million events within finance budget (both UNKNOWN until inputs arrive)",
+      "rationale": "Build-vs-buy and ingest cost are addressed, but there are no cost estimates, vendor fee comparison or people cost, and controls are thin."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: baked into every row",
+      "rationale": "Decisions explicitly rated by reversibility with revisit triggers, validated early, point of no return named, exit paths like dedicated schema or Stripe Billing."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Modular monolith, plus a separate usage-ingest service and a worker",
+      "rationale": "Modular monolith with deferrals is proportionate; Kafka-compatible queue, SOC2 automation and ERP phase are somewhat speculative."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phase 1 ... Exit check: V1 and V2 pass. Restore achieves RPO 0 and RTO ≤ 1 h.",
+      "rationale": "Phased by dependencies with thin end-to-end slice first, checkable exit criteria, rollback per phase, and adaptation on failure."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Integer minor units plus ISO 4217 currency. Decimal rating with one documented rounding rule"
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Append-only double-entry ledger. Invoices are derived from it. Fixes are credit notes, never edits"
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "Processor webhooks arrive at least once"
+    },
+    {
+      "id": "P2-04",
+      "status": 1,
+      "evidence": "card data never reaches us, so PCI SAQ A"
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "Shared Postgres, `tenant_id` on every row, row-level security (RLS) enforced"
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "Idempotent ingest API that deduplicates on event ID"
+    },
+    {
+      "id": "P2-07",
+      "status": 1,
+      "evidence": "Versioned plans and prices (immutable once published)."
+    },
+    {
+      "id": "P2-08",
+      "status": 1,
+      "evidence": "Tax vendor contract, plus tax counsel's decision on where we must collect tax (nexus)"
+    },
+    {
+      "id": "P2-09",
+      "status": 1,
+      "evidence": "Dunning and retries."
+    },
+    {
+      "id": "P2-10",
+      "status": 1,
+      "evidence": "Daily reconciliation between the processor and the ledger."
+    },
+    {
+      "id": "P2-11",
+      "status": 2,
+      "evidence": "Entitlement API with a cache and a fail-open/fail-closed policy per feature."
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Buy: payment processor ... and tax engine ... Build: ledger, metering, rating, entitlements"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Integer minor units plus ISO 4217 currency."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Fixes are credit notes, never edits"
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "Webhook signature checks"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "card data never reaches us, so PCI SAQ A"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "Automated cross-tenant suite on every endpoint and job"
+    }
+  ],
+  "note": "Strong, risk-ordered plan with explicit assumptions and validation gates; weaker on cost quantification, tax/reverse-charge/invoice numbering and dunning detail.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2185,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 12272
+  },
+  "cost_usd": 0.052723,
+  "latency_s": 46.82,
+  "raw_file": "raw/judge-ceba01ecf3fa.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

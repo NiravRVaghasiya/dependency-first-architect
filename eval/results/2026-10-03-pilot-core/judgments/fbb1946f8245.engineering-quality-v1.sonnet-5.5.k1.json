@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "fbb1946f8245.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "fbb1946f8245",
+  "blind_sha256": "d420638ce9bcc6ed1a74e6249830473986acef950f2bd2c674c7d9ec33837b92",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 218,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Canary analysis needs metrics you can trust and a standardized deploy path, and neither exists until the earlier phases are done.",
+      "rationale": "Technical claims (OIDC, cosign, admission policies, Argo Rollouts, warn-first gates) are accurate, though shallow on hard parts like immutable digests and expand/contract migrations."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Get one service all the way from commit to production first. Turn that into a reusable template. Then move the other services over in waves.",
+      "rationale": "Covers the sequencing request well with an explicit rationale and achievable scope, but runner cost, caching and change control are thin and exclusions are not explicit."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Pull the pipeline out into versioned shared libraries or templates, one per archetype",
+      "rationale": "The phases fit together consistently; slight loose ends such as the gates being 'in parallel with Phase 5' while progressive delivery sits after Wave 2, and the data ownership of the deploy registry."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Rollback works and has been tested on purpose",
+      "rationale": "Done-when criteria exist per phase and the hard pilot de-risks migrations early, but there are few measurable targets for build time, success rate or canary thresholds."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "I'm assuming a typical setup: containerized services, Kubernetes or similar, a small platform team (3–5 engineers)",
+      "rationale": "Key assumptions are stated and the plan says which answers change tool and wave choices, but the sensitivity analysis is limited and the 4–6 archetypes figure is a guess."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Old pipelines left running quietly become permanent.",
+      "rationale": "It names domain-relevant failures (migrations left late, gate revolt, template sprawl, stalled migration), but the handling of secrets compromise, fork PRs, template breakage blast radius and CI outage is missing."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "SLOs for the platform itself (pipeline success rate, queue time, p95 build time)",
+      "rationale": "Platform SLOs, rollback, a deprecation policy and named team contacts appear, but there is no platform owner or on-call, no CI outage plan, and no template-change rollout procedure."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Cost controls on runners and preview environments",
+      "rationale": "Cost is mentioned only in passing, with no estimate of build volume, hosted versus self-hosted runners, or scaling, apart from the platform team sizing."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Make the core decisions: which CI engine, push-based deploys or GitOps (e.g. Argo CD), artifact registry",
+      "rationale": "It recognizes that core tooling decisions come first and puts the hard pilot early, but it does not weigh lock-in or exit paths, and the decisions are deferred to the team."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Don't build every feature before anyone uses it",
+      "rationale": "Thin slice first, warn-only gates, and late progressive delivery are proportionate, and existing tools are used rather than a custom orchestrator."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Done when: all 3 pilots run on shared templates with no copy-pasted pipeline code, and a new service can be onboarded in under a day.",
+      "rationale": "Each phase has an ordering rationale and checkable exit criteria, but tool choices are left open and there is no adaptation plan if the pilots disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "List all 50 services: language, build tool, how and where each deploys... Group them into archetypes"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "run old and new pipelines side by side for about a week per service, then delete the old one"
+    },
+    {
+      "id": "P3-03",
+      "status": 1,
+      "evidence": "Build → unit tests → image → push → deploy to dev → promote to staging"
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "Secrets management (Vault or a cloud secrets manager) and passwordless OIDC login from CI to the cloud"
+    },
+    {
+      "id": "P3-05",
+      "status": 1,
+      "evidence": "Image signing (cosign) and admission policies in the cluster (Kyverno or OPA)"
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Canary or blue-green releases (Argo Rollouts or Flagger), with automatic rollback driven by SLO metrics"
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Contract tests between services, plus integration tests in short-lived preview environments"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "quarantining flaky tests"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Build caching, test sharding, quarantining flaky tests"
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Ephemeral CI runners that scale automatically"
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "SLOs for the platform itself (pipeline success rate, queue time, p95 build time)"
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "A basic deploy registry and audit log (which version is running where)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Switching over: run old and new pipelines side by side for about a week per service"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "promote to staging → manual approval → prod"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "passwordless OIDC login from CI to the cloud"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Each wave needs a named contact on every team being migrated."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "which CI engine, push-based deploys or GitOps (e.g. Argo CD)"
+    }
+  ],
+  "note": "A sound, well-sequenced migration plan with a pilot, templates and parallel running, but thin on runner cost, caching targets, immutable artifact promotion, untrusted-build secret handling and change-control detail.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2186,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10324
+  },
+  "cost_usd": 0.047678,
+  "latency_s": 29.405,
+  "raw_file": "raw/judge-fbb1946f8245.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

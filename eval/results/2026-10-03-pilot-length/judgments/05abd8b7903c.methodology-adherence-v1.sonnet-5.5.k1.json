@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "05abd8b7903c.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "05abd8b7903c",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 39,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: V1 and V6\"; Phase 3 \"Depends on: V2, V3, and V5's budget input.\"",
+      "rationale": "Explicit dependency map and per-phase dependencies run substrate → defenses → triage → resolution → widening, with gates proven before dependents are specified."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Webhook → ingress, which checks the HMAC signature → queue → worker → model API (through the seam) → GitHub API comment.",
+      "rationale": "Phase 0 is a real production thin slice with deploy, rollback, trace and alert, verified by the V0 exit check."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Write authority | R3 ... Default: Draft PRs from `agent/*` branches only ... Flip condition: V1 fails → the agent can only comment",
+      "rationale": "Irreversible decisions are listed with reversibility, default, assumption, validator and flip condition, and missing inputs are declared."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1 ... tool executor with an allow-list ... It, not the model, enforces the rules.",
+      "rationale": "Widest-impact items (write authority, executor, approvals, sandbox) come before leaf work, and the rollout widens in waves from a pilot repo."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "0 | HMAC check, App least privilege, secrets in a vault",
+      "rationale": "The cross-cutting table gives concrete security content for every phase from 0 to 4."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Structured logs, with one trace ID per issue event. Metrics for tokens, cost and latency. An alert on worker errors or queue age.",
+      "rationale": "Observability is built in Phase 0 and each later phase adds concrete items."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Pinned image digest, prompts versioned in git",
+      "rationale": "Reproducibility has concrete entries in every phase: digests, injection suite in CI, pinned index, versioned replay set, and an evaluation set that grows only through review."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Idempotent delivery ID, flag kill switch",
+      "rationale": "Resilience appears in every phase, including caps, a fallback model, a dead-letter queue and circuit breakers, with per-phase rollback."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Injection defense, cost caps and human-in-the-loop are built in 0–1; then retrieval 2, model access, memory and orchestration 3, routing and feedback 4.",
+      "rationale": "Defenses, budgets and HITL come first, followed by the required layer order. Model access is seeded in Phase 0 and hardened after retrieval, and that is a minor deviation."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Auto-merge: pulled forward only if V4 acceptance is ≥ 90% across 3 months on low-risk labels, with security sign-off.",
+      "rationale": "Each deferred item names a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A very strong plan that meets every dimension. The only small blemish is that model access is seeded in Phase 0 and hardened after retrieval.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1160,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 6070
+  },
+  "cost_usd": 0.026895999999999996,
+  "latency_s": 44.047,
+  "raw_file": "raw/judge-05abd8b7903c.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

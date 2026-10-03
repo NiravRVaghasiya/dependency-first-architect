@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "d0db11792657.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "d0db11792657",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 26,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Critical path: historical data access (M0) → replay/backtest (T11–T12) → S2 go/no-go → model v1 → shadow validation (M2) → model validation → enforcement (M4).",
+      "rationale": "Milestones and tasks build substrate (infra, schemas, velocity) before policy, replay, model and enforcement, with explicit dependencies and rules enforced before the model."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "the Decision Service runs in staging, answering the Auth Service's sandbox calls in shadow mode. It writes decision records to the data lake",
+      "rationale": "M1 is a real end-to-end thin slice (API→Redis→Kafka→lake) with CI/CD and deploy, though in staging rather than prod; prod shadow follows in M2, which is nearly but not fully prod."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D9 ... Off-ramp at the end of M1 ... Revisit if: The S2 spike shows < ~10% value-detection lift",
+      "rationale": "Ten decisions with options, reversibility and revisit triggers, plus assumptions with impact and validation dates and defaults for open questions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Rules (M3) go before the model (M4); Rollback levers, fastest first; T5 skeleton → T6, T8, T9 in parallel",
+      "rationale": "Widest-impact items (contract, infra, schemas, API skeleton) precede leaf work, and rollout goes rules before model, by small percentage steps."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Timing: PCI scoping doc and QSA review in M1 (T19). Controls in M2.",
+      "rationale": "M1 has mTLS/HMAC, token-only schema and scoping, but security is largely a standalone section, with pen test and controls later, so not concretely threaded in every phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Observability (M1 baseline, full set in M2)",
+      "rationale": "T16 provides an M1 baseline with alerts, and later phases add dashboards and the anomaly alert, but it is mostly described in a standalone section and the M3/M4 treatment is thin."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform staging ... destroy + recreate succeeds; image to ECR tagged with git SHA; a second run gives byte-identical decisions",
+      "rationale": "IaC, SHA-tagged images, versioned immutable snapshots and models, deterministic replay, and golden vectors are present from M1 onward."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Failure and degradation ladder ... during a Kafka outage, API p99 stays unchanged and drops are counted",
+      "rationale": "Degradation, circuit breaker, deadline fallback and fault-injection are built in M1, with restore drill in M2 and game day/kill switches in M3."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "No LLMs. ... evaluation comes first, in M1; Promotion gates; shadow challenger; kill switch per model (→ rules-only)",
+      "rationale": "Classical ML with eval, HITL approvals, fallbacks and rollout guards before enforcement, but no explicit layered AI order or budgets; the retrieval→memory→orchestration stack is largely N/A."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Deferred | Trigger to build ... Merchant/device/IP velocity ... Card-testing across many cards at one merchant shows up in losses",
+      "rationale": "Explicit deferred table with triggers, non-goals, per-milestone exclusions and shortcut payback conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, well-sequenced plan with a thin-slice M1, explicit decisions, and deferrals; weaker on security and observability being threaded through all phases, and the AI-layer ordering is only partially applicable.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1376,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 25263
+  },
+  "cost_usd": 0.07703850000000001,
+  "latency_s": 23.949,
+  "raw_file": "raw/judge-d0db11792657.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

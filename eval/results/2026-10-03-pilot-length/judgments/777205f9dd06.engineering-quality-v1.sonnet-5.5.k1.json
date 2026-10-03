@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "777205f9dd06.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "777205f9dd06",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 51,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "pipelines should get short-lived cloud credentials through OIDC instead of stored keys",
+      "rationale": "Technically sound on OIDC, immutable tags, Cosign, Argo Rollouts, and GitOps; minor imprecision (e.g., SLSA L2-3 claim, no DB migration coverage) has little design consequence."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Group services into types. You'll usually find 4–6... Templates will be built per type, not per service.",
+      "rationale": "Covers core CI/CD capabilities, sequenced for 50 services, but omits DB migrations and explicit exclusions, and treats the legacy VM services thinly."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Depends on table: 6 depends on 3, 4, 5; 7 depends on 6 (pilots proven)",
+      "rationale": "Consistent GitOps, template, and promotion design with clear dependencies; minor loose ends such as Phase 8 overlapping migration and the Phase 3 vs 4 ordering."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Run a game day: practice a failed deployment and confirm that automatic rollback works.",
+      "rationale": "Pilot-based validation, game day, and measurable done-criteria exist, but thresholds (10 min, 15%, 1 hour) are unjustified and there is no early test of the riskiest assumptions or of platform outages."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Rough timeline: about 6–8 months with a platform team of 4–6 engineers.",
+      "rationale": "Team size and timeline are stated as given with no sensitivity analysis; the existing stack is handled by discovery, but the compliance, scale and budget assumptions are implicit."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Automatic rollback when the analysis fails... deployment freeze windows, rate limits on deployments, and a documented, audited emergency 'break-glass' path.",
+      "rationale": "Covers rollback, break-glass and warning-mode false positives, but there is little on untrusted PRs, pipeline outages, DB migrations, flaky tests or migration fallback."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Platform service levels: CI availability, 95th-percentile queue time, and how quickly deployments sync.",
+      "rationale": "Observability, rollback and platform SLOs are present, but there is no named owner or incident response for the platform, and no DB migration path."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Cost controls: use spot instances for runners, tune caches, and track CI minutes per team.",
+      "rationale": "Cost is a single late bullet with no estimate, no hosted vs self-hosted analysis and no volume basis."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "make the hard-to-reverse choices up front... write each one down as an architecture decision record (ADR)",
+      "rationale": "Hard-to-reverse choices are explicitly recognized and recorded in ADRs, but the plan sets them in weeks 0–3 before any pilot evidence and gives no exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Optional: preview environments for each pull request, for teams that need them.",
+      "rationale": "Uses existing tools and templates per type; some components (Backstage, feature flags, Kargo, SLSA 3) are extra but staged late."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Done when: all 3 pilots use the templates, PR checks take under 10 minutes, and the templates are documented and versioned.",
+      "rationale": "Phases have concrete steps, dependencies and done-criteria, but the tool choices are left as options and there is no adapt-if-disappointing guidance."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Group services into types... Templates will be built per type, not per service."
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Run old and new pipelines in parallel briefly, then remove the old ones."
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Build once and promote the same artifact. Never rebuild for each environment."
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "pipelines should get short-lived cloud credentials through OIDC instead of stored keys."
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Build provenance: SLSA Level 2–3 provenance records, verified before deployment."
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Automatic rollback when the analysis fails. A rollback should mean reverting a Git commit"
+    },
+    {
+      "id": "P3-07",
+      "status": 2,
+      "evidence": "contract tests (for example, Pact) so services can deploy independently"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Platform dashboards: ... pipeline length, failure rate, flaky tests and queue times."
+    },
+    {
+      "id": "P3-09",
+      "status": 2,
+      "evidence": "under 10 minutes for pull-request checks, achieved with caching, parallel tests, and builds that only rebuild what changed"
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "use spot instances for runners, tune caches, and track CI minutes per team."
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "Platform service levels: CI availability, 95th-percentile queue time"
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "require a human only for regulated services, and keep a record of every approval."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Run old and new pipelines in parallel briefly, then remove the old ones."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "tags that never change (for example, the Git commit ID)"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "Zero long-lived credentials in CI"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Relying on a large shared end-to-end environment. Use contract tests and gradual rollouts instead."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "CI engine (GitHub Actions, GitLab CI, Buildkite, Tekton)"
+    }
+  ],
+  "note": "A solid, well-sequenced pilot-then-waves plan with immutable artifacts, OIDC and GitOps, but thin on cost, DB migrations, flaky tests, platform ownership and outages, and fork-PR security.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2247,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 11267
+  },
+  "cost_usd": 0.0508305,
+  "latency_s": 36.683,
+  "raw_file": "raw/judge-777205f9dd06.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

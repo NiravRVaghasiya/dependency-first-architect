@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "8d1856dea14d.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "8d1856dea14d",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 50,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1: Data Preparation ... Phase 2: Vector Storage & Retrieval ... Phase 3: LLM Integration",
+      "rationale": "Data→retrieval→LLM→app is a loose substrate-up order, but nothing is proven before the next phase and monitoring/fallback come late."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No thin end-to-end production slice first; phases are layered components and the UI comes in Phase 4."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "Vector Database: Store embeddings (Pinecone, Weaviate, Qdrant, Milvus, or ChromaDB)",
+      "rationale": "Options are listed without defaults, flip conditions, or any identified irreversible decisions."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No ordering of work within phases by impact; items are flat lists."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No security, PII, access control, or prompt injection handling anywhere."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Phase 5: Quality & Monitoring - Metrics: BLEU, ROUGE, user satisfaction, callback rate",
+      "rationale": "Monitoring exists only as a trailing phase, not from day zero."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "Doc Updates: Version control for help-center docs",
+      "rationale": "Only doc version control is mentioned, late; no reproducible builds, environments, or re-indexing."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Fallback Handling: Route to human agents when confidence is low",
+      "rationale": "Only one fallback item in Phase 4; no failure handling threaded through other phases."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Prompt Engineering: Design system prompts that enforce using retrieved docs only",
+      "rationale": "Retrieval precedes model access, but there are no defenses, budgets, or human-in-the-loop before capabilities, and no memory/routing layers; feedback is at the end."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No deferred work or pull-forward conditions are stated."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "This is a generic component checklist that ends by asking for more input. It has no walking skeleton, gates, security, or deferral, so it scores very low.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 876,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 1847
+  },
+  "cost_usd": 0.0134985,
+  "latency_s": 23.99,
+  "raw_file": "raw/judge-8d1856dea14d.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

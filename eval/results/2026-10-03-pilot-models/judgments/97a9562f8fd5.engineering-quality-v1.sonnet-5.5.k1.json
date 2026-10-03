@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "97a9562f8fd5.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "97a9562f8fd5",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 89,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "OIDC federation from CI to cloud (no long-lived keys), and RBAC.",
+      "rationale": "Technical claims are accurate (OIDC, expand/contract, GitOps, cosign), though generic and never touching hard parts; the plan has no real errors."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Migrate in waves of 5–10 services. Start with low-risk and standard-tier services, and do the critical tier last",
+      "rationale": "It covers the core sequencing request credibly with inventory, pilot, waves and dependencies, but tool choices are left open and some needs (cost, test envs) are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Decisions → Identity/Secrets + Registry + Infra-as-code → Pipeline templates → Pilot → GitOps/CD",
+      "rationale": "The design is consistent, but there is a small mismatch: the pilot runs CI only before CD exists, and the pilot avoids critical services while the sequencing mistake says to pilot on low-risk ones."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Collect feedback from the teams, and measure build times and failure causes.",
+      "rationale": "Pilot and canary metric rollback are present, but there are no measurable acceptance criteria or targets, and riskiest assumptions are not explicitly tested early."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "I'm assuming a Kubernetes-based target, Git-hosted repos, and a small platform team.",
+      "rationale": "Assumptions are stated with explicit change-points in 'Where the plan would change', though team size and scale are not quantified."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Teams will route around a platform that blocks everything, so start in warn mode.",
+      "rationale": "Some failure modes are addressed (rework, rollouts, adoption, fallback via parallel pipelines), but platform outages, fork PR secrets, flaky tests and pipeline bypass are not covered."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Run the platform as a product: a roadmap, an SLO for the pipeline itself, and a feedback loop.",
+      "rationale": "Deployment, rollback, DORA dashboards and embedded support are mentioned, but there is no named owner, incident response or platform outage plan."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Control cost with runner autoscaling and image/artifact cleanup.",
+      "rationale": "Cost is mentioned only generically with no estimate, hosted vs self-hosted analysis or build-volume basis."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Set the architectural decisions: CI engine... CD model... Artifact and registry strategy",
+      "rationale": "Key one-way decisions are identified and made in a decision phase, with templates versioned, but lock-in, exit paths and early validation of those choices are not discussed."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Add security gates in warn-only mode first",
+      "rationale": "The plan uses existing tools and staged rollout, with little gold-plating, though it includes Backstage, OPA and cosign for a small team without much justification."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Group waves by stack so one set of template fixes covers the whole wave.",
+      "rationale": "Phases, weeks, dependencies and a critical path are sensible, but tools are unchosen, there are no exit criteria for phases and no fallback if early results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Record language and build tool, repo layout (mono or poly), data stores, deploy target, test maturity, and who owns each one."
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Keep the old pipelines running in parallel until each service has had a successful prod deploy on the new one."
+    },
+    {
+      "id": "P3-03",
+      "status": 1,
+      "evidence": "container build, image push, and versioning and tagging."
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "OIDC federation from CI to cloud (no long-lived keys), and RBAC."
+    },
+    {
+      "id": "P3-05",
+      "status": 1,
+      "evidence": "image signing (cosign), and provenance checks."
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "canary or blue/green with Argo Rollouts or Flagger, with automated rollback driven by metrics."
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Pact or similar, and smoke tests after deploy. Contract tests matter a lot across 50 services."
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Add ephemeral preview environments."
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Tune build times with caching, affected-only builds for monorepos, and parallelization."
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "autoscaling ephemeral runners, plus a build cache."
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "an SLO for the pipeline itself"
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "Add audit trails and compliance evidence, if you need them."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Migrate in waves of 5–10 services."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "versioning and tagging."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "OIDC federation from CI to cloud (no long-lived keys)"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "dev deploys automatically, staging deploys on merge, and prod goes through a gate or approval."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "CI engine (GitHub Actions, GitLab CI, Jenkins, Tekton, etc.)"
+    }
+  ],
+  "note": "A sound, sensibly sequenced high-level roadmap with a pilot, waves and parallel running, but thin on measurable criteria, cost, supply-chain and credential-threat detail, and platform ownership.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2111,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 9422
+  },
+  "cost_usd": 0.044858,
+  "latency_s": 31.518,
+  "raw_file": "raw/judge-97a9562f8fd5.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

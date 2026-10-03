@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0a5096b67515.engineering-quality-v1.fable-5.k1",
+  "blind_id": "0a5096b67515",
+  "blind_sha256": "9f4e125ab24e9c643623aabbc26c68ab28950b641cd4cb13519df3758beae15a",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 312,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "GitHub doesn't retry webhooks automatically, so the Reconciler covers the gap.",
+      "rationale": "Technical claims are precise in exactly the subtle areas plans get wrong (webhook non-retry, Git Data API publishing, Fargate microVM isolation, CI secret exposure on pull_request, ruleset bypass actors), with only trivial nits like CODEOWNERS review requests on draft PRs."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Resolve: when a maintainer asks it to, try a fix and open a **draft PR** for human review.",
+      "rationale": "Resolves the key ambiguity ('what does resolve mean') explicitly, covers triage and resolution with a realistic 2-3 engineer team, and lists exclusions (auto-merge, security reports, auto-close) each with a reason."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "No operation spans more than one writer.",
+      "rationale": "Single-writer data ownership, one write path to GitHub, policy checked before every write, transactional job handoff, and the trust boundaries declared up front are honored consistently in every flow and component."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "**Evaluation comes first.** Before anything acts on real issues, historical issues from the pilot repos become a triage eval set",
+      "rationale": "The three riskiest assumptions (network-free sandbox, resolution feasibility, GitHub control enforcement) are spiked in M1 before commitment, eval gates block prompt/model changes, targets are labeled assumptions, and live feedback continues validation in production."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Those answers would change the architecture, so I've chosen sensible defaults, written each one down, and listed the questions at the end.",
+      "rationale": "Every design-bearing assumption (A1-A9) is explicit with impact-if-wrong and a validation point and date, numbers are flagged as assumptions, and no unsupported certainty is stated."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "does the ref exist pointing at a commit whose tree SHA matches? Skip; is there an open PR with this head? Skip",
+      "rationale": "Covers the hard domain failures concretely: mid-publish crash with check-before-write recovery, duplicate deliveries, provider outage, injection with a worked adversarial flow, CI secret exfiltration, bot loops, and even acknowledges the residual risk of harmful logic in ordinary files."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Bad deploy: redeploy the previous image tag (one command in the deploy workflow).",
+      "rationale": "Deployment, rollback, migrations, alerts with runbooks, kill switch, an undo command driven by the audit log, tested restore, and explicit business-hours-only ownership are all sized to the stated 2-3 engineer team."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Resolution: about 0.5–2M input tokens per attempt (less with prompt caching) on a frontier tier, roughly $1–5 each.",
+      "rationale": "The dominant driver (frontier-model resolution tokens) is identified with grounded ranges, scaling is tied to issue volume, controls are concrete (per-attempt cap, per-repo budget, AWS Budgets alerts), and buy-vs-build is costed via Spike B."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Only the language choice is costly to change after M1.",
+      "rationale": "Every decision carries a reversibility rating and a revisit trigger, the genuinely one-way choices (merging, public comments as 'point of no return') get the most protection, and the resolver build-vs-buy commitment is deferred until Spike B evidence."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Kept deliberately boring: at about 1,000 jobs/day, Postgres is more than enough.",
+      "rationale": "One service, Postgres as queue, no multi-agent, no vector index, with each piece of real complexity (sandbox, policy engine, evals) justified by the safety requirement and shortcuts listed with payback triggers."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "a valid delivery creates 1 job, a replayed delivery creates 0 new jobs, a bad signature returns 401",
+      "rationale": "Day-1 long-lead tasks, a dependency-ordered task list with checkable done-when criteria per task, and explicit adaptation paths for each spike outcome mean a team could start immediately and knows how to change course."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "T0 shadow (record only), T1 suggest (one collapsed comment, no labels), T2 act (labels plus clarifying-question comments)"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "Mints installation tokens **scoped to one repo and the minimum permissions for that job**"
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Model output is always validated against a schema and passed through the Policy Engine before any write."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "a **Fargate sandbox with no secrets and no network**. The agent loop runs *outside* the sandbox"
+    },
+    {
+      "id": "P4-05",
+      "status": 1,
+      "evidence": "the orchestrator itself runs the repo's full `test` and `lint` commands"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "The chosen per-label thresholds that give ≥ 90% precision are written to `config/thresholds.yaml`"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "removal of a label the agent added within 14 days, counted as a triage false positive"
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "Global and per-repo `kill_switch` is checked immediately before **every** GitHub write."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "hard $5 cap per attempt, per-repo daily budget in `repo_settings`, AWS Budgets alert at 80% and 100%"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "the tamper-resistant audit log: append-only database role, exported nightly to S3 with object lock"
+    },
+    {
+      "id": "P4-11",
+      "status": 2,
+      "evidence": "`search(pattern, glob)` | ripgrep, max 100 hits"
+    },
+    {
+      "id": "P4-12",
+      "status": 2,
+      "evidence": "`INSERT ... ON CONFLICT DO NOTHING` on `X-GitHub-Delivery`"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent **never merges, never pushes to protected branches, and never closes issues** in the pilot."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "No task IAM role permissions. Environment variables are explicitly blank."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "the issue inside an `<untrusted_issue>` block"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "Share of agent draft PRs merged (possibly after edits) | ≥ 30%"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "up to **50 tool calls, 25 min wall-clock, and $5 model spend**"
+    }
+  ],
+  "note": "An exemplary plan: it avoids every trap, concentrates design effort on containment and eval-first validation, and its only notable gap is not requiring the agent to reproduce an issue as a failing test before fixing it live.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 13545,
+    "thinking_tokens": 8125,
+    "cache_read_input_tokens": 34740,
+    "cache_creation_input_tokens": 43906
+  },
+  "cost_usd": 1.260855,
+  "latency_s": 192.452,
+  "raw_file": "raw/judge-0a5096b67515.engineering-quality-v1.fable-5.k1.txt"
+}

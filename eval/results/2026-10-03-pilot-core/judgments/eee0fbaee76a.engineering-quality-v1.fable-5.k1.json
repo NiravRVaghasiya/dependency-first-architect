@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "eee0fbaee76a.engineering-quality-v1.fable-5.k1",
+  "blind_id": "eee0fbaee76a",
+  "blind_sha256": "e7c862aafe49d4ca375c2531e5101df77f5a20df933eca2dc3329dec034af2df",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 408,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "In Moffatt v. Air Canada (2024), a tribunal held the airline liable for its chatbot's made-up refund policy",
+      "rationale": "Claims about RAG mechanics, pgvector suitability, legal precedent, EU AI Act Art. 50, and webhook reliability limits are all accurate, with real limits stated rather than overstated."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "A chat widget on the help center that answers customer questions using only published help-center articles, cites them, and hands off",
+      "rationale": "Solves exactly the stated problem, resolves ambiguities (public docs, no account access, one language) with explicit assumptions, and defers out-of-scope items with reasons."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The CMS stays the source of truth for content (the bot never writes to it), and the help desk stays the source of truth for tickets",
+      "rationale": "Clear data ownership, consistent choices honored across phases (grounded-only policy enforced in prompt, claim-check, renderer, and gates), and no internal contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "An LLM judge checks each claim and is calibrated against 150 human-graded answers",
+      "rationale": "Gates V0–V6 target the specific risks (faithfulness, leakage, injection, cost), thresholds are labeled ASSUMPTION, risky checks precede customer exposure, and validation continues in production via daily sampling and a holdout canary."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "If any of them is wrong, the phase order changes, so please check them first",
+      "rationale": "Four load-bearing assumptions stated up front with explicit consequences if false, and all numbers tagged ASSUMPTION/UNKNOWN/BASELINE with named owners to confirm them."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "The bot states a policy or makes a promise... that the docs don't support, customers act on it, and the company is held to it",
+      "rationale": "Identifies the hardest domain failures (ungrounded promises, withdrawn-policy staleness, injection via planted article content, runaway spend, provider outage) each with concrete detection, containment and recovery; only ticket-creation idempotency on retry is unaddressed."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "1 chat service, 1 ingest worker, pgvector inside the Postgres you already run; owning team's existing on-call",
+      "rationale": "Deploy/rollback via flag, image and index-alias swap, domain-meaningful signals (freshness lag, faithfulness, spend), named ownership and runbooks, all sized to a small team."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Cost per resolved conversation: UNKNOWN, set against the cost of a human-handled ticket, which support ops must supply",
+      "rationale": "The dominant driver (inference) is capped per turn/session/day with a kill-switch, cost gates the rollout, build-vs-buy and self-host trade-offs are explicit, and unknown figures are flagged rather than invented."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: a non-public article shown to the public can't be unshown",
+      "rationale": "Decisions carry explicit reversibility ratings, revisit triggers and exit paths; the costly-to-reverse ones (privacy boundary, indexing scope, answer policy) get the most scrutiny while reversible defaults are decided quickly."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Monolith instead of services... No agent framework, plain code... a reranker only if V4 needs it",
+      "rationale": "The simplest workable design (one service, pgvector in existing Postgres, fine-tuning and routing deferred) with complexity added only where the liability-heavy domain demands it."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Run the V4/V5 question set against a trial of the vendor agent",
+      "rationale": "The Phase 0 slice is concrete enough to start today, ordering is justified by dependency and risk, every phase has checkable exit criteria, and every gate specifies what changes if it fails."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "Index updates from CMS webhooks plus a nightly full reconcile. Unpublish events take a priority path"
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Heading-aware chunking... Index versioned with embedding model and chunker"
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "≥ 300 real questions from search logs and ticket subjects, sampled by top contact reasons, with the expected article labeled by support staff"
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "Answer only from retrieved passages, with citations. Decline and offer handoff when retrieval is weak or a claim isn't supported"
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "For refunds, billing, pricing, legal and security, give a link to the article plus a handoff... Agents rate handoffs as usable"
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "user and retrieved text, which go in as clearly marked data, never as instructions... no ticket created without a user click"
+    },
+    {
+      "id": "P1-07",
+      "status": 2,
+      "evidence": "Index only articles the CMS marks public and published. Filter when indexing, and check visibility again when answering"
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "Personal data is removed before logs and analytics. Raw transcripts stay in our region with 30-day retention... no retention and no training"
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "The bot only answers questions and hands off to a human. It doesn't look up accounts or take actions like refunds"
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "Daily automated faithfulness check on 2% of chats, plus a weekly human review... Send content gaps to the docs team"
+    },
+    {
+      "id": "P1-11",
+      "status": 2,
+      "evidence": "Per turn: ≤ 12k input and ≤ 1k output tokens... Daily spend kill-switch... Cost per resolved conversation... set against the cost of a human-handled ticket"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Decline and offer handoff when retrieval is weak or a claim isn't supported"
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Filter when indexing, and check visibility again when answering... retrieval checks the caller's permissions (new costly-to-reverse decision)"
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Prompt + RAG instead of fine-tuning (fine-tuning is deferred)... CMS webhooks, nightly reconcile, priority unpublish path"
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Evals run in CI on every prompt or model change"
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "No agent framework, plain code... with a reranker only if V4 needs it"
+    }
+  ],
+  "note": "An exemplary plan: all eleven checklist items concretely addressed, all five traps explicitly recognized and avoided, with risk-ordered gates, labeled assumptions, and a proportionate architecture; the only nameable gaps (handoff idempotency, no dollar estimate) are deliberate or trivial.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 10945,
+    "thinking_tokens": 5592,
+    "cache_read_input_tokens": 17178,
+    "cache_creation_input_tokens": 25845
+  },
+  "cost_usd": 0.8875305,
+  "latency_s": 288.891,
+  "raw_file": "raw/judge-eee0fbaee76a.engineering-quality-v1.fable-5.k1.txt"
+}

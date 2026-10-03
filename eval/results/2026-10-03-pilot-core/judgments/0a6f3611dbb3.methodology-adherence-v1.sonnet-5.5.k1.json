@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0a6f3611dbb3.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "0a6f3611dbb3",
+  "blind_sha256": "b68f002e6b5e5c3cbcd8c797716b5120d3c0643b8cdcb50b6e215c3e3d04f5b6",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 275,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Critical path: BAA + security review → ExpressRoute provisioning → M2 production replication (14-day soak) → M3 rehearsals + CAB → M4 → M5.",
+      "rationale": "Phases build from foundations and spikes to replication, rehearsal, app canary, DB cutover, and decommission, with entry gates proving each dependency first."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Test booking via the pipeline-deployed stack generates an SIU message received by the test engine",
+      "rationale": "M1 is a real end-to-end slice through the pipeline, but it is non-prod only with masked data, not a production path."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D2 ... Revisit if: On-prem is older than SQL 2022 and the sponsor needs switch-back after cutover → choose (b).",
+      "rationale": "Nine decisions have options, rationale, reversibility and flip conditions, and assumptions have defaults, impact and validation dates."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Week 1 long-lead items (BAA, ExpressRoute, security review), then landing zone, then DB, then app; canary clinics 1 → 10% → 50% → 100%",
+      "rationale": "Widest-impact items (connectivity, compliance, landing zone, DB decisions) come first, and rollout goes from a pilot clinic outward."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Security review must pass, and the BAA must be signed, before any production data replicates (entry criterion for M2).",
+      "rationale": "Security runs through every phase: M1 policy-deny, masked data and Key Vault; M2 entry gate; M3 pen test; M5 audit logging."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Add non-prod observability: ... synthetic book/cancel script every 60 s, and one alert ... Done when stopping IIS on both VMs triggers the alert",
+      "rationale": "Observability is built in the M1 thin slice, extended to prod in M2, and used in canary and cutover with concrete metrics and alerts."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Everything is defined in code (Bicep) ... deployed by pipeline; hardened image; masked dataset script; reconciler scripts in the repo",
+      "rationale": "IaC, pipelines, hardened images, scripted masking and versioned runbooks and reconciler apply from M1 through cutover."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "M4 app canary: Traffic director moves clinics back to the on-prem pool (also automatic on health failure) ≤ 5 min",
+      "rationale": "Failure handling appears in every phase: link lag alerts in M2, abort rehearsals in M3, automatic fallback in M4, abort rule and rollback in M5, and the WAN failure flow."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "AI-specific concerns: not applicable. No AI components are involved.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Replatform the app tier to App Service or containers | After 3 stable months, if VM patching load or scaling justifies it",
+      "rationale": "Section 17 lists deferred items with pull-forward triggers, plus non-goals and shortcuts taken on purpose."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong, thorough plan; the only notable gap is that its walking skeleton is non-production rather than a live production path.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1242,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 22528
+  },
+  "cost_usd": 0.06874799999999999,
+  "latency_s": 27.114,
+  "raw_file": "raw/judge-0a6f3611dbb3.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

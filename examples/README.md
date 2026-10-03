@@ -1,5 +1,10 @@
 # Examples: the same prompt, with and without the skill
 
+> These plans and scores are the **v1.0.0** measurement, kept as published. The skill has changed
+> since (see [`CHANGELOG.md`](../CHANGELOG.md)); runs of the current version are in
+> [`eval/results/`](../eval/results/README.md). The scores below are on the methodology-adherence
+> rubric, which checks what the skill asks for, not whether a plan is good engineering.
+
 The five fixed prompts from [`reference/evals.md`](../reference/evals.md). Each was answered once
 by `claude-opus-5-5` in a clean, isolated session in Claude Code without the skill, and once with
 it. Nothing was edited or cherry-picked: each plan's SHA-256 is recorded, and

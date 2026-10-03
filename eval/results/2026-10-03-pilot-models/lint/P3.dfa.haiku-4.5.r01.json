@@ -1,0 +1,90 @@
+{
+  "schema": "dfa-eval/lint@1",
+  "gen_id": "P3.dfa.haiku-4.5.r01",
+  "template": "plan-template-v2",
+  "checks": [
+    {
+      "id": "sections.present",
+      "ok": true,
+      "detail": "all 10 sections found in template order"
+    },
+    {
+      "id": "self_score.absent",
+      "ok": true,
+      "detail": "no self-score heading and no /20 total"
+    },
+    {
+      "id": "budgets.labeled",
+      "ok": true,
+      "detail": "7 budget rows, every Label starts with a label"
+    },
+    {
+      "id": "budgets.unknown_has_no_number",
+      "ok": false,
+      "detail": "budget table has no Target column"
+    },
+    {
+      "id": "dependencies.typed",
+      "ok": true,
+      "detail": "21 rows, 16 of a decision/validation/risk/org/economic kind"
+    },
+    {
+      "id": "gates.columns",
+      "ok": true,
+      "detail": "gates table has Decision, Reversibility, Default, Assumption, Validated by, Flip"
+    },
+    {
+      "id": "gates.no_r1_rows",
+      "ok": true,
+      "detail": "6 gate rows, all R2 or R3"
+    },
+    {
+      "id": "gates.r3_backed",
+      "ok": true,
+      "detail": "6 R3 rows, each cites a section-6 V-ID or a basis"
+    },
+    {
+      "id": "validation.complete",
+      "ok": true,
+      "detail": "5 gates, all 7 fields filled"
+    },
+    {
+      "id": "validation.v0",
+      "ok": true,
+      "detail": "V0 row present"
+    },
+    {
+      "id": "validation.no_dangling",
+      "ok": true,
+      "detail": "all 5 cited V-IDs have a section-6 row"
+    },
+    {
+      "id": "validation.labeled",
+      "ok": false,
+      "detail": "thresholds without a label or sign-off: V1, V2, V4"
+    },
+    {
+      "id": "crosscutting.complete",
+      "ok": false,
+      "detail": "cross-cutting table lacks columns: Security, Observability, Reproducibility, Resilience"
+    },
+    {
+      "id": "exceptions.complete",
+      "ok": false,
+      "detail": "section 9 (exceptions) is neither 'None.' nor an exceptions table"
+    },
+    {
+      "id": "deferred.present",
+      "ok": false,
+      "detail": "section 10 (deferred) has no bullet and does not say None"
+    },
+    {
+      "id": "ai_layer.consistent",
+      "ok": true,
+      "detail": "non-AI system; section 8 says N/A"
+    }
+  ],
+  "passed": 11,
+  "total": 16,
+  "score": 0.6875
+}

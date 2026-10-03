@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "88d875a84691.probe.sonnet-5.5",
+  "blind_id": "88d875a84691",
+  "blind_sha256": "c4cbe2215ea63967971dbf9b8234f2d5ac2f574e0a6d2eaa2556cc6fb90415b1",
+  "judge": "sonnet-5.5",
+  "order_index": 63,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens with an explicit stated assumption (issuer/processor) and ends with open questions, which is typical of a general good-practice plan and doesn't clearly show a formal methodology",
+    "Content is a thorough, standard domain design (architecture diagram, components, labels, rollout, monitoring) with no visible methodology scaffolding like named steps, checkpoints, or verification sections",
+    "Has a phased delivery table and a requirements table, which is well organized but common in unconstrained strong-model answers",
+    "Domain-specific insights (read-your-writes, label maturity, selection bias) show depth but not a prescribed process",
+    "Ends by offering follow-up ('If you can answer these, I can turn this into a sized design'), a conversational style suggesting a free-form response"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 326,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4194
+  },
+  "cost_usd": 0.013753,
+  "latency_s": 29.591,
+  "raw_file": "raw/probe-88d875a84691.probe.sonnet-5.5.txt"
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "7d500d5dfb1d.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "7d500d5dfb1d",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 21,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Implement promotion as tag move (image tag `staging-xyz` moves to prod-ready SHA; prod deployment reads from `prod` tag).",
+      "rationale": "Mutable-tag promotion, PodSecurityPolicy (removed), 'kubectl delete pod' as rollback, 'Vault sidecar' injecting into CI agents, and 'cluster-admin' agents are material errors in dependent components."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Select 3 services: 1 stateless HTTP svc, 1 stateful svc with DB, 1 critical batch job.",
+      "rationale": "Covers a phased build with pilot and waves, but conflates CI/CD platform with app observability, omits service inventory, and the 'migration' is mixed with deploying services."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Rollback: agents fall back to test-only ... Phase 1 work is undone, Phase 0 repeats.",
+      "rationale": "Recognizable design, but has contradictions: sync approval 'blocks merge' versus prod approval, V-gate numbering mismatches (V6/V7/V8 reuse), and tag-based promotion versus commit-SHA builds."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "V4 ... Regex scan of logs, images, artifacts, env vars: ZERO secrets found plaintext.",
+      "rationale": "Risk-targeted gates with measurable criteria, early pilot and rollback rehearsal; some thresholds invented (<2% error, $50/day) and 3-service samples are weak, and post-launch validation is limited."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Deployment target is **Kubernetes** (K8s); plan revises if VMs or serverless dominates.",
+      "rationale": "Explicit assumptions with revisit triggers, though several numbers (3 deploys/team/day, $50/day, 8-15 teams) are weakly grounded and inconsistent."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Test: attempt privilege escalation from agent pod; should fail.",
+      "rationale": "Covers secret leakage, agent failure, sink failure, and canary failure, but misses untrusted PRs, supply-chain, flaky tests, DB migration compatibility and CI outage handling."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Alert rule: if health check fails 3 times in a row, log `ERROR: health check failed`.",
+      "rationale": "Deployment, rollback, audit and runbooks exist, but platform ownership, its own outage plan, and delivery metrics are absent, and observability focuses on app services."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Run full build matrix: all 50 services, 3 times (simulating typical day). Measure: agent utilization, build time, storage, egress.",
+      "rationale": "Cost drivers identified and a hosted vs self-hosted decision with a validation gate, but no estimates, placeholder $X, and 150 builds/day volume is unreasoned."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "| **Hosted vs. self-hosted CI/CD** | R3 | Hosted (SaaS: GitHub Actions, GitLab CI, or Buildkite)",
+      "rationale": "Explicit R1/R2/R3 tiering with revisit triggers and spikes for key choices, though some tier labels are debatable and template lock-in is only lightly handled."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Write sidecar injection controller (mutating webhook) to inject secrets into agent pods.",
+      "rationale": "Mostly uses existing tools, but builds custom controllers, blue-green plus canary, multi-region logs, 50 dashboards and heavy ceremony (12 gates, CAB) while omitting essentials like caching."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Phase 1: Secrets, RBAC, and Approval Gates (Weeks 1–3) ... Exit check: ✓ V4 passes: no secrets in logs of 10 synthetic deploys.",
+      "rationale": "Ordered phases with concrete tasks and checkable exits and fallback actions; weakened by the missing service inventory, numbering inconsistencies and placeholder thresholds."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "Single template with config injection (all 50 services use `.github/workflows/deploy.yml` or equivalent; service config in `ci.yaml`)"
+    },
+    {
+      "id": "P3-02",
+      "status": 1,
+      "evidence": "Pilot wave (3 services, 1 week) ... Wave 4 (Week 12): remaining 20 services"
+    },
+    {
+      "id": "P3-03",
+      "status": 0,
+      "evidence": "Implement promotion as tag move (image tag `staging-xyz` moves to prod-ready SHA; prod deployment reads from `prod` tag)."
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "Vault + sidecar (secrets never in logs, artifact, or env; injected at runtime)"
+    },
+    {
+      "id": "P3-05",
+      "status": 1,
+      "evidence": "K8s admission controller validates image signature (stub: warn only in V0)."
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Implement canary: new image deployed to 10% of replicas first; health checks for 5 min; if OK, roll to 100%."
+    },
+    {
+      "id": "P3-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Optimize: parallel steps, caching, image layer reuse."
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Hosted (SaaS: GitHub Actions, GitLab CI, or Buildkite)"
+    },
+    {
+      "id": "P3-11",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "Store in tamper-proof log sink (S3 with immutable lock, or Sumologic/Datadog with retention + encryption)."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Wave 2 (Week 10): 5 services ... each wave: canary 10%, monitor 2 hours"
+    },
+    {
+      "id": "P3-T2",
+      "present": true,
+      "evidence": "Implement promotion as tag move (image tag `staging-xyz` moves to prod-ready SHA; prod deployment reads from `prod` tag)."
+    },
+    {
+      "id": "P3-T3",
+      "present": true,
+      "evidence": "RBAC: all agents have broad cluster-admin scope (tightened in Phase 1)."
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Hosted (SaaS: GitHub Actions, GitLab CI, or Buildkite)"
+    }
+  ],
+  "note": "Methodical phased plan with a pilot, waves and measurable gates, but mutable-tag promotion, outdated PSP, cluster-admin agents and missing supply-chain, inventory, flaky-test and platform-SLO coverage keep it mediocre.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2494,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 29478
+  },
+  "cost_usd": 0.098828,
+  "latency_s": 62.894,
+  "raw_file": "raw/judge-7d500d5dfb1d.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

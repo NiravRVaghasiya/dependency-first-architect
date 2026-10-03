@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "21be52d282d7.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "21be52d282d7",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 185,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Per-card hot counters are strongly consistent per key (single partition per card, atomic increment in the request path).",
+      "rationale": "The claims on stream and feature consistency, ISO 59 decline, 3DS step-up and HMAC tokens are correct. Small gaps remain, such as retry double-counting on increments and only loose handling of PCI scope for the auth host."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Assumptions (confirm these): The scoring happens on the issuer or processor side, inside the existing ISO 8583 authorization flow.",
+      "rationale": "The plan solves the real inline problem and resolves the issuer-versus-merchant ambiguity. It sequences the work credibly and has an explicit Deferred list. Peak and holiday sizing and a team or timeline assumption are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Synchronous only for the decision: auth host → scorer → response. Everything else is async",
+      "rationale": "Responsibilities and data ownership are clear: logged features feed training, one feature codebase, one contract. Only minor loose ends remain."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Features recomputed offline match the logged features for more than 99.5% of sampled decisions.",
+      "rationale": "The riskiest items are tested early with shadow mode, replay, a parity job, game days and drills. The thresholds are not labeled as provisional, and there is no load or peak test."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Assumptions (confirm these): ... Peak volume is a few thousand transactions per second.",
+      "rationale": "Key assumptions and revisit triggers are explicit. Specific numbers such as the 75 ms timeout, 50 ms p99 and 99.5% parity are presented as defaults without basis or sensitivity notes."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "a bad rule or model that declines good customers at scale ... auto-rollback on decline spikes; label-poisoning checks per source",
+      "rationale": "The plan covers fail-open, Redis loss, bad rules and models, selection bias, label poisoning and probing of thresholds, each with detection and mitigation. Duplicate and retry effects on counters and auth reversals are not covered."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Kill-switch drill: enforcement is off in under 1 minute with zero auth errors.",
+      "rationale": "The plan covers deploy, rollback, meaningful signals, drills, maker-checker review and RBAC. On-call ownership and team sizing are not explicit, and the stack (Flink, Kafka, Redis, Iceberg, K8s) is heavy for a small team."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Buy the infrastructure: managed Kafka (MSK/Confluent), managed Flink, Redis or Aerospike.",
+      "rationale": "There is a build-versus-buy stance, but no cost estimates, cost drivers, scaling behavior or cost controls beyond 3× memory sizing."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "plug it in behind the same scoring API contract, so the choice can be reversed.",
+      "rationale": "Every decision has a revisit trigger. The plan isolates vendors and the model serving contract, and uses schema compatibility rules. The token scheme and key rotation are flagged, though exit paths for the HMAC scheme and the Iceberg and Kafka commitments are light."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "One scoring service that fetches features, runs rules and runs the model in the same process.",
+      "rationale": "It starts from a monolith with rules first and ML last, and defers GNN, a feature store, multi-region and online learning. The Flink, Kafka, Iceberg and Trino stack is substantial but mostly justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: Replaying one production day gives identical decision logs on two runs. CI rejects an incompatible schema change.",
+      "rationale": "It gives a concrete Phase 0 slice, dependency-ordered phases with reasons, checkable exit criteria at each stage, and triggers for changing course."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "hard p99 limit ... Scorer p99 stays within budget with all features fetched. One batched read per score."
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "Fail open to a minimal rules set compiled into the auth host. If that also fails, fall back to the issuer's existing stand-in limits."
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "the same feature code in Flink batch mode over historical Iceberg data"
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "joins features as logged at decision time to labels known as of a cutoff date. No leakage."
+    },
+    {
+      "id": "P8-05",
+      "status": 1,
+      "evidence": "value-weighted recall at a fixed decline rate or alert budget, impact on approval rate"
+    },
+    {
+      "id": "P8-06",
+      "status": 2,
+      "evidence": "Actions are APPROVE / DECLINE / STEP_UP / APPROVE_AND_ALERT / QUEUE."
+    },
+    {
+      "id": "P8-07",
+      "status": 2,
+      "evidence": "Customer confirmation loop: an SMS or push \"Was this you?\" ... Analyst case queue"
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "The full card number never enters the scoring service, feature store, lake or models. Only an HMAC token (key held in an HSM)"
+    },
+    {
+      "id": "P8-09",
+      "status": 1,
+      "evidence": "partition by card token ... idempotent producers ... Exactly-once Flink checkpoints; watermarks for late events"
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "PSI per feature, score distribution, decline-rate alerts per segment ... Shadow (2–4 weeks) → canary → ramp"
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "transaction ID, token, the full feature vector as served, ruleset and model versions, score, action, reason codes"
+    },
+    {
+      "id": "P8-12",
+      "status": 1,
+      "evidence": "memory sizing at 3× peak ... until then, multi-AZ plus fail-open."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "Synchronous only for the decision: auth host → scorer → response."
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "Hard client timeout → \"no opinion\"; ... Never block authorization on the fraud system."
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "time-based splits only"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "Train on features logged at the moment of the decision (\"log-and-wait\"). This removes training/serving skew by design."
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "Structured JSON logs, with a CI test that fails if anything matching a card-number pattern (Luhn check) appears."
+    }
+  ],
+  "note": "Very strong, actionable, latency-aware fraud plan with shadow-first rollout and leakage-safe training. Weak on cost analysis, peak-scale sizing and validation, and on event-level idempotency and reversals.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4366,
+    "thinking_tokens": 1819,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 14924
+  },
+  "cost_usd": 0.081163,
+  "latency_s": 50.77,
+  "raw_file": "raw/judge-21be52d282d7.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

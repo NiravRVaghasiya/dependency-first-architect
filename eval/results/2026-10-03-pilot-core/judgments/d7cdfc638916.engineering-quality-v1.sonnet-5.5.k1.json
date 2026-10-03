@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "d7cdfc638916.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "d7cdfc638916",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 192,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Bot PRs don't trigger workflows that have secrets (`pull_request`, not `pull_request_target`).",
+      "rationale": "Mostly accurate on the dependencies; small imprecisions (contents:write 'limited by branch protection to agent/*' is really rulesets, and fork or bot-PR workflows need approval) have modest design consequence."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "open a **draft PR** with a fix, a test that reproduces the bug, and an explanation.",
+      "rationale": "Covers triage and resolution with an essential/optional split and explicit non-goals, but omits retrieval index freshness and concurrency with humans."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "The orchestrator, not the agent, pushes the branch.",
+      "rationale": "Clear responsibilities and a deterministic state machine; minor loose ends such as the auto-close policy left open while duplicates can be closed, and 'MERGED' state with never merges."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "replay hundreds of **historical closed issues** at their original commits.",
+      "rationale": "Offline replay, shadow phase and online regression metrics are domain-appropriate, but thresholds such as >85% and >40% are unjustified and per-action precision gating is thin."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Questions to settle before building: Scope: one repo or many? Which languages and build systems?",
+      "rationale": "Open questions are listed and some numbers are labeled e.g., but the plan does not state default assumptions or what would change the design, and thresholds are asserted."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Bot PRs don't trigger workflows that have secrets; ... Per-user and per-repo rate limits, and the agent ignores comments from bots.",
+      "rationale": "Injection, exfiltration, supply chain, loops and cost are covered with concrete mitigations; edits mid-work, stale branches and partial-failure recovery are thin."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "OpenTelemetry traces per job and a cost dashboard.",
+      "rationale": "Kill switch, metrics and phased rollout exist, but rollback, migrations, incident response and alerting are mostly unspecified, with ownership only as a question."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Token, time and attempt budgets per job, plus a daily spend cap per repo with alerts.",
+      "rationale": "Controls exist and cost per merged PR is tracked, but there are no cost estimates (budget is '$X') and no build or run cost reasoning."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Keep the state machine in your own code.",
+      "rationale": "Some isolation of agent framework and phased autonomy, but one-way choices like state schema, identifiers and vendor coupling are not discussed."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Keep the state machine in your own code.",
+      "rationale": "Components are justified and the phased rollout is proportionate; the separate LLM verifier and multiple sandbox options add slight extra but are reasonable."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Weeks 1–2: GitHub App, webhook intake, queue, state machine, audit log.",
+      "rationale": "Ordered milestones with dependencies and exit criteria per phase; some details like schema and the retrieval index are left to the team, and no adaptation plan for disappointing results."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Phases table: Triage assist → Triage auto → Fix on request → Auto-attempt; 'never merges, never pushes to protected branches'"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "GitHub App with minimal scoped permissions ... and **no `workflows` permission**."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Treat all issue content as data. ... Forbidden-path rules and diff checks run outside the LLM."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "fresh sandbox ... there are no credentials, and network access is limited to an allowlist of package registries."
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "Write a failing test ... confirm that it **fails on HEAD**. ... A human always reviews the PR."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Triage: compare labels, duplicates and severity against what maintainers actually did (precision and recall per label)."
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "revert or regression rate (the key quality signal), and cost per merged PR. Every comment is labeled as coming from a bot."
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "the agent ignores comments from bots. One open agent PR per issue. Global kill switch."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Token, time and attempt budgets per job, plus a daily spend cap per repo with alerts."
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "Full transcripts, tool calls and diffs are stored for every action, linked from a hidden comment marker."
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "Search: ripgrep plus tree-sitter symbol index, and a vector index of issues for duplicate detection."
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "The orchestrator is **idempotent**: replaying a webhook never causes duplicate comments or PRs."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent never merges, never pushes to protected branches"
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "The sandbox has no secrets and limited network egress. The orchestrator holds the GitHub token, not the agent."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Treat all issue content as data."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "revert or regression rate (the key quality signal), and cost per merged PR."
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Iterate up to N attempts (e.g. 3), within a token and time budget ... Global kill switch."
+    }
+  ],
+  "note": "Solid security-first design with phased autonomy, independent verification and offline eval; weaker on assumptions, cost quantification, operations detail, and concurrency with humans.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2234,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 11861
+  },
+  "cost_usd": 0.052185499999999996,
+  "latency_s": 43.456,
+  "raw_file": "raw/judge-d7cdfc638916.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

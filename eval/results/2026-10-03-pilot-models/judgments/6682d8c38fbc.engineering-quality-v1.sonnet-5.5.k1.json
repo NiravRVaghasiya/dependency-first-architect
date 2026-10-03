@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "6682d8c38fbc.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "6682d8c38fbc",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 81,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Stage permissions are enforced by tooling, not by the prompt.",
+      "rationale": "Mechanisms are largely accurate (App scopes, branch protection, draft PRs), but the sandbox is said to allow the GitHub API while having no credentials, and the index/sandbox details are thin."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Resolve a safe subset automatically by opening a tested PR that links to the issue.",
+      "rationale": "Covers triage and resolve with explicit non-goals and sensible scoping, but open questions leave deployment model and cost undecided."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Triage has read-only tools. Only the Fix stage can edit files. Only the PR stage can write to GitHub.",
+      "rationale": "Clear stage responsibilities and consistent data flow; minor looseness such as sandbox GitHub API allowlist versus no credentials and Action vs service undecided."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Replay historical issues: triage against the actual labels, and fixes against the commits that closed them",
+      "rationale": "Shadow mode with thresholds, offline benchmark, and production metrics are present; thresholds are not justified and dedupe/per-action gating is partial."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Which repos and languages come first? That determines the sandbox images and test commands.",
+      "rationale": "Open questions name key unknowns but there is little explicit assumption-stating or sensitivity analysis, and thresholds (90%, 50%) are unlabeled."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Every failure path ends in a visible state: `needs-human` with a short summary of what was tried.",
+      "rationale": "Covers injection, duplicates, redelivery, loops, security reports, weakened tests, and timeouts with concrete handling; mid-work edits and collisions are missing."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Security hardening (injection tests and red-teaming), dashboards, and the kill switch.",
+      "rationale": "Dashboards, kill switch, and metrics exist, but no deployment/rollback of the agent, incident ownership, or alerting plan."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "a cap on steps, wall-clock time, tokens and dollars, and files changed",
+      "rationale": "Budgets and cheap-vs-strong model tiering exist and cost per issue is tracked, but there is no cost estimate or scaling analysis."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Which model or provider, and what is the per-issue cost ceiling?",
+      "rationale": "Per-repo config, phased autonomy, and draft PRs are reversible, but there is no explicit treatment of one-way decisions like state schema, vendor coupling, or orchestrator choice."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Non-goals (v1) - Merging PRs without human review.",
+      "rationale": "Starts with triage and gated fixes, with reasonable components; the queue plus state machine plus embeddings and the independent review are justified, mild extras."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Week 1–2: GitHub App, webhook receiver, queue, state store, and sandbox runner.",
+      "rationale": "Ordered milestones with dependencies and checkable exit criteria, but security hardening is late (week 8) and adaptation if results disappoint is thin."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Non-goals (v1) - Merging PRs without human review. ... Phase 2. Fix as draft PR"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "Least-privilege GitHub App instead of a PAT. Scopes: issues r/w, pull requests r/w, contents write to `agent/*` branches only"
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Stage permissions are enforced by tooling, not by the prompt."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "ephemeral container with a fresh clone, no network except an allowlist ... and no long-lived credentials."
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "The new repro test must fail before the fix and pass after it."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "≥ 90% label agreement; dedupe precision ≥ 95%"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "A maintainer removing or changing a label, or closing a PR, is logged as a correction signal."
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "Loop detection: don't re-trigger on the agent's own comments or labels."
+    },
+    {
+      "id": "P4-09",
+      "status": 1,
+      "evidence": "a cap on steps, wall-clock time, tokens and dollars, and files changed"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "Audit log of every tool call, decision, and model prompt and response, with retention."
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "an index of the code (symbol search and embeddings), the CODEOWNERS file"
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "Idempotent handlers. Webhooks can be redelivered."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "Merging PRs without human review."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "The sandbox has no secrets and limited egress"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Treat issue text and comments as untrusted data, not instructions"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "Don't auto-close in v1. Propose it."
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "a cap on steps, wall-clock time, tokens and dollars"
+    }
+  ],
+  "note": "Solid, pragmatic plan with strong security posture and phased autonomy; weaker on operations, cost quantification, assumptions, index freshness, and concurrency with humans.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2118,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 10834
+  },
+  "cost_usd": 0.048458,
+  "latency_s": 33.875,
+  "raw_file": "raw/judge-6682d8c38fbc.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "6d99fb4efc5e.probe.sonnet-5.5",
+  "blind_id": "6d99fb4efc5e",
+  "blind_sha256": "af722dfea571464112735885ee62690c3939c9bb15c21358ab85bb1c243bd71f",
+  "judge": "sonnet-5.5",
+  "order_index": 92,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.9,
+  "cues": [
+    "Rigid numbered section structure (Summary, Context and Goals, Drivers, Current State, Assumptions and Open Questions, Key Decisions, Cross-Cutting Concerns, Deferred Work) reads like a prescribed template",
+    "Ranked quality attributes table with measurable targets, and decisions tied to drivers by number (#1, #3) with 'Revisit if' and reversibility columns",
+    "Explicit labeled assumptions with impact-if-wrong and validation timing, plus open questions with 'default if no answer' and 'needed by'",
+    "Time-boxed spikes with 'Changes the plan if' conditions, milestones with exit criteria and dependencies, and a first-milestone task breakdown with 'Done when' columns",
+    "Dedicated 'Current State' section noting the empty workspace, 'AI-specific: not applicable' line, and a closing note 'I wrote this plan without asking you anything first' with ranked open questions, all signs of a procedural checklist"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 404,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 13249
+  },
+  "cost_usd": 0.0371705,
+  "latency_s": 30.397,
+  "raw_file": "raw/probe-6d99fb4efc5e.probe.sonnet-5.5.txt"
+}

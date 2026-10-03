@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "2017d7832088.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "2017d7832088",
+  "blind_sha256": "0129998369d77ffe63a4dff61ad44d7edd98ced9c496a9eb753a6152ef98d744",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 290,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Foundation (schema, Kafka, gateway with stand-in rules) → Rules + features → ML v1 → Optimization → Advanced",
+      "rationale": "Phases broadly go substrate upward, but the detailed sequencing isn't proven-before-dependent and some items (shadow mode, exploration holdout) land late relative to needs."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Foundation 0–6: Canonical event schema, Kafka, gateway with stand-in rules, lakehouse ingestion",
+      "rationale": "Phase 1 builds a gateway and stand-in rules but 6 weeks of foundation isn't an explicit thin end-to-end prod slice; go-live only comes in Phase 2."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Change them and the design changes with them.",
+      "rationale": "Assumptions are listed and some choices have alternatives, but irreversible decisions lack defaults with explicit flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No ordering of work by blast radius within phases is described."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "PCI DSS: tokenized PAN, HSM-managed keys, network segmentation.",
+      "rationale": "Security is a standalone section with tokenization at the gateway, but it isn't tied to each phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Latency histograms for each stage. Fallback rate.",
+      "rationale": "Observability is a standalone section; drift monitoring is only scheduled in Phase 4, not from Phase 1."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "define features once (Feast, Tecton or an in-house DSL) and build training sets with point-in-time correct joins",
+      "rationale": "Training/serving parity and versioned registry help, but environment and build reproducibility isn't threaded across phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "gateway falls back to stand-in rules: a local, in-memory rule set",
+      "rationale": "Stand-in rules appear in Phase 1 and resilience is detailed, but mostly in a standalone section and not per phase."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Registry → shadow mode (score without acting for 1–2 weeks) → canary at 5% → full rollout.",
+      "rationale": "The ML layer has rules first, shadow mode, human review and a feedback loop, but no explicit defenses or budgets ahead of the model, and the layering is not ordered as the rubric requires."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "5. Advanced | 28+ | Graph features (rings, mule accounts), sequence models, device fingerprinting, consortium data",
+      "rationale": "Deferred items are listed, but with no pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A technically strong fraud-pipeline design with sensible rules-before-ML sequencing, but it has weak phase-level threading of cross-cutting concerns, no flip conditions, and no blast-radius ordering.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1107,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 5421
+  },
+  "cost_usd": 0.0246305,
+  "latency_s": 19.771,
+  "raw_file": "raw/judge-2017d7832088.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

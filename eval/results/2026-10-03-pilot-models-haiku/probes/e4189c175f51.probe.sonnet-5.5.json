@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "e4189c175f51.probe.sonnet-5.5",
+  "blind_id": "e4189c175f51",
+  "blind_sha256": "8fd2a3824cb497f3e83e69a86f9149dc20f8634581941e8e78d6ead08d8b57cc",
+  "judge": "sonnet-5.5",
+  "order_index": 12,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.12,
+  "cues": [
+    "Opens with chatty filler \"I'll provide you with a comprehensive phased approach\" and closes with an offer to elaborate, which is typical default assistant style",
+    "Generic waterfall-style phases (10 phases, 28 weeks) with a tool list, not tied to the 50-service problem; pilot services only show up in the risk table",
+    "No explicit dependency reasoning, decision gates, assumptions, or verification steps for the sequencing. Security is deferred to Phase 7, which is a weak ordering choice",
+    "Heavy use of bold and emoji-free headers, bullet lists and summary tables, with no sign of a structured template such as goals, constraints, or open questions",
+    "Tool choices are listed as 'A, B, or C' without committing to any, so it reads as a broad overview and not a methodical plan"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 344,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3749
+  },
+  "cost_usd": 0.012820500000000002,
+  "latency_s": 32.09,
+  "raw_file": "raw/probe-e4189c175f51.probe.sonnet-5.5.txt"
+}

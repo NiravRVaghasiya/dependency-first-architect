@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f27748412ae0.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "f27748412ae0",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 9,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: Phase 1, V1.\" Phase 3 \"Depends on: Phase 2, V2.\"",
+      "rationale": "Phases run substrate → defenses → triage → resolve → scale, and each one is gated on a proven validation gate before the next is specified."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "a real issue opened on an internal test repo gets one bot comment, \"Suggested labels: …\", from a single LLM call.",
+      "rationale": "Phase 0 is a thin slice that runs end to end in production (webhook, queue, worker, model, GitHub), with deploy, rollback and a crash test."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Trust boundary and write scope | R3 ... Default ... Validated by V1 | Flip condition: V1 fails → triage becomes suggest-only",
+      "rationale": "Irreversible decisions are listed with reversibility class, default, assumption and flip condition, and missing inputs are stated with their consequences."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Phase 1 tasks: tool executor first, then human approval, exfiltration paths, sandbox runner, caps, injection suite.",
+      "rationale": "The widest-impact work (executor, approval) generally comes first within phases, but the plan doesn't state this ordering explicitly, and Phase 2 puts the model-access layer after retrieval."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Webhook signature check; minimum App permissions; secrets in a secrets manager | Tool executor, approval binding, sandbox | Each wave re-runs V1",
+      "rationale": "The cross-cutting table gives concrete security work for every phase, starting at Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OpenTelemetry traces each job end to end and records tokens, cost and latency. An alert fires on job failures and on spend.",
+      "rationale": "Observability is in the Phase 0 skeleton and each later phase adds concrete items."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform, pinned image, prompt versioned in git | Eval set versioned; embedding model pinned in the index version",
+      "rationale": "Every phase has specific reproducibility measures covering infrastructure, images, prompts, models and eval data."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Retry on the queue, dead-letter queue (DLQ), kill-switch flag | Caps cut off runaway jobs; jobs are idempotent | Timeout per run",
+      "rationale": "Each phase has concrete failure handling and a rollback, starting with the first phase that builds anything."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "1. Injection / guardrail defense ... 3. Human-in-the-loop ... 4. Retrieval ... 5. Model access ... 6. Memory ... 7. Orchestration ... 8. Routing ... 9. Feedback",
+      "rationale": "Defenses, budgets and human-in-the-loop are built before retrieval, model access, memory, orchestration, routing and feedback, in the required order, with exit checks for each."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Auto-merge: only if more than 80% of agent PRs merge unchanged for 3 months, and only after a new R3 gate.",
+      "rationale": "The deferred list is explicit, and each item has a pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A very strong plan. The only weakness is that blast-radius ordering within phases is implied rather than stated.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1255,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 6278
+  },
+  "cost_usd": 0.028366000000000002,
+  "latency_s": 52.743,
+  "raw_file": "raw/judge-f27748412ae0.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

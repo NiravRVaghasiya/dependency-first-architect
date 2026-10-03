@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "fda27ac722fe.probe.sonnet-5.5",
+  "blind_id": "fda27ac722fe",
+  "blind_sha256": "0129998369d77ffe63a4dff61ad44d7edd98ced9c496a9eb753a6152ef98d744",
+  "judge": "sonnet-5.5",
+  "order_index": 134,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens with an explicit assumptions table and says 'Change them and the design changes', which is typical of a default careful answer and not necessarily a methodology",
+    "Closes with clarifying questions, which suggests a free-form response and not a rigid template",
+    "The structure is natural for the domain (architecture, components, ML lifecycle, NFRs, KPIs, rollout, risks) and has no unusual required sections such as alternatives considered, decision log or verification steps",
+    "First-person asides like 'I'd expect' and casual phrasing suggest an unconstrained writing style",
+    "The content is dense and specific (latency budget, stand-in rules, label delay, exploration holdout), but that is normal strong-model output and not a sign of a prescribed procedure"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 320,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4488
+  },
+  "cost_usd": 0.014428,
+  "latency_s": 32.72,
+  "raw_file": "raw/probe-fda27ac722fe.probe.sonnet-5.5.txt"
+}

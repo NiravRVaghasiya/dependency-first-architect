@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "be674b168bcc.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "be674b168bcc",
+  "blind_sha256": "f57a4d43549643b18853ce14f8726ea88152099cbee965eb9769d272e40095ca",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 249,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "M1 thin slice + spikes → M2 subscription billing → M3 usage billing + scale → M4 production readiness; \"Depends on\" column per milestone",
+      "rationale": "Phases build substrate (tenancy, money, ledger, DB) first, then features, then scale and prod, with explicit dependencies and spikes before dependent work."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Milestone 1 delivers a thin slice in staging... one invoice, charges it through Stripe test mode, posts balanced ledger entries and delivers a signed webhook",
+      "rationale": "A real end-to-end slice with CI/CD, rollback and E2E test on every deploy comes first, though in staging rather than prod."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D1 ... Hard | Design partners need a processor Stripe doesn't cover, or want us to handle payouts",
+      "rationale": "Decisions D1–D13 list options, reversibility and a revisit trigger, with assumptions A1–A8 and default answers for open questions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Week 1: T1, T5, T6, T9, L1–L3 and all spikes start... T14 is on the critical path",
+      "rationale": "Within M1, foundations, tenancy, RLS and money primitives and risk spikes precede leaf features like dashboard, and critical path is identified."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "T6 RLS policy template and billing_app role without BYPASSRLS; T19 isolation suite; egress proxy in T15",
+      "rationale": "Security has concrete work in M1 (RLS, key auth, isolation suite, SSRF block, secrets) and later M2 scoped keys, M3, M4 pen test and break-glass."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "T4 Wire up OpenTelemetry... A staging trace shows API request → DB → enqueued job → worker execution under one trace ID",
+      "rationale": "Observability and invariant checker v0 are in M1, with alerts extended in M3 and M4 runbooks, though some later phase detail is lighter."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "terraform apply from CI builds staging from empty, and a second plan shows no changes",
+      "rationale": "Terraform, CI image digests, migrations, seeded synthetic data generator, docker-compose, and deterministic invoices are threaded through phases."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "T11 A chaos test kills the worker mid-batch of 10k due subscriptions... exactly 10k invoices, with 0 duplicates",
+      "rationale": "Idempotency, chaos tests, rollback and circuit breakers appear in M1, with failover and timeout chaos in M3 and DR drill in M4."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "AI-specific concerns: Not applicable. The system has no AI or model components.",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "ClickHouse usage store | S1 fails, or sustained > 20k events/s",
+      "rationale": "Section 17 lists deferred items with triggers, plus M1 stubs and non-goals and deliberate shortcuts with payback conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan that meets every rubric dimension with concrete content; only minor gap is that the walking skeleton runs in staging, not prod.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1243,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 27888
+  },
+  "cost_usd": 0.08215800000000001,
+  "latency_s": 21.684,
+  "raw_file": "raw/judge-be674b168bcc.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

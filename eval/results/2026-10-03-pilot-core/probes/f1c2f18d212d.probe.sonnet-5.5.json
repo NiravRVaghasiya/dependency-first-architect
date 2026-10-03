@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "f1c2f18d212d.probe.sonnet-5.5",
+  "blind_id": "f1c2f18d212d",
+  "blind_sha256": "8ed54cd648b946778303b0f6a154f0ac7695c97a0ffd2c9fd4d3de2dd5602052",
+  "judge": "sonnet-5.5",
+  "order_index": 77,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Fixed template sections: Classification (with 'Dominant constraint' and 'Worst failure'), Key decisions resolved up front, First end-to-end slice (Phase 0), Phases, Cross-cutting concerns, AI layer, Deferred",
+    "Decision table with 'Default (chosen now)' and 'Revisit trigger' columns, including placeholder rows '(AI) prompt+RAG vs fine-tune' marked N/A, which indicates a generic checklist applied mechanically",
+    "Phase 0 walking skeleton: thin real request through all tiers, deployed to prod with logging and monitoring before feature work",
+    "Every phase has 'Unlocks', 'Depends on', 'Tasks (widest first)' and 'Exit check' fields, which is a rigid dependency-ordered structure",
+    "Cross-cutting matrix of security, observability, reproducibility and resilience for every phase, plus a Deferred list with explicit 'pull forward when' triggers and references to 'Step 6' and 'gates'"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 419,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7668
+  },
+  "cost_usd": 0.023368,
+  "latency_s": 34.994,
+  "raw_file": "raw/probe-f1c2f18d212d.probe.sonnet-5.5.txt"
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "dfa-eval/outcome-task@1",
+  "id": "webhook-ledger",
+  "title": "PayCo webhook ledger",
+  "brief": "brief.md",
+  "change_request": "CHANGE_REQUEST.md",
+  "starter": "starter",
+  "planner_request": "Plan the build of the service described in this brief.\n\n{brief}",
+  "implementer_prompt": "You are implementing a small Python service in the current directory. Read BRIEF.md (the product brief) and README.md (the provided environment and the required interface){plan_clause}. Implement the service in the ledger/ package so that ledger.service.LedgerService behaves as the brief requires. Use only the Python 3 standard library and the provided ledgerkit package, and do not modify anything under ledgerkit/. You cannot run code or ask questions in this session, so read carefully, make reasonable decisions, and record them in NOTES.md. When you are done, reply with a one-paragraph summary of what you implemented.",
+  "plan_clause": ", and PLAN.md (the build plan for this service: implement the parts of it that concern this code; infrastructure, deployment, and organizational items are out of scope here)",
+  "change_request_prompt": "The requirements have changed: read CHANGE_REQUEST.md. Update the implementation in the ledger/ package accordingly; everything in BRIEF.md still applies{plan_clause}. Do not modify anything under ledgerkit/. You cannot run code or ask questions in this session, so record your decisions in NOTES.md. When you are done, reply with a one-paragraph summary of what you changed.",
+  "change_request_plan_clause": " (PLAN.md is still the plan of record)",
+  "categories": {
+    "test_functional": "functional",
+    "test_idempotency": "idempotency",
+    "test_ordering": "ordering",
+    "test_atomicity": "failure-injection",
+    "test_security": "security",
+    "test_money": "money",
+    "test_change_request": "change-request"
+  },
+  "round1_modules": ["test_functional", "test_idempotency", "test_ordering", "test_atomicity",
+                     "test_security", "test_money"],
+  "round2_modules": ["test_functional", "test_idempotency", "test_ordering", "test_atomicity",
+                     "test_security", "test_money", "test_change_request"],
+  "code_globs": ["ledger/**/*.py"],
+  "test_timeout_s": 120
+}

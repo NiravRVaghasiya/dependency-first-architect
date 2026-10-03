@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "60fcbf493c93.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "60fcbf493c93",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 50,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Hosted LLM under zero-retention / no-training terms; redact PII before logging",
+      "rationale": "Technically sound on what the design depends on (pgvector, hybrid search, alias rollback, output filter against exfil links/images); minor imprecision such as 'zero PII in sampled logs' and no treatment of embedding-vendor data flows."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Does the bot act on accounts (order status, refunds)? I assume no: read-only Q&A plus handoff.",
+      "rationale": "Covers core RAG, citations, handoff, deletion, with explicit deferrals and reasons; minor gaps are no explicit escalation triggers beyond confirm/unsure and no stated deletion time window."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Public-only index, deletes propagated",
+      "rationale": "Consistent design with clear phases and ownership; small loose ends such as Phase 0 'employees' versus Phase 4 'logged-in visitors' and 24h session memory versus 30-day transcripts."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "SMEs grade the 200 queries plus 50 \"policy-bait\" prompts",
+      "rationale": "Validation is tied to specific risks (worst failure, injection, PII, cost), with measurable thresholds labeled ASSUMPTION, early deploy/rollback check, vendor trial, canary and post-launch reviews; only a weak point is that regression re-run on every change is implied rather than explicit."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Peak concurrent chats: comes from Support analytics, needed by Phase 4 | UNKNOWN",
+      "rationale": "Assumptions and unknowns are explicitly labeled with their consequences (e.g., account actions add an auth phase) and revisit triggers."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Injection suite in CI, covering both user text and instructions planted in docs.",
+      "rationale": "Covers hallucinated policy, injection, exfil links, PII, LLM outage, feedback poisoning, with detection and rollback; thin on stale-content detection, index partial-sync failure, and sync failure alerts."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "blue/green deploy through CI/CD. Each request gets an OpenTelemetry trace with retrieved chunk IDs, tokens, cost and latency.",
+      "rationale": "Deploy, rollback, alerts, flag kill switch, review queue are concrete; incident ownership/on-call and alerting on quality signals are not explicit."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Cost per resolved conversation | Must beat the cost of a human-handled ticket",
+      "rationale": "Drivers and controls (token caps, session cap, routing, build-vs-buy) are identified, but there is no per-conversation cost estimate or range on a stated basis; it is left UNKNOWN."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Hosted API behind a provider-agnostic interface",
+      "rationale": "Decisions are explicitly tagged by reversibility, with pinned embeddings, versioned indexes, exit paths to self-host or buy, and deferrals; effort is concentrated on the one-way decisions."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Orchestration | A single retrieve-then-answer call",
+      "rationale": "Starts from the simplest design (single service, pgvector, no fine-tuning, no routing), with growth triggers; phase-level ceremony is moderate but justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phase 0 ... about 20 ingested public articles in pgvector ... Exit check: V0.",
+      "rationale": "Thin first slice, phases ordered by dependency with exit checks, rollback per phase, and explicit adaptation paths if checks fail."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 1,
+      "evidence": "index synced from the CMS hourly plus a webhook on publish; Full-corpus ingest, including propagating deletes."
+    },
+    {
+      "id": "P1-02",
+      "status": 1,
+      "evidence": "Chunk by article heading; hybrid BM25 + vector search."
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "Build a 200-query labeled set from redacted real tickets."
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "Answer only from retrieved, cited, published articles; otherwise refuse or hand off."
+    },
+    {
+      "id": "P1-05",
+      "status": 1,
+      "evidence": "Handoff that opens a ticket with the transcript, only after the user confirms."
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "Output filter: no links outside the help-center domain, no markdown images"
+    },
+    {
+      "id": "P1-07",
+      "status": 1,
+      "evidence": "Public-only index, deletes propagated"
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "redact PII before logging; keep transcripts 30 days (ASSUMPTION)"
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "I assume no: read-only Q&A plus handoff."
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "A doc-gap report goes to the content team."
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "8k input / 800 output tokens, 5 turns per session"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Answer only from retrieved, cited, published articles; otherwise refuse or hand off."
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Indexing non-public articles | A visibility filter at retrieval time"
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "prompt+RAG, no fine-tuning"
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Eval report tagged with index, prompt and model versions in the eval repo"
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "A single retrieve-then-answer call"
+    }
+  ],
+  "note": "Strong, risk-driven plan with excellent validation, reversibility and proportionality; weaker on cost estimates, explicit escalation triggers and ops ownership.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2173,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 919,
+    "cache_creation_input_tokens": 11786
+  },
+  "cost_usd": 0.051386799999999996,
+  "latency_s": 37.975,
+  "raw_file": "raw/judge-60fcbf493c93.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

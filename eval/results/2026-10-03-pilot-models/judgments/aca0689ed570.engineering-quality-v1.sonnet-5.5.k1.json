@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "aca0689ed570.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "aca0689ed570",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 1,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No technical claims are made, so there is nothing to credit as correct; the response offers no design."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Could you clarify what you'd like me to help with?",
+      "rationale": "It misreads the request as placing vendor orders and gives no plan, so it answers a different problem."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There is no architecture, components or data flows."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No validation of any kind is described."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "It states no assumptions about scale, team or stack and proceeds with no plan."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No failure modes are mentioned."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Operations are not addressed."
+    },
+    {
+      "dim": 8,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Costs are not mentioned."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No decisions are made, so reversibility is not addressed."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The response is stripped so far down that all essentials are missing, so it is not proportionate."
+    },
+    {
+      "dim": 11,
+      "score": 0,
+      "evidence": "Which would be most helpful for you?",
+      "rationale": "The response contains no build order, steps or decisions a team could act on."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-02",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-03",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-04",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-05",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-06",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-09",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-10",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-11",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "none"
+    }
+  ],
+  "note": "The response is a clarification-seeking non-plan that misreads the request as ordering vendor services, so it scores 0 on every dimension.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1073,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8536
+  },
+  "cost_usd": 0.032078,
+  "latency_s": 43.839,
+  "raw_file": "raw/judge-aca0689ed570.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

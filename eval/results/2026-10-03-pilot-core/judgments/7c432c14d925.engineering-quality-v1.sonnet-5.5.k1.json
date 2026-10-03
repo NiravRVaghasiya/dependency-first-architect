@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "7c432c14d925.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "7c432c14d925",
+  "blind_sha256": "a43ca3082f085acd6a1c70d548780669492ca01ddd8e914e4e10a2de2829fa91",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 328,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "The cloud database is synchronously copied across availability zones.",
+      "rationale": "Mostly correct on CDC, reverse CDC, read-your-writes, and proxy write hold; minor imprecision (RDS/Azure SQL MI reverse CDC and replication feasibility, DMS/Debezium claims, 'database-protocol proxy' holding writes) but no design-breaking errors."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Reads never go down. Writes pause for 30 seconds or less, once, at cutover.",
+      "rationale": "Interprets zero downtime sensibly, covers integrations, batch, cutover, and explicit deferrals; vendor support/licensing and some clinical coordination are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "There is one writable database at any moment... The application never writes to both databases.",
+      "rationale": "Consistent single-writer design with clear ownership; small loose ends such as a mid-plan tension about reads from replica vs writable and proxy on-prem dependency."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "14 days in a row with zero unexplained reconciliation differences, p99 lag under 2 seconds",
+      "rationale": "Validation is risk-targeted with shadow diff, load tests, rehearsals, game day, and early slice; some thresholds are invented without being labeled provisional and rollback rehearsal is not explicit."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "I don't know these about your system yet; Phase 0, task 1 confirms them, and any difference changes the gates below",
+      "rationale": "Assumptions are explicit with revisit triggers; many numeric thresholds (5s, 300ms, 30s, RPO 5 min) are stated as defaults without basis or sensitivity."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Otherwise a scheduler could book a slot, not see it on the replica, and double-book it.",
+      "rationale": "Covers silent drift, duplicate batch jobs, schema change, link drop, CDC stall, abort rules; lacks deeper treatment of malicious input and interface message duplicates/replay after cutover."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Live cutover dashboard: lag, hold-queue depth, log-position match, write-pause timer.",
+      "rationale": "IaC, pipeline gates, domain-meaningful monitoring, abort rules, hypercare and rollback are concrete; incident ownership and staffing are only lightly addressed."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Cost optimisation (reserved capacity, right-sizing) | 90 days of steady-state usage data.",
+      "rationale": "Cost is barely addressed beyond a build-vs-buy line and deferral; no drivers such as dual-running, private links, egress, or licensing."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Changing database engines (e.g. Oracle → Postgres) | ... Never at the same time as the migration.",
+      "rationale": "Revisit triggers for each decision, reverse CDC rollback, deferred re-architecture, DNS indirection; lock-in to managed DB is noted with fallback."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Keep the monolith as it is. The only new part is a strangler proxy in front of it.",
+      "rationale": "Rehost and minimal new components; proxy and shadow-diff are justified, with some ceremony (OpenTelemetry, pen test, 2 rehearsals plus game day) that is reasonable for a hospital."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Each step has an abort rule. Before step (e), abort means setting on-prem back to writable",
+      "rationale": "Dependency-ordered phases with concrete tasks, exit checks, step-by-step cutover and revisit triggers; a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "BAA signed. Customer-managed encryption keys, TLS 1.2+ everywhere, PHI only over private links."
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "HL7 SIU (S12, S14, S15) and ADT feeds; patient portal and IVR/call centre; SMS reminders, billing/registration, reporting and the data warehouse"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "row counts and per-partition checksums every 15 minutes, with full-table checksums nightly."
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "There is one writable database at any moment."
+    },
+    {
+      "id": "P6-05",
+      "status": 1,
+      "evidence": "Keep reverse CDC running and on-prem warm for 30 days as a tested rollback path."
+    },
+    {
+      "id": "P6-06",
+      "status": 1,
+      "evidence": "Two redundant dedicated private links (Direct Connect / ExpressRoute) on separate physical paths, plus an encrypted VPN as a backup."
+    },
+    {
+      "id": "P6-07",
+      "status": 2,
+      "evidence": "up to 5 minutes of data loss, back up within 1 hour"
+    },
+    {
+      "id": "P6-08",
+      "status": 2,
+      "evidence": "Connect on-prem Active Directory to Entra ID/Okta, with MFA and break-glass accounts."
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "Mirror 100% of read traffic and compare the answers. Load-test at the real peak (Monday 8 a.m. call-centre surge, ×2)."
+    },
+    {
+      "id": "P6-10",
+      "status": 1,
+      "evidence": "Brief nursing supervisors, the ED and the call centre... Run the production cutover in a low-volume window (e.g. Sunday 03:00)."
+    },
+    {
+      "id": "P6-11",
+      "status": 1,
+      "evidence": "take a final encrypted archive under the hospital's records-retention policy, get a certificate of media destruction"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "Change data capture (CDC), one database writing at a time... At least 2 full rehearsals in staging"
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "The application never writes to both databases."
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "Masked data only in staging."
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "Map every dependency: HL7 SIU (S12, S14, S15) and ADT feeds"
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "No code changes during the migration."
+    }
+  ],
+  "note": "Strong, safety-focused single-writer CDC migration with concrete phases and cutover runbook; weak on cost, vendor licensing, and an explicit rollback rehearsal, and thresholds are unjustified.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2330,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 860,
+    "cache_creation_input_tokens": 14081
+  },
+  "cost_usd": 0.0586825,
+  "latency_s": 27.631,
+  "raw_file": "raw/judge-7c432c14d925.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

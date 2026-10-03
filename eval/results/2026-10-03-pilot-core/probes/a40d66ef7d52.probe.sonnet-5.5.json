@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "a40d66ef7d52.probe.sonnet-5.5",
+  "blind_id": "a40d66ef7d52",
+  "blind_sha256": "66a679aecb893e1d8c25368af0de8aa00585f4b3dad16348f76a9a6e9fb360ae",
+  "judge": "sonnet-5.5",
+  "order_index": 53,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Fixed template-like structure: Classification (dominant constraint, worst failure), Key decisions table with 'Default' and 'Revisit trigger' columns, first end-to-end slice, phases, cross-cutting, AI layer, Deferred",
+    "Phase 0 is a 'first end-to-end slice' through all tiers with day-zero observability and an explicit exit check, which is typical of a prescribed walking-skeleton methodology",
+    "Each phase has 'Unlocks', 'Depends on', 'Tasks (widest first)' and 'Exit check' fields, applied uniformly and with testable criteria",
+    "Cross-cutting matrix of security/observability/reproducibility/resilience per phase, plus explicit '(AI) N/A' rows and a conditional AI layer section that look like checklist items",
+    "Deferred section where every item has a 'Pull forward when' trigger, and decisions are flagged as irreversible to settle before the data format locks"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 392,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7444
+  },
+  "cost_usd": 0.022538000000000002,
+  "latency_s": 25.958,
+  "raw_file": "raw/probe-a40d66ef7d52.probe.sonnet-5.5.txt"
+}

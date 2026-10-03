@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "cec4b451191c.probe.sonnet-5.5",
+  "blind_id": "cec4b451191c",
+  "blind_sha256": "34979c7d987231e88ac316f841b44a0f7f0cd710d4bd0ed6529610b83070ff5a",
+  "judge": "sonnet-5.5",
+  "order_index": 97,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Section 1 'Classification' names a dominant constraint and 'worst failure', which reads like a mandated template step",
+    "A 'Key decisions (resolved up front)' table with a Default column and a Revisit trigger column, and it includes rows marked '(AI) N/A', which looks like a fixed checklist",
+    "A 'Phase 0' walking skeleton that crosses every tier, with deploy, logging and monitoring, and an 'Exit check' for it",
+    "Each phase lists Unlocks / Depends on / Exit check, and tasks are ordered by widest impact with 'leaf work' labelled explicitly",
+    "A per-phase cross-cutting matrix (Security/Observability/Reproducibility/Resilience) 'from the first commit', plus a dedicated AI layer N/A section and a Deferred list with pull-forward triggers"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 356,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7065
+  },
+  "cost_usd": 0.0212305,
+  "latency_s": 31.559,
+  "raw_file": "raw/probe-cec4b451191c.probe.sonnet-5.5.txt"
+}

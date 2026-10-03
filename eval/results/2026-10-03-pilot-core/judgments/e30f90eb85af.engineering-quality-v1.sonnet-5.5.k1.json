@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e30f90eb85af.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "e30f90eb85af",
+  "blind_sha256": "38a6becd4acada7135580581043ffc91c9aa9ba87bd68e573d197f69c3d95696",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 278,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Store money as an integer in minor units plus an ISO currency code. Never use floats.",
+      "rationale": "Correct on money, outbox, idempotency, PCI/SAQ-A, RLS, SKIP LOCKED; minor slips like outbox claimed to avoid duplicates (\"no event is lost or duplicated\") and a gapless per-tenant sequence under sharding is not detailed."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "I've assumed you run a SaaS product and need to bill your tenants for subscriptions, usage, seats and add-ons.",
+      "rationale": "Covers core billing capabilities, resolves the ambiguity by stating the interpretation and the variant, with phased roadmap; the scale is ambitious for the MVP."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "strong (ACID) for invoices, payments, the ledger and subscriptions. Eventual for entitlements, analytics and notifications.",
+      "rationale": "Consistent ownership and flows; small loose ends such as the 'ClickHouse holds only usage aggregates' versus raw events stored there, and entitlement 'under 5 ms' versus p99 10 ms."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Shadow billing: before a migration or pricing-engine change, run the new engine alongside the old one and diff every invoice.",
+      "rationale": "Domain-appropriate tests (test clocks, property tests, golden invoices, chaos tests) tied to risks, but few measurable acceptance criteria and little production validation."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Target scale for this design: about 10k tenants, about 1M billable accounts, a peak of about 50k usage events per second",
+      "rationale": "Scale is stated as an assumption and the variant is noted, but the numbers are not justified and sensitivity to them is barely discussed."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Chaos tests: duplicate webhooks, out-of-order events, and worker crashes between finalizing an invoice and posting the ledger entry.",
+      "rationale": "Covers duplicates, late events, tax outage, ClickHouse outage, non-retryable codes, noisy neighbours; detection and recovery for some (corrupt data, reconciliation ownership) are thin."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "SLOs: entitlement check p99 under 10 ms; usage ingest 99.99% availability and p99 under 100 ms",
+      "rationale": "SLOs, alerts and audit are mentioned, but there is no concrete deployment and rollback plan, migration procedure, on-call ownership, or team sizing; the stack (Citus, Kafka, ClickHouse, Temporal) is heavy."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Building billing is a multi-year commitment.",
+      "rationale": "Build versus buy and people cost are discussed qualitatively, but no run cost drivers (Kafka, ClickHouse, Citus, provider fees), scaling or controls are quantified."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "everything below the Billing Engine sits behind adapters.",
+      "rationale": "Versioned prices, immutable invoices, payment gateway abstraction, modular monolith and tenant cell moves show awareness of one-way doors, though shard key and ID scheme are not analysed."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Start with a modular monolith. Use the bounded contexts above",
+      "rationale": "Modular monolith and phasing help, but the design includes Citus, Kafka, ClickHouse, Temporal, Redis, Vault, dedicated cells and multiple providers that are speculative for an unspecified need."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Worker: BillSubscription (idempotency_key = sub_id + period_start)",
+      "rationale": "Concrete schema, flows and phased roadmap with durations, but phase checkpoints and criteria for moving on are not given."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Store money as an integer in minor units plus an ISO currency code. ... Keep sub-cent precision (e.g., numeric(28,10)) only for intermediate rating."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Finalized invoices can't be changed. Fix them with credit notes or adjustments."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "deduplicated by provider_event_id, and processed asynchronously."
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "card data never touches your servers. Use hosted fields or Elements, store tokens only, and aim for SAQ-A."
+    },
+    {
+      "id": "P2-05",
+      "status": 1,
+      "evidence": "Postgres Row-Level Security uses SET app.tenant_id per connection or transaction, as a second guard behind app-level scoping."
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "Accept events until period_end + grace ... Usage that arrives later goes onto the next invoice as an adjustment line"
+    },
+    {
+      "id": "P2-07",
+      "status": 2,
+      "evidence": "Close the old item with ends_at = t, and open a new item with starts_at = t."
+    },
+    {
+      "id": "P2-08",
+      "status": 1,
+      "evidence": "Handle VAT reverse-charge with a validated VAT ID, US sales-tax nexus, and tax-exempt certificates."
+    },
+    {
+      "id": "P2-09",
+      "status": 2,
+      "evidence": "retries on days 1, 3, 5 and 7 with smart retry timing. Each retry sends an email asking the customer to update their card."
+    },
+    {
+      "id": "P2-10",
+      "status": 1,
+      "evidence": "a daily job matches payments in the ledger against provider settlement reports and payouts, net of fees."
+    },
+    {
+      "id": "P2-11",
+      "status": 2,
+      "evidence": "Keep billing and entitlements separate."
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "A common middle path is to build metering and entitlements yourself ... and buy invoicing, payments and tax."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Never use floats."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Use an append-only double-entry ledger."
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "Inbound webhooks are verified, stored raw, deduplicated by provider_event_id"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "store tokens only"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "tenant_id is on every row and leads every PK and index. Postgres Row-Level Security"
+    }
+  ],
+  "note": "Strong, domain-aware billing architecture that avoids all traps, but it is heavy on infrastructure, light on cost and operations detail, and has thin validation of the tenant-isolation and reconciliation parts.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2397,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 15528
+  },
+  "cost_usd": 0.06279799999999999,
+  "latency_s": 26.252,
+  "raw_file": "raw/judge-e30f90eb85af.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

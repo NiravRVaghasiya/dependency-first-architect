@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "4bb7ae9a032e.probe.sonnet-5.5",
+  "blind_id": "4bb7ae9a032e",
+  "blind_sha256": "ee1eb1e6026d1b9789baae359b3711246e5a701a7042c87a9a54d30351205700",
+  "judge": "sonnet-5.5",
+  "order_index": 147,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens by stating assumptions about unknown stack and defers questions to the end, which is typical of default assistant behavior.",
+    "Thorough, well-organized sections (goals, architecture, eval, risks) with no distinctive methodology artifacts like numbered steps, explicit verification gates, or named frameworks.",
+    "Ends with open questions and an offer to turn the plan into code or a tech-stack choice, and mentions the working directory. This reads like a generic assistant closer.",
+    "Phases have rough durations and deliverables, and risks have mitigations. This is standard planning content and doesn't point to a specific prescribed template.",
+    "Heavy formatting (ASCII diagram, tables, bold labels) is common in unconstrained outputs from the model."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 322,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4239
+  },
+  "cost_usd": 0.0138255,
+  "latency_s": 26.306,
+  "raw_file": "raw/probe-4bb7ae9a032e.probe.sonnet-5.5.txt"
+}

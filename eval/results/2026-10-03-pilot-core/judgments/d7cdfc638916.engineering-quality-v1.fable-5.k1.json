@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "d7cdfc638916.engineering-quality-v1.fable-5.k1",
+  "blind_id": "d7cdfc638916",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 77,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Bot PRs don't trigger workflows that have secrets (`pull_request`, not `pull_request_target`).",
+      "rationale": "Technically precise on most subtle points (workflows permission, draft PRs, sandbox isolation), but the pull_request-vs-pull_request_target claim misstates a security guarantee: same-repo agent branches do run CI with secrets, so this one security-relevant assertion is inaccurate though mitigated by the verifier's diff checks."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "The agent never merges, never pushes to protected branches and never closes issues that a human opened",
+      "rationale": "Covers both triage and resolution exactly as asked, resolves ambiguities with explicit v1 non-goals and open questions, and is clearly buildable by a small team in the stated timeframe."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "a deterministic state machine. LLM calls sit inside the steps; the control flow itself is not decided by the LLM.",
+      "rationale": "Components have crisp responsibilities (orchestrator holds the token, resolver only emits a patch, verifier is independent), data ownership is clear, and the untrusted-input principle is honored consistently in every section."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "replay hundreds of **historical closed issues** at their original commits",
+      "rationale": "Validation targets the actual risks: offline SWE-bench-style replay before any action is enabled, a shadow phase, red-teaming with a prompt-injection suite, measurable phase exit criteria, and ongoing production signals like revert rate."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "The agent is only as reliable as the tests that check its work.",
+      "rationale": "Key unknowns are listed explicitly as questions to settle, numbers are marked as examples (e.g. $X, 'e.g. 3'), and the plan states which assumptions (test coverage, volume, hosting) the design is sensitive to."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Per-user and per-repo rate limits, and the agent ignores comments from bots. One open agent PR per issue. Global kill switch.",
+      "rationale": "Covers the hard domain failures concretely: prompt injection, secret exfiltration, supply-chain edits, bot loops, duplicate webhooks, runaway cost, security disclosures, and the FIX_FAILED path, with only minor gaps like flaky-test false verification."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Observability: OpenTelemetry traces per job and a cost dashboard.",
+      "rationale": "Monitoring, audit, kill switch and human override are concrete and sized to a small team, but on-call ownership is left as an open question and deployment/rollback of the service itself is not covered."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Token, time and attempt budgets per job, plus a daily spend cap per repo with alerts.",
+      "rationale": "The dominant cost driver (model inference) has per-job budgets, caps, and cost-per-merged-PR tracking, and scaling is tied to issue volume, but no order-of-magnitude estimates are offered even as labeled ranges."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Fixes only after a maintainer's `/agent fix`",
+      "rationale": "The phased rollout defers the hard-to-reverse commitments (public autonomous actions, community trust) and keeps stack choices flexible, though it never explicitly reasons about which decisions are one-way versus cheap to change."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Keep the state machine in your own code.",
+      "rationale": "Every component earns its place against a stated threat or requirement, the design starts with shadow/triage-only and grows, and there is no speculative infrastructure or ceremony."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Weeks 1–2: GitHub App, webhook intake, queue, state machine, audit log.",
+      "rationale": "Dependency-ordered milestones, specific tool lists, concrete verifier rules, structured triage schema and measurable phase gates mean a team could start immediately, with only placeholder values left to settle."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "The agent never merges, never pushes to protected branches and never closes issues that a human opened, unless they are confirmed duplicates."
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "GitHub App with minimal scoped permissions: `issues:write`, `pull_requests:write`, `contents:write` limited by branch protection... **no `workflows` permission**"
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "issue text is **untrusted input**... Forbidden-path rules and diff checks run outside the LLM."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "a **fresh sandbox**: the repo is cloned at the default branch HEAD, there are no credentials, and network access is limited to an allowlist"
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "Write a failing test... confirm that it **fails on HEAD**... Run the new test (must now pass), the relevant existing suite"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "replay hundreds of **historical closed issues**... Triage label precision >85%; sandbox security review passed"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Every comment is labeled as coming from a bot... **revert or regression rate** (the key quality signal)"
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "**Iterate** up to N attempts (e.g. 3), within a token and time budget... the agent ignores comments from bots... Global kill switch."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Token, time and attempt budgets per job, plus a daily spend cap per repo with alerts... cost per merged PR"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "Full transcripts, tool calls and diffs are stored for every action, linked from a hidden comment marker."
+    },
+    {
+      "id": "P4-11",
+      "status": 2,
+      "evidence": "ripgrep plus tree-sitter symbol index, and a vector index of issues for duplicate detection"
+    },
+    {
+      "id": "P4-12",
+      "status": 2,
+      "evidence": "The orchestrator is **idempotent**: replaying a webhook never causes duplicate comments or PRs."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The PR is opened as a **draft**... A human always reviews the PR."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "The sandbox has no secrets and limited network egress. The orchestrator holds the GitHub token, not the agent."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "issue text is **untrusted input** from anyone on the internet... Treat all issue content as data."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "PR merge rate... **revert or regression rate** (the key quality signal), and cost per merged PR"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Token, time and attempt budgets per job... Global kill switch."
+    }
+  ],
+  "note": "An exceptionally strong plan that avoids all five traps and concretely addresses every checklist item; the only notable flaws are a misstated CI-secrets guarantee for same-repo PRs, unassigned on-call ownership, and absent cost estimates.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8259,
+    "thinking_tokens": 5555,
+    "cache_read_input_tokens": 929,
+    "cache_creation_input_tokens": 11861
+  },
+  "cost_usd": 0.5621615000000001,
+  "latency_s": 135.56,
+  "raw_file": "raw/judge-d7cdfc638916.engineering-quality-v1.fable-5.k1.txt"
+}

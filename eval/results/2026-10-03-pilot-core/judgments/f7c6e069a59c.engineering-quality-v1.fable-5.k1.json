@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f7c6e069a59c.engineering-quality-v1.fable-5.k1",
+  "blind_id": "f7c6e069a59c",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 172,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "CRDT (Yjs + y-prosemirror). Every copy ends up identical without the server deciding order. The server relays, checks and stores edits",
+      "rationale": "Claims about CRDT convergence, Yjs deletion markers, confirm-after-commit durability, Redis pub/sub fan-out limits and min-version handshakes are all accurate, and the plan states real limits (e.g. Yjs tombstone growth) rather than overclaiming."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "The request gives no scale, content model, offline requirement or compliance context, so I planned on these assumptions",
+      "rationale": "Covers all core collaborative-editing capabilities, resolves ambiguities with stated assumptions A1–A5, is realistically buildable on proven libraries, and defers scope (E2EE, multi-region, comments) explicitly with triggers."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Permissions stay strictly consistent: the server is the authority and checks every incoming edit",
+      "rationale": "Consistency choices (merge-later for content, strict for permissions), data ownership (Postgres tables, Yjs state), and identity/error handling are applied uniformly across phases with no contradictions found."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Property-based fuzzing (fast-check): 2–20 simulated clients make random schema-valid edits, with messages reordered, duplicated and delayed",
+      "rationale": "Each risky decision has a named gate (V1–V5) with checkable thresholds labeled as assumptions, the riskiest (convergence) is tested before the format freezes, and the divergence detector continues validation in production."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "If A1 is false (customers run it themselves, or on air-gapped sites), Phase 0 needs an exception",
+      "rationale": "Assumptions are explicit, numbers are tagged ASSUMPTION or UNKNOWN, sensitivity of the design to each assumption is stated, and missing inputs (peak concurrency, cost ceiling) are flagged rather than invented."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "An edit the server already confirmed is silently lost, or users' copies drift apart, and nobody notices",
+      "rationale": "Names the domain's worst failures (silent divergence, lost confirmed edits, quiet Redis degradation, compaction corruption, malicious edits, mid-session revocation) with concrete detection, containment and recovery for each."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Kill switch that puts every document into read-only mode",
+      "rationale": "Deploy/rollback via pipeline and canaries, drain-on-deploy, SLO dashboards, forward-only migration awareness, on-call staffing gated before beta, and a kill switch, all sized to one service plus managed Postgres/Redis."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Infra cost per concurrent session: UNKNOWN: finance or product supplies a ceiling; needed before V5",
+      "rationale": "Cost per session is measured in V5, gates the ramp, and build-vs-buy is reasoned, but there are no order-of-magnitude run-cost estimates or analysis of which component dominates spend."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: the stored format and the sync protocol are locked once real documents exist",
+      "rationale": "Every decision carries an R2/R3 label, points of no return (log deletion, first outside document) are named and gated, and explicit exit paths (OT fallback, hosted backend, sync-tier split) exist."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "One TypeScript service. The REST and WebSocket sync roles share an image",
+      "rationale": "Starts with the simplest workable topology on proven libraries, defers multi-region, E2EE, SSO and search with explicit triggers, while omitting nothing essential for real-time co-editing."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "V1 fails → server decides edit order with operational transforms (ShareDB), and Phase 1 is re-planned",
+      "rationale": "Dependency-justified phase order, a concrete Phase 0 slice, specific technology and schema decisions, checkable exit criteria per phase, and pre-stated fallbacks if gates fail let a team start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "CRDT (Yjs + y-prosemirror)... V1 fails → server decides edit order with operational transforms (ShareDB)"
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Freeze content schema v1 and the sync protocol, both versioned, with the min-version handshake"
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "random schema-valid edits, with messages reordered, duplicated and delayed... 0 divergent copies over 10k sessions and 1M edits"
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "Confirm only after the Postgres commit... It writes a snapshot, checks it matches a full replay of the log"
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "Redis pub/sub between replicas... reconnect with exponential backoff and jitter... Autoscaling and load shedding"
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Client offline queue in IndexedDB that resends unconfirmed edits; reconnect with exponential backoff and jitter"
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "checked on the server: on WebSocket connect, on every incoming edit... Revocation ends live sessions"
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Per-user undo and redo (Yjs UndoManager)... Version-history UI built on the snapshots"
+    },
+    {
+      "id": "P5-09",
+      "status": 2,
+      "evidence": "Presence and cursors (Yjs awareness; temporary, never stored)"
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Phase 1: Document contracts (the stored format, sync protocol and permission model have the widest rework if wrong)"
+    },
+    {
+      "id": "P5-11",
+      "status": 2,
+      "evidence": "~1 MB text with 100k edits of history loads ≤1 s, ≤50 MB memory... 50 editors per document, each typing 5 edits/s"
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "clients below the minimum schema version are rejected at connect... Old and new clients (v1, and a v2 with a new node type)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "Every copy ends up identical without the server deciding order"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Self-host open-source Yjs, Hocuspocus and TipTap"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "An internal user types one character into a document in browser A. It shows up in browser B... connected to the *other* server replica"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "Confirm only after the Postgres commit, using a managed HA database with synchronous replication"
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "Yjs merges correctly on our content schema and is fast enough at our document sizes"
+    }
+  ],
+  "note": "An exceptionally rigorous, correctly grounded plan that validates convergence and durability before lock-in; only soft spots are rich-text merge semantics detail, restore-while-editing behavior, and cost estimation depth.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6946,
+    "thinking_tokens": 4221,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 16918
+  },
+  "cost_usd": 0.558795,
+  "latency_s": 122.982,
+  "raw_file": "raw/judge-f7c6e069a59c.engineering-quality-v1.fable-5.k1.txt"
+}

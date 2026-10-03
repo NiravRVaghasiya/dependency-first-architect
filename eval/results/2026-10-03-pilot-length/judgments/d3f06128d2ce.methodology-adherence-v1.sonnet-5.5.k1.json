@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "d3f06128d2ce.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "d3f06128d2ce",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 29,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Every table and API | Tenancy and isolation model (V1) | Specified",
+      "rationale": "Dependency map and phases go tenancy/ledger substrate → catalog/metering → rating/payments → live money, with each gate proven before dependents are specified."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "an internal test tenant calls `POST /subscriptions` on a $1 plan. That posts a ledger entry, issues an invoice, and creates a Stripe test-mode PaymentIntent.",
+      "rationale": "Phase 0 is a real end-to-end slice deployed to production with rollback, tracing and alerts, before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Default | Assumption | Validated by | Flip condition",
+      "rationale": "Seven irreversible decisions have reversibility, default, assumption, validator and concrete flip conditions, plus labeled unknowns and missing inputs."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1: Foundations (widest blast radius)",
+      "rationale": "Phase 1 does RLS and ledger first, and Phase 4 exposes money smallest-cohort first; ordering within phases goes from broad contracts to leaf items like the portal built last."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Tenant auth at the gateway; secrets in a vault; Stripe test keys only",
+      "rationale": "The cross-cutting table gives concrete security items in every phase from Phase 0 onward."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Traces carry tenant ID; webhook-failure alert",
+      "rationale": "Observability is concrete in Phase 0 and in each later phase (metrics, dashboards, drift alerts, SLOs)."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Infrastructure as code; pinned dependencies; CI builds",
+      "rationale": "Reproducibility is addressed concretely in every phase, including migrations, golden fixtures, replayable invoice runs and release tags."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Blue/green rollback rehearsed",
+      "rationale": "Resilience appears in every phase: rollback, PITR with restore drill, DLQ and replay, idempotent retries, and a kill switch."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: there is no AI component.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Multi-currency settlement and FX. The money type already supports currencies. Pull forward when the first non-USD contract is signed.",
+      "rationale": "Deferred items are listed, each with a specific pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan meets all ten dimensions with concrete content and no self-assessment inflation; the one weakness is minor and tied to its stated unknown, the peak usage volume.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1045,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 5908
+  },
+  "cost_usd": 0.025341,
+  "latency_s": 20.779,
+  "raw_file": "raw/judge-d3f06128d2ce.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

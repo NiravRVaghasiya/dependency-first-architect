@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "03f90f8a94a0.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "03f90f8a94a0",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 42,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1: Defenses and budgets … Depends on: V0.",
+      "rationale": "Phases run skeleton → defenses → triage → resolution → widening, each gated on a validated predecessor (V0–V3) with an explicit dependency map."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "CI builds signed images and deploys them to a container platform. One OpenTelemetry trace runs per issue.",
+      "rationale": "Phase 0 is a real deployed end-to-end path (webhook→queue→worker→model→GitHub comment) with rollback and a V0 exit check."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "V1 fails: drop to posting the patch as a comment",
+      "rationale": "The gates table lists irreversible decisions with reversibility, default, assumption, validator and flip condition, and labels unknowns."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tool allow-list with an argument validator in the executor ... Sandbox microVM with egress allow-list and no credentials.",
+      "rationale": "Trust-boundary and defense work precedes leaf features, with widening done one repo at a time."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "HMAC check, short-lived tokens, secrets manager",
+      "rationale": "The cross-cutting table gives concrete security controls for every phase starting at Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Trace per issue, cost metric, failure alert",
+      "rationale": "Observability is concrete in Phase 0 and in each later phase (audit log, dashboards, step traces, SLOs)."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Signed images, prompts versioned in git",
+      "rationale": "Reproducibility is addressed in every phase (signed images, pinned models/embeddings, frozen eval sets, run manifest, versioned feedback sets)."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Dead-letter queue, idempotency key",
+      "rationale": "Resilience is concrete in each phase from DLQ to caps, fallback, checkpoints and per-repo circuit breaker."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "1. Injection defense ... 3. Human in the loop ... 4. Retrieval ... 8. Routing ... 9. Feedback",
+      "rationale": "Defenses, budgets and HITL precede retrieval, model access, memory, orchestration, routing and feedback, in the required order with exit checks."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Autonomous merge: pulled forward only if V3 shows ≥90% unmodified merges on docs-only changes, plus a new gate.",
+      "rationale": "Deferred items are explicit, each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, coherent plan that meets every rubric dimension with concrete content and no notable gaps.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 2170,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 6987,
+    "cache_creation_input_tokens": 7079
+  },
+  "cost_usd": 0.04080690000000001,
+  "latency_s": 51.985,
+  "raw_file": "raw/judge-03f90f8a94a0.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

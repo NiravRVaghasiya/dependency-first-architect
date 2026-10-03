@@ -1,0 +1,173 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "2e78761e52da.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "2e78761e52da",
+  "blind_sha256": "b5f7f5324b5bc79ee90051deb58241346710ff8e1563d5c6df92a4da9f369ff0",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 258,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "POSIX `rename()` silently replaces an existing target. Windows `os.rename` fails if the target exists.",
+      "rationale": "Filesystem, ExifTool and CVE claims are accurate; minor issues like the CreateDate fallback and sub-second not being appended to the name don't affect design."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Skip and report. Guessing from the filename or modification time is opt-in, in Milestone 3.",
+      "rationale": "Covers core needs with explicit non-goals, but companions, RAW, PNG and configurable format are deferred past M1."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Everything up to and including `planner` is read-only and deterministic. Only `executor` touches the filesystem",
+      "rationale": "Clear responsibilities and data ownership; small loose ends such as the rollback and undo paths referring to differing journal semantics."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Fault injection (monkeypatched `os.rename` raising, or the process killed, at every step N for a 20-file plan with a cycle and a case-only rename)",
+      "rationale": "Risk-tied tests, early spikes, hash-manifest round trip and 3-OS CI; post-launch validation is limited by nature of a CLI."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "| Nothing else modifies the folder during a run | The check-then-rename race could, in theory, overwrite a file | Spike S3 decides",
+      "rationale": "Assumptions are tagged with impact and validation; few unsupported certainties, though the 17-minute figure is only loosely grounded."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "the next run finds a journal without `phase2_done` and refuses to continue. `photo-rename undo DIR` rebuilds each file's current location by matching file identity",
+      "rationale": "Crash, power loss, cycles, case-only renames, zero dates, malicious files, ExifTool timeouts and concurrent writers all have concrete handling."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "The author owns it. The README covers the undo procedure, exit codes and the no-concurrent-writers rule. There is no on-call.",
+      "rationale": "Exit codes, version rollback, CI and diagnostics are sized sensibly for a CLI; monitoring is naturally minimal."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Cost: none to run.",
+      "rationale": "Build effort is estimated in days, and the only run cost (time) is covered; running cost for a local CLI is appropriately trivial."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "`format_version` is hard to change, because `undo` must be able to read old journals. New fields are additive only",
+      "rationale": "Reversibility column for every decision, with the journal format, interface isolation and the language rewrite cost flagged."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Milestone 1 (about 4–7 developer-days): JPEG and HEIC in a single folder",
+      "rationale": "Mostly proportionate with no databases or services, though the journal with inode identity matching and three milestones is on the heavy side for a photo renamer."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Plan changes if: Unicode breaks (switch to `-stay_open` or a pure-Python reader) or it is too slow (bring parallel chunks into M1).",
+      "rationale": "Task table has locations, done-when criteria, critical path and adaptation triggers."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 1,
+      "evidence": "Precedence is `DateTimeOriginal`, then `CreateDate`, then none. `ModifyDate` is never used"
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "Rejects zero dates, unparseable dates, dates before 1990... Each rejected file gets a reason code: `no_date`, `invalid_date` or `suspicious_date`."
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "Files that map to the same target get `_01`, `_02` and so on. Order is sub-second value, then original filename"
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "Preview by default. Nothing is renamed without `--apply`."
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "Phase 2 renames every temporary name to its destination, after checking the destination doesn't exist."
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "journal written and fsynced before the first rename... `photo-rename undo DIR` rebuilds each file's current location by matching file identity"
+    },
+    {
+      "id": "P7-07",
+      "status": 1,
+      "evidence": "Keeps camera-local time as recorded **[A, Q5]**."
+    },
+    {
+      "id": "P7-08",
+      "status": 1,
+      "evidence": "In Milestone 1, any file with same-stem siblings is skipped with reason `has_companions`."
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "Colons are not used because Windows forbids them in filenames."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Phase 2 renames every temporary name to its destination, after checking the destination doesn't exist."
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "`ModifyDate` is never used, because editing software changes it."
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "One Python package with a pipeline of pure, testable steps"
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "Photo files: the only change is the rename. Contents and modification times are never touched."
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "strftime(\"%Y-%m-%d_%H-%M-%S\") plus the original extension. Colons are not used because Windows forbids them"
+    }
+  ],
+  "note": "Strong, safety-first plan with rigorous journal/undo and validation; weaknesses are deferred companion/RAW handling, only partial timezone (OffsetTimeOriginal) semantics, and somewhat heavy machinery for the task.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2116,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 848,
+    "cache_creation_input_tokens": 19907
+  },
+  "cost_usd": 0.0711051,
+  "latency_s": 20.916,
+  "raw_file": "raw/judge-2e78761e52da.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

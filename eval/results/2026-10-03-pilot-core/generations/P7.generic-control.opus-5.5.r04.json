@@ -1,0 +1,115 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P7.generic-control.opus-5.5.r04",
+  "prompt_id": "P7",
+  "condition": "generic-control",
+  "generator": "opus-5.5",
+  "run_index": 4,
+  "seed": 3598253487,
+  "seed_honored": false,
+  "request": "/architecture-planner Plan a command-line tool that renames a folder of photos by their EXIF capture date.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P7.generic-control.opus-5.5.r04.md",
+  "output_sha256": "e4b36723088e488a06cae2724c2140f4c4ed235016d67761c1d804c2363035d5",
+  "metrics": {
+    "words": 5081,
+    "chars": 31529,
+    "visible_tokens_est": 7883
+  },
+  "turns": 4,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p2ab33809/skills/architecture-planner/reference/document-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p2ab33809/skills/architecture-planner/reference/guidance.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "wb2bf6244/README.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "architecture-planner:architecture-planner",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "eval/conditions/generic-architect/reference/document-template.md",
+      "sha256": "517670de5932f7ab0ecf24b9552eef0898f2878615236f7a28d2df41ea230c02",
+      "words": 1195
+    },
+    {
+      "path": "eval/conditions/generic-architect/reference/guidance.md",
+      "sha256": "a1221cbaa4130a04df554c6ee69526c259863c4ac6c0c5975970a4bbb636b6ad",
+      "words": 2023
+    }
+  ],
+  "started_at": "2026-10-03T00:22:39+00:00",
+  "finished_at": "2026-10-03T00:27:49+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [
+    "claude-opus-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 23309,
+    "thinking_tokens": 10886,
+    "cache_read_input_tokens": 5820,
+    "cache_creation_input_tokens": 12381
+  },
+  "cost_usd": 0.529273,
+  "latency_s": 309.737,
+  "raw_file": "raw/gen-P7.generic-control.opus-5.5.r04.txt"
+}

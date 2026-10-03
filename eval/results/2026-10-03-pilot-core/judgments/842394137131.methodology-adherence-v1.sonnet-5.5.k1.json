@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "842394137131.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "842394137131",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 121,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Depends on: Phase 1's artifact and trust contract, which the template encodes.",
+      "rationale": "Each phase names its dependency and builds upward from skeleton to trust contract, golden path, safe deploys, fleet, scale, and portal."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A developer merges a one-line change to `main` in one real, low-risk, stateless service... `/version` returns the new commit SHA.",
+      "rationale": "Phase 0 is a real end-to-end path to prod with observability and a rollback check, before any templates or features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "More than 20% of services need template overrides. That means the template is wrong: split it by service archetype",
+      "rationale": "Irreversible decisions are listed with defaults and concrete flip conditions, and the runtime assumption is flagged for checking."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "This is the widest-impact task here: all 50 services will call this interface.",
+      "rationale": "Tasks inside phases are ordered by blast radius, such as rollback first in Phase 3 and tier-0 services last in Phase 4."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "GitHub OIDC to AWS (no static keys); branch protection on the service repo and the config repo",
+      "rationale": "The cross-cutting table and phase tasks give concrete security work in every phase, starting at Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "One OTel trace per pipeline run; Argo CD sync and health metrics in Prometheus; lead-time dashboard; failed-sync alert",
+      "rationale": "Phase 0 has concrete observability and every later phase adds specific items."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Cluster, Argo CD and runners all built from Terraform/Helm in Git; base images pinned by digest; lockfile-based builds",
+      "rationale": "Reproducibility gets concrete treatment in every phase, from pinned builds and digests to drift detection and rebuild-and-compare."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "`git revert` rollback run once; image push and config commit are retry-safe",
+      "rationale": "Each phase has specific failure handling, from Phase 0 rollback and single-use runners to game days and DR drills."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "**N/A.** This is an infra system with no model calls, retrieval or agents.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "**Monorepo migration.** Pulled forward if changes that must land in several services at once exceed about 15% of PRs.",
+      "rationale": "The plan lists deferred items, each with a concrete pull-forward trigger."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is strong on all ten dimensions, with concrete content and no empty labels.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1041,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 7255
+  },
+  "cost_usd": 0.0286685,
+  "latency_s": 37.311,
+  "raw_file": "raw/judge-842394137131.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

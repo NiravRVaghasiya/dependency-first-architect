@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "bad8f5090270.probe.sonnet-5.5",
+  "blind_id": "bad8f5090270",
+  "blind_sha256": "d3dc83f184db31005a43e85af7315652c9ef9ae3de9578218ab2899e6070cb4c",
+  "judge": "sonnet-5.5",
+  "order_index": 70,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Numbered \"Classification\" step up front (type, dominant constraint, worst failure) and a later reference to it (\"Step 1 classified it as software\").",
+    "\"Key decisions (resolved up front)\" table with Default and \"Revisit trigger\" columns, including stock axes like consistency vs availability, monolith vs services, and sync vs async.",
+    "\"AI gates\" row and a dedicated \"AI layer\" section that is explicitly marked N/A/omitted. This looks like a template branch being handled.",
+    "Phase 0 is a \"first end-to-end slice\" that crosses every tier, with real request/response, deployed, logged, and monitored items. Each phase has Unlocks, Depends on, and Exit check, and tasks run \"widest → narrowest\".",
+    "A cross-cutting concerns matrix (security, observability, reproducibility, resilience per phase \"from the first commit\") and a \"Deferred\" section with pull-forward triggers. This is heavy, uniform scaffolding beyond what an unprompted plan usually has."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 429,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 6136
+  },
+  "cost_usd": 0.019638,
+  "latency_s": 30.296,
+  "raw_file": "raw/probe-bad8f5090270.probe.sonnet-5.5.txt"
+}

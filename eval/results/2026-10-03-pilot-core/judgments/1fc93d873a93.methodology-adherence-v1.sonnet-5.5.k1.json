@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "1fc93d873a93.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "1fc93d873a93",
+  "blind_sha256": "e437e00d97d58eb060b997f4ef1a61b3b17290ed36abb42efc4bb26c693548df",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 269,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1: Contracts and the PAN boundary ... Depends on: V0. Phase 3 \"Depends on: V1, V3 (build), V4.\"",
+      "rationale": "Phases run substrate (skeleton, PAN boundary, schema) to defenses, features, model, live, feedback, with explicit dependency table and gates proving each before the next."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "a $1 card-not-present authorization on an issuer test card in the production test BIN range ... tokenizes the PAN ... decision log to S3",
+      "rationale": "Phase 0 is a genuine thin end-to-end production path with deploy, rollback, trace and case creation before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Default | Assumption | Validated by | Flip condition ... V2 fails, or the QSA rejects the scope reduction: the whole pipeline enters PCI scope",
+      "rationale": "Irreversible R3 decisions are tabulated with default, assumption, validation and flip conditions, plus labeled assumptions and missing inputs."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Exposure ladder ... internal cards → 1% of one low-risk BIN segment → 5% → 25% → 100% of that segment",
+      "rationale": "Within phases, widest-impact items (PAN boundary, schema, timeout/kill switch/signed config) precede leaf work, and exposure ordering is deliberate, though not explicitly described as blast-radius ordering everywhere."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Test BINs only; tokenize in the adapter; mTLS; secrets in KMS/Vault",
+      "rationale": "The cross-cutting table gives concrete security content for every phase 0–6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OTel trace across all tiers; latency/timeout/lag alerts",
+      "rationale": "Observability is concrete in Phase 0 and every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform, pinned images, GitOps, config in git",
+      "rationale": "Reproducibility is addressed in every phase from Terraform and pinned images through snapshot IDs, registry lineage and seeded retraining."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "80 ms timeout; output ignored; flag and Argo rollback",
+      "rationale": "Resilience content appears in every phase, from the timeout and rollback in Phase 0 through replication, breaker and retrain-failure handling."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "1. Guardrail defense ... Phase 2; 3. Human-in-the-loop ... Phases 2, 4, 5; 4. Retrieval Phase 3; 5. Model access Phase 4; 9. Feedback Phase 6",
+      "rationale": "Defenses, budgets and HITL precede retrieval, model access, memory, orchestration and feedback in order, with routing explicitly deferred; the plan is classical ML, so the layers are adapted sensibly."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Decommissioning the existing engine. Pull forward when the new model has run at 100% for 2 full label cycles",
+      "rationale": "Each deferred item has a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan that meets every rubric dimension with concrete content; the only minor gap is that blast-radius ordering is implicit rather than named.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1232,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11747
+  },
+  "cost_usd": 0.0416955,
+  "latency_s": 16.894,
+  "raw_file": "raw/judge-1fc93d873a93.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

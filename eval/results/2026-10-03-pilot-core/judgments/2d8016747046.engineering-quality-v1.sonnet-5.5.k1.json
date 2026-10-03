@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "2d8016747046.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "2d8016747046",
+  "blind_sha256": "acf823f2c1aab92f186fac47368e1a31e70c65d271a70d204b01aea3e61ece01",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 398,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "CI authenticates to AWS and ECR through GitHub OIDC with per-repo role conditions. Remove every static credential.",
+      "rationale": "Mechanisms (OIDC, cosign keyless, Argo PreSync, expand/contract, pull-based GitOps) are used correctly; minor gaps like the Git-less emergency path versus Argo drift are not reconciled."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Wave 1, about 10 services, chosen to cover every language, runtime and template path.",
+      "rationale": "Covers core needs with explicit deferrals, but lacks an upfront service inventory step beyond a Phase 0 check and defers contract testing."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Git is the single record of what should run where, and changes are serialized through merges.",
+      "rationale": "Consistent GitOps design with clear ownership; small loose ends such as the emergency path bypassing Git while Argo self-heals."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "A release with an injected fault (5% 5xx) is aborted automatically within 10 min, with at most 5% of traffic exposed.",
+      "rationale": "Risky parts (rollback, fault injection, DR drill, game days, template contract tests) are validated early with checkable exits, though some thresholds like 15% and 5 min are unjustified."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "All 50 run as containers on Kubernetes (EKS)... This is an assumption to check in Phase 0.",
+      "rationale": "Key assumptions and revisit triggers are explicit, but team size, compliance, and build volume are not stated and some thresholds are arbitrary."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Single-use runners (a compromised runner can't persist); ... game day: kill Argo CD mid-sync and simulate a Git-host outage",
+      "rationale": "Covers broken template blast radius, tampered artifacts, Git outage, failed migration and compromised runner; fork-PR secrets and flaky specifics are thin."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Platform SLOs and error budget; ... platform disaster-recovery drill (restore Argo CD and registry in a second region",
+      "rationale": "Deploy, rollback, monitoring, DR and on-call routing via catalog are addressed, but platform team ownership and staffing are not named."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Spot runners with retry, and a remote cache... Cost per pipeline run is tracked and trending flat or down.",
+      "rationale": "Runner cost controls and a buy-vs-build trigger exist, but there is no estimate from commit/build volume and cost work is deferred to Phase 5."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Every service will copy this structure, so getting it wrong means 50 migrations later.",
+      "rationale": "Identifies one-way decisions (repo layout, artifact contract, template interface), validates them early on pilots, and gives revisit triggers and exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "A few off-the-shelf components connected by thin glue. The platform is not split into microservices.",
+      "rationale": "Adopts existing tools and defers heavy items, though Backstage, Kyverno and a full observability stack add some weight for an unspecified team."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Within 15 minutes, `curl https://svc-pilot.prod.internal/version` returns the new commit SHA.",
+      "rationale": "Concrete first slice, dependency-justified phases, checkable exit criteria per phase, and revisit triggers for adapting."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "Hand-build pipelines for 2 more services that differ deliberately from `svc-pilot`: another language"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Old pipeline kept as fallback during overlap; wave pause at 15% change failure rate"
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Build once, promote the same image digest through dev → staging → prod."
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "CI authenticates to AWS and ECR through GitHub OIDC with per-repo role conditions. Remove every static credential."
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Every image gets an SBOM (Syft) and SLSA provenance, and is signed with cosign using keyless signing."
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "Migrations follow expand/contract, run as an Argo PreSync job, and a failed migration stops the sync."
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Cross-service contract testing (Pact). Pulled forward if breakage between services becomes the top cause of failed changes."
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Flaky tests. Detect and quarantine them."
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "a build cache keyed on the lockfile hash."
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Spot runners with retry, and a remote cache."
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "Platform SLOs and error budget: p95 CI queue time under 2 min"
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "CODEOWNERS on the template repo"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Retire the old CI per service after 2 clean weeks, and revoke its credentials."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Images are addressed by digest only, never by a moving tag."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "No secrets in Git or in CI variables."
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "envs/<env>/<service>/ structure with per-service namespaces"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Do not build a custom orchestrator."
+    }
+  ],
+  "note": "Strong, well-sequenced GitOps plan with pilot-first waves and immutable digests; weaker on cost estimation, explicit fork-PR handling, flaky-test and contract-test depth, and team/ownership sizing.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 4585,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 15239,
+    "cache_creation_input_tokens": 15938
+  },
+  "cost_usd": 0.0887548,
+  "latency_s": 54.839,
+  "raw_file": "raw/judge-2d8016747046.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

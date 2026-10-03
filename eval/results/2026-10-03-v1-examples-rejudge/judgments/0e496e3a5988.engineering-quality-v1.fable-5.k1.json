@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0e496e3a5988.engineering-quality-v1.fable-5.k1",
+  "blind_id": "0e496e3a5988",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 3,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Postgres sequences leave gaps when a transaction rolls back, and several tax authorities object to gaps",
+      "rationale": "Technical claims are accurate throughout, including subtle areas (Stripe idempotency key expiry, webhook retry window, RLS ownership bypass, SET LOCAL with PgBouncer, partitioned-table unique indexes), with no material error found."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "If you meant the billing part of your own SaaS product, see the Build-vs-buy flip in §2. It changes most of this plan.",
+      "rationale": "It resolves the request's central ambiguity explicitly, covers every core billing capability, and defers non-essentials with stated triggers in §7."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Each module owns its tables and talks to others through interfaces and outbox events.",
+      "rationale": "Decisions made once (tenant-first keys, Money type, CP for money, outbox) are honored consistently in every later phase with no internal contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "forces timeouts after Stripe has already succeeded; kills workers mid-charge; replays every webhook three times, out of order",
+      "rationale": "Each phase has exit checks aimed at its specific failure risks, risky guesses are measured early (Phase 2 ledger load test replaces the §2 guess), and validation continues in production via canaries and reconciliation."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Move to TigerBeetle or Modern Treasury Ledgers when sustained postings near the ceiling measured in Phase 2 (initial guess about 5k/s)",
+      "rationale": "Assumptions are explicit, numbers are labeled as guesses to be measured, and every decision carries a revisit trigger stating what would change the design and when."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Worst failure: A silent wrong charge at scale... a retried billing run charges cards twice across many tenants",
+      "rationale": "Covers duplicates, out-of-order webhooks, timeout-after-success, SSRF, enumeration via 404-vs-403, ledger corruption detection, provider outages and billing-run anomaly stops, each with concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "page if a due period goes uninvoiced for more than 2 h, since that is revenue lost silently",
+      "rationale": "Deployment with automatic rollback, additive migrations with CI enforcement, domain-meaningful alerts, break-glass access, restore drills and a staff console are all concrete and sized to a small team on managed AWS."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Infrastructure is managed AWS (RDS, ECS Fargate, KMS), not self-run Kubernetes or Postgres.",
+      "rationale": "Build-vs-buy and cost-deferring triggers are the implicit cost reasoning, but there are no run-cost or engineering-effort estimates, no vendor fee discussion, and no analysis of how costs grow with usage."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Because every key starts with tenant_id, the move is a data copy, not a rewrite.",
+      "rationale": "Hard-to-reverse choices (funds flow, money representation, tenancy, public contract, ledger) get the most scrutiny and early validation, while reversible ones are explicitly flagged flexible behind interfaces and flags."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Modular monolith. One repo, one image, one Postgres.",
+      "rationale": "Starts with the simplest workable design (Postgres job queue instead of Kafka, one cell, deferred Temporal/ClickHouse/multi-region) with explicit growth triggers, while omitting no billing essential."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "An internal canary tenant sends POST /v1/invoices with an Idempotency-Key header and this body",
+      "rationale": "A team could start immediately: Phase 0 is a concrete end-to-end slice, phases are dependency-ordered with reasons, every phase has checkable exit criteria, and revisit triggers say how to adapt."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Integers in the currency's smallest unit (bigint) plus the ISO-4217 code... Rounding happens once per line, half-up"
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Updates and deletes are blocked, and corrections are reversing entries. Finalized invoices never change; corrections are credit notes."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "Exactly one PaymentIntent per invoice, created with the invoice ID as its idempotency key and saved before it's confirmed."
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "Card details are collected only through Stripe Elements and SetupIntents, so we hold pm_… tokens and never a card number."
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "RLS is forced on every tenant table, and the app role has no BYPASSRLS... An isolation test suite runs in CI and nightly in prod"
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "duplicates are dropped by (tenant_id, event_id) for 35 days... official numbers are recomputed from raw events at period close"
+    },
+    {
+      "id": "P2-07",
+      "status": 2,
+      "evidence": "a price can't change once it's been used, so editing creates a new version... Month-end start dates clamp: Jan 31, then Feb 28"
+    },
+    {
+      "id": "P2-08",
+      "status": 2,
+      "evidence": "take the next gap-free invoice number from a per-tenant, per-series counter row... if the provider is down, finalization waits and never guesses the tax"
+    },
+    {
+      "id": "P2-09",
+      "status": 2,
+      "evidence": "retry schedules per tenant based on decline codes, never retrying hard declines; moves subscriptions from past_due to unpaid or canceled"
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "Daily PSP reconciliation matches every Stripe balance transaction to a ledger posting by PSP ID, and anything unmatched in either direction pages someone."
+    },
+    {
+      "id": "P2-11",
+      "status": 1,
+      "evidence": "An entitlements API: build when tenants ask to gate product features by plan in real time."
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Build the core: catalog, subscriptions, metering, rating, invoicing and the ledger. That is the product. Buy the rest: payments (Stripe Connect)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Integers in the currency's smallest unit (bigint) plus the ISO-4217 code... All arithmetic goes through one Money type."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "a trigger rejects changes to financial columns once an invoice is finalized... corrections are credit notes"
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "verify the signature... store the raw event, unique on its event ID... handle duplicates and out-of-order events by re-fetching the object"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "we hold pm_… tokens and never a card number. PCI scope is limited to card tokens."
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "CI rejects any migration that adds a table without RLS or without tenant_id-first keys."
+    }
+  ],
+  "note": "An exceptionally strong, technically precise billing architecture that avoids every domain trap, with explicit assumptions, risk-first validation and reversibility reasoning; its only notable weakness is the absence of explicit money/effort cost estimates.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8541,
+    "thinking_tokens": 5751,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 21500
+  },
+  "cost_usd": 0.69582,
+  "latency_s": 121.68,
+  "raw_file": "raw/judge-0e496e3a5988.engineering-quality-v1.fable-5.k1.txt"
+}

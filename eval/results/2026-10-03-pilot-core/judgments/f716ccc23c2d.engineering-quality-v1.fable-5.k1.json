@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f716ccc23c2d.engineering-quality-v1.fable-5.k1",
+  "blind_id": "f716ccc23c2d",
+  "blind_sha256": "262c122547ff8806bba57dc0d37908dbed06f33d5441910a4893467d6b1a3ee9",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 274,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Yjs updates are idempotent (applying the same update twice has no effect), so resends are harmless",
+      "rationale": "Claims about CRDT semantics, state-vector sync, durability-vs-acknowledgement, awareness, relative-position anchors and ProseMirror binding risks are all accurate, including the subtle areas (binding-level invalidity despite CRDT-level convergence)."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "concurrent rich-text editing...; live cursors and presence; per-user undo; four roles...; comments anchored to text; version history with restore; reconnection without loss",
+      "rationale": "Covers every implied core capability, resolves ambiguities with labeled assumptions, excludes scope explicitly with reasons, and is credibly buildable by the stated 5-person team in the stated timeline."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Single writer per schema, enforced by the database. The `collab_rw` role can write only `content.*`",
+      "rationale": "Every component has a single responsibility and sole data owner, identity/consistency/error propagation are handled uniformly, and decisions (e.g., comments outside the CRDT) are honored consistently across sections."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Three spikes run alongside: convergence fuzzing, durability/acknowledgement semantics, and single-instance capacity",
+      "rationale": "The riskiest assumptions are spiked before the content format is frozen, exit criteria are measurable, chaos/fuzz tests gate releases, and a production synthetic probe continues validation after launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "I made assumptions and labelled them [A#]... | Assumption | Impact if wrong | Validate how / when |",
+      "rationale": "Every load-bearing assumption is explicit with impact-if-wrong and a validation owner/date, numbers are labeled estimates, and open questions state defaults and what would change."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Chaos script kills Collab during scripted edits: 0 acknowledged edits lost over 20 runs",
+      "rationale": "Covers the hard domain failures — crash mid-edit, duplicates, reconnect storms, crafted frames from viewers, schema-evolution corruption — each with concrete detection, containment and a recovery path including per-document restore."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Alerts are tied to what users notice: propagation p95 > 500 ms for 10 min; any persist failure lasting 2 min",
+      "rationale": "Deploy/rollback are demonstrated as exit criteria, drain and reconnect are designed, alerts link to runbooks fired in staging, and the operational burden is explicitly sized to the 5-person team."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Total ~$700–1,300/month, excluding the identity provider. IdP pricing per active user can be larger than all of that",
+      "rationale": "Identifies run-cost drivers with ranges and basis, flags the IdP as the potentially dominant per-user cost, sets controls (tagging, budget alert), and grounds build-vs-buy trade-offs in D1/D7/D10."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Point of no return: once beta customers have real documents stored in the §8 CRDT layout... the format is frozen at the end of M1, after S1–S3",
+      "rationale": "Reversibility is a column in the decision table, the hardest-to-reverse choice (persisted CRDT format) is validated by spikes before freezing, and exit paths (standard Yjs protocol, fan-out behind an interface) are explicit."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Redis and object storage come in later milestones, when a driver needs them... Kubernetes is too much operational load for 5 people",
+      "rationale": "Two processes and one database at the start, each later component tied to a named driver, with explicit deferred work and deliberate debt — no gold-plating and no missing essentials."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T1 → (T2, T3, T4, T5, T6, S1, S2, S3 in parallel) → T7, T8 → T9 → T10 → T11/T12 → T13, T14",
+      "rationale": "Week-level tasks with owners, locations and checkable done-when criteria, a justified critical path, and explicit contingencies if spike results disappoint (e.g., S2 failure → custom server, +1–2 weeks)."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "Use an existing CRDT library (Yjs) instead of writing operational transformation (OT)... Merge correctness is the costliest thing to get wrong"
+    },
+    {
+      "id": "P5-02",
+      "status": 2,
+      "evidence": "one `Y.XmlFragment('content')` plus one `Y.Map('meta')` holding `schemaVersion`... including list splitting and nesting, mark overlap and undo"
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "N=3–8 headless ProseMirror+Yjs clients, random operations, simulated network; seedable and kept as a CI test"
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "append-only log of updates in Postgres plus periodic compacted snapshots... acknowledged only after it has been written durably"
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "Clients reconnect with exponential backoff (0.5 s → 10 s, ±30% jitter)... N instances share updates through Redis (D6)"
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "A short disconnect (up to ~30 min) loses nothing... y-indexeddb so unacknowledged edits survive a tab reload"
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "Permissions are enforced inside the real-time channel... revoking access closes live sessions... crafted update frame from a read-only socket is dropped"
+    },
+    {
+      "id": "P5-08",
+      "status": 2,
+      "evidence": "Per-user undo affects only the user's own changes... Version restore tested with live editors connected"
+    },
+    {
+      "id": "P5-09",
+      "status": 2,
+      "evidence": "Presence | Memory only (awareness) | — | Never stored"
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "M1 builds directly on it and stress-tests it before any features depend on it... Beta features come last"
+    },
+    {
+      "id": "P5-11",
+      "status": 2,
+      "evidence": "limits (512 KB per message, 10 MB per document, 20 sockets per user per document)... How does open time grow with doc size (1/5/10 MB)"
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "Editor schema changes follow a two-release rule... enforced through `minSchema` in the token and forced reload"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "Concurrent edits to the same paragraph interleave instead of one overwriting the other"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Custom OT is months of correctness work... use a proven library and spend our own effort on testing it"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "The CRDT content format is the hardest thing to reverse, so M1 builds directly on it and stress-tests it before any features depend on it"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "An edit counts as acknowledged only after it has been written durably"
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "Yjs merges correctly at the CRDT level. The binding to ProseMirror's structural rules... can still produce surprising or invalid results"
+    }
+  ],
+  "note": "An exemplary plan: proven CRDT stack with durability-before-acknowledgement, risk-first spikes gating an explicitly frozen content format, socket-level authorization, versioned protocol/schema, and a concretely actionable build order — it avoids every trap and concretely addresses every checklist item.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 9740,
+    "thinking_tokens": 6993,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 25175
+  },
+  "cost_usd": 0.8025775,
+  "latency_s": 150.122,
+  "raw_file": "raw/judge-f716ccc23c2d.engineering-quality-v1.fable-5.k1.txt"
+}

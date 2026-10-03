@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "803685291a96.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "803685291a96",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 19,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1: \"Ingestion, hybrid retrieval, reranking, cited answers.\" ... Phase 2: \"Add escalation and guardrails.\"",
+      "rationale": "Phases go roughly discovery→retrieval→launch, but guardrails and escalation come after the prototype rather than before capabilities, so the ordering is only partly dependency-driven."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 0: Discovery (1–2 weeks) - Audit the docs. ... Build the eval set.",
+      "rationale": "Phase 0 is discovery only, and the first build is an internal prototype; nothing runs end-to-end in production until Phase 3."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "\"Postgres + pgvector if you already run Postgres. Otherwise a managed service such as Pinecone, Weaviate, or OpenSearch.\"",
+      "rationale": "Defaults with conditions are given for some choices and open questions are listed, but there is no explicit irreversible-decision list with flip triggers."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "\"Apply visibility filters at retrieval time, not in the prompt.\"",
+      "rationale": "Some wide-impact items, like ingestion metadata and access filters, come first in the pipeline, but phases don't explicitly order work by blast radius."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Phase 2: \"Add escalation and guardrails.\" and \"Security/legal reviewer: sign-off before external launch.\"",
+      "rationale": "Security has a solid standalone section, but it is applied from Phase 2 on and is not tied to each phase, with none in Phase 0 or 1."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "\"Logging: For each turn, log the query, the rewritten query, retrieved chunk IDs and scores...\"",
+      "rationale": "Observability is detailed in a standalone section, but the phases don't schedule it from day zero."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "\"Version prompts, chunking settings, and index snapshots. Make rollback a one-click operation.\"",
+      "rationale": "Versioning, content-hash re-embedding and CI evals exist, but they are not threaded through the phases and there is no environment reproducibility."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "\"Confidence gate. If the best rerank score is below the threshold, don't attempt an answer.\"",
+      "rationale": "Failure handling such as the confidence gate, escalation and alerts is good, but it is not threaded per phase and provider failover or fallback is missing."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "\"Faithfulness check (v1.5)\" and Phase 2 \"Add escalation and guardrails\" after Phase 1 retrieval and generation",
+      "rationale": "Retrieval→generation→memory→routing is reasonable and human handoff exists, but defenses, budgets and human-in-the-loop are added after the capabilities and the token budget is only vaguely stated."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "\"Not in scope for v1: account-specific actions like refunds or password resets, and replying in channels other than web chat. Plan for both in v2.\"",
+      "rationale": "Deferrals are named, including Phase 4 items and the v1.5 faithfulness check, but no explicit pull-forward conditions are given."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan has strong RAG content and a sensible rollout, but it has no production walking skeleton, and security, observability, reproducibility and resilience sit in standalone sections instead of being threaded through the phases.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1301,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 5341
+  },
+  "cost_usd": 0.0264835,
+  "latency_s": 39.783,
+  "raw_file": "raw/judge-803685291a96.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

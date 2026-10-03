@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "75d951529fe7.probe.sonnet-5.5",
+  "blind_id": "75d951529fe7",
+  "judge": "sonnet-5.5",
+  "order_index": 41,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.97,
+  "cues": [
+    "Rigid templated structure: classification/constraints, dependencies, key decisions, first end-to-end slice (Phase 0), phases, validation checks, cross-cutting, AI layer, exceptions, deferred",
+    "Reversibility ratings (R1/R2/R3) with default, assumption, validated-by, and revisit trigger columns for each decision",
+    "Explicit ASSUMPTION/UNKNOWN labels with named owners and 'Missing inputs' list; plan proceeds on stated assumptions",
+    "Numbered validation checks V0–V5 with hypothesis, method, acceptance threshold, evidence, and 'unlocks (and if it fails)' columns, cross-referenced throughout phases",
+    "Fixed 9-sublayer AI layer table, per-phase cross-cutting matrix, '§9 Exceptions: None', and 'Deferred' with pull-forward conditions — methodology-specific scaffolding"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 388,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8024
+  },
+  "cost_usd": 0.023948,
+  "latency_s": 18.648,
+  "raw_file": "raw/probe-75d951529fe7.probe.sonnet-5.5.txt"
+}

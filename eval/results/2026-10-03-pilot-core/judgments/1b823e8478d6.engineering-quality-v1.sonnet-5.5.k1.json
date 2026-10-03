@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "1b823e8478d6.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "1b823e8478d6",
+  "blind_sha256": "69d1b8565c94d85883f620392864ab70abd05c40910be2e21933eb37a8254173",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 254,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Applying a Yjs update twice changes nothing, so duplicates only cost storage, and compaction removes them.",
+      "rationale": "Yjs/Hocuspocus/awareness/CRDT claims are accurate and limits are stated, but compaction deleting rows ≤ S can drop a lower-seq row that commits late, and 'byte-identical' convergence is stricter than Yjs guarantees."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Non-goals for beta: spreadsheets and slides, native mobile apps, full offline-first use ... suggestion or track-changes mode, public link sharing",
+      "rationale": "It covers the core needs (sync, persistence, permissions, presence, comments, versions, limited offline) and explicitly excludes and defers the rest with reasons and triggers."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "`collab` keeps no state that only it holds. If a task dies, clients reconnect ... which reloads from Postgres.",
+      "rationale": "Responsibilities and data ownership are clear and consistent across api/collab/Postgres/Redis; small loose ends such as the unflushed window and the compaction race remain."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "The e2e test kills the `collab` task during typing, and all text is present after reconnect.",
+      "rationale": "Validation is tied to named risks H1–H5 with early time-boxed spikes, fuzz and crash tests, load tests, staged-fault alert checks and a production synthetic probe, with explicit pivot conditions."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "| A6 | Business-confidential data only ... | E2E encryption rules out server-side merging, snapshots and comments as designed. | Week 1 |",
+      "rationale": "Ten assumptions each carry impact-if-wrong and validation, and invented targets are labelled as assumptions."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Postgres unavailable: `collab` keeps editing in memory with retries, \"Saved\" stops advancing, an alert fires once the oldest unsaved change is more than 10 s old",
+      "rationale": "Covers crash, DB outage, revocation misses, malicious viewer edits, oversized/malformed updates, reconnect storms and schema-induced deletion with detection and recovery, but misses the compaction race and poison updates persisted in the log."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Alerts, each linked to a runbook in `docs/runbooks/`: `unpersisted_age_seconds` over 10 s; probe p95 over 500 ms for 10 minutes",
+      "rationale": "Domain-meaningful metrics, rollback, expand-contract migrations, runbooks and ownership are sized to 5 engineers, though on-call is only business-hours and incident process is thin."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Roughly $600–1,000/month for prod plus staging at beta: RDS Multi-AZ about $250–400, Fargate about $150–250",
+      "rationale": "Run costs are itemised with drivers and controls and the buy-vs-build trade-off is noted (4–6 weeks saved), but figures have little stated basis and people cost is not quantified."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "| D1 | Merge with **Yjs CRDT** ... | **Hard** (stored format) | S1 finds divergence or performance problems we can't fix |",
+      "rationale": "Each decision carries a reversibility rating and revisit trigger, hard ones (CRDT, schema) are spiked early with a schema freeze, and vendor lock-in and exit paths are addressed."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Redis relay between instances, any instance may hold a document (M3)",
+      "rationale": "Mostly justified and staged (Redis deferred to M3, scope cut explicitly), with some weight from Multi-AZ, an external security review and two deployables for a beta."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T3 (Spike S1 ...; time box 4 days ...) *Changes the plan if:* we find divergence not caused by our code, keystroke p95 over 16 ms",
+      "rationale": "Dependency- and risk-ordered milestones, day-by-day tasks with done-when criteria, concrete exit criteria and explicit pivot conditions let a team start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "Edits are merged with a **CRDT (Yjs)**, not operational transformation. ... OT needs a single ordering server per document and makes offline harder."
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "`packages/doc-schema` | One definition of allowed document nodes and marks, plus `SCHEMA_VERSION`"
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "random inserts, deletes and formatting, random disconnects and a server restart. It asserts that every client and the reloaded copy from Postgres are byte-identical."
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "appends merged batches to `doc_updates` in Postgres every 500 ms; ... compacts the log into a snapshot"
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "Redis relays updates and awareness between `collab` instances ... Reconnect uses jittered exponential backoff capped at 10 s"
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Offline\" means surviving minutes to hours of disconnect in an open tab, plus tab close via IndexedDB"
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "`NOTIFY acl_changed {doc_id, user_id}` in one transaction. ... switches them to read-only with `access-changed {role:viewer}`"
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Restore doesn't rewrite history, so it's safe for live collaborators."
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "Relays updates and awareness between `collab` instances. Not a store."
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "M1: First end-to-end slice + spikes ... Fuzz: 1,000 runs, 0 divergence."
+    },
+    {
+      "id": "P5-11",
+      "status": 2,
+      "evidence": "documents up to 10 MB, after which they turn read-only and raise an alert; 100 connections per document; at most 50 updates per second per connection"
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "Readers ship one release before writers ... `collab` auth hook rejects older clients with `reload-required`"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "Edits are merged with a **CRDT (Yjs)**, not operational transformation."
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Time to market: we don't implement the algorithm."
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Two users on staging see each other's edits ... Single `collab` instance."
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "**\"Saved\" is a real guarantee.** The server tells each client which of its edits are committed to the database."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "Yjs servers usually persist on a debounce, so a crash can lose the last few seconds unless the design closes that gap."
+    }
+  ],
+  "note": "Strong, well-sequenced plan that builds on Yjs and proves the sync core first; weaknesses are thin undo/rich-text merge semantics and a subtle compaction race.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4795,
+    "thinking_tokens": 2127,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 25068
+  },
+  "cost_usd": 0.1108012,
+  "latency_s": 44.021,
+  "raw_file": "raw/judge-1b823e8478d6.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

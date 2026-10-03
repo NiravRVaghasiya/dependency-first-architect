@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "dc4f98dd0d12.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "dc4f98dd0d12",
+  "blind_sha256": "51b8e2d4dd7ec19a031d0a3720e884832612e7a8388b0aa31cf57f01a4287af5",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 389,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: Phase 1, V1\"; Phase 4 \"V4, V5 and V6 before any tier-1 service\"",
+      "rationale": "Phases run from trust boundary to template/runners to pilot waves to tier-1 to retirement, each gated by a validation that proves its dependency."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A merge to `main` on one low-criticality, stateless internal service ... Argo CD in the prod cluster syncs it.",
+      "rationale": "Phase 0 is a real end-to-end production path across all tiers, with deploy, rollback and alert checks."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Default: GitOps pull ... Flip condition: V1 fails, or the inventory finds a significant set of non-Kubernetes targets → push",
+      "rationale": "Irreversible decisions are tabled with reversibility, default, assumption, validation and flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1 trust boundary before onboarding; \"Wave 4: about 10 tier-1 services, 1–2 at a time\"; Phase 4 \"smallest exposure first\"",
+      "rationale": "Widest-impact items (trust boundary, template, shared controls) come before leaf services, and the riskiest services go last and gradually."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"Protected `main` only; no secrets for fork pull requests; policy in audit mode\"",
+      "rationale": "The cross-cutting table gives concrete security work in every phase 0–5, starting with Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Day zero: \"CI spans are exported over OpenTelemetry, so one trace covers the whole path.\"",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Platform kept as code (Terraform plus Helm); digest-pinned images",
+      "rationale": "Reproducibility is concrete in every phase: IaC, digest promotion, provenance, versioned templates, archived configs."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: \"Rollback rehearsed; old job kept as fallback\"; Phase 1 \"Policy webhook HA\"",
+      "rationale": "Each phase has concrete failure handling: rollback, HA, ring rollout, break-glass, restore rehearsal."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "## 8. AI layer N/A: no AI component.",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Developer portal (for example, Backstage): when platform support requests outgrow the platform team's capacity.",
+      "rationale": "There is an explicit deferred list and each item has a pull-forward trigger."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is strong on all ten dimensions, with concrete per-phase treatment, flip conditions and validation gates. I found no material gaps.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1110,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9647
+  },
+  "cost_usd": 0.0352255,
+  "latency_s": 17.981,
+  "raw_file": "raw/judge-dc4f98dd0d12.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

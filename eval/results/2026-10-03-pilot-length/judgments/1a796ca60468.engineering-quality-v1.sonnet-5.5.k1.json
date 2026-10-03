@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "1a796ca60468.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "1a796ca60468",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 0,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Deleted or unpublished articles must leave the index within minutes, because stale policy answers are a top risk.",
+      "rationale": "Technically sound (hybrid RRF, rerank, content-hash re-embedding), with minor imprecision like 'treat as data' being presented as a prompt-injection defense and LLM-judge groundedness."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Out of scope for v1: account-specific actions such as refunds or password resets, and anything needing user data.",
+      "rationale": "Covers core needs, explicit v1 exclusion with v2 path and build-vs-buy question, buildable; some optional items are not clearly separated from essentials."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Guardrails / confidence check ─► Answer or escalate to human",
+      "rationale": "Consistent flow; minor loose ends such as intent routing listed in retrieval but not in diagram and account-specific requests both out-of-scope and escalation triggers."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "CI gate: run the eval suite on every change to prompts, chunking, models, or retrieval. Block regressions.",
+      "rationale": "Domain-appropriate eval with golden set, judge calibration, A/B and online monitoring, but targets like 90%/2% are not justified or labeled provisional and injection/ACL tests are thin."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Open Questions to Answer First ... Will users be authenticated? This decides whether account-aware answers are possible in v2.",
+      "rationale": "Open questions are explicit and some sensitivities noted, but targets and team sizes appear without labeling as assumptions."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "If the LLM is down, fall back to plain search results. Add rate limiting per session and IP.",
+      "rationale": "Hallucination, staleness, loops, injection, and outage are covered but mostly at the mitigation-list level; partial failures, webhook failure handling, and injection containment are thin."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Keep an index version ID for rollback.",
+      "rationale": "Tracing, versioning and phased rollout exist, but there is no incident ownership, alerting detail, or deployment/rollback procedure beyond the index version."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Estimate cost per conversation early, typically cents.",
+      "rationale": "Identifies the drivers and controls like caching and tiering but gives no basis for the estimate and little scaling analysis; does mention build vs buy."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Run a small bake-off of 2–3 models on your own eval set ... compare against built-in vendor bots ... before committing to a custom build.",
+      "rationale": "Some reversibility support (index version, embedding bake-off, build vs buy) but no explicit discussion of one-way decisions or re-embedding/vendor exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Conversation-aware query rewrite ... Optionally produce 2–3 query variants.",
+      "rationale": "Mostly proportionate, but includes rewrite, routing classifier, reranker, and LLM-judge in hardening before a measured baseline; baseline is prototyped first though."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "run Phase 0. Pull the last 90 days of tickets, cluster them into the top 30 intents, and check whether the help center actually answers each one.",
+      "rationale": "Phased plan with concrete deliverables and a clear first step, though go/no-go criteria between phases and adaptation to poor results are thin."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "use a CMS webhook on publish, update, or delete, plus a nightly full reconciliation. Deleted or unpublished articles must leave the index within minutes"
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Break on H2/H3 sections ... Never split a numbered procedure in the middle. Metadata per chunk: article ID, URL plus anchor, section title, locale, product, plan tier"
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "200–500 real questions sampled from past tickets and site-search logs ... CI gate: run the eval suite on every change to prompts, chunking, models, or retrieval."
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "Answer only from the provided sources. If they don't contain the answer, say so and offer a human. ... Confidence gating"
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "user asks for a human, low retrieval confidence, two failed turns in a row ... Handoff payload: transcript, detected intent, retrieved articles"
+    },
+    {
+      "id": "P1-06",
+      "status": 1,
+      "evidence": "Treat the retrieved text as data, not instructions. This defends against prompt injection planted in content."
+    },
+    {
+      "id": "P1-07",
+      "status": 1,
+      "evidence": "index only public docs for the public bot. If internal docs are added ... keep them in a separate index or enforce metadata filters on the server side."
+    },
+    {
+      "id": "P1-08",
+      "status": 1,
+      "evidence": "set data-retention policies, redact PII, check your LLM vendor's zero-retention terms, and do GDPR/CCPA review."
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Out of scope for v1: account-specific actions such as refunds or password resets, and anything needing user data. Plan for these in v2 through tool calling."
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "\"No answer found\" clusters, which show where the docs have gaps. Weekly human review of a sample of conversations."
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "Estimate cost per conversation early, typically cents. ... cap context size and number of turns."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Answer only from the provided sources. If they don't contain the answer, say so and offer a human."
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "index only public docs for the public bot."
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "use a CMS webhook on publish, update, or delete, plus a nightly full reconciliation."
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "CI gate: run the eval suite on every change to prompts, chunking, models, or retrieval. Block regressions."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "Phase 1 Prototype: Ingestion, hybrid index, basic RAG, offline eval harness, internal demo"
+    }
+  ],
+  "note": "Solid, well-grounded RAG plan with strong ingestion, eval and escalation coverage; weaker on retrieval-time entitlements, injection containment, cost basis, and operational ownership.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2374,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 860,
+    "cache_creation_input_tokens": 11619
+  },
+  "cost_usd": 0.0529675,
+  "latency_s": 58.02,
+  "raw_file": "raw/judge-1a796ca60468.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

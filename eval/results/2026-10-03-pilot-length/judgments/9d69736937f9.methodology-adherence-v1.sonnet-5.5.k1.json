@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9d69736937f9.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "9d69736937f9",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 45,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Why now: if the document model doesn't converge, nothing built later will work.",
+      "rationale": "Phases build substrate upward (decisions, editor, convergence proof, sync, persistence, auth, features) with each proven before the next."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 1: Single-user editor ... Basic save/load from local storage or a stub API",
+      "rationale": "No thin end-to-end production path first; the first build phase is a local editor and nothing is deployed until much later."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Recommended: a CRDT ... Choose [OT] only if you need strict server authority or already have OT experience.",
+      "rationale": "Irreversible choices (CRDT vs OT, editor, schema, scope) are up front with defaults and conditions for the alternative, though flip triggers are not stated for all."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Why first: it tests the schema and editor choice without the complexity of networking.",
+      "rationale": "Widest-impact items like schema and convergence come first, but ordering within phases is not explicit."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Why here: permissions shape the protocol and the storage layer. Adding them after launch is painful and risky.",
+      "rationale": "Security is concentrated in Phase 5 and Phase 11, with only rate limits and size limits in Phase 3; the early phases 0–2 have none."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "Observability: sync latency, message rates, document size, reconnect rates, and divergence detection",
+      "rationale": "Observability is first scheduled in Phase 9, late, with only a note that monitoring can start once there is a server."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "The fuzz test passes thousands of randomized runs in CI.",
+      "rationale": "CI and a regression suite are mentioned, but reproducible environments, builds and seeds are not threaded through the phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Reconnect with exponential backoff and jitter",
+      "rationale": "Resilience shows up in Phases 2, 3, 4, 7 and 9 (flaky network tests, durability, reconnect), but is absent in others and chaos testing comes last."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never says whether an AI layer applies, so the non-AI declaration is missing."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Scope of v1. Write down what's out, for example comments, suggestion mode and tables.",
+      "rationale": "Deferred items are listed, including Phase 10 features in priority order, but there are no pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan has a strong technical sequence, with convergence proven first and decisions up front. It lacks a walking skeleton, observability from day zero, threaded security and reproducibility, and any statement on the AI layer.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1043,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 4008
+  },
+  "cost_usd": 0.020571000000000002,
+  "latency_s": 53.922,
+  "raw_file": "raw/judge-9d69736937f9.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

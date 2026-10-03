@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "c1815aa9bb3f.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "c1815aa9bb3f",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 186,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "`apply` mode (any real rename) | V1: no-overwrite rename, journal, undo | ... Blocked from being exposed",
+      "rationale": "Read-only skeleton precedes the journal/primitive, which precede apply/undo, then sidecars, then real-library rollout, with each dependency gated by a validation."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Deploy: pushing tag `v0.0.1` makes GitHub Actions run the tests and publish the wheel. The tool is installed with `pipx install` on clean Windows, macOS, and Linux",
+      "rationale": "Phase 0 is a real end-to-end dry-run path that is deployed, rollback-rehearsed and runs on real photos, though it is read-only."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "V1 fails on some filesystem. Then on that filesystem, either refuse `apply` or switch to copy, verify the hash, then delete",
+      "rationale": "The irreversible decisions (rename execution, naming scheme, privacy boundary) each have a reversibility class, default, assumption, validation and flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks, in order (widest blast radius first): 1. Define the plan and journal format ... Undo and resume depend on this.",
+      "rationale": "The plan explicitly orders the journal and primitives before leaf work like sidecars, and Phase 2 rolls out smallest exposure first."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "No network code; read-only executor; skip symlinks and never step outside the target folder; dependencies pinned with hashes in `uv.lock`",
+      "rationale": "Each phase has concrete security measures, from Phase 0 through 2."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "every log starts with a run ID, the tool version, and the ExifTool version; ... exit code 2 if any file errored, 3 if ExifTool is missing.",
+      "rationale": "Observability exists in Phase 0 and is extended concretely in Phases 1 and 2."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Lockfile; releases built by CI from tags; plan order sorted so runs are repeatable",
+      "rationale": "Reproducibility is addressed concretely in all three phases: lockfile, seeds, filesystem matrix, and tagged releases."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Each journal entry is flushed to disk before its rename; preflight checks for write permission; `resume` and `undo`",
+      "rationale": "Resilience is covered in Phase 0 (bad file not fatal, exit 3), Phase 1 (journal, resume), and Phase 2 (staged rollout)."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: no AI component.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Time-zone normalization (`OffsetTimeOriginal`, GPS time). Pulled forward if you mix photos taken in different time zones",
+      "rationale": "Six deferred items each come with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan with concrete content in all dimensions; the only minor weakness is that the Phase 0 skeleton is read-only, which is justified.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1184,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 6732
+  },
+  "cost_usd": 0.028791,
+  "latency_s": 20.875,
+  "raw_file": "raw/judge-c1815aa9bb3f.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

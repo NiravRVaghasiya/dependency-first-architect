@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f71723043607.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "f71723043607",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 55,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Each phase relies on the one before it. For example, safe canary releases need observability",
+      "rationale": "Phases go substrate → CI → CD → observability → prod with an explicit dependency table and gating done-when criteria."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 0: Discovery and Key Decisions (Weeks 0–3)",
+      "rationale": "Phase 0 is discovery only; the first production path arrives in Phase 6, so there is no early walking skeleton."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Make these decisions and write each one down as an architecture decision record (ADR)",
+      "rationale": "Irreversible decisions are listed in ADRs with some recommended defaults, but flip conditions or revisit triggers are not given."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Include one with awkward dependencies so the hard cases show up early.",
+      "rationale": "Pilots run first and waves go simple to legacy, but widest-impact work is not explicitly ordered within phases, and the migration puts the easy services first."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "pipelines should get short-lived cloud credentials through OIDC instead of stored keys",
+      "rationale": "Security appears in Phases 1, 2 (SBOM, signing), 3 and 5, but is not stated in Phase 0 and the main checks come in Phase 5, so it isn't present in every phase."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "Phase 4: Observability Before Production Automation (Weeks 10–14)",
+      "rationale": "Observability is deliberately deferred to Phase 4 and absent from Phases 0–3, which is the opposite of day-zero observability."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Define the platform itself as code (Terraform or Pulumi).",
+      "rationale": "IaC, immutable tags, versioned templates, GitOps and build-once-promote give reproducibility across several phases, but not explicitly in every phase."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Automatic rollback when the analysis fails. A rollback should mean reverting a Git commit",
+      "rationale": "Resilience is mostly in Phase 6 (rollback, game day), with little before it beyond runner isolation and pod disruption budgets."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never states whether an AI layer applies, so it does not earn the N/A credit."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Optional: preview environments for each pull request, for teams that need them.",
+      "rationale": "Some items are deferred (preview environments, portal in Phase 8, legacy last wave), but there is no explicit not-yet-built list with pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan has strong dependency ordering and a sound migration structure. It has no early production walking skeleton, it delays observability to Phase 4, it has no flip conditions on decisions, and it never addresses the AI layer.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1070,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 5073
+  },
+  "cost_usd": 0.0235035,
+  "latency_s": 37.172,
+  "raw_file": "raw/judge-f71723043607.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0a9fdc8f115e.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "0a9fdc8f115e",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 83,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1a (schema, RBAC, Vault, registry hardening) before Phase 1b (multi-service, canary); \"Depends on: Phase 1 complete; all V1–V3 gates passed.\"",
+      "rationale": "Substrate-to-upward ordering with gates proving dependencies, though minor inconsistencies (V4 spike and the engine choice after the skeleton already used a GitOps engine) weaken it slightly."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"Git push to branch main of a test service → build triggered → artifact tagged and pushed → ... deployment to test K8s cluster → smoke tests → ... rollback\"",
+      "rationale": "Phase 0 is a real end-to-end commit-to-deploy-to-rollback slice with exit check V0, though on a test cluster rather than production."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Table columns: \"Default (chosen) | Assumption it rests on | Validated by | Flip condition\" — e.g. \"V4 fails → switch to imperative (Jenkins)\"",
+      "rationale": "Irreversible decisions are listed with defaults, assumptions, validation and explicit flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "\"Schema and RBAC (widest impact) hardened in Phase 1a before multi-service pilots\"; waves go 1 pilot → 10 → 20 → 15 → 5 critical",
+      "rationale": "Shared contracts and RBAC precede leaf work, and exposure is staged smallest first."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "\"Image signed with a test key...; deploy verifies signature\"; \"RBAC in place: test service account can only deploy to test namespace\"",
+      "rationale": "Concrete security controls appear in Phase 0, 1, 2 and 3."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"All pipeline steps emit structured logs (JSON...) → ELK. Metrics: Build time... Alerts: Any step failure → Slack / PagerDuty\"",
+      "rationale": "Observability is built into Phase 0 and extended concretely in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"Dockerfile is pinned (base image digest, not 'latest'); all deps frozen... Repeating the skeleton 2 hours later: same build artifact hash\"",
+      "rationale": "Reproducibility is tested in Phase 0 and carried through IaC, V1 gate, lineage tracing and DR replay."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"pipeline retries 3 times with exponential backoff\"; Phase 1 circuit breaker/queue when registry down; Phase 2 auto-rollback and incident playbook",
+      "rationale": "Failure handling has concrete content in every phase starting with Phase 0."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"N/A — no AI component. Platform is deterministic orchestration; no model, no learning, no prompt injection\"",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Multi-region artifact replication | Phase 3 design complete + single-region stable 4 weeks → Phase 4\"",
+      "rationale": "A deferred table lists items with explicit pull-forward conditions, plus a Phase 0 'not in' list."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, thorough plan meeting all rubric dimensions; minor internal inconsistencies (phase week numbering, V-gate labeling, engine decision after skeleton) don't change the scores.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1303,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 19937
+  },
+  "cost_usd": 0.0629935,
+  "latency_s": 28.531,
+  "raw_file": "raw/judge-0a9fdc8f115e.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a2f7561b5ebf.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "a2f7561b5ebf",
+  "blind_sha256": "0d7131812636fba4f37f3ccb493b78a5c2de8ed310cbb3f61a13a7db0f3a2f37",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 263,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Critical path: \"Long-lead approvals ... → S1 result → SQL 2022 upgrade (if needed) → production seeding → 7 days of stable lag → rehearsals → cutover\"",
+      "rationale": "Milestones go landing zone/network → spikes proving replication → prod replica → rehearsal → cutover, with each gated by exit criteria."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Thin slice passes twice (book in the cloud, SIU reaches the test engine, switch back to on-prem with matching data)",
+      "rationale": "M1 is a real end-to-end thin slice before features, though in non-prod rather than prod, it is genuinely end-to-end and precedes everything else in a migration context."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D2 ... Hard | ... Revisit if: The S1 assessment finds blockers ... Then use (b)",
+      "rationale": "Decision table lists options, reversibility, and revisit triggers, plus assumptions table with impact-if-wrong and defaults for open questions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Order: T1 and T2 on day 1 ... T7 and T8 need T5 and T6 ... Hard parts 1, 2 and 4 cleared first",
+      "rationale": "Widest-impact items (long-lead approvals, baselines, DB switch spike, dependency inventory, network) precede leaf tasks like demos and runbooks."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Azure Policy denies public IPs and public database endpoints... policy compliance checked in CI; pen test in M2; de-identified non-prod",
+      "rationale": "Security appears from M1 (landing zone policies, Key Vault, de-identified data) through M2 pen test, M5 immutable backups and data destruction."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "T13 Wire up observability ... An injected failure (stopped database or MLLP) pages the test on-call within 5 min",
+      "rationale": "Observability is built in M1 non-prod, extended in M2, dashboards during cutover and hypercare, and lag/alert thresholds are concrete."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "One commit lands the same version on both pools; VMs are rebuildable from code",
+      "rationale": "Terraform with CI, single versioned build, de-identified prod-size data, scripted server objects and reconciliation are threaded across phases."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Rollback by step table; F4 Hybrid Link fails; job lease; ExpressRoute plus VPN; DR drill in M5",
+      "rationale": "Failure handling exists in M1 (switch-back, lease, idempotent outbox), M2 restore test, M3 rollback/link drills, M4 rollback, and M5 DR."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "AI-specific concerns: not applicable; there are no AI components.",
+      "rationale": "The plan explicitly declares the AI layer N/A for this non-AI request."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Modernise the app ... | 60 days stable after cutover, plus a business case",
+      "rationale": "Section 17 lists deferred items each with explicit triggers, plus non-goals and intentional debt."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough, well-ordered migration plan that meets every rubric dimension with concrete content; the only soft spot is that the walking skeleton is non-prod.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1238,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 21291
+  },
+  "cost_usd": 0.06561550000000001,
+  "latency_s": 17.064,
+  "raw_file": "raw/judge-a2f7561b5ebf.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "940cfbfa2280.engineering-quality-v1.fable-5.k1",
+  "blind_id": "940cfbfa2280",
+  "blind_sha256": "ac67e5682370739a131ab5791a574b9c537d5f0ba04cf32a5969620b9dd06d3c",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 17,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Gapless sequence per legal entity, allocated at finalization inside the ledger transaction (not at draft)",
+      "rationale": "Technical claims are accurate and precise throughout the subtle areas (SAQ A via PSP-hosted fields, outbox for side effects, at-least-once ingest with dedupe, append-only ledger, gapless numbering at finalization), with legal and vendor claims cited or flagged for confirmation."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "If instead we offer billing-as-a-service (tenants bill *their* customers), there is a second tenancy level",
+      "rationale": "It resolves the request's central ambiguity explicitly, covers every core billing capability, is credibly phased for one team, and defers non-essentials with stated pull-forward triggers."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Ledger, invoices, and payments are strongly consistent (single primary, serializable posting). Ingest favors availability",
+      "rationale": "Consistency, identity, tenancy and error-propagation choices are made once and honored everywhere (money strongly consistent, usage at-least-once with dedupe, entitlements eventually consistent), with clear data ownership and no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "10k test-mode charges with worker kills, PSP timeouts, webhook replays; a synthetic anomaly run; refund drill",
+      "rationale": "V0–V9 tie checkable thresholds to the specific risks, validate the riskiest decisions early (build-vs-buy, isolation, ledger invariants before invoicing, 2-cycle shadow before any charge), and continue in production via invariant monitors, reconciliation and per-wave gates."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "The plan proceeds on these assumptions; each one changes the plan if false",
+      "rationale": "Every number is labeled ASSUMPTION, UNKNOWN or REQUIREMENT with an owner to confirm it, and the plan states which assumptions restructure the phases if wrong."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "injected duplicates, reordering, late events, and consumer crashes",
+      "rationale": "Covers the hard domain failures — double charges, cross-tenant leaks, duplicate/late/reordered events, webhook replays, runaway invoice runs, restore/DR — with concrete detection (invariant monitor, reconciliation, breaker) and recovery (credit note + refund, cohort rollback); only dispute/chargeback handling is thin."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "≤ 3 deployables (ingest, billing core, workers) + Postgres + one stream, on the existing platform on-call rotation",
+      "rationale": "Deploy/rollback is rehearsed in Phase 0, migrations are expand/contract, meaningful signals (ledger invariants, reconciliation, dedupe rates) are monitored, on-call staffing gates exposure, and an explicit operational-complexity budget sizes it to one team."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "build a 3-year TCO comparison",
+      "rationale": "The dominant cost trade-off (vendor fees vs build) is handled rigorously in V1 and storage retention/compaction is costed, but running-cost growth with usage and engineering-time estimates are thin."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "the seam keeps code rework to R2; it doesn't make tokens portable",
+      "rationale": "Every key decision carries an explicit reversibility class, revisit trigger and exit path (PSP card-data export clause, cell migration, cohort rollback), the point of no return is isolated to Phase 7 behind V9, and it is honest about what the adapter seam does not buy."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Second currency or selling entity: the data model supports both from Phase 1; enabling either waits for the first sale",
+      "rationale": "Each component is justified by a stated need, speculative scale (cells, sharding, ClickHouse, CPQ) is deferred with concrete pull-forward triggers, and no essential is dropped."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "The product backend emits one real usage event (`api_calls: 1`) for the company's own internal dogfood tenant",
+      "rationale": "A concrete first slice, dependency-ordered phases with checkable exit criteria, specific decisions (ULIDs, 72 h late window, idempotency key scheme), and an 'if it fails' branch for every validation make this immediately executable."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Money as integer minor units plus ISO currency"
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Append-only double-entry ledger. Prices are immutable and versioned. Corrections are credit notes, never edits."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "Charge executor with idempotency key = invoice ID + attempt"
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "No card number (PAN) ever touches our systems; PSP-hosted fields only, so scope is SAQ A"
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "Postgres row-level security (RLS) enforced for the app role"
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "Dedupe and late-arrival window (design parameter: 72 h)"
+    },
+    {
+      "id": "P2-07",
+      "status": 1,
+      "evidence": "Subscription lifecycle: create, upgrade, downgrade, cancel, proration"
+    },
+    {
+      "id": "P2-08",
+      "status": 2,
+      "evidence": "EU VAT requires sequential numbering (Directive 2006/112/EC Art. 226)"
+    },
+    {
+      "id": "P2-09",
+      "status": 1,
+      "evidence": "Dunning schedule"
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "100% of ledger payment entries matched to PSP settlement daily; unmatched items resolved within 1 business day"
+    },
+    {
+      "id": "P2-11",
+      "status": 2,
+      "evidence": "entitlement cache on a billing outage → fail open with last-known state for tenants in good standing"
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Model every current plan and every plan on the 12-month roadmap in Stripe Billing and one usage-billing vendor sandbox"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Money as integer minor units plus ISO currency"
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Corrections are credit notes, never edits"
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "Webhook ingestion with signature verification"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "No card number (PAN) ever touches our systems; PSP-hosted fields only"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "every API and job uses tenant-A credentials against tenant-B IDs; RLS bypass attempts"
+    }
+  ],
+  "note": "An exemplary plan that avoids every domain trap, validates its riskiest decisions early with checkable gates, and labels every assumption; only subscription edge cases (trials, pauses, billing anchors), dunning policy detail, and run-cost estimation fall short.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8794,
+    "thinking_tokens": 6139,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 17998
+  },
+  "cost_usd": 0.664695,
+  "latency_s": 205.783,
+  "raw_file": "raw/judge-940cfbfa2280.engineering-quality-v1.fable-5.k1.txt"
+}

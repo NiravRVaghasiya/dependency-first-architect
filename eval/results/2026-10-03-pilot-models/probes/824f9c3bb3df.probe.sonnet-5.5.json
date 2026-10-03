@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "824f9c3bb3df.probe.sonnet-5.5",
+  "blind_id": "824f9c3bb3df",
+  "judge": "sonnet-5.5",
+  "order_index": 32,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens by stating assumptions and that questions at the end matter most, which suggests an explicit clarify-then-plan convention",
+    "Ends with targeted clarifying questions and an offer to inspect the working directory, which fits a tool-aware agent habit and not necessarily a methodology",
+    "Clean, generic structure (goals, architecture, phases, risks, timeline) is typical of default strong-model output, with no unusual named steps or artifacts",
+    "No methodology-specific markers such as numbered checkpoints, explicit assumption registers, verification criteria per phase, or decision logs",
+    "Concrete numbers (chunk sizes, 4–6 weeks, top 20–50 rerank) reflect general competence and not a prescribed template"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 318,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2964
+  },
+  "cost_usd": 0.010598,
+  "latency_s": 21.789,
+  "raw_file": "raw/probe-824f9c3bb3df.probe.sonnet-5.5.txt"
+}

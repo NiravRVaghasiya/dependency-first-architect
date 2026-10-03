@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "63fbfcfe20a5.probe.sonnet-5.5",
+  "blind_id": "63fbfcfe20a5",
+  "blind_sha256": "bb9bad35afbee0bc1c9dcf0f6d4468177ac3082f938f12cca5d37168a4ab11a2",
+  "judge": "sonnet-5.5",
+  "order_index": 138,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.6,
+  "cues": [
+    "Opens with a \"Check first: do you need a new tool?\" section weighing an existing alternative (ExifTool one-liner) before planning, suggesting a deliberate scoping step",
+    "Explicit Goals and Non-goals sections and a closing \"Questions to settle before building\" list, a structured, checklist-like template",
+    "Thorough risk and edge-case treatment (two-pass rename, crash-safe log written before pass 2, case-only renames, UTC in QuickTime, zero dates), which goes beyond a typical unstructured plan",
+    "Technology options table with pros and cons and a recommendation, plus a numbered milestone and testing section, so the output is highly uniform",
+    "Polished and numbered throughout with no conversational filler; this could also be a strong default output, which keeps my confidence moderate"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 342,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4140
+  },
+  "cost_usd": 0.013777999999999999,
+  "latency_s": 30.312,
+  "raw_file": "raw/probe-63fbfcfe20a5.probe.sonnet-5.5.txt"
+}

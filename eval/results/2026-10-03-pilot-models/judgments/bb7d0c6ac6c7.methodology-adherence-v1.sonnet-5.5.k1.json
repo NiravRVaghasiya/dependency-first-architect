@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "bb7d0c6ac6c7.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "bb7d0c6ac6c7",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 90,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Pipeline templates, admission policy, registry policy | Trust-model default and sign-off (V1)",
+      "rationale": "Explicit dependency map and phases ordered trust → substrate → migration → decommission, each gated by a validation before dependents are specified."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "One real commit to one low-criticality, real pilot service goes through the new path to production.",
+      "rationale": "Phase 0 is a real end-to-end prod path including deploy, observability and rollback, before features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Keyless signing (cosign/Sigstore)... Flip condition: V1 or V2 fails, or external transparency logs are not permitted → KMS-backed keys",
+      "rationale": "Irreversible decisions have reversibility class, default, assumption, validation and flip condition up front."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1 — Trust and contract foundation (widest rework first); Wave D: tier-1 services, last.",
+      "rationale": "Shared trust/template work precedes leaf work, and migration goes smallest exposure first, within phases."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "| 0 | Pilot-scoped deploy rights, secret masking, allow-listed flag |",
+      "rationale": "Security has concrete treatment in every phase from Phase 0 through decommissioning."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OpenTelemetry trace spans per pipeline stage, linked to the deployment. Secret-masked logs. Alerts on pipeline failure and failed sync.",
+      "rationale": "Observability is in Phase 0 and concretely in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Platform infrastructure is Terraform in Git... Pinned template versions, immutable image tags",
+      "rationale": "Reproducibility is addressed in each phase: IaC, pinned templates and tags, runner images from code, config repo as state, archived config."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Admission can revert to audit mode; Per-service flag rollback; waves paused on regression",
+      "rationale": "Failure handling and rollback appear in every phase, starting with Phase 0 rollback and fallback."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A — no AI component.",
+      "rationale": "Plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Multi-region platform HA: pulled forward when the RTO input requires it, or when the Phase 2 drill shows a regional outage would block hotfixes.",
+      "rationale": "Deferred items are listed each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong, well-grounded plan; all dimensions met with concrete content, with minor gaps only in unresolved UNKNOWN inputs that are explicitly gated.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1050,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 6900
+  },
+  "cost_usd": 0.027871,
+  "latency_s": 40.222,
+  "raw_file": "raw/judge-bb7d0c6ac6c7.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

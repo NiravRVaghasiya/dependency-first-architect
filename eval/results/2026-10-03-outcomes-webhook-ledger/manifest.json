@@ -1,0 +1,112 @@
+{
+  "schema": "dfa-eval/manifest@1",
+  "run_id": "2026-10-03-outcomes-webhook-ledger",
+  "created": "2026-10-03",
+  "harness_version": "1.0.0",
+  "repo_commit": "7ec18f4+uncommitted",
+  "skill": {
+    "version": "2.0.0",
+    "files": {
+      "SKILL.md": "362e6e5b84ec4321d01077a9949f971e837cdcad16977b142da527f260ba4d64",
+      "reference/ai-systems.md": "623e02a2b37bbf9bd637a2689d1510179b4a3a65cada3e2f162c1ed11444d579",
+      "reference/evals.md": "f533fee328538d3336e8c44a1a448f182a20ced41bd3323792e75707fdd057b7",
+      "reference/layer-map.md": "ff4531a685bfdd0cb2940f2138f689193e0a93f7eee69524d2dbfdaeb7525169",
+      "reference/plan-template.md": "95ccaec942bf8a640ff4d830daada167a340b6b652242e2ed41aec6d24605c2a",
+      "reference/validation.md": "d5ddad548e7b7be656dc51d5946c3da45ceb21ce5234164440fa5c5829edd407"
+    }
+  },
+  "condition_files": {
+    "dfa": {
+      "SKILL.md": "362e6e5b84ec4321d01077a9949f971e837cdcad16977b142da527f260ba4d64",
+      "reference/plan-template.md": "95ccaec942bf8a640ff4d830daada167a340b6b652242e2ed41aec6d24605c2a",
+      "reference/ai-systems.md": "623e02a2b37bbf9bd637a2689d1510179b4a3a65cada3e2f162c1ed11444d579",
+      "reference/validation.md": "d5ddad548e7b7be656dc51d5946c3da45ceb21ce5234164440fa5c5829edd407",
+      "reference/layer-map.md": "ff4531a685bfdd0cb2940f2138f689193e0a93f7eee69524d2dbfdaeb7525169"
+    },
+    "generic-control": {
+      "eval/conditions/generic-architect/SKILL.md": "8202d700b6a8acade9661ef75d970d36a285ad53dce31009f40a704046ea20c9",
+      "eval/conditions/generic-architect/reference/document-template.md": "517670de5932f7ab0ecf24b9552eef0898f2878615236f7a28d2df41ea230c02",
+      "eval/conditions/generic-architect/reference/guidance.md": "a1221cbaa4130a04df554c6ee69526c259863c4ac6c0c5975970a4bbb636b6ad"
+    }
+  },
+  "config_file": "eval/outcomes/outcomes.json",
+  "config_sha256": "78a6315a98401f8d23061ce2637d86241aaf87a98a23b6e25f220b5d1ae73b35",
+  "config": {
+    "schema": "dfa-eval/config@1",
+    "name": "webhook-ledger-v1",
+    "description": "Plans for the webhook-ledger outcome task",
+    "seed": 20261003,
+    "prompts": [
+      {
+        "id": "webhook-ledger",
+        "title": "PayCo webhook ledger",
+        "kind": "non-AI",
+        "request": "Plan the build of the service described in this brief.\n\n# Ledger: customer balances from PayCo webhooks\n\n## Context\n\nWe sell prepaid credit. Customers top up through our payment provider, PayCo, and spend the\ncredit in our product. Today a nightly script copies PayCo's CSV export into a spreadsheet and\nsupport staff fix balances by hand. We want a small service, Ledger, that keeps every customer\naccount's balance current from PayCo's webhooks.\n\n## What PayCo sends\n\nPayCo sends an HTTP POST to our webhook URL for every event on our merchant account. The body is\nJSON, for example:\n\n```json\n{\"id\": \"evt_1Nq3xKp\", \"type\": \"payment.succeeded\", \"created\": 1700000000,\n \"data\": {\"account_id\": \"acct_42\", \"payment_id\": \"pay_9xk\", \"amount\": 2500, \"currency\": \"EUR\"}}\n```\n\n- `id` identifies the event. A redelivery of the same event has the same `id` and the same body.\n- `type` is one of:\n  - `payment.succeeded`: the customer paid `amount`; credit it to `account_id`.\n  - `refund.succeeded`: PayCo refunded the payment `payment_id` in full, and `amount` equals that\n    payment's amount; take it back from `account_id`.\n  - Other types: PayCo adds new event types from time to time (disputes, payouts, ...). We do not\n    handle any of them yet; we will add them later.\n- `created` is when the event happened, in Unix seconds.\n- `amount` is an integer number of minor units (cents). `currency` is an ISO 4217 code.\n\n## How PayCo delivers (from PayCo's integration guide)\n\n- **Signatures.** Every delivery carries the header `PayCo-Signature: t=<unix seconds>,v1=<hex>`,\n  where `<hex>` is the lowercase hex HMAC-SHA256 of the string `<t>.` followed by the exact request\n  body bytes, keyed with our webhook secret. The guide says to reject a delivery whose signature\n  does not verify, and one whose `t` is more than 300 seconds away from our clock, so that captured\n  requests cannot be replayed.\n- **Retries.** If our endpoint does not answer with a 2xx status, PayCo retries the delivery with\n  backoff for up to 72 hours. It treats any 2xx as \"delivered\".\n- **Ordering.** PayCo does not guarantee delivery order. A refund can arrive before the payment it\n  refers to.\n- **Duplicates.** PayCo may deliver the same event more than once, even after it received a 2xx.\n\n## Our side\n\n- The database is a managed network database. Writes occasionally fail partway through a request\n  (our client raises `StoreError`). The failure rate is low but not zero.\n- Finance reconciles every account against PayCo's monthly statement, and the two must match\n  exactly, to the minor unit.\n- Each customer account holds a single currency, fixed by its first payment.\n- Security: if we ever receive the same event `id` with a different body, treat it as an\n  incident: reject that delivery and leave the account untouched.\n- Volume is small today (a few thousand events a day) and expected to grow.\n\n## What we need\n\nA Python service, standard library only, with this interface:\n\n```\nLedgerService(store, secret, clock)\n    store:  our database client, a ledgerkit MemoryStore (see README.md)\n    secret: the webhook signing secret, bytes\n    clock:  an object whose now() returns the current Unix time in seconds\n\nhandle(raw_body: bytes, headers: dict) -> (status: int, body: dict)\n    Processes one webhook delivery. Header names may arrive in any letter case. Our HTTP layer\n    returns `status` to PayCo as the response code.\n\nbalance(account_id) -> int\n    The account's current balance in minor units; 0 for an account we have never seen.\n\nentries(account_id) -> list of dict\n    The money movements applied to the account, oldest first. Each has at least `event_id`,\n    `type` (the event's type, e.g. `payment.succeeded`), and `amount` (signed: positive for\n    payments, negative for refunds).\n```\n\nThe HTTP server, deployment, and monitoring are outside this codebase; a plan may still cover\nthem.",
+        "checklist": null,
+        "tags": []
+      }
+    ],
+    "conditions": {
+      "baseline": {
+        "kind": "plain",
+        "description": "The planning request alone, no planning instructions.",
+        "length_cap_words": null
+      },
+      "dfa": {
+        "kind": "skill",
+        "description": "Dependency-First Architect (this repository's SKILL.md).",
+        "skill_dir": ".",
+        "skill_name": "dependency-first-architect",
+        "length_cap_words": null
+      },
+      "generic-control": {
+        "kind": "skill",
+        "description": "Active control: an independently written generic planning skill.",
+        "skill_dir": "eval/conditions/generic-architect",
+        "skill_name": "architecture-planner",
+        "length_cap_words": null
+      }
+    },
+    "generators": [
+      {
+        "id": "opus-5.5",
+        "provider": "claude-cli",
+        "model": "claude-opus-5-5",
+        "effort": "high",
+        "options": {}
+      }
+    ],
+    "runs_per_cell": 5,
+    "workspace": {
+      "readme": "eval/conditions/neutral-workspace-README.md"
+    },
+    "limits": {
+      "max_cost_usd": 80,
+      "jobs": 6,
+      "timeout_s": 3600
+    },
+    "judges": [],
+    "rubrics": [],
+    "judge_repeats": 1,
+    "contrasts": [],
+    "blinding": {
+      "strip_self_score": true,
+      "neutralize_terms_for": [
+        "engineering-quality-v1"
+      ]
+    },
+    "probe": {
+      "enabled": false,
+      "judges": []
+    }
+  },
+  "seed": 20261003,
+  "platform": {
+    "python": "3.13.2",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26100-SP0"
+  },
+  "tools": {
+    "claude": "2.1.288.1084"
+  }
+}

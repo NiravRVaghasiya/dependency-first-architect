@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "67e4d711e42e.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "67e4d711e42e",
+  "blind_sha256": "f7133d8330bbaf99f8d2abad39eb5268ccb7f941921e618fd15d40fed6a170e3",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 46,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Anthropic Claude embeddings",
+      "rationale": "Anthropic does not offer an embedding model, which is a factual error, and the rest is generic with 'confidence scoring' unexplained."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Audit all help-center docs (FAQs, guides, troubleshooting, API docs, etc.)",
+      "rationale": "Generic RAG outline that skips updates/deletions, visibility, account-specific boundary and gives no scope or exclusions."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Query Understanding → Retrieval → Context Selection → Prompt → LLM → Post-Processing",
+      "rationale": "A linear pipeline is recognizable and non-contradictory, but data ownership and component boundaries are undefined."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Test suite with common customer queries",
+      "rationale": "Only generic testing is mentioned, with no faithfulness or retrieval metrics, criteria, or regression gating."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "none",
+      "rationale": "No assumptions about scale, team, compliance or stack are stated; it just asks for files."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Fallback Responses - Graceful handling of out-of-scope questions",
+      "rationale": "Failure modes are only named, with no injection, stale content, leakage or partial-failure handling."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Real-time monitoring & logging",
+      "rationale": "Operations are a list of buzzwords with no rollback, ownership, alerts or meaningful signals."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Budget tracking (tokens, API costs)",
+      "rationale": "Cost is mentioned generically with no estimate, drivers or controls."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Store in vector database (Pinecone, Weaviate, Chroma, Milvus)",
+      "rationale": "Lists options without recognizing lock-in or embedding re-index costs."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "A/B testing different retrieval strategies",
+      "rationale": "Mostly proportionate baseline RAG, though includes some speculative items like query understanding and A/B testing while omitting essentials."
+    },
+    {
+      "dim": 11,
+      "score": 1,
+      "evidence": "Phase 1: Document Preparation",
+      "rationale": "Phases are an ordered list of topics lacking concrete decisions, checks, or criteria for proceeding."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 0,
+      "evidence": "Version control & track updates"
+    },
+    {
+      "id": "P1-02",
+      "status": 1,
+      "evidence": "Maintain metadata (source, category, section, timestamp)"
+    },
+    {
+      "id": "P1-03",
+      "status": 1,
+      "evidence": "Test suite with common customer queries"
+    },
+    {
+      "id": "P1-04",
+      "status": 1,
+      "evidence": "Fallback Responses - Graceful handling of out-of-scope questions"
+    },
+    {
+      "id": "P1-05",
+      "status": 1,
+      "evidence": "Escalation Flow - Route to human agent if uncertain"
+    },
+    {
+      "id": "P1-06",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P1-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P1-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P1-09",
+      "status": 0,
+      "evidence": "Quick Actions - Links to common tasks (submit ticket, check status, etc.)"
+    },
+    {
+      "id": "P1-10",
+      "status": 1,
+      "evidence": "Analytics: Track queries, user satisfaction, common issues"
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "Budget tracking (tokens, API costs)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Source Attribution - Citations to original docs"
+    },
+    {
+      "id": "P1-T2",
+      "present": true,
+      "evidence": "none"
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Version control & track updates"
+    },
+    {
+      "id": "P1-T4",
+      "present": true,
+      "evidence": "Test suite with common customer queries"
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "Query Understanding (intent detection, entity extraction)"
+    }
+  ],
+  "note": "A generic RAG checklist that misses the hard parts (access control, injection, deletions, PII, evaluation rigor) and contains a factual error about Anthropic embeddings.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1571,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 860,
+    "cache_creation_input_tokens": 8539
+  },
+  "cost_usd": 0.03723749999999999,
+  "latency_s": 28.713,
+  "raw_file": "raw/judge-67e4d711e42e.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

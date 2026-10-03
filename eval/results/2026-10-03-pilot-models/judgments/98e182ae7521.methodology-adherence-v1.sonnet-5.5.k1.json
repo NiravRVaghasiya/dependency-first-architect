@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "98e182ae7521.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "98e182ae7521",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 32,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1: \"Defenses and budgets\" (all before any customer exposure); Phase 2 \"Depends on: Phase 1, V2\"; Phase 3 \"Depends on: V3\"",
+      "rationale": "Phases run substrate→defenses→retrieval→answers→exposure→feedback, each gated by a proven validation gate."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Deployed: \"Through the real CI/CD pipeline to production, behind a feature flag, with infrastructure as code and a pinned model, prompt, and index version.\"",
+      "rationale": "Phase 0 is a real end-to-end slice through all tiers in production with deploy and rollback exercised."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Flip condition: \"V2 fails, or V5 shows cost per conversation is dominated by inference and self-host would beat it\"",
+      "rationale": "The gates table gives reversibility, default, assumption, validation and flip condition for each irreversible decision, and missing inputs are labeled."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 2 tasks: \"Document and chunk schema, and the index version pinned\" first, before ingestion, chunking, hybrid search",
+      "rationale": "Within phases, the widest-impact items (guardrail boundary, schema) come first and leaf items like hybrid search or feedback reports come last."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"Allow-listed, flagged; secrets in vault; text treated as data; hard spend cap\"",
+      "rationale": "The cross-cutting table gives concrete security content for every phase 0–5."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: \"Per-request trace, token/cost/latency metrics, failure alert; logs classed as personal data\"",
+      "rationale": "Observability is concrete in Phase 0 and in each later phase, with V0 requiring an alert to fire."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"Infrastructure as code; pinned model, prompt, index versions\"; Phase 2 \"Deterministic rebuild; pinned embedding model\"",
+      "rationale": "Reproducibility appears concretely in all phases (IaC, pinned versions, CI rebuild, versioned eval set)."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: \"Flag-off fallback to the contact form; LLM timeout tested\"",
+      "rationale": "Failure handling appears in every phase, from flag-off and timeouts through the prior index, fallback model, and vendor-outage drill."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"Phase 1: Defenses and budgets (all before any customer exposure)\" then Retrieval Phase 2, model access/memory Phase 3, feedback Phase 5",
+      "rationale": "Defenses, budgets and human handoff come first, then retrieval → model access → memory → feedback; orchestration and routing are explicitly deferred."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Long-term memory: pulled forward when a measured use case needs cross-session context and legal approves the privacy boundary.\"",
+      "rationale": "The deferred list is explicit and each item has a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan that meets every dimension with concrete content; its only minor weakness is that several budgets are UNKNOWN, but these are handled explicitly as gates.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1242,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 8159
+  },
+  "cost_usd": 0.032938499999999996,
+  "latency_s": 51.499,
+  "raw_file": "raw/judge-98e182ae7521.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

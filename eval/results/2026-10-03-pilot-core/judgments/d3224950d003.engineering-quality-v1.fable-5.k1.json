@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "d3224950d003.engineering-quality-v1.fable-5.k1",
+  "blind_id": "d3224950d003",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 69,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "SQL Server Managed Instance link or distributed availability group, or Oracle Data Guard... The switch is a role change",
+      "rationale": "Technology claims (engine replication, fencing, HL7 SIU routing, 42 CFR Part 2, NIST 800-88) are accurate and precise, and the one risky behavioral assumption (retries hiding the write pause) is labeled and validated by V6."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "ASSUMPTION: \"no downtime\" read as \"no failed bookings\". Clinical operations must confirm.",
+      "rationale": "Directly solves the stated zero-downtime migration, resolves the key ambiguity of what 'no downtime' means explicitly, and excludes scope (interface engine, refactoring) with reasons."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "On-prem is the system of record until Phase 4. After the switch, the cloud is the system of record",
+      "rationale": "Single-writer ownership, data flow direction, rollback semantics and identity are applied consistently across every phase with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "≥ 2 full rehearsals on a production-sized copy under replayed peak write load, including failback and the fencing test",
+      "rationale": "V0–V8 tie checkable thresholds to the specific risks, test the riskiest assumptions (latency tolerance, cutover) before commitment, label provisional targets as assumptions, and continue validation post-launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Today's value is a BASELINE measured in Phase 1. The +20% is an ASSUMPTION",
+      "rationale": "Every number is tagged ASSUMPTION/BASELINE/UNKNOWN with an owner to confirm it, and each key decision has a stated revisit trigger describing how the design changes if the assumption fails."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "This happens if two databases accept writes at once (\"split brain\") or if a cutover drops transactions",
+      "rationale": "Covers the domain's hardest failures — split brain, lost/duplicated bookings, replication divergence, circuit and zone loss, silent dependencies — each with concrete detection (reconciliation, alerts) and rehearsed recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Cutover dashboard: write pause, errors, HL7 backlog, reconciliation",
+      "rationale": "Pipeline deployment, per-wave rollback, domain-meaningful signals (HL7 backlog, synthetic bookings), named approvers, runbooks and a 72-hour hypercare period make operation realistic for a hospital IT team."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "≤ 90 days of running both systems... ASSUMPTION: limits dual cost and on-call load",
+      "rationale": "Dual-running cost, reserved-capacity timing, licensing and build-vs-buy are addressed with controls, but no order-of-magnitude estimates or usage-scaling reasoning are offered, only a deferral to finance."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "The rehearsed failback... stays available until V8. The point of no return is decommissioning, not this switch.",
+      "rationale": "Decisions are explicitly classified by reversibility (R2/R3), the one-way ones get the most validation, and the point of no return is deliberately pushed to decommission with exit paths kept open."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Move the app servers unchanged onto cloud VMs... No refactoring.",
+      "rationale": "Lift-and-shift with no re-architecture, buy-over-build defaults, and deferred modernization keep this the simplest design that still meets the regulated-domain essentials."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Order the circuits if not done already (they have the longest lead time).",
+      "rationale": "Phases are ordered by real dependencies and lead times, each has checkable exit criteria, and every validation failure has a specified alternate path, so a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "no public endpoints on PHI resources; hospital-managed encryption keys; TLS 1.2 or later; audit logs reach the SIEM"
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "HL7 feeds to the EHR, patient-registration (ADT) feed in, billing, patient portal, SMS/phone reminder vendor, health information exchange (HIE), reporting/data-warehouse ETL"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "Continuous lag metric plus daily row-count and key-range hash reconciliation over 14 days, including month-end"
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "Exactly one writable primary database at all times... Never two databases accepting writes."
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "≥ 2 full rehearsals on a production-sized copy under replayed peak write load, including failback and the fencing test"
+    },
+    {
+      "id": "P6-06",
+      "status": 2,
+      "evidence": "Two diverse private circuits (ExpressRoute or Direct Connect) plus a site-to-site VPN as backup"
+    },
+    {
+      "id": "P6-07",
+      "status": 2,
+      "evidence": "Run a disaster-recovery test in the cloud: backup restore and a zone failover within the RTO... downtime procedures staffed on standby"
+    },
+    {
+      "id": "P6-08",
+      "status": 1,
+      "evidence": "Active Directory remains the identity source... break-glass access logged"
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "2-hour load test at 2× peak... Monday-morning call-center surge... runs copied (\"shadow\") read traffic"
+    },
+    {
+      "id": "P6-10",
+      "status": 1,
+      "evidence": "the lowest-volume window measured in Phase 1. It must avoid month-end and EHR change freezes... heightened monitoring for 72 h"
+    },
+    {
+      "id": "P6-11",
+      "status": 2,
+      "evidence": "Obtain the vendor's support and licensing statement... sanitize media to NIST SP 800-88 and keep the destruction certificate"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "Move users in waves by load-balancer weight: IT, then one low-volume clinic, then groups of clinics"
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "Fence the old primary so it cannot accept writes: set it read-only and revoke the app's write access"
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "No real PHI reaches cloud storage, because the change-capture filter passes test IDs only"
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "Build the dependency inventory from four sources: 30 days of database connection audits, network flow logs, the interface engine's route list"
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "Move the app servers unchanged onto cloud VMs... No refactoring."
+    }
+  ],
+  "note": "An exemplary, near-model migration plan: single-write-authority cutover with rehearsed failback, labeled assumptions and gated validation; only cost quantification, break-glass definition and staff communication are thin.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 9062,
+    "thinking_tokens": 3911,
+    "cache_read_input_tokens": 17277,
+    "cache_creation_input_tokens": 23879
+  },
+  "cost_usd": 0.7689045,
+  "latency_s": 173.594,
+  "raw_file": "raw/judge-d3224950d003.engineering-quality-v1.fable-5.k1.txt"
+}

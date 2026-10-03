@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "ca93f8486efe.probe.sonnet-5.5",
+  "blind_id": "ca93f8486efe",
+  "blind_sha256": "0bd0178ee2cf41df8d06f97bcce23a620c3557691bd08a2c1a9e1357efa9bed9",
+  "judge": "sonnet-5.5",
+  "order_index": 42,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens by disambiguating the request into Model A vs. B and states which it covers, a natural clarifying move that doesn't clearly signal a formal methodology",
+    "Conventional architecture-document layout (requirements, diagram, domain model, flows, storage, security, build-vs-buy, rollout) with no visible methodology artifacts such as explicit assumptions logs, risk registers, decision records, or verification or acceptance criteria sections",
+    "Ends with an offer to go deeper if the user supplies more info, which is typical of default conversational assistant output",
+    "Very dense, polished and broad content (ASCII diagram, SQL sketch, invariants) that reads like a strong baseline answer, not a procedural template",
+    "A phased rollout and a reliability section are present, but they are generic and not tied to stated validation steps or trade-off analysis"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 351,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 6864
+  },
+  "cost_usd": 0.020678000000000002,
+  "latency_s": 27.241,
+  "raw_file": "raw/probe-ca93f8486efe.probe.sonnet-5.5.txt"
+}

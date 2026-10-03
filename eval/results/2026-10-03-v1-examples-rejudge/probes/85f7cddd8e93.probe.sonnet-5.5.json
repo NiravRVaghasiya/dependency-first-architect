@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "85f7cddd8e93.probe.sonnet-5.5",
+  "blind_id": "85f7cddd8e93",
+  "judge": "sonnet-5.5",
+  "order_index": 9,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.6,
+  "cues": [
+    "Opens by reporting a workspace check (no README, package files, docs/, src/, .git) and states it is using defaults, which suggests a grounding-in-environment step.",
+    "Lists explicit assumptions up front and ends with 'Questions that would change the plan', which looks like a structured clarify-then-plan procedure.",
+    "Includes a week-0 coverage audit and says testing starts in week 1 before the bot exists. Metrics, pass criteria and phase exit conditions ('Done when') are explicit.",
+    "Ends by noting the tool limit ('I can only read files here, so I'll post the code in chat'). This is an environment-aware closing a generic answer rarely has.",
+    "Very polished and thorough: build-vs-buy, phased rollout, a stack table with alternatives, and a cost estimate. This is consistent with either a strong default or a methodology, so the evidence is only moderate."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 369,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 5775
+  },
+  "cost_usd": 0.0181355,
+  "latency_s": 19.235,
+  "raw_file": "raw/probe-85f7cddd8e93.probe.sonnet-5.5.txt"
+}

@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "519f2a9796c5.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "519f2a9796c5",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 115,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Secrets integration (load-bearing: every subsequent step depends on this)\" → RBAC → approval gates; Phase 2 depends on V0, V3, V4",
+      "rationale": "Phases run substrate → secrets/RBAC → promotion → prod with gates proving dependencies first, though a few gate/phase labels are inconsistent (V1, V2 scheduling)."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Developer pushes to a Git branch → webhook fires → agent pulls code → ... → pod created in a test namespace → rollback deletes the pod",
+      "rationale": "Phase 0 is a real end-to-end push-to-deploy-to-rollback path with exit checks, though in a test namespace rather than true prod."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Hosted vs. self-hosted | R3 | Default: Hosted ... Flip: Self-hosted if total hosted cost >$X/month, or on-premise compliance mandate",
+      "rationale": "Irreversible decisions are tabled with default, validation, and explicit flip conditions, placed up front."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks (by blast radius): 1. Secrets integration (load-bearing...) 2. RBAC... ; exposure: pilot 3 services, then 5, 15, 20",
+      "rationale": "Tasks within phases are ordered widest-impact first and rollout exposure smallest first."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: Agent runs in isolated container; no host-mounted secrets; credentials injected at runtime (test creds only, minimal scope).",
+      "rationale": "Security has concrete treatment in every phase from 0 through 3, though Phase 0 admits cluster-admin agents."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Structured JSON; every log entry tagged with deployment_id, service_name, phase; metrics build_time, test_time, deploy_time, pod startup",
+      "rationale": "Observability is concrete in Phase 0 and in every subsequent phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Build is deterministic: same code → same image SHA. Rollback is tested ... RBAC config stored in Git; manifests in Kustomize/Helm",
+      "rationale": "Reproducibility is addressed concretely in each phase (deterministic builds, config in Git, traceable deploys)."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 1: Vault HA: 3-node cluster; Phase 2: agent pool 3+ agents, job queue, logs replicated to 2 sinks; Phase 0: logs to sink immediately",
+      "rationale": "Failure handling and rollback appear in every phase, including Phase 0 liveness and log durability."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A — no AI component. The CI/CD platform is deterministic software ... without LLM inference, retrieval augmentation, or agentic decision-making.",
+      "rationale": "Plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Multi-region / multi-cloud support — Not built in Phases 0–3. Pull-forward condition: Post-Phase 3; if org expands to multiple regions or clouds",
+      "rationale": "Five deferred items each with explicit pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, thorough plan satisfying all dimensions; minor inconsistencies (gate numbering and scheduling, V11 reused for two things, cluster-admin in Phase 0) and the test-namespace skeleton don't materially undermine it.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1309,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 23300
+  },
+  "cost_usd": 0.071461,
+  "latency_s": 19.63,
+  "raw_file": "raw/judge-519f2a9796c5.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

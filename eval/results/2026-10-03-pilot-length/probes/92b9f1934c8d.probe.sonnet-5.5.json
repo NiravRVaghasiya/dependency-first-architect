@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "92b9f1934c8d.probe.sonnet-5.5",
+  "blind_id": "92b9f1934c8d",
+  "judge": "sonnet-5.5",
+  "order_index": 23,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.35,
+  "cues": [
+    "Highly structured numbered sections (goals/scope, architecture, lifecycle, tooling, safety, evaluation, rollout, risks, MVP) suggest a template, but this is also typical default LLM plan output",
+    "Explicit in-scope / out-of-scope split and a dedicated risk-and-mitigation table",
+    "Ends with a 'Minimal first build (MVP)' and phased rollout, which is a common methodology step but also common in unprompted plans",
+    "No explicit methodology artifacts such as assumptions, open questions, alternatives considered, or decision rationale sections",
+    "Dense but generic content with ASCII diagrams and tables; no sign of a distinctive prescribed process like stated verification steps or numbered decision log"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 319,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4620
+  },
+  "cost_usd": 0.014748,
+  "latency_s": 37.341,
+  "raw_file": "raw/probe-92b9f1934c8d.probe.sonnet-5.5.txt"
+}

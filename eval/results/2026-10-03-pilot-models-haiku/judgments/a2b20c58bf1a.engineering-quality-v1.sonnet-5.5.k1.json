@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a2b20c58bf1a.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "a2b20c58bf1a",
+  "blind_sha256": "e6e468bb175716c5e7ecbef3acb43016cd3f00a44b58896c47e06f568ec0e71f",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 49,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "const discountAmount = subtotal * (discount.percentage / 100);",
+      "rationale": "Money is a plain number with no defined unit or rounding, idempotency relies on a Redis cache with TTL, webhooks are unverified, and the saga compensation deletes invoices and 'refunds' on failure."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "POST /api/v1/subscriptions/:subscriptionId/upgrade { planId: string; prorationBehavior: 'prorate' | 'none' | 'create_invoice'; }",
+      "rationale": "It covers subscriptions, metering, invoicing and payments at API level, but it omits proration rules, tax compliance detail, dunning, reconciliation and a build-vs-buy decision, and it gives no scope or exclusions."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Tenant DB (Isolated) ... Billing DB ... 'Hybrid Approach'; Payment Processor publishes events, 'Event Sourcing' and CQRS listed alongside mutable updateInvoice",
+      "rationale": "Event sourcing and immutability are claimed while invoices and payments are updated in place and deleted in saga compensations; tenancy patterns are listed without a choice; the calculateMeteredCharge code contradicts the stated overage logic."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There is no test strategy, acceptance criteria or validation plan of any kind."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "This architecture supports millions of transactions, handles complex pricing models, and maintains complete audit trails for compliance.",
+      "rationale": "No assumptions about scale, team, compliance or jurisdictions are stated, and the closing claims are unsupported."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "if (this.state === 'open') { throw new Error('Circuit breaker is OPEN - service unavailable'); }",
+      "rationale": "It has a circuit breaker, a retry schedule and a saga, but no handling for charge timeouts, duplicate or out-of-order webhooks, late usage, or reconciliation; the payment catch block references an out-of-scope variable."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "image: billing-engine:latest",
+      "rationale": "It gives a k8s rolling update, probes and some Prometheus alerts, but no migration, rollback, ownership or incident plan, and it uses the :latest tag; per-tenant metric labels add cardinality risk."
+    },
+    {
+      "dim": 8,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Costs are not discussed, and the stack includes Kubernetes, Kafka, Elasticsearch, Istio and MongoDB with no cost reasoning."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Pattern 3: Hybrid Approach (Best of Both)",
+      "rationale": "The tenancy, ID and data-model decisions are not treated as one-way choices, and the tech stack lists many alternatives without committing to any."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Service Mesh: Istio (optional, for complex) ... Search: Elasticsearch ... MongoDB",
+      "rationale": "It proposes microservices, CQRS, event sourcing, sagas, a service mesh and Elasticsearch with no stated need, while leaving out essentials like reconciliation and dunning."
+    },
+    {
+      "dim": 11,
+      "score": 1,
+      "evidence": "Language: Node.js (TypeScript), Go, Python",
+      "rationale": "It supplies code sketches and API shapes but no build order, no first steps and no committed decisions, and some code is a stub (tiered charge logic empty)."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 0,
+      "evidence": "type Money = { amount: number; currency: string; };"
+    },
+    {
+      "id": "P2-02",
+      "status": 1,
+      "evidence": "Event sourcing for audit trail / Immutable log of all billing events"
+    },
+    {
+      "id": "P2-03",
+      "status": 1,
+      "evidence": "idempotencyKey: payment.id, // Prevent duplicate charges"
+    },
+    {
+      "id": "P2-04",
+      "status": 1,
+      "evidence": "paymentMethodId: paymentMethod.id"
+    },
+    {
+      "id": "P2-05",
+      "status": 1,
+      "evidence": "Pattern 2: Row-Level Security (Shared Database, Better Scalability)"
+    },
+    {
+      "id": "P2-06",
+      "status": 1,
+      "evidence": "await this.eventStore.append(event); // Store event (immutable)"
+    },
+    {
+      "id": "P2-07",
+      "status": 1,
+      "evidence": "prorationBehavior: 'prorate' | 'none' | 'create_invoice';"
+    },
+    {
+      "id": "P2-08",
+      "status": 1,
+      "evidence": "const taxCalculation = await this.taxService.calculateTax({"
+    },
+    {
+      "id": "P2-09",
+      "status": 1,
+      "evidence": "const delayMs = Math.pow(2, retryCount) * 3600000; // 1h, 2h, 4h"
+    },
+    {
+      "id": "P2-10",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": true,
+      "evidence": "amount: number; currency: string; ... subtotal * (discount.percentage / 100)"
+    },
+    {
+      "id": "P2-T2",
+      "present": true,
+      "evidence": "compensation: () => this.deleteInvoice(invoice.id)"
+    },
+    {
+      "id": "P2-T3",
+      "present": true,
+      "evidence": "POST /api/v1/webhook/payments // Webhook endpoint for payment gateway"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "paymentMethodId: paymentMethod.id"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "Pattern 2: Row-Level Security (Shared Database, Better Scalability)"
+    }
+  ],
+  "note": "This is a code-heavy, buzzword-laden sketch. It leaves money as a bare number, deletes and mutates invoices, never verifies or deduplicates webhooks, and has no validation, assumptions, costs or build order.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2148,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 22346
+  },
+  "cost_usd": 0.0775262,
+  "latency_s": 45.948,
+  "raw_file": "raw/judge-a2b20c58bf1a.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "46c88ce0cf02.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "46c88ce0cf02",
+  "blind_sha256": "d19675053235948f72eef279021e93b1985f85e620c202eb47058de07a9c7d63",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 367,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Trust boundary and supply chain (most rework if wrong: all 50 services inherit it)\"; \"Depends on: V0\"; Phase 2 depends on Phase 1",
+      "rationale": "Phases go skeleton → trust boundary → template/capacity → deploy safety → migration → shutdown, each gated by a validation that must pass before the dependent work."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A real commit merged to one low-criticality, stateless service... promoted by an environment-repo PR and synced to prod. A real user request returns the new version",
+      "rationale": "Phase 0 is a real end-to-end production path with rollback, alerting and a V0 exit check before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Deploy trust boundary... R3... Default: Pull... Flip condition: V1 fails, or the inventory shows non-Kubernetes targets. Then push",
+      "rationale": "Irreversible decisions are tabulated with reversibility, default, assumption, validation and flip conditions, plus upfront assumptions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1 — Trust boundary and supply chain (most rework if wrong: all 50 services inherit it); Phase 4 \"smallest exposure first\"",
+      "rationale": "Widest-impact items (trust boundary, template contract) precede leaf work, and waves go small to large with tier-1 last."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "0: OIDC to the registry; Argo limited to one namespace; branch protection; signing in audit mode",
+      "rationale": "Concrete security treatment appears in every phase from 0 through 5."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Pipeline and Argo events go to metrics, with deploy markers on the service's dashboard. Alerts fire on failed sync, degraded health or a failed pipeline",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Platform in Terraform; pinned action SHAs; build once, promote the same digest",
+      "rationale": "Reproducibility is addressed in every phase, from Terraform and digest promotion through semver templates, DR rebuild and archive."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Old pipeline as fallback; revert-based rollback tested",
+      "rationale": "Resilience and rollback are concrete in each phase, from Phase 0 fallback through game days, HA, per-service rollback and power-off before deletion."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: no AI component.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Developer portal (Backstage): pull forward when the fleet passes about 100 services or teams struggle to find services.",
+      "rationale": "Each deferred item has a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A very strong plan that meets all ten dimensions with concrete content; its only weakness is density.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1109,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9216
+  },
+  "cost_usd": 0.034138,
+  "latency_s": 39.424,
+  "raw_file": "raw/judge-46c88ce0cf02.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

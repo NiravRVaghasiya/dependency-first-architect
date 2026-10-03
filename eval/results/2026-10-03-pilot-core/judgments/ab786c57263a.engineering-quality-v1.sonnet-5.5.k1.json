@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ab786c57263a.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "ab786c57263a",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 139,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "OIDC from CI to the cloud (no long-lived keys) and a secrets manager such as Vault or the cloud provider's.",
+      "rationale": "Technical claims (OIDC, GitOps promotion, cosign, Argo Rollouts, policy-as-code, SLSA) are accurate; minor imprecision such as 'SLSA level 2–3' and 'CI updates tag' without digest pinning."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Group services into archetypes. Most teams end up with 3–6, for example Java/Gradle, Node, Go, Python, frontend",
+      "rationale": "Covers core needs with sensible phasing and pilot, but leaves key choices open (CI engine, repo strategy) and omits explicit exclusions and runner hosted-vs-self decision."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Automate promotion: CI updates the image tag in the GitOps repo for dev, then promotion to staging and prod happens through a PR or policy.",
+      "rationale": "Consistent design around golden path templates, GitOps, and policy; some loose ends like undecided CI engine and the wave pilot timeline overlap."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Done when: the pilot services deploy to prod through the platform with automatic rollback, and the team has run a rollback drill successfully.",
+      "rationale": "Has done-when criteria, rollback drill, pilot, warn-only gates, but no measurable targets for build time, no validation of runner/cost risks, little post-launch validation."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "the services run in containers on Kubernetes (or something similar), you have a platform team of 4–6 engineers",
+      "rationale": "States key assumptions (K8s, team size, mix of languages) but not sensitivity to them, and timelines like '5 successful prod deploys' and '10–20 lines' are unqualified."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Unversioned shared templates. One bad change can break all 50 services at once.",
+      "rationale": "Covers template blast radius, false-positive gates, rollback on SLO breach, but misses untrusted-PR secrets, CI outage, flaky tests, DB migrations, and artifact tampering details."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Treat the platform as a product: give it SLOs, an on-call rotation, a changelog, a roadmap and a feedback channel.",
+      "rationale": "Rollback, platform on-call and dashboards mentioned, but late (Phase 6), with no migration handling, access admin or platform outage plan."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Add dashboards for DORA metrics, pipeline duration, flaky tests and runner cost.",
+      "rationale": "Cost is only mentioned as a dashboard; no estimate, hosted vs self-hosted trade-off, or build volume reasoning."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Make the key decisions: ... make the decisions that are expensive to change later.",
+      "rationale": "Recognizes expensive decisions and versions templates, but defers them as lists of options without analysis of lock-in or exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "don't build the whole platform before anyone uses it.",
+      "rationale": "Uses existing tools, thin end-to-end first; Backstage and SLSA 3 are somewhat optional but deferred to later phases."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Done when: a \"hello world\" service can be built, pushed and deployed to dev entirely through the platform.",
+      "rationale": "Ordered phases with week ranges and checkable done-when outcomes, though tool choices are left open and some phases lack exit criteria."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Catalog all 50 services: language, build tool, test coverage, where it deploys... Allow extension points, not forks of the templates."
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Run the old and new pipelines side by side for each service until there have been about 5 successful prod deploys on the new one."
+    },
+    {
+      "id": "P3-03",
+      "status": 1,
+      "evidence": "CI updates the image tag in the GitOps repo for dev, then promotion to staging and prod happens through a PR or policy."
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "OIDC from CI to the cloud (no long-lived keys) and a secrets manager such as Vault"
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "image signing (cosign)... policy as code... signed images only, no `:latest` tags... Aim for SLSA supply-chain level 2–3"
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Add progressive delivery (Argo Rollouts or Flagger) with canary or blue-green releases. Roll back automatically when SLOs or error rates breach thresholds."
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Add contract tests (such as Pact) between services, which matters a lot once you have 50 of them"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "integration tests in short-lived environments... Set up preview environments for each pull request."
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Set up CI runners with autoscaling, ephemeral runners and build caching."
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Set up CI runners with autoscaling, ephemeral runners and build caching."
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Treat the platform as a product: give it SLOs, an on-call rotation... Measure DORA metrics now"
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "Standardize... automated, auditable deployment and promotion."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Run the old and new pipelines side by side for each service"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "policy as code... signed images only, no `:latest` tags"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "OIDC from CI to the cloud (no long-lived keys)"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Each service's pipeline config down to roughly 10–20 lines that call the shared template."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "CI engine: GitHub Actions, GitLab CI, Tekton or Jenkins"
+    }
+  ],
+  "note": "Solid, sensibly phased pilot-first migration plan using existing tools, but thin on cost, untrusted-build security, migrations, flaky tests and concrete targets, with key tool decisions left open.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2344,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 9699
+  },
+  "cost_usd": 0.047880500000000006,
+  "latency_s": 31.652,
+  "raw_file": "raw/judge-ab786c57263a.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

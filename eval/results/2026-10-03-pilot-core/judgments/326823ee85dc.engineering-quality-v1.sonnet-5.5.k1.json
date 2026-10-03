@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "326823ee85dc.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "326823ee85dc",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 143,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Delivery is at-least-once. Consumers deduplicate on `decision_id` or `auth_id`.",
+      "rationale": "Mostly correct on Redis Lua hash-tag atomicity, CEL, ONNX, and at-least-once; minor issues (merchant key in a separate slot, Lua atomic dedupe described loosely, in-flight duplicate handling, BIN 8 digits, counter loss after failover) have small design consequence."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "a fraud-decision service that the issuer's existing Auth Host ... calls during each authorisation. It returns APPROVE, DECLINE, APPROVE_AND_ALERT or NO_DECISION",
+      "rationale": "Solves the real inline problem with explicit assumptions, essential vs optional separated, and explicit non-goals (3DS, case mgmt, graph) with reasons; step-up is excluded, a small gap."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Only `decision-service` is on the authorisation path. Its single synchronous dependency is Redis.",
+      "rationale": "Clear ownership of Redis keys and data flows; small loose ends such as merchant key slotting and the 'single dependency' claim versus the snapshot bucket."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Out-of-time test set with labels ≥ 90 days old ... PSI < 0.2 on shadow traffic ... Gatling at peak and 1.7× peak",
+      "rationale": "Validation is tied to specific risks, spikes come early, targets are labeled as assumptions, shadow and holdout cohorts continue after launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "all targets are assumptions until confirmed in Spikes S2 and S3",
+      "rationale": "Assumption table gives impact if wrong and how/when each is validated, plus open questions with defaults."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Redis misses its deadline or is unavailable: evaluate only the request-only rules (block lists). If one fires, return DECLINE; otherwise NO_DECISION",
+      "rationale": "Covers Redis failover, duplicates, Kafka outage, bad rules, poisoned labels, insider allow-list and feedback bias; some gaps like out-of-order and reversal handling and model-drift response."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Rollback, at three levels, each tested in M2: ... kill switch ... Runbooks (M2)",
+      "rationale": "Deploy, rollback, monitoring, ownership, runbooks and on-call are concrete and sized to the team; schema migration and access admin less detailed."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Prod is about $3–6k/month: Fargate: 6–10 tasks. Redis ... MSK",
+      "rationale": "Drivers listed with controls, but estimate is unbacked, scaling with usage is thin, and the storage claim of 15 GB/day with 7-year retention and 'storage cost unlikely significant' is questionable; no build cost."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Hard to add later, because history can't be logged after the fact",
+      "rationale": "Reversibility column for each decision, hard ones (Auth Host contract, feature logging, PAN scope, language) identified and spikes early, exit paths named."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "One `decision-service` deployable plus a small `outcome-worker` ... There is no rules UI in v1.",
+      "rationale": "Simplest workable design, no stream cluster, rules in Git, deferrals with triggers; MSK and separate ML account a bit heavy but justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T1 first, on day 1. ... Done when: Testcontainers tests cover window edges, duplicates, in-flight duplicates, and 100 concurrent requests",
+      "rationale": "Task-level breakdown with locations, done-criteria, dependency ordering, and spike outcomes that change the plan."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "Server-side p99 ≤ 50 ms ... Expected p99 is about 20 ms; each module with a deadline (Redis 20 ms, rules ≤3 ms, model ≤2 ms)"
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "On a timeout or NO_DECISION it applies its existing static rules ... Fail-open policy: ... Default: Apply existing static rules"
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "Card features are computed during the request with one atomic Redis script ... The exact feature values used for each decision are logged and reused for training"
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "Monthly training uses decisions older than 90 days, whose labels are mostly in ... Out-of-time test set with labels ≥ 90 days old"
+    },
+    {
+      "id": "P8-05",
+      "status": 1,
+      "evidence": "Catch ≥ 60% of fraud value at false-positive ratio ≤ 8:1. Alerts ≤ 1,500/day"
+    },
+    {
+      "id": "P8-06",
+      "status": 1,
+      "evidence": "Policy ... block-list → allow-list → hard rules → model threshold → alert rules; actions APPROVE, DECLINE, APPROVE_AND_ALERT (no step-up)"
+    },
+    {
+      "id": "P8-07",
+      "status": 1,
+      "evidence": "Building a case-management tool. We integrate with the existing one ... customer \"yes, that was me\" replies flow through label-ingest-job"
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "Never received: PAN, CVV2, PIN block, track data, expiry date. The contract rejects any of these fields, and a test checks it."
+    },
+    {
+      "id": "P8-09",
+      "status": 1,
+      "evidence": "Topics are keyed by card_token, with 24 partitions ... Consumers deduplicate on decision_id or auth_id"
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "Shadow scoring on live traffic before enforcement ... champion/challenger shadow scoring ... Score distribution ... bad model (revert the manifest PR)"
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "100% of decisions can be reconstructed (inputs, features, rule-set version, model version, output) for 7 years"
+    },
+    {
+      "id": "P8-12",
+      "status": 2,
+      "evidence": "at least 6 Fargate tasks ... spread across 3 AZs, so losing one AZ still leaves enough capacity for peak ... 3,000 TPS design peak"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "Inline synchronous decision, with Auth Host fallback on timeout or NO_DECISION"
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "The Auth Host waits at most 150 ms. On a timeout or NO_DECISION it applies its existing static rules"
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "Out-of-time test set with labels ≥ 90 days old"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "The exact bucketing is written down in contracts/features/feature-set-v1.yaml, and the offline code has to copy it exactly."
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "No card numbers (PANs) or other sensitive card data enter the system. It only sees a card token and the BIN"
+    }
+  ],
+  "note": "Very strong, well-grounded inline fraud plan with explicit assumptions and early spikes; weaker on step-up actions, out-of-order/reversal handling, and cost grounding.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2664,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 28524
+  },
+  "cost_usd": 0.097958,
+  "latency_s": 39.397,
+  "raw_file": "raw/judge-326823ee85dc.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

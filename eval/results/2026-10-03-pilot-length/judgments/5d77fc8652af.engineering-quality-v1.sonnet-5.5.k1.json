@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "5d77fc8652af.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "5d77fc8652af",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 26,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Ephemeral microVM (Firecracker) with no credentials; egress only to a package mirror; destroyed after each run",
+      "rationale": "Mechanisms are accurate (App scoping, branch protection, microVM, hash-bound approval), with small inconsistencies like 'Tests run without network access' versus package-mirror egress and no mention of GitHub App token lifetime."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "It labels new issues, finds duplicates and asks for missing information. When a maintainer asks it to, it writes a fix in a sandbox and opens a draft PR.",
+      "rationale": "Covers triage and resolve with maintainer-gated fixes and explicit deferrals, though codebase retrieval for large repos and webhook/human-collision handling are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Trust boundary and write scope ... App can write issues, PRs and only `agent/*` branches; branch protection requires a human review; never merges",
+      "rationale": "Consistent design with clear phases and decision table; minor loose ends such as the sandbox network assumption and the 'merged PR' cost metric when ownership of merging is human."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "≥150 red-team cases planted in issues, comments, repo files and test output; security reviewer review",
+      "rationale": "Validation is tied to specific risks, riskiest security checks come before exposure, thresholds are labeled assumptions, replay on hidden tests and canary and wave checks continue post-launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Missing inputs (assumptions are stated; what changes if each is false is in brackets)",
+      "rationale": "Budgets labeled ASSUMPTION/UNKNOWN, each assumption has a change-if-false trigger, and the monthly cap is flagged as unknown and blocking."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Caps cut off runaway jobs; jobs are idempotent",
+      "rationale": "Injection, exfiltration, sandbox escape, runaway loops and worker crash are covered concretely, but bot-to-bot loops, concurrent human edits and stale-issue collisions are not addressed."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Rollback is a redeploy of the previous image plus an App kill-switch flag.",
+      "rationale": "Deploy, rollback, traces, alerts and kill switch are concrete per phase, but on-call ownership and incident response are not specified."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Cost per merged PR | ≤$5 | ASSUMPTION (cheaper than an hour of engineer time)",
+      "rationale": "Per-job and daily caps, model routing and metering are covered with labeled assumptions, though the basis is thin and there is no build-cost or scaling model."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: a single bad merge or leaked secret cannot be undone",
+      "rationale": "Decisions are classified by reversibility with revisit triggers, provider abstraction from Phase 0, and the one-way choices (trust boundary, sandbox, data privacy) are gated early."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Operational complexity | 1 worker service + 1 sandbox runner",
+      "rationale": "Starts with a single LLM call slice, single-agent loop, and defers multi-agent, fine-tuning, memory, and auto-merge; the security machinery is justified by the stated worst failure."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phase 0: a real issue opened on an internal test repo gets one bot comment, \"Suggested labels: …\", from a single LLM call.",
+      "rationale": "Concrete first slice, dependency-ordered phases with exit checks, rollback per phase and failure fallbacks; a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Triage acts on its own once V3 passes; resolve starts only on a maintainer's `/agent fix`; PRs stay drafts"
+    },
+    {
+      "id": "P4-02",
+      "status": 1,
+      "evidence": "App can write issues, PRs and only `agent/*` branches; ... minimum App permissions"
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Build a tool executor with an allow-list of tools and schema-validated arguments; the model cannot bypass it."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "Ephemeral microVM (Firecracker) with no credentials; egress only to a package mirror; destroyed after each run"
+    },
+    {
+      "id": "P4-05",
+      "status": 1,
+      "evidence": "Replay 50 closed issues against their hidden tests"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Shadow run on 300 labeled historical issues | Label accuracy ≥85%; duplicate precision ≥90%"
+    },
+    {
+      "id": "P4-07",
+      "status": 1,
+      "evidence": "PR review outcomes and label corrections are reviewed, then added to the eval set."
+    },
+    {
+      "id": "P4-08",
+      "status": 1,
+      "evidence": "Caps per job (tokens, iterations, time) and per day (cost)."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "A hard 8k-token cap and a $1/day cap apply."
+    },
+    {
+      "id": "P4-10",
+      "status": 1,
+      "evidence": "Every tool call and approval logged"
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "Prompt plus retrieval (code search, issue embeddings)"
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "idempotent per-issue jobs keyed by `(issue, event-id)`"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "branch protection requires a human review; never merges"
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "Ephemeral microVM (Firecracker) with no credentials"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Untrusted text treated as data; allow-listed executor; no egress"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "≥30% of canary PRs merged"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "A runaway loop is cut off at its cap and emits a metric."
+    }
+  ],
+  "note": "Strong, risk-first, well-gated plan with clear assumptions and validation; weak on codebase retrieval detail, bot-loop/human-collision coordination, and incident ownership.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2265,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 12445
+  },
+  "cost_usd": 0.0539555,
+  "latency_s": 38.88,
+  "raw_file": "raw/judge-5d77fc8652af.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "b448cd84d421.probe.sonnet-5.5",
+  "blind_id": "b448cd84d421",
+  "blind_sha256": "d0e2b4a9a6dcecf01e31d960522a56fd9c234f1dba6bd3935114a852bbe35ac1",
+  "judge": "sonnet-5.5",
+  "order_index": 59,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Rigid numbered 18-section template (Summary, Context and Goals, Drivers, Current State, Assumptions, Architecture, Key Decisions, Rollout, Risks, Deferred Work, Next Steps) that reads like a prescribed methodology",
+    "Every assumption is tagged [A] and collected in a single assumptions table with 'impact if wrong' and 'how/when validated' columns",
+    "Decision table with Options considered, Rationale (drivers), Reversibility and 'Revisit if' columns, plus ranked quality attributes with measurable targets",
+    "Milestones with checkable exit criteria, and spikes stated as 'Question / Build / Changes plan if', which is a disciplined, prescribed format",
+    "Opens with a context note about checking the working directory (README 'intentionally empty'), and ends with open questions that have defaults and say how they would change the plan"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 366,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 14740
+  },
+  "cost_usd": 0.040518,
+  "latency_s": 30.632,
+  "raw_file": "raw/probe-b448cd84d421.probe.sonnet-5.5.txt"
+}

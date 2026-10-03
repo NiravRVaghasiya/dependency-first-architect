@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9681f7565136.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "9681f7565136",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 2,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Prove that edits merge correctly before involving any network.",
+      "rationale": "Phases go editor → local CRDT → network → persistence → auth → features, with gates proving each layer before the next."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 1: Single-user editor ... Phase 3: Network sync",
+      "rationale": "No thin end-to-end production slice first; Phase 0 is decisions only and deployment doesn't appear until hardening and launch."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Recommended: CRDT (for example Yjs, or Automerge)... Only choose it if you already have OT expertise.",
+      "rationale": "Irreversible choices are listed with defaults and a partial flip condition for OT, but most decisions have no explicit revisit triggers."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Define the document schema: paragraphs, headings, lists, bold/italic, links.",
+      "rationale": "Schema comes first in Phase 1 and the CRDT is before leaf features, but ordering within phases isn't explicitly by blast radius, and scaling comes late."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Phase 5: Check permissions when the WebSocket connects using a short-lived token.",
+      "rationale": "Security is concentrated in Phase 5 and Phase 12 (XSS, pen test), with only paste handling earlier, so it's a trailing step."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "Phase 12: Observability: metrics for sync delay, connected clients, update throughput, compaction time and errors.",
+      "rationale": "Observability is only in the final hardening phase, not from day zero."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No reproducible builds, environments, CI or infrastructure-as-code are discussed in any phase."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Handle reconnection on the client with exponential backoff.",
+      "rationale": "Resilience appears in Phases 3, 4 and 7 and in backups in Phase 12, but not in every phase, and the scaling phase is deferred."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so there is no explicit N/A declaration."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Leave tables, embeds and comments for later. ... (Can be postponed) Suggestion or track-changes mode.",
+      "rationale": "Some deferrals are named, but there are no explicit pull-forward conditions, and comments are listed as deferred yet also built in Phase 10."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan has sound dependency ordering and a strong convergence-first phase. However, it has no walking skeleton, and observability, reproducibility and security are left to the end. It also never declares the AI layer N/A.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1025,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 5073
+  },
+  "cost_usd": 0.022940500000000003,
+  "latency_s": 50.658,
+  "raw_file": "raw/judge-9681f7565136.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

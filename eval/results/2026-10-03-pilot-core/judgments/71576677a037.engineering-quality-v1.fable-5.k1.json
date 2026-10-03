@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "71576677a037.engineering-quality-v1.fable-5.k1",
+  "blind_id": "71576677a037",
+  "blind_sha256": "7a40f664ae5320bd78543959d3b59e445c6203e08adfa161432f6b31199dfea0",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 353,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Zero cleartext PAN (REQUIREMENT: PCI DSS v4.0 Req. 3: PAN unreadable wherever stored)",
+      "rationale": "Claims about ISO 8583, TC40/SAFE label timelines, network stand-in, PCI scoping, Treelite-compiled LightGBM, and fail-open semantics are accurate; only trivial imprecision (async decision logging vs RPO 0) with no design consequence."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "A streaming pipeline that scores each card authorization within the switch's time budget. It combines rules and a machine-learning model",
+      "rationale": "Solves exactly the in-path real-time fraud problem, resolves ambiguities via explicit A1–A3 with stated plan changes if wrong, and all exclusions are deferred with triggers."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The switch stays the system of record for auth outcomes. The new decision log is the record for fraud decisions.",
+      "rationale": "Responsibilities, data ownership, and the fail-open/kill-switch choice are applied consistently across phases, validation gates, and the cross-cutting table with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Production fault injection on the allow-list, then on 1% shadow: kill pods, add latency, take the online store down, load a corrupt model",
+      "rationale": "V0–V7 target the specific risks (latency, mass declines, skew, lawfulness) with checkable criteria labeled ASSUMPTION/UNKNOWN, validated before commitment and continued in production via V7 and drift monitoring."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "I'm stating these up front because each one changes the phase order, not just a threshold",
+      "rationale": "Every figure is tagged ASSUMPTION, BASELINE or UNKNOWN with its basis and the owner who confirms it, and the plan states exactly how the design changes if A1–A3 are false."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Decline-rate and step-up-rate kill switch: compare the 1-minute rate to baseline and auto-revert to the fallback",
+      "rationale": "Mass false declines, scorer/store outages, corrupt models, label poisoning, and adversarial probing all have concrete detection and recovery, but duplicate, out-of-order, and reversal/refund event handling in the stream is not addressed."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Deploy: CI builds a signed image, ArgoCD deploys it, and a switch feature flag turns the call on per card token",
+      "rationale": "Deployment, per-slice rollback in seconds, domain-meaningful alerts (decline rate, timeout rate, Flink lag, PSI drift), recovery drills, and an explicit on-call/complexity budget are designed in from Phase 0."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Compute cost per transaction must be far below the fraud loss it prevents",
+      "rationale": "The dominant economics (fraud dollars vs false declines vs compute, build-vs-buy with a bake-off trigger, analyst staffing) are covered and gated in V5, but cost scaling with volume and run-cost magnitudes are thin."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Canonical event schema and entity identifiers | R3 (every feature, label and model depends on it)",
+      "rationale": "Every major decision carries an explicit reversibility class, validation gate, and revisit trigger with named exit paths (lookup-only scorer, vendor bake-off, rules-only), and the one-way choices are validated earliest."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "≤ 3 new runtime services (scorer, Flink job, online store) plus managed Kafka",
+      "rationale": "Complexity is explicitly budgeted and matched to a real-money, PCI-scoped domain, with multi-region, graph features and an LLM assistant deferred behind concrete pull-forward triggers."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "A real authorization from an allow-listed internal test or employee card at a real merchant. The switch adapter tokenizes it and calls Score over gRPC",
+      "rationale": "A team could start immediately: concrete Phase 0 slice, dependency-justified phase order, specific technology decisions, checkable exit gates, and stated fallbacks for every gate that fails."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "Scorer p99 ≤ 50 ms, p99.9 ≤ 100 ms. Switch hard timeout 80 ms, then fail open"
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "Fail open: fall back to existing rules plus network score. A decline-rate kill switch also reverts to that fallback"
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "One shared feature-definition library used by Flink and the offline backfill: velocity (per card, merchant, device, BIN)"
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "Train LightGBM on out-of-time splits... labels at least 90 days mature (E1)"
+    },
+    {
+      "id": "P8-05",
+      "status": 2,
+      "evidence": "compare fraud-dollar capture at a fixed false-positive rate; add compute cost"
+    },
+    {
+      "id": "P8-06",
+      "status": 2,
+      "evidence": "applies a decision policy (approve / step-up / decline / review)... Four-eyes approval and audit for every rule or threshold change"
+    },
+    {
+      "id": "P8-07",
+      "status": 2,
+      "evidence": "Stream advisory reason codes to the analyst case queue... Analyst labels go through review, never straight into training"
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "PAN never leaves the switch. The fraud platform is a connected, minimized-scope system. Telemetry carries tokens only"
+    },
+    {
+      "id": "P8-09",
+      "status": 1,
+      "evidence": "Online feature store RTO ≤ 15 min, rebuilt by Kafka replay... per-card counters do an atomic increment-and-read"
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "Drift monitors (population stability index on features and scores)... Promote a challenger only through a V5 re-run plus a canary"
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "returns {score, decision=APPROVE, reason_codes, model_version}... Decision log RPO 0 (dispute and audit evidence)"
+    },
+    {
+      "id": "P8-12",
+      "status": 2,
+      "evidence": "Design target 3× measured peak TPS... k6/Gatling replay at 3× measured peak TPS... with card-testing bursts"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "Synchronous gRPC score call from the switch with an 80 ms hard timeout"
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "Fail open: fall back to existing rules plus network score. A decline-rate kill switch also reverts to that fallback"
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "Out-of-time holdout with labels at least 90 days mature; compare fraud-dollar capture at a fixed false-positive rate"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "One shared feature-definition library used by Flink and the offline backfill... V4 Offline features equal online features (no training/serving skew)"
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "PAN never leaves the switch... run a DLP scan over Kafka, the online store, Iceberg and logs"
+    }
+  ],
+  "note": "An exceptionally rigorous, buildable in-path fraud-scoring plan with labeled assumptions, gated rollout and real fail-safe design; its only notable gaps are stream event-correctness (duplicates, reversals, ordering) and thin run-cost scaling detail.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6653,
+    "thinking_tokens": 3797,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 17198
+  },
+  "cost_usd": 0.5485150000000001,
+  "latency_s": 121.644,
+  "raw_file": "raw/judge-71576677a037.engineering-quality-v1.fable-5.k1.txt"
+}

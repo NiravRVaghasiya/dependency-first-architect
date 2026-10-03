@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "d591a55a02ce.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "d591a55a02ce",
+  "blind_sha256": "c38808794fbcc4fede7402a75d8b9440a6fea971c1ed93d60d944a57d8332b6f",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 475,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Depends on: Phase 2. The log is proven to be the source of truth, so any node can rebuild any document.",
+      "rationale": "Phases run from contracts to durability to scale to presence to features to polish, each naming its proven dependency and an exit check."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "User A opens /d/<id> and types \"hello\". User B... sees \"hello\"... We restart the sync server, both users reload, and \"hello\" is still there",
+      "rationale": "Phase 0 is a real end-to-end production slice (CDN, login, LB, sync, Postgres, deploy, monitoring) that was proven before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Switch to OT with a server-side sequencer if the product needs server-validated edits that a CRDT can't express... Decide before Phase 1 ends.",
+      "rationale": "The plan gives a table of irreversible decisions, each with a default and a concrete flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Version history and restore... Why first: it touches the log's meaning.",
+      "rationale": "Tasks are labelled widest-first in each phase (schema before storage, idempotent append first, routing first), and leaf work such as polish goes last."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "TLS/WSS only. JWT checked when the WebSocket connects. Origin check. Secrets in a secrets manager.",
+      "rationale": "The cross-cutting table gives concrete security items for every phase from 0 to 6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OpenTelemetry trace for receive → commit → confirm → broadcast. Confirmation p50/p99... Dashboard and alerts.",
+      "rationale": "Observability is in Phase 0 and each later phase adds its own metrics."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Monorepo with lockfiles and pinned Yjs/ProseMirror versions. One container build. Terraform for prod.",
+      "rationale": "Each phase has concrete reproducibility measures: golden sets, seeded fuzz, k6 scenarios, same Terraform for staging, pinned export containers."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Confirm only after commit. Client reconnects with exponential backoff and jitter. Point-in-time recovery on day 0.",
+      "rationale": "Each phase has specific failure handling, from Phase 0 through the final export retries."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: there are no AI or agent features in scope.",
+      "rationale": "The plan states outright that no AI layer applies and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Multi-region active-active sync. Pull forward when more than 20% of users see round-trip p95 above 150 ms",
+      "rationale": "The deferred list is explicit, and each item has a concrete pull-forward trigger."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is very strong on all ten dimensions. It has a real production walking skeleton, explicit gates, and per-phase threading of security, observability, reproducibility and resilience.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1111,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8612
+  },
+  "cost_usd": 0.032647999999999996,
+  "latency_s": 27.316,
+  "raw_file": "raw/judge-d591a55a02ce.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

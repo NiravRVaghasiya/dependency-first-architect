@@ -1,0 +1,110 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P5.dfa.opus-5.5.r02",
+  "prompt_id": "P5",
+  "condition": "dfa",
+  "generator": "opus-5.5",
+  "run_index": 2,
+  "seed": 324125703,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Order the build of a real-time collaborative document editor.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P5.dfa.opus-5.5.r02.md",
+  "output_sha256": "9fa96360b2a8ee1b5c9cb3c2d3dacb76e87a079b34f75e03713949bcabf1b01d",
+  "metrics": {
+    "words": 3904,
+    "chars": 23744,
+    "visible_tokens_est": 5936
+  },
+  "turns": 3,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/validation.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "dependency-first-architect:dependency-first-architect",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "reference/plan-template.md",
+      "sha256": "95ccaec942bf8a640ff4d830daada167a340b6b652242e2ed41aec6d24605c2a",
+      "words": 1257
+    },
+    {
+      "path": "reference/validation.md",
+      "sha256": "d5ddad548e7b7be656dc51d5946c3da45ceb21ce5234164440fa5c5829edd407",
+      "words": 1879
+    }
+  ],
+  "started_at": "2026-10-02T23:58:02+00:00",
+  "finished_at": "2026-10-03T00:03:03+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [
+    "claude-opus-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 21594,
+    "thinking_tokens": 12758,
+    "cache_read_input_tokens": 7061,
+    "cache_creation_input_tokens": 13165
+  },
+  "cost_usd": 0.4991412,
+  "latency_s": 300.98,
+  "raw_file": "raw/gen-P5.dfa.opus-5.5.r02.txt"
+}

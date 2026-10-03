@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "db5afc232044.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "db5afc232044",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 75,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Critical path: processor access (day 1) → S1 → M2 prod credentials → processor certification of the inline hook → M3 enforcement.",
+      "rationale": "Milestones run substrate (slice, spikes) → shadow → rule enforcement → model, with explicit depends-on and spikes proving assumptions before dependent work."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "A thin slice deployed through CI/CD to staging. A processor sandbox authorisation goes through the Decision Service... event lands in S3",
+      "rationale": "M1 is a real end-to-end slice with CI/CD, but it runs in staging with sandbox traffic; production path only arrives in M2."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Decisions table with 'Reversibility' and 'Revisit if' columns, e.g. D2: 'You need cross-entity windowed joins, more than ~50 counters per card, or Redis CPU above 60%'",
+      "rationale": "Assumptions A1–A10 and decisions D0–D8 each have a default, impact, and flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Decision order: allow-list → block-list → enforcing rule declines → model threshold; M3 'enforce blocklist + card-testing rules; cohort ramp'",
+      "rationale": "Some ordering of widest-impact items (kill switch, guardrail, config) is present, but blast-radius ordering within phases is not stated explicitly."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Security (built in M1; reviewed before M3 enforcement)",
+      "rationale": "M1 has mTLS, signatures, scans and PCI scoping, but security is mostly a standalone section and later phases (M2, M4) get little specific treatment."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "T9 Add metrics, dashboard, 2 alerts: latency histogram, decision mix, degraded and deadline-miss rate, emitter drops",
+      "rationale": "Observability is in M1 with alerts, then completed in M2, with reconciliation, drift monitoring and PSI in later phases."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "'apply from the pipeline creates staging from scratch'; 'Immutable, signed' artefacts; same-code replay; commit SHA image tags",
+      "rationale": "Terraform, CI, commit-SHA images, versioned signed artefacts, point-in-time snapshots and replay harness are threaded across phases."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "T7: 'Toxiproxy test with Redis latency at 200 ms gives 100% responses < 40 ms with degraded=true'",
+      "rationale": "Degraded mode, circuit breaker and spill are built in M1, with game days in M3 and guardrail, rollback and fallback for later phases."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Non-goals: 'Any LLM component.' ML-specific: 'Human sign-off from fraud ops... is required before a model enforces.'",
+      "rationale": "The classical ML model has guardrails, kill switch, shadow and human sign-off before model enforcement, but there is no explicit layered AI ordering (retrieval, memory, orchestration, routing) and budgets are only latency and cost."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Deferred table: 'Streaming aggregation (Flink)' — 'Features that need cross-entity windowed joins, or Redis CPU above 60% at peak'",
+      "rationale": "Non-goals, deferred items each with explicit triggers, and deliberate shortcuts with paydown conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, well-gated plan with explicit decisions, resilience and deferrals; weaker on a production-first skeleton, explicit blast-radius ordering, per-phase security, and the AI layer ordering.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1362,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 22656
+  },
+  "cost_usd": 0.070381,
+  "latency_s": 20.757,
+  "raw_file": "raw/judge-db5afc232044.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

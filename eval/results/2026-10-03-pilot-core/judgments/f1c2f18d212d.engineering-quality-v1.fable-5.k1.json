@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f1c2f18d212d.engineering-quality-v1.fable-5.k1",
+  "blind_id": "f1c2f18d212d",
+  "blind_sha256": "8ed54cd648b946778303b0f6a154f0ac7695c97a0ffd2c9fd4d3de2dd5602052",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 213,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Yjs garbage collection removes deleted content, so the log is the only source for full history.",
+      "rationale": "Claims about CRDT convergence, state-vector resync, Y.RelativePosition anchors, local-only UndoManager and confirm-after-commit durability are all accurate, including subtle areas like GC vs history."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Full offline-first editing (days offline, conflict review UI). Pull forward when a mobile app is planned",
+      "rationale": "Covers every core capability of real-time co-editing, resolves ambiguities with stated defaults, and every exclusion is explicit with a pull-forward trigger."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The log is proven to be the source of truth, so any node can rebuild any document.",
+      "rationale": "Single source of truth, data ownership, consistency model and routing decisions are honored consistently across phases with no contradictions; presence, history and permissions all follow the stated gates."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "fuzz suite runs 10,000 random multi-client edit sequences with... server kills mid-commit. Every confirmed update survives",
+      "rationale": "Validation targets the exact domain risks (divergence, durability, failover) with seeded reproducible tests, checkable per-phase exit criteria, a Phase-0 prod proof, and a production divergence detector."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Storage cost passes budget (e.g. more than $X per workspace per month).",
+      "rationale": "Design-critical assumptions and revisit triggers are explicit and numbers are mostly flagged as examples, but some targets (16 ms, 99.5%) and team/scale baselines appear without stated basis."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "If a client's hash differs from the server's at the same state vector, the client is forced to resync and an alert fires.",
+      "rationale": "Covers the hardest domain failures—silent divergence, duplicates, node death mid-commit, malformed/malicious input, revocation on live sockets—each with concrete detection, containment and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Graceful drain on deploy. Stop accepting connections, hand off documents, then close sockets with a reconnect hint.",
+      "rationale": "Deployment, migrations, meaningful alerts and drain/failover are concrete and team-sized, but explicit rollback procedure and incident ownership/on-call are not stated."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "or if its memory per document exceeds budget (more than ~50 MB for a 1 MB document)",
+      "rationale": "Identifies the real cost drivers (log storage growth, per-document memory, build-vs-buy) with concrete controls and gates, though no order-of-magnitude dollar or people-cost estimates are given."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "the costliest to reverse, because the stored document format follows it... Decide before Phase 1 ends.",
+      "rationale": "Explicitly ranks the CRDT/stored-format choice as the one-way door, deadlines its revisit, defers plugin API until the schema stabilizes, and gives triggers and migration consequences for every major decision."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "One codebase, two process roles... Split further only when one area needs its own scaling or release cadence.",
+      "rationale": "Starts with the simplest workable design (monolith, single sync node, buy identity/storage), gates every added complexity behind measured triggers, and omits nothing essential."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "User A opens `/d/<id>` and types \"hello\". User B, in another browser, sees \"hello\" in under 500 ms.",
+      "rationale": "Dependency-justified phase ordering, specific technology and schema decisions, concrete first slice, and checkable exit criteria per phase mean a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "Concurrency model: CRDT vs OT (the costliest to reverse...) CRDT (Yjs). Edits apply locally first, all copies are guaranteed to converge"
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Define the ProseMirror node and mark set: headings, lists, marks, links... Store a `schema_version` on each document."
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "fuzz suite runs 10,000 random multi-client edit sequences with dropped, reordered and duplicated messages... every copy plus the stored state ends up identical"
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "appends it to `update_log` in Postgres; sends a confirmation only after the commit... compact it into snapshots alongside the log, never by deleting it"
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "Every client of a given document connects to the same sync node, via consistent-hash routing... backpressure on slow consumers"
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "The client keeps unconfirmed updates in IndexedDB until they're confirmed... Full offline-first editing (days offline, conflict review UI) [deferred]"
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "on every incoming message: the server drops sync and update messages from read-only connections... Revoking access closes the socket within 60 s."
+    },
+    {
+      "id": "P5-08",
+      "status": 2,
+      "evidence": "Per-user undo/redo (Y.UndoManager tracking only local changes)... Restore is written as a new forward update, never a rewrite of the log"
+    },
+    {
+      "id": "P5-09",
+      "status": 2,
+      "evidence": "Presence is lossy and never stored, so it can't corrupt documents... Awareness channel (y-protocols awareness) with a payload schema, size cap and throttle"
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "using the real CRDT library rather than a stub... Phase 2: Convergence and durability hardening... Phase 5: Collaboration features"
+    },
+    {
+      "id": "P5-11",
+      "status": 2,
+      "evidence": "Very hot documents (more than ~500 concurrent editors) need cross-node fan-out... Keystroke-to-render p95 stays under 16 ms on a 50-page document."
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "A protocol version... Servers reject unsupported versions with an \"upgrade client\" code... Old documents are migrated forward when they're opened."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Adopt: Yjs, y-protocols, ProseMirror/Tiptap, Hocuspocus as the sync-server base."
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "using the real CRDT library rather than a stub"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "The server confirms an update only after it is durably committed to Postgres. \"Saved\" means committed."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "none"
+    }
+  ],
+  "note": "An exemplary plan: proven CRDT library, durable confirm-after-commit, convergence fuzzing and divergence detection built first, with every deferral gated; only rich-text merge semantics detail, rollback/ownership, and dollar-level cost grounding fall short.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6319,
+    "thinking_tokens": 3633,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 15221
+  },
+  "cost_usd": 0.5062325000000001,
+  "latency_s": 143.458,
+  "raw_file": "raw/judge-f1c2f18d212d.engineering-quality-v1.fable-5.k1.txt"
+}

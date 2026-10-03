@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f7a48caa0e10.engineering-quality-v1.fable-5.k1",
+  "blind_id": "f7a48caa0e10",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 115,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Prompt+RAG. It's reversible and the docs change ... fine-tune for style only, never for facts",
+      "rationale": "Technical claims about pgvector limits, hybrid search, DPA/zero-retention, fine-tuning's role and LLM failure behavior are all accurate and precisely scoped."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "answers support questions from your help-center articles, cites its sources, and hands off to a human when it can't answer",
+      "rationale": "Solves exactly the stated problem, resolves ambiguities with confirmed assumptions, includes a buy-vs-build bake-off, and defers out-of-scope items explicitly with reasons."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Freeze the document/chunk schema ... Every later phase reads it",
+      "rationale": "Decisions made once (answer contract, audience field, availability-over-consistency) are honored consistently across every phase and the cross-cutting table with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "~200 questions from real resolved tickets, each with its expected source article",
+      "rationale": "Eval harness is built before the full system, run in CI on every change, backed by shadow mode, staged ramps with rollback, and all targets labeled provisional."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Assumptions (please confirm): Docs live in a hosted help center ... All numeric targets above are starting points.",
+      "rationale": "Assumptions are explicit and flagged for confirmation, every default has a stated revisit trigger describing what changes if it's wrong, and numbers are labeled estimates."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "An injection string planted in a test article doesn't change behavior ... A deleted article leaves the index within 15 min",
+      "rationale": "Covers the hard domain failures—stale/deleted docs, injection, uncited policy commitments, provider outage, runaway sessions, ingestion duplicates—each with concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "OTel traces across every tier ... alerts on 5xx rate and p95 latency ... Ramp kill switch",
+      "rationale": "Deployment, rollback, meaningful monitoring and freshness signals are concrete and sized to a small team, but incident ownership and on-call responsibility are never explicitly assigned."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "~$0.05 per conversation. Calibrate in Phase 1",
+      "rationale": "Inference cost is tracked from day zero with caps, routing and a labeled target, plus a buy-vs-build cost gate, but build-side engineering cost and total run cost at assumed volume are not estimated."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Every chunk carries an `audience` field from day one, even though v1 only uses `public`.",
+      "rationale": "Hard-to-reverse choices (schema, answer contract) are frozen deliberately early, reversible ones taken quickly, and every decision has an explicit revisit trigger or exit path including buying the vendor bot."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Multi-agent orchestration. Not until a single chain clearly fails a measured task class.",
+      "rationale": "Starts with a thin end-to-end slice on existing Postgres, defers vector DBs, fine-tuning, agents and multilingual behind measured triggers, with no essential capability omitted."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phases (ordered by dependency; within a phase, widest impact first)",
+      "rationale": "Concrete first slice, specific schemas and contracts, exit checks per phase, and explicit stop/adapt conditions (vendor bake-off, revisit triggers) let a team start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "full sync plus webhooks, idempotent on `content_hash`, deletions handled ... A deleted article leaves the index within 15 min"
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Chunking by heading structure ... doc_id, version, content_hash, url, title, section_path, audience, locale, updated_at"
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "~200 questions from real resolved tickets ... eval runner in CI measuring recall@5, groundedness"
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "output check that blocks uncited claims and policy commitments ... Relevance threshold that triggers `abstained`"
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "refunds, billing disputes, legal, security and account changes always go to `handoff` ... create a helpdesk ticket with the redacted transcript"
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "retrieved chunks and user text are wrapped as data ... The bot never executes actions"
+    },
+    {
+      "id": "P1-07",
+      "status": 2,
+      "evidence": "`audience` filter enforced at query time"
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "PII redacted before logging and before the LLM ... Hosted API with a DPA and zero data retention"
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Answer-only. The bot never executes actions ... Account-aware answers ... Pull forward when customer auth is in the widget"
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "Weekly doc-gap report for the docs team ... Deflection and CSAT dashboards ... agent corrections feed the eval set"
+    },
+    {
+      "id": "P1-11",
+      "status": 2,
+      "evidence": "≤4k input tokens per call, ≤10 turns per session, p95 first token <2s ... ~$0.05 per conversation. Calibrate in Phase 1."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Output must be cited. No policy commitments ... Relevance threshold that triggers `abstained`"
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "`audience` filter enforced at query time ... Index only public articles"
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Prompt+RAG. It's reversible and the docs change ... webhooks, idempotent on `content_hash`, deletions handled"
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "CI posts baseline eval numbers for the skeleton on every PR"
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "A single linear chain ... No agents ... Not until a single chain clearly fails a measured task class"
+    }
+  ],
+  "note": "An exemplary plan: grounded, eval-first, access-controlled and reversibility-aware, avoiding all domain traps; only incident ownership and build/total cost estimation fall short of perfect.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 5247,
+    "thinking_tokens": 2772,
+    "cache_read_input_tokens": 923,
+    "cache_creation_input_tokens": 12946
+  },
+  "cost_usd": 0.425118,
+  "latency_s": 451.364,
+  "raw_file": "raw/judge-f7a48caa0e10.engineering-quality-v1.fable-5.k1.txt"
+}

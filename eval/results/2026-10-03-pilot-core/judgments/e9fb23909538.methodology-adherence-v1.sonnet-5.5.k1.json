@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e9fb23909538.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "e9fb23909538",
+  "blind_sha256": "1f515ecfca7dc2a44a648d17f400bf118657e37891c24b6045d75d5ca86fbbb8",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 477,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: Phase 1, because encrypted, redundant transport and keys must exist before all PHI flows.\"",
+      "rationale": "Each phase names its dependency and proof gate, moving from landing zone to identity/network to data to integrations to app tier to cutover."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"Show Dr. X's schedule for today.\" ... real production traffic ... cloud-served, read-only view ... CDC from the production on-prem database",
+      "rationale": "Phase 0 is a real end-to-end production slice from the workstation through the routing layer, hybrid link, cloud app and CDC-fed database, with tracing."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Rollback model: Reverse CDC... Flip: \"Shut it down only after 30 days with no rollback trigger and after the cloud DR drill has passed.\"",
+      "rationale": "The gates table lists irreversible decisions, each with a default and a flip condition, and the plan states its assumptions to confirm in week 1."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "\"Identity and access (widest impact)\"; \"Schema-change control (widest impact)\"; \"Individual reports. This is the narrowest item.\"",
+      "rationale": "Tasks within phases are explicitly ordered from widest to narrowest impact, for example EHR interfaces before individual reports."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"BAA signed before any PHI moves. Private link only. PHI scrubbed from logs.\"",
+      "rationale": "The cross-cutting table gives concrete security content for every phase from 0 through 7."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: \"Trace across routing layer → app → DB. Dashboards for CDC lag, shadow-match rate and link latency. On-call alert.\"",
+      "rationale": "Observability has concrete content in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"Landing zone, app and CDC all defined in IaC (Terraform/Bicep) and pull-request reviewed.\"",
+      "rationale": "Reproducibility is addressed in every phase through IaC, versioned migrations, immutable images, exported routes and rehearsals on a clone rebuilt from IaC."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"Instant routing bypass proven in production. Users always get the on-prem answer.\"",
+      "rationale": "Failure handling appears in every phase, including bypass, redundant links, PITR, fallback, rollback rehearsal and DR."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"N/A. This system has no AI components, so the prompt-injection, budget, human-review, retrieval and model layers don't apply.\"",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Cost optimisation... Pull forward after 60 days of steady usage data.\"",
+      "rationale": "The deferred list has specific items, each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan that meets every dimension with concrete, phase-level content; the only minor gap is the lack of explicit security work in the Phase 0 tasks beyond the table.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1200,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8657
+  },
+  "cost_usd": 0.0336505,
+  "latency_s": 26.526,
+  "raw_file": "raw/judge-e9fb23909538.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "28b99ee89b69.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "28b99ee89b69",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 91,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Implement CD deployment strategy (GitOps recommended)",
+      "rationale": "Generic and mostly accurate tool mentions, but it lists tools interchangeably (Dependabot as a scanner, Docker Hub as a registry), says nothing on the hard parts, and 'enforce coding standards across pipelines' misplaces the concern."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Onboard 8-10 non-critical microservices",
+      "rationale": "It gives a buildable phased sequence with wave onboarding, but it never surveys the services' stacks or deployment targets, it is ambiguous about Kubernetes, and it has no explicit exclusions."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Select tech stack (Jenkins, GitLab CI, GitHub Actions, ArgoCD, etc.)",
+      "rationale": "The phases form a recognizable layered design, but components are undecided menus with no data flows or ownership, and nothing ties them together."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Implement smoke tests post-deployment",
+      "rationale": "Validation is generic. There are no measurable acceptance criteria, and the riskiest assumptions are not tested early. Wave 1 serves only as a loose pilot."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Platform Team: 4-6 engineers (dedicated)",
+      "rationale": "Team size and timeline are stated without any basis. Scale, compliance, stack and budget assumptions are never stated, and nothing says what would change if they were wrong."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Test failure scenarios",
+      "rationale": "Failure modes are mentioned only in passing (rollback, DR, flakiness). There is no handling of untrusted PRs, partial failures, or pipeline compromise."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Set up automatic rollback on failures",
+      "rationale": "It covers monitoring, rollback, runbooks and incident response as items, but ownership, migrations and platform-outage handling are vague, and DR comes last."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Establish cost optimization",
+      "rationale": "Cost appears only as a passing phase-7 item and 'monitor costs from day one', with no estimate of runner or compute cost and no hosted versus self-hosted decision."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Select tech stack (Jenkins, GitLab CI, GitHub Actions, ArgoCD, etc.)",
+      "rationale": "It does not distinguish one-way from reversible decisions. The main tool choice is treated as a routine early step with no exit path."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Configure advanced canary deployments",
+      "rationale": "It uses existing tools rather than custom builds and has no obvious gold-plating, but the plan is a generic 40-week waterfall with some speculative items, such as multi-tenancy and feature flags, that it never justifies."
+    },
+    {
+      "dim": 11,
+      "score": 1,
+      "evidence": "Would you like me to dive deeper into any specific phase",
+      "rationale": "The ordering is sensible but the items are high-level checklists with no decisions, no checkable exit criteria and no adaptation plan. Security and caching come after onboarding."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "Build standardized pipeline templates"
+    },
+    {
+      "id": "P3-02",
+      "status": 1,
+      "evidence": "Wave 1: Non-Critical Services (Weeks 18-21)"
+    },
+    {
+      "id": "P3-03",
+      "status": 0,
+      "evidence": "Establish image naming/versioning standards"
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "Implement secrets store (Vault, AWS Secrets Manager)"
+    },
+    {
+      "id": "P3-05",
+      "status": 1,
+      "evidence": "Configure image scanning and signing"
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Set up automatic rollback on failures"
+    },
+    {
+      "id": "P3-07",
+      "status": 0,
+      "evidence": "Map microservice interdependencies"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Set up test retry and flakiness detection"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Implement build caching strategies"
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Deploy CI server(s) with auto-scaling"
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "Monitor platform performance and costs from day one"
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "Establish audit logging"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Onboard 8-10 non-critical microservices"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Select tech stack (Jenkins, GitLab CI, GitHub Actions, ArgoCD, etc.)"
+    }
+  ],
+  "note": "This is a generic waterfall checklist of tooling phases. The wave onboarding is sensible, but the plan lacks decisions, assumptions, criteria, security depth and cost grounding.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1882,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 9587
+  },
+  "cost_usd": 0.042980500000000005,
+  "latency_s": 42.33,
+  "raw_file": "raw/judge-28b99ee89b69.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

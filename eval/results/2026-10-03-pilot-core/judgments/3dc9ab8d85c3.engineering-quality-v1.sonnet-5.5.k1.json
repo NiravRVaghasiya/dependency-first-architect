@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "3dc9ab8d85c3.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "3dc9ab8d85c3",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 157,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Docker layer cache goes to ECR with `cache-to type=registry`.",
+      "rationale": "Mostly correct (OIDC, keyless cosign, Argo PreSync, expand/contract), but registry cache writes to a fixed tag, which conflicts with the ECR immutable tags the plan requires, and Renovate minimumReleaseAge on Actions tags is assumed to work."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Contract testing between services | Integration breakages between services found in staging more than twice a month",
+      "rationale": "It covers the core CI/CD needs and defers scope with reasons, but it leaves out contract compatibility checks and flaky-test handling."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "CI can push images and write to `deploy-config`, but it can't reach clusters.",
+      "rationale": "Ownership and data flows are clear, but promote.yml waits for Argo health and reads the staging Argo API from hosted runners, which conflicts with the claim that CI has no cluster access."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "S1 ... Run the old app against the new schema. ... Result that changes the plan",
+      "rationale": "Early spikes and drills target the riskiest assumptions with checkable criteria, and a synthetic canary runs in production, but contract and flaky-test risks are not validated."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "| A2. All services run on Kubernetes (EKS) | VMs/ECS/Lambda break the GitOps/Argo CD design ... | T2 inventory, week 1 |",
+      "rationale": "Assumptions are explicit, each has an impact if wrong and a check date, numbers are marked as assumed, and the plan tells the reader to verify pricing."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Flow 3: A bad template release ... Flow 4: GitHub outage during an incident",
+      "rationale": "It covers template blast radius, GitHub outage, fork PRs, compromised actions, migration rollback and idempotent promotes with concrete handling, but it has no flaky tests, no contract breaks and little on partial multi-service failures."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Platform on-call during business hours from M3. Out of hours, Argo CD/GitHub issues use the break-glass runbook",
+      "rationale": "Deploy, rollback, alerts with runbooks, ownership and DORA dashboards are concrete and sized for the team, though out-of-hours support is best-effort."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Runner minutes: about 150–250k a month ... roughly $1.5–6k/month ... Check against current GitHub pricing",
+      "rationale": "It names the runner-minute driver, gives ranged estimates with a stated basis, sets controls (cancel-in-progress, path filters, budget alert) and a revisit trigger, but it does not cost the people effort of the build and migration."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "| D2 ... | **Hard.** It sets the trust model and what every team does day to day. |",
+      "rationale": "Each decision has a reversibility rating and a revisit trigger, hard choices are spiked early, and the plan names a point of no return with a 90-day archive."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Non-goals: Per-PR preview environments; internal developer portal; multi-region deployment",
+      "rationale": "It uses existing tools and defers speculative items, and Argo per cluster, Kyverno and Renovate are tied to needs, though the overall stack is sizeable for a team of 4–5."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "| T3 | Terraform GitHub OIDC trust and ECR ... Done when | A workflow in the pilot repo pushes an image with no stored secrets. The same workflow run from a branch or another repo is denied",
+      "rationale": "It gives dependency-ordered tasks with checkable done-when criteria, a pilot selection rule, time-boxed spikes with explicit plan-change triggers, and concrete next steps."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "`pre-build`/`post-test` hook input ... Services that don't fit can supply raw manifests"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Add `ci.yml` running **alongside** the legacy pipeline, build-only. ... Rollback at each step: re-enable the legacy job."
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Build once and promote the same signed image digest through dev, staging, and prod."
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "Fork PRs get read-only tokens and no OIDC role."
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Third-party actions pinned by SHA ... Kyverno `verifyImages` ... CODEOWNERS on every `deploy-config/apps/*/prod`"
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "migration was additive (expand/contract ...) ... Argo Rollouts canary with metric analysis"
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Contract testing between services | Integration breakages between services found in staging more than twice a month"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Per-PR preview environments (non-goal); dev/staging/prod clusters; no flaky-test handling"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Registry layer cache. ... PR checks p95 under 10 minutes."
+    },
+    {
+      "id": "P3-10",
+      "status": 2,
+      "evidence": "GitHub-hosted first ... about 750–1,000 workflow runs a day ... Budget alert at $8k"
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "The platform team owns: templates, the chart, Argo CD ... DORA dashboard per service and team."
+    },
+    {
+      "id": "P3-12",
+      "status": 2,
+      "evidence": "Git history is the audit trail. ... Prod: PR needing approval from the service's CODEOWNERS."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "legacy prod job disabled (not deleted) and kept as a fallback for 2 weeks"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Immutable. Referenced by digest, never by `latest`."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "No static keys anywhere."
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Each service has its own `apps/<svc>/<env>` promotion path; deploys are per service."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "GitHub Actions reusable workflows, not a custom-built orchestrator."
+    }
+  ],
+  "note": "This is a strong, well-sequenced plan with explicit assumptions, pilot-first migration and good security. Its weaknesses are the CI-to-Argo health-check contradiction, the ECR immutable-tag versus registry-cache conflict, and missing flaky-test and contract-test handling.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4688,
+    "thinking_tokens": 2217,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 26206
+  },
+  "cost_usd": 0.11258800000000001,
+  "latency_s": 51.403,
+  "raw_file": "raw/judge-3dc9ab8d85c3.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

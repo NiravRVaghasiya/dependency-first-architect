@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "b3671966ec3f.engineering-quality-v1.fable-5.k1",
+  "blind_id": "b3671966ec3f",
+  "blind_sha256": "e381cf4fa28aac0eeda8f1bf9e8e5c005340b8ded3e513c4cd872bef9eb2441c",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 333,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Transactions the existing engine declined are evaluated separately, because they never get outcome labels",
+      "rationale": "Technical claims are accurate throughout, including subtle areas (reject inference, PCI scope via QSA-confirmed tokenization, out-of-time evaluation, idempotent replay), with limits stated honestly as assumptions."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "I assumed we're the card issuer (or its processor) and that we score each authorization before it's approved or declined.",
+      "rationale": "Solves the exact problem inline-real-time with explicit resolution of ambiguities (issuer vs acquirer, brownfield), credible phasing, and explicit justified deferrals in §10."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The auth host stays the system of record for decisions, and existing case management for cases",
+      "rationale": "Clear ownership of every component and data item, decisions made once (sync, fallback, tokenization) are honored consistently across phases, validations and cross-cutting tables with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Out-of-time backtest (train on earlier months, test on the last 3); existing-engine declines analyzed separately",
+      "rationale": "V0–V9 tie checks to the specific risks, thresholds are explicitly labeled ASSUMPTION rather than invented, riskiest items (PAN boundary, latency, uplift) validate before commitment, and V9/drift monitoring continue post-launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Peak is a BASELINE, measured in Phase 0. 3× is an ASSUMPTION: headroom for attack bursts and growth",
+      "rationale": "Every number is tagged ASSUMPTION/BASELINE/UNKNOWN, missing inputs are listed with owners and deadlines, and each key assumption states what changes if it is wrong."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Game day: forced bad threshold, scorer killed, corrupt model artifact; in shadow first",
+      "rationale": "Covers the hardest domain failures mass false declines, PAN leakage, scorer outage, duplicates/replays, label poisoning, adversarial input, corrupt artifacts each with concrete detection (breaker, DLP) and recovery (fallback, rebuild drill)."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Rollback: per-segment flag back to the existing engine within seconds; the breaker reverts automatically.",
+      "rationale": "Deploy/rollback mechanics, meaningful signals (fallback rate, would-decline rate, drift), on-call rota, runbooks, and an explicit operational-complexity budget sized to one team are designed in from Phase 0."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Run cost per 1k scored transactions | Ceiling UNKNOWN. Finance supplies it in Phase 1 alongside the uplift bar",
+      "rationale": "Cost is a gated budget with a per-transaction unit metric and build-vs-buy economics, and no figures are invented, but the concrete cost drivers (store, stream compute) and their growth are not enumerated."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3. Feature history, training data and the decision log are all keyed on it",
+      "rationale": "Each decision carries an explicit reversibility class, the R3 ones (PAN boundary, schema, build-vs-buy, fail mode) are validated earliest, and every row has a revisit trigger and exit path."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "One scoring service (feature fetch, rules and model in one process) and one Flink job",
+      "rationale": "Starts with the simplest latency-safe design, justifies each component, and defers speculative complexity (multi-region, graph models, per-segment models) behind concrete pull-forward triggers."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "V4 fails: flip to async for alerts only, and keep the existing engine inline",
+      "rationale": "A concrete Phase 0 slice, dependency-justified ordering, per-phase exit checks, named technology defaults, and explicit contingency branches mean a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "p99 ≤ 50 ms, hard timeout 80 ms, then fall back to the existing engine"
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "R3. Minutes of fail-closed means mass declines; fail-open during an attack means losses"
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "One feature-definition repo that generates both the Flink (online) and Spark (offline, point-in-time) jobs."
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "Label pipeline: confirmed fraud claims and fraud chargeback reason codes, with label-maturity windows."
+    },
+    {
+      "id": "P8-05",
+      "status": 2,
+      "evidence": "Uplift ≥ the V3 bar at an equal would-decline rate; would-be false declines ≤ the existing engine's BASELINE"
+    },
+    {
+      "id": "P8-06",
+      "status": 2,
+      "evidence": "hard rules (e.g. blocked card) override; score bands map to approve / step-up / decline / approve+alert."
+    },
+    {
+      "id": "P8-07",
+      "status": 2,
+      "evidence": "Analyst dispositions enter the labels only through review."
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "Tokenize the PAN in the auth-host adapter inside the CDE (keyed HMAC, key in the HSM/KMS)."
+    },
+    {
+      "id": "P8-09",
+      "status": 2,
+      "evidence": "Idempotency key: the network trace ID ... consumers keyed by trace ID so replays don't double-count"
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "Shadow first, then per-segment champion/challenger, with the existing engine kept as fallback."
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "Response: score, recommended decision, reason codes, model version and config version ... decision log with the feature vector"
+    },
+    {
+      "id": "P8-12",
+      "status": 2,
+      "evidence": "Load test with a production-sized store at 3× peak for 1 h, plus a 15-min burst at 5× peak"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "Synchronous inline scoring with a hard timeout."
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "Hard timeout and fallback to the existing engine."
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "Out-of-time backtest (train on earlier months, test on the last 3)"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "Online/offline parity check (V5)"
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "The pipeline sees only the token, the BIN and the last 4 digits, and never detokenizes"
+    }
+  ],
+  "note": "An exceptionally strong plan: inline scoring with real degraded modes, PCI scope control, leakage-free evaluation, and labeled assumptions throughout; only cost-driver enumeration is comparatively thin.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7841,
+    "thinking_tokens": 5232,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 17370
+  },
+  "cost_usd": 0.6100650000000001,
+  "latency_s": 111.285,
+  "raw_file": "raw/judge-b3671966ec3f.engineering-quality-v1.fable-5.k1.txt"
+}

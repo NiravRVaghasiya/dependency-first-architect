@@ -1,0 +1,37 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "92a508efd6a9.probe.sonnet-5.5",
+  "blind_id": "92a508efd6a9",
+  "blind_sha256": "b580e6194aca65415688b47ec1dbbeddf8a77421d294c84e7b5733430c13d299",
+  "judge": "sonnet-5.5",
+  "order_index": 137,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Fixed section scaffold: Classification and constraints, Dependencies, Key decisions, First end-to-end slice (Phase 0), Phases, Validation checks, Cross-cutting concerns, AI layer, Exceptions, Deferred",
+    "Budgets table with every row labeled ASSUMPTION/BASELINE/UNKNOWN and a 'Checked by' validation ID",
+    "Reversibility ratings (R2/R3) with default, assumption, validated-by, and revisit trigger for each key decision",
+    "Dependency table enumerating seven dependency kinds and stating 'All seven dependency kinds have an instance'",
+    "Phase 0 walking-skeleton slice that crosses all tiers with deploy/log/monitor/rollback, plus numbered validation checks (V0–V6) with hypothesis, threshold, evidence, and failure action",
+    "Explicit 'AI layer N/A', 'Exceptions: None', and 'Deferred' with bring-forward triggers, which are template artifacts",
+    "Point-of-no-return and 'widest rework first' / 'exposure smallest first' ordering rules used consistently"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 454,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9727
+  },
+  "cost_usd": 0.0288655,
+  "latency_s": 20.105,
+  "raw_file": "raw/probe-92a508efd6a9.probe.sonnet-5.5.txt"
+}

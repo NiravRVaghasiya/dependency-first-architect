@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "49c2cfec1c58.probe.sonnet-5.5",
+  "blind_id": "49c2cfec1c58",
+  "judge": "sonnet-5.5",
+  "order_index": 6,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.1,
+  "cues": [
+    "Opens with conversational filler ('I'll architect... Let me create a detailed design document') typical of an unstructured default response",
+    "Ends with 'Would you like me to dive deeper into any specific component?' with no methodology-driven closing",
+    "Generic breadth-first template: numbered sections from overview to cost optimization, with no clarifying questions, assumptions, or stated scope and non-goals",
+    "No explicit decision records, trade-off analysis or risks/open-questions section; the DB isolation options A/B/C are listed without a recommendation",
+    "Heavy emoji checkmarks and bold headers in the summary, and code and pseudocode dumps instead of a phased plan with milestones or verification steps",
+    "Internal inconsistencies, such as 'retry_count' and 'customer_email' not in the schema, and '$0.10/request' compute cost, suggest free-form generation rather than a disciplined process"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 372,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11034
+  },
+  "cost_usd": 0.031313,
+  "latency_s": 24.129,
+  "raw_file": "raw/probe-49c2cfec1c58.probe.sonnet-5.5.txt"
+}

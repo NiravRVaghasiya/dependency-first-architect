@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e7419d0d7294.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "e7419d0d7294",
+  "blind_sha256": "b80ebe4927bfcee5d66752f8286d9ad6fe3fa2e57ea10027504eeacfe54894da",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 392,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "The webhook returns 202 in < 1s (GitHub's hard limit is 10s). Jobs go on a Postgres queue (`SELECT … FOR UPDATE SKIP LOCKED` via Procrastinate).",
+      "rationale": "Webhook, HMAC, SKIP LOCKED, fork PR CI without secrets are accurate; minor issues like 'exactly once' wording and the 'contents:read' vs fork-write push and 'Issue text never in the system role' being only partial mitigation."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Phase 0 \"the one real request\": label plus comment; deferred table lists auto-merge, multi-agent, security fixes with pull-forward triggers.",
+      "rationale": "Covers triage and resolution with gated autonomy, credible phasing, and explicit justified exclusions."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Action executor: \"the single module allowed to call GitHub write APIs. It checks the kill switch, policy, idempotency, and audit.\"",
+      "rationale": "Consistent ownership and flow; minor loose ends such as Phase 0 kill switch and Phase 1 executor, and triage comments described autonomous vs 'Exit check' ordering."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "a red-team corpus of 50 injection issues causes 0 off-policy actions ... On 20 historical fixed bugs, the sandbox reproduces the failing test at the parent SHA",
+      "rationale": "Validation is tied to specific risks, early slice, offline evals, shadow mode, and continued production feedback, though thresholds are somewhat arbitrary and not labeled provisional."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Revisit trigger column: \"A second org wants it → add an `installation_id` tenancy key everywhere.\"",
+      "rationale": "Decisions with revisit triggers show sensitivity, but many numbers (85%, $200/day, 30%) are unlabeled as provisional and scale/team assumptions are not stated explicitly."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Memory write policy \"never from untrusted issue text (prevents memory poisoning)\"; orphaned-VM reaper; replaying one webhook 10× produces exactly one action.",
+      "rationale": "Covers injection, duplicates, partial failure, crash resume, memory poisoning, budget runaway, approval spoofing, and security reports with detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Terraform for all infra. The container image is built in CI and pinned by digest ... Runbooks and on-call.",
+      "rationale": "Good observability, deployment, kill switch and SLOs, but rollback and migration details and ownership are thin until Phase 7."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Triage: ≤ 8k input tokens, ≤ $0.05, ≤ 60s. Resolve: ≤ 40 tool calls, ≤ $3, ≤ 30 min. Org cap: $200/day.",
+      "rationale": "Per-task budgets, caps, routing and cost per merged PR are covered, but no overall cost estimate, sandbox/vendor cost, or basis for the numbers."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "The schema carries `installation_id` from day zero ... provider-agnostic interface ... Revisit trigger column",
+      "rationale": "Explicitly isolates vendor, model, queue, sandbox and tenancy choices with exit triggers, and front-loads the identity/schema decisions."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Modular monolith ... plus one forced split: the sandbox runner.",
+      "rationale": "Mostly proportionate with Postgres queue and deferrals, though eight phases, routing, and memory add some ceremony."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phase 1 exit check: \"A grep-based CI lint shows no GitHub write call outside the executor.\"",
+      "rationale": "Concrete dependency-ordered phases with checkable exits, a concrete first slice, and parallelism noted, though adaptation if results disappoint is only partly stated."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Autonomous: labels, duplicate suggestion comments... Gated: starting resolution, closing issues... Never: merge, push upstream, edit workflows; auto-merge gate at ≥ 95% over ≥ 200 PRs"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "GitHub App with least privilege: issues:write, pull_requests:write, contents:read ... Installation tokens are short-lived and minted per job."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Untrusted inputs: issue bodies, comments, repo files, test output, retrieved issues... Tool and action allow-list enforced in the executor."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "Firecracker microVM per job, no credentials inside ... Egress policy: deny by default ... CPU, memory, disk, 20 min wall."
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "reproduce (write a failing test) → localize → edit → run tests and lint; PR body holds a summary, a reproduction, a test diff"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "offline eval set of 500 historical closed issues ... label accuracy ≥ 85%, duplicate recall@5 ≥ 0.8; shadow mode"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Signals captured: label changed by a maintainer within 7 days; PR merged, closed or heavily edited; autonomy gate"
+    },
+    {
+      "id": "P4-08",
+      "status": 1,
+      "evidence": "A synthetic infinite-retry task is stopped at 40 calls ... global kill switch (AGENT_WRITES_ENABLED flag)"
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Resolve: ≤ 40 tool calls, ≤ $3, ≤ 30 min. Org cap: $200/day ... Cost per merged PR"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "Append-only audit log: actor, action, inputs hash, prompt version, model ID, cost, GitHub object URL."
+    },
+    {
+      "id": "P4-11",
+      "status": 2,
+      "evidence": "tree-sitter function/class chunks, hybrid ranking, plus live ripgrep ... Re-indexed on push to the default branch."
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "A unique constraint on `delivery_id` dedupes retries ... re-read GitHub state before writes"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent never merges and never pushes to the upstream repo."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "Secrets never enter prompts or sandboxes ... bot-fork PRs (CI has no secrets)"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "The issue text goes in a delimited untrusted-data block ... Policy check: the label must be in the allow-list"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "Cost per merged PR drops ≥ 25% with no regression in merge rate."
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Hard caps: 2k output tokens, 30s timeout ... ≤ 40 tool calls ... global kill switch"
+    }
+  ],
+  "note": "Strong, well-sequenced plan with gated autonomy, sandboxing, injection defense and early validation. Weaknesses: unlabeled thresholds and little whole-system cost or assumption analysis.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2710,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 16305
+  },
+  "cost_usd": 0.0680437,
+  "latency_s": 38.268,
+  "raw_file": "raw/judge-e7419d0d7294.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

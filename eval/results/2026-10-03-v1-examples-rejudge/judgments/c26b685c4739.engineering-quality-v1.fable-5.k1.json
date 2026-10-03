@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "c26b685c4739.engineering-quality-v1.fable-5.k1",
+  "blind_id": "c26b685c4739",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 28,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Database migrations run before each deploy using expand/contract (add new schema first, remove old schema later).",
+      "rationale": "Technical claims (GitOps rollback semantics, OIDC federation, expand/contract migrations, admission-controller audit mode, template-versioning blast radius) are accurate and precise, including the subtle areas."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "make the decisions that are hard to undo first, then get one service all the way to production, then migrate the rest in waves",
+      "rationale": "Directly answers the sequencing request for 50 services, states its assumptions, defers non-essentials explicitly (portal, scanner choice), and is credibly buildable by the stated 4–6 person team."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Each step needs something in place first",
+      "rationale": "Decisions made early (build-once, GitOps, signing) are honored everywhere downstream (no :latest admission rule, signed-image enforcement per namespace), with an explicit dependency map and no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "the pilot has shipped through the platform for 2+ weeks, a rollback drill has passed, and lead time has been compared with the baseline",
+      "rationale": "Baseline DORA measurement before change, pilot-to-production before waves, rollback drills, template releases tested on sample services, audit-mode-first enforcement, and ongoing per-service metrics constitute risk-targeted validation before and after commitment."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "the services are (or will be) in containers on Kubernetes, code is on GitHub or GitLab, and a platform team of 4–6 people",
+      "rationale": "Key assumptions are explicit and estimates are marked (~15 runs/day, ~8 months), but the claim that only 'timings change' if assumptions differ understates sensitivity, since non-Kubernetes targets would invalidate the GitOps core."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "One careless change to an unversioned template can break all 50 pipelines at once.",
+      "rationale": "Covers domain-specific failures (template blast radius, migration stalls, DB rollback hazards, flaky tests, drift, teams bypassing gates) with concrete handling, but omits untrusted/fork-PR builds and recovery from CI platform outages."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Targets for the platform itself: availability, queue time, and CI duration under 10–15 minutes.",
+      "rationale": "Deployment, rollback, meaningful monitoring, ownership and a self-service support model sized to the team are all concrete, but incident response for the platform's own outages is not specified."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "50 services × ~15 runs a day × ~10 minutes, with 3× peaks during working hours, is about 50 pipelines running at once",
+      "rationale": "Compute capacity is estimated with a stated basis and controls exist (autoscaling, retention rules, selective PR environments, cost monitoring), but there is no hosted-vs-self-hosted cost trade-off or growth-with-usage reasoning."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Write down the decisions that are expensive to reverse",
+      "rationale": "Explicitly front-loads one-way decisions (repo layout, deploy mechanism, artifact immutability, environments/access), defers reversible ones ('which scanner to buy'), and isolates lock-in via versioned, pinned templates."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "you build about 5 shared pipeline templates instead of 50 separate pipelines",
+      "rationale": "Complexity is added only where needed: portal deferred until proven, PR environments only where worth the cost, enforcement phased, and nothing essential is cut."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Main sequence: decisions → runners, registry, access and GitOps → pilot in production → versioned templates → Wave 1 → 2 → 3.",
+      "rationale": "Phases have dependency-justified ordering with reasoning ('why one service to production before many to dev'), checkable 'done when' criteria, concrete first steps and specific implementable decisions."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Sort them into 4–6 types... you build about 5 shared pipeline templates instead of 50 separate pipelines"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "run the old and new pipelines side by side briefly, then switch"
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Tag images with the git commit and promote that exact image through every environment. Never rebuild per environment."
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "CI signing into the cloud with short-lived tokens (OIDC) instead of stored keys"
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "vulnerability scans (report only) → software bill of materials → sign → push"
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "rolling back the app never means rolling back the database"
+    },
+    {
+      "id": "P3-07",
+      "status": 2,
+      "evidence": "Contract tests (e.g., Pact) check that services still agree on their APIs. They let services deploy independently."
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Quarantine flaky tests and keep an eye on runner costs."
+    },
+    {
+      "id": "P3-09",
+      "status": 2,
+      "evidence": "In a single repo you'll need to build only what changed (Nx, Bazel or path filters)."
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Size them for peak load, not the daily total: 50 services × ~15 runs a day × ~10 minutes"
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "Targets for the platform itself: availability, queue time, and CI duration under 10–15 minutes."
+    },
+    {
+      "id": "P3-12",
+      "status": 2,
+      "evidence": "Keep a manual production approval for now."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "migrate the rest in waves grouped by service type"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Never rebuild per environment."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "short-lived tokens (OIDC) instead of stored keys"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "They let services deploy independently."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "GitOps (Argo CD or Flux) at this scale"
+    }
+  ],
+  "note": "An unusually strong, correctly sequenced plan that front-loads irreversible decisions, validates via a production pilot, and avoids every trap; remaining gaps are fork-PR secret handling, platform outage/incident response, test data, and dollar-level cost reasoning.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7747,
+    "thinking_tokens": 5247,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11169
+  },
+  "cost_usd": 0.5269825,
+  "latency_s": 135.802,
+  "raw_file": "raw/judge-c26b685c4739.engineering-quality-v1.fable-5.k1.txt"
+}

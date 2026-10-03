@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "7875afc7359e.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "7875afc7359e",
+  "blind_sha256": "1498387294cae4a7222c0f31f070f75413626c3984b5f959268078558a8f4ccf",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 434,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Two common failure points: 1. Concurrent transactions on one card. ... atomic `INCR` on short-window counters",
+      "rationale": "Mostly accurate on hard parts (concurrent velocity, logged features, selective labels, PSD2 TRA); minor issues like unqualified 'under 2 ms' and Flink/INCR source-of-truth reconciliation left vague."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Score every authorization and return one of: approve, decline, step-up (3DS, OTP or app push), or approve and queue for review.",
+      "rationale": "Covers core needs with sensible issuer/processor assumption and phased scope, though exclusions are not explicit and the 50 ms budget is not broken down."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Hot path: a synchronous RPC that only does lookups, cheap computation and model inference.",
+      "rationale": "Hot/warm split, data ownership and logging are consistent; minor loose ends such as the INCR counters vs Flink reconciliation and batch-loaded account profile."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Shadow mode: the challenger scores live traffic with no effect on decisions. Compare the two models for 1–2 weeks.",
+      "rationale": "Time-split, domain metrics, shadow/canary with guardrails and production alerts exist, but there is no early latency or load test of the 50 ms budget and few numeric acceptance criteria."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Assumptions (change these and the design changes)",
+      "rationale": "Key assumptions on role, TPS, fraud rate and PCI are stated with why they matter, but sensitivity is only briefly described and some figures (label delay, retention) are unqualified."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Each fallback level is tagged on the decision so you can monitor how often it happens.",
+      "rationale": "Covers concurrency races, fallback tiers, selective labels, label delay, bug-vs-fraud wave, and card testing, but duplicates, out-of-order events, reversals, and adversarial feature poisoning are not addressed."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "automatic rollback if the decline rate or latency moves past its guardrail",
+      "rationale": "Meaningful monitoring with alert examples, canary rollback and rule simulate mode, but on-call ownership, incident response, schema migration and access administration are thin."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "none",
+      "rationale": "Cost is essentially not discussed beyond fraud-vs-false-decline economics; no infrastructure, vendor or people cost, or build-vs-buy analysis (only a vendor mention)."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Suggested tech stack (swap for what you already run)",
+      "rationale": "Model registry snapshots, rule versioning and shadow-first rollout help, but one-way decisions like the token scheme, partition key, and feature/log schema are not identified as costly to undo."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Start with gradient-boosted trees (LightGBM or XGBoost).",
+      "rationale": "Starts rules-first then GBDT with later sequence models deferred; Flink, Kafka, lake are justified by domain, though Aerospike/Feast/graph options add some breadth."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Phase 1 (≈6–8 wks) Kafka ingestion, tokenization, decision logging, rules engine inline, basic velocity counters",
+      "rationale": "Phases are ordered by dependency with concrete outcomes, but checkable exit criteria and adaptation on poor results are missing, and it defers detailed design."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 1,
+      "evidence": "fraud decision under 50 ms p99 within an end-to-end auth budget of about 150–300 ms"
+    },
+    {
+      "id": "P8-02",
+      "status": 1,
+      "evidence": "Full model 2. Model with default values for missing features 3. Rules only 4. Static network or stand-in rules"
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "Log the exact feature vector used at scoring time to `decisions.log`, and train on those logged features."
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "train only on transactions older than 90 days ... Never use random splits, because fraud patterns drift."
+    },
+    {
+      "id": "P8-05",
+      "status": 2,
+      "evidence": "decline if P(fraud) × amount × loss_rate > cost_of_false_decline"
+    },
+    {
+      "id": "P8-06",
+      "status": 2,
+      "evidence": "Rules are versioned and hot-reloaded from a config store. Each one can run in **simulate mode**"
+    },
+    {
+      "id": "P8-07",
+      "status": 2,
+      "evidence": "Label sources: chargebacks (reason codes 10.x for Visa ...), customer fraud claims, analyst dispositions and replies to step-up challenges."
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "Downstream systems only see the `card_token`, BIN and last 4 digits."
+    },
+    {
+      "id": "P8-09",
+      "status": 1,
+      "evidence": "partitioned by `card_token`. That keeps each card's events in order for its velocity state."
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "Shadow mode ... Canary rollout ... automatic rollback ... PSI > 0.2 on a top-10 feature"
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "Registry: each model is stored with its feature list, threshold set and training data snapshot, so any past decision can be reproduced."
+    },
+    {
+      "id": "P8-12",
+      "status": 1,
+      "evidence": "A stateless gRPC service that autoscales and runs in at least two availability zones."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "SYNCHRONOUS AUTH PATH (<50ms)"
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "Timeouts and fallbacks, from best to worst"
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "ROC-AUC alone is misleading at this level of imbalance."
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "Recomputing features offline is how leakage and skew creep in."
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "The PAN is tokenized inside the CDE."
+    }
+  ],
+  "note": "Strong domain-aware fraud plan (inline scoring, fallbacks, logged-feature skew fix, selective labels, shadow/canary) weakened by missing cost analysis, stream event-correctness details, and reversibility/ownership gaps.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 4746,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 13628,
+    "cache_creation_input_tokens": 14410
+  },
+  "cost_usd": 0.0862226,
+  "latency_s": 37.901,
+  "raw_file": "raw/judge-7875afc7359e.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "8f4550c9a2e0.probe.sonnet-5.5",
+  "blind_id": "8f4550c9a2e0",
+  "blind_sha256": "b3e0a6846a3fd5b53f2eb6e9de7c9c389088901808b291b118972b78dc66c4a5",
+  "judge": "sonnet-5.5",
+  "order_index": 22,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "References to numbered methodology steps (\"This follows Step 4\", \"redone from Step 1\") and a dedicated \"Exceptions\" section, implying an external written procedure",
+    "Reversibility labels R2/R3 on every decision, plus a 'Revisit trigger' column, and formal 'Validated by' links to V0–V10 checks",
+    "Rigid labeling of inputs as ASSUMPTION / UNKNOWN / REQUIREMENT with named owner and deadline phase; explicit 'Missing inputs' list",
+    "Phase 0 thin end-to-end production slice with exit check V0, 'Point of no return' and 'Irreversible-operation gate' terminology, and fixed template sections (AI layer N/A, Deferred with pull-forward triggers)",
+    "Validation table with hypothesis/method/acceptance threshold/evidence/unlocks-if-fails columns and a per-phase cross-cutting matrix (security/observability/reproducibility/resilience)"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 407,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 12070
+  },
+  "cost_usd": 0.034253,
+  "latency_s": 15.206,
+  "raw_file": "raw/probe-8f4550c9a2e0.probe.sonnet-5.5.txt"
+}

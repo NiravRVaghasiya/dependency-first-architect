@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "1c4b0821fdaa.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "1c4b0821fdaa",
+  "blind_sha256": "f3affe0854fcc3f874aae4de17c7ddd4befb7be0a338e5807fcdeb3a059135d6",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 277,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "A PR opened from a branch in the same repository runs workflows *with repository secrets*. Code written by the agent must not run with those secrets unreviewed.",
+      "rationale": "Technically accurate on the hard parts (fork PR secrets, webhook idempotency, SKIP LOCKED, Fargate no-egress); the 'sandbox has no credentials' claim is slightly overstated given the proxy attempt token, and fork-PR CI behavior is left to a spike."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Non-goals for v1: merging PRs; closing issues automatically, including duplicates; changing CI, workflows or repository settings; adding dependencies",
+      "rationale": "Covers triage and resolution with explicit, justified exclusions, a label-triggered v1, and a credible buildable scope for 2 engineers."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Model output → control plane. The output is validated against a schema and treated as data. The model never calls GitHub tools directly.",
+      "rationale": "Clear responsibilities, data ownership and a consistently applied sole-writer gateway; minor loose ends (Verifier deferred to M2 while M1 opens draft PRs without it)."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Plan changes: <10% for both → ship triage only plus \"suggested fix plan\" comments and defer PRs; 10–25% → continue into M2 shadow",
+      "rationale": "Risk-specific evals, early spikes with go/no-go branches, red-team set, shadow mode, contamination awareness and ongoing production feedback; thresholds labelled as assumptions."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "| A8 | Source code and issue text may be sent to a commercial LLM API under a zero-retention, no-training agreement | If not allowed, the plan moves to self-hosted models",
+      "rationale": "Numbered assumptions with impact-if-wrong, validation method and timing, plus open questions with defaults; targets flagged as assumptions."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "the Gateway finds a pending `action_log` row with the same key. It checks recent issue comments for the agent's hidden marker",
+      "rationale": "Covers lost responses, duplicate webhooks, provider outages, false success claims, injection, spam, missed webhooks and stuck attempts with detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Runbooks (M3): kill switch, stuck or dead jobs, provider outage, App key rotation, bulk-removing agent labels",
+      "rationale": "Concrete alerts, rollback, migrations, ownership and business-hours support sized for a two-person team; incident response is lightly specified."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Per-attempt caps enforced at the proxy. A daily global cap in the Model Gateway: it refuses new attempts once 100% is used.",
+      "rationale": "Drivers identified with bases and ranges, hard caps enforced at the proxy, build-vs-buy trade-offs and cost per merged PR tracked; estimates labelled assumptions."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "| D5 | **Diff-out credential split** ... | Hard (shapes everything) | Never in v1 |",
+      "rationale": "Decision table lists reversibility and revisit triggers; one-way choices (identity, language, bundle contract, versioned schemas) are isolated and validated via early spikes."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "**One deployable** (web and worker processes) plus a sandbox image",
+      "rationale": "Single Postgres for queue/vector/log, monolith and fixed-pipeline triage are proportionate; Fargate, two provider adapters and two harness candidates add some weight."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "| T12 | **Spike S1: resolver harness and model.** ... **Plan changes:** <10% for both → ship triage only",
+      "rationale": "Ordered tasks with locations, done-when criteria, dependencies, week-by-week order and adaptation rules for disappointing results."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Human approval points: the fix trigger (v1), PR review and merge (always), and enabling `act` mode per repo."
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "Identity is a **GitHub App** ... short-lived installation tokens; Contents read; none (no admin, no workflows)"
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Issue snapshot (untrusted, delimited) ... The model never calls GitHub tools directly."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "No NAT, no internet, no IAM task role. S3 access is by presigned URLs only."
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "A mismatch with the Resolver's claim is recorded as a \"false claim\" and blocks the PR."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Triage evaluation set (≥150 cases, versioned): type accuracy ≥90%, component precision ≥85%, duplicate top-1 precision ≥80%"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Record human corrections (relabels, PR merged or closed) as feedback that flows back into the evaluation sets."
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "Limits: 40 steps, $5 and 25 minutes per attempt. Loop detection ... the kill switch is a `settings.agent_enabled` row"
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Triage ≤$0.05 per issue. Resolution has a hard cap of $5 per attempt ... cost per merged agent PR under $25"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "`action_log` ... append-only (no UPDATE or DELETE grant); Every write is logged with its request, response and reason."
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "The harness gets file, search, edit and shell tools *inside the container only*."
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "It snapshots the issue (`updated_at`) at trigger time. If the issue is edited before the attempt starts, it asks for a fresh approval."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent opens draft PRs only and has no permission to merge."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "The sandbox has no GitHub credentials, no cloud credentials and no network access except an internal model proxy"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "An injection red-team set (§14) must show 0 violations before M3 goes live."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "at least 30% of agent PRs merged, with or without edits; cost per merged agent PR under $25"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Limits: 40 steps, $5 and 25 minutes per attempt. Loop detection: if the same tool call with the same arguments repeats 3 times"
+    }
+  ],
+  "note": "Exceptionally thorough, safety-first plan with a credential-free sandbox, sole-writer gateway, early spikes and explicit assumptions; gaps are code-retrieval depth, in-flight event handling, and an autonomy-expansion path that is partly deferred.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 5363,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 30583,
+    "cache_creation_input_tokens": 31660
+  },
+  "cost_usd": 0.1389086,
+  "latency_s": 44.312,
+  "raw_file": "raw/judge-1c4b0821fdaa.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

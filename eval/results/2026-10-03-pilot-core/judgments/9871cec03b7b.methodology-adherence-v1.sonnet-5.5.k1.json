@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9871cec03b7b.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "9871cec03b7b",
+  "blind_sha256": "9efa0c6ad8227356946f546cda0b4aa8cb0c45320b22644853f44b56e6236fc7",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 305,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 3 \"Depends on: Templates producing signed, attested artifacts (needed before admission control can enforce anything).\"",
+      "rationale": "Each phase lists explicit dependencies and builds substrate → contracts → templates → safety → fleet, with proof exit checks."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "a `git push` of commit `abc123` to `main` of one real, low-risk, stateless service... `GET https://<svc>.prod/version` returns `abc123`",
+      "rationale": "Phase 0 is a real end-to-end path to prod with rollback and observability, before features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Default (chosen now) | Flip condition ... \"A platform outage blocks a P1 hotfix for more than 30 minutes in a quarter → add an audited break-glass\"",
+      "rationale": "Irreversible decisions each have a default and a concrete flip condition, including stated deploy target assumption."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Template versioning and rollout rings... comes first because a template bug is the widest-blast-radius failure the platform has.",
+      "rationale": "Tasks are explicitly ordered widest→narrowest in phases, with leaf work (language steps) last."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"GitHub→cloud OIDC with zero static secrets; branch protection; CI has no cluster credentials (pull GitOps)\"",
+      "rationale": "Concrete security controls appear in every phase from Phase 0 through 6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Pipeline runs are exported as OpenTelemetry traces... An alert if prod `/version` doesn't match the GitOps prod digest for more than 15 minutes",
+      "rationale": "Observability built in Phase 0 and concretely extended in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Platform in Terraform with locked state; actions pinned by SHA; base image pinned by digest",
+      "rationale": "Reproducibility concretely addressed in every phase, from pinned builds to generated onboarding PRs."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: \"Argo CD self-heal; rollback via `git revert` tested once; runner jobs retried\"",
+      "rationale": "Resilience measures appear in every phase, including rollout rings, cache fallback, shadow runs."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "**N/A.** This is a pure infrastructure system with no model, retrieval or agent component.",
+      "rationale": "Plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Monorepo / Bazel migration | More than 30% of changes span 2+ services, or version-skew incidents recur",
+      "rationale": "Deferred table lists many items each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally complete plan that satisfies every rubric dimension with concrete, phase-tied content.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1099,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8246
+  },
+  "cost_usd": 0.031613,
+  "latency_s": 15.89,
+  "raw_file": "raw/judge-9871cec03b7b.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

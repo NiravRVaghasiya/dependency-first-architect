@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "4521bff5ddc6.probe.sonnet-5.5",
+  "blind_id": "4521bff5ddc6",
+  "judge": "sonnet-5.5",
+  "order_index": 12,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens with an explicit statement that no requirements or code were available and lists assumptions, then invites correction; this is a stated-assumptions habit, but a default model often does the same.",
+    "Ends with an 'Open Questions That Would Change the Design' section and an offer to go deeper; this looks like default assistant behavior, not a rigid template.",
+    "Structure is a typical polished design doc (decision table, ASCII diagram, services, data model, stack, rollout). It has no methodology-specific artifacts such as numbered phases, verification steps, risk registers, or explicit scope and non-goals sections.",
+    "Has a 'Phased Rollout' section and a build-vs-buy note, but these are generic architecture content and don't show a prescribed planning process.",
+    "A small typo ('a adjustment path') and conversational phrasing ('Tell me where they're wrong') suggest a free-form answer, not a strictly templated one."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 376,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 6396
+  },
+  "cost_usd": 0.019758,
+  "latency_s": 27.339,
+  "raw_file": "raw/probe-4521bff5ddc6.probe.sonnet-5.5.txt"
+}

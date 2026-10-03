@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "4bb7ae9a032e.engineering-quality-v1.fable-5.k1",
+  "blind_id": "4bb7ae9a032e",
+  "blind_sha256": "ee1eb1e6026d1b9789baae359b3711246e5a701a7042c87a9a54d30351205700",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 256,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "take the top ~20 results from BM25 and the top ~20 from vectors, then merge them with reciprocal rank fusion",
+      "rationale": "All technical mechanisms (hybrid retrieval, RRF, cross-encoder rerank, embedding version tracking, retrieval-time visibility filters) are described accurately with no false claims about guarantees or vendor behavior."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Account-specific actions like refunds, order lookups or password resets. Those need authenticated tool calls and belong in phase 2.",
+      "rationale": "Solves exactly the stated problem, resolves ambiguities with explicit open questions, and excludes scope with reasons; the phased build is realistic for a small team."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "if you index agent-only content later, enforce visibility filters at retrieval time, not in the prompt",
+      "rationale": "Components, data flows and ownership are consistent end to end; decisions like grounding, visibility filtering and PII redaction are honored uniformly across ingestion, retrieval, generation and logging."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Run evals in CI on any change to prompts, chunking or models.",
+      "rationale": "A golden set from real tickets with retrieval, faithfulness and refusal metrics, adversarial cases, CI regression gating, internal beta, A/B test and production feedback loop target the riskiest assumptions before and after launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "this plan uses common defaults and marks the choices that depend on your answers. The open questions are at the end.",
+      "rationale": "Assumptions are explicit, numbers are ranges or marked rough, and the open-questions list ties each unknown to what it would change (e.g., volume drives cost and latency choices)."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Hallucinated policies (refunds, pricing) | Strict grounding, citation checks, confidence gate, escalation for policy topics",
+      "rationale": "The major domain failures (hallucination, stale docs, injection, retrieval misses, user frustration) have concrete detection and mitigation, but abuse/rate limiting and LLM-provider outage or degradation are not covered."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Weekly review dashboard: top unanswered and low-confidence questions.",
+      "rationale": "Logging, meaningful dashboards, CI gating and staged rollout are concrete and sized to a small team, but deployment/rollback mechanics, incident ownership and on-call are not addressed."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Cache frequent Q&A, use a smaller model by default, cap context size",
+      "rationale": "Concrete cost controls and per-turn token-cost logging are included, but there is no cost-per-conversation estimate, scaling reasoning or build-cost consideration even as an order of magnitude."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "record the model version on each chunk so you can re-embed later",
+      "rationale": "Hard-to-change choices are isolated (re-embed path, index chosen from whatever you already run, tool access deferred), though reversibility is not reasoned about explicitly for the data/metadata schema or vendor coupling."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Extras worth adding: Generate 3–5 synthetic questions per article",
+      "rationale": "The pipeline is close to the simplest workable design for multi-turn support RAG; every component is justified by a need (BM25 for error codes, rewrite for follow-ups) and enhancements are labeled optional with a growth path."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "1. Prototype | 2 weeks | Ingestion, hybrid retrieval, basic chat, first eval set; offline retrieval recall@5 of at least 85%",
+      "rationale": "Phases are ordered by dependency with checkable deliverables and specific decisions (chunk sizes, metadata schema, top-k, fusion), leaving only stack selection pending the user's answers."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "Run incremental syncs on article update/delete, plus a nightly full reconcile... Remove a deleted or unpublished article's chunks right away."
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Split along the heading structure (H2/H3 sections)... Store `article_id`, `url`, `title`, `section`, `product`, `plan_tier`, `locale`, `updated_at` and `visibility`"
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "200–500 real questions pulled from past tickets and chat logs... Run evals in CI on any change to prompts, chunking or models."
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "Answer only from the provided context. If the context doesn't contain the answer, say so and offer a human."
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "Triggers: low retrieval confidence, the user asks for a human, sensitive intent, two failed answers in a row... Handoff payload: the full transcript"
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "Treat retrieved text as data, not instructions... give the bot no tool access in v1"
+    },
+    {
+      "id": "P1-07",
+      "status": 2,
+      "evidence": "enforce visibility filters at retrieval time, not in the prompt"
+    },
+    {
+      "id": "P1-08",
+      "status": 1,
+      "evidence": "detect and redact card numbers, SSNs and passwords in user input before logging"
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Account-specific actions like refunds, order lookups or password resets. Those need authenticated tool calls and belong in phase 2."
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "top unanswered and low-confidence questions. These are content gaps to send to the docs team... Turn reviewed failures into new golden-set cases."
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "Cache frequent Q&A, use a smaller model by default, cap context size"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Cites the help article(s) behind every answer... Says \"I don't know\" when the docs don't cover the question"
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Filter on `visibility=public` always... enforce visibility filters at retrieval time, not in the prompt"
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Run incremental syncs on article update/delete, plus a nightly full reconcile."
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Golden dataset: 200–500 real questions... Run evals in CI on any change to prompts, chunking or models."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "a mid-tier model is usually enough for grounded QA... Extras worth adding"
+    }
+  ],
+  "note": "An exemplary, proportionate RAG plan that avoids all traps and concretely addresses nearly every domain requirement; its only real gaps are missing cost-per-conversation estimation, rate limiting, data retention period, and rollback/incident ownership.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7160,
+    "thinking_tokens": 4552,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11784
+  },
+  "cost_usd": 0.50532,
+  "latency_s": 111.514,
+  "raw_file": "raw/judge-4bb7ae9a032e.engineering-quality-v1.fable-5.k1.txt"
+}

@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "de29fa6af3ed.engineering-quality-v1.fable-5.k1",
+  "blind_id": "de29fa6af3ed",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 181,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Switching *back* through MI link needs on-prem **SQL Server 2022**. If you run an older version, either upgrade on-prem first",
+      "rationale": "Technical claims about MI link, distributed availability groups, sync/async replication modes, HL7 queuing, UTC/time-zone risks and failback limits are accurate and state real vendor constraints."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Reading schedules never stops. Booking pauses **once, for ≤60 s**, at the database switchover... **No data loss.**",
+      "rationale": "Resolves the 'zero downtime' ambiguity explicitly with clinical leadership, covers all implied core needs, and is realistically buildable with explicit, justified deferrals."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "One database accepts bookings at any moment; the copy replicates in one direction. No setup where both sites accept bookings during the migration.",
+      "rationale": "Single-writer consistency, the outgoing-message block, job-ownership locks and the DNS indirection layer are honored consistently across every phase with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Nightly data check: row counts plus checksums per table, and a field-by-field comparison of next-30-days appointments.",
+      "rationale": "Risk-specific validation (probe match rate, DST test date, retry test, 2× peak load, two clean rehearsals, +1h/+24h post-cutover checks) with measurable exit criteria before each commitment."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "I don't know your stack yet, so I've planned for the most common hospital setup... Section 2 says what changes if any of this is wrong.",
+      "rationale": "Assumptions are explicit, flagged for confirmation, and every key decision carries a 'revisit trigger' saying how the design changes if the assumption fails."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "two systems both accepting bookings (\"split-brain\"), and duplicate reminder texts or HL7 messages sent from a shadow copy.",
+      "rationale": "Covers the subtle domain failures (double-booking, duplicate outbound messages, time-zone shifts, replication lag, data mismatch, WAN loss) each with concrete detection, containment and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "A dashboard shows **copy delay (seconds)**, **probe match rate** and **latency at each layer**. Alerts fire if copy delay is >30 s",
+      "rationale": "IaC deployment, meaningful health signals, rehearsed rollback and hypercare are concrete, but on-call ownership, incident-response roles and on-site go-live support are left implicit."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Cost baseline... **Cost optimisation and fine-tuned autoscaling** (reserved capacity, smaller servers). Bring forward once 30 days of cloud usage data exists.",
+      "rationale": "Build-vs-buy trade-offs and deferred cost controls are addressed, but dominant run-cost drivers (SQL MI, ExpressRoute, licensing, engineering time) are never estimated or sized."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "keeping the on-prem database as a live reverse copy for switch-back",
+      "rationale": "Hard-to-reverse choices (database platform, cloud provider, write authority) get early validation, rehearsed switch-back and explicit exit paths, while reversible choices are decided quickly with revisit triggers."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "**Keep the monolith.** A migration is not the time to redesign.",
+      "rationale": "Move-as-is with explicit deferral of microservices, FHIR, multi-region writes and portal features; every component (WAF, ExpressRoute, Sentinel) is justified by the PHI/no-downtime need."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "each depends on the one before; within a phase, the task that would cause the most rework is done first",
+      "rationale": "Dependency-justified ordering, concrete first tasks, checkable exit criteria per phase, and stated adaptations (revisit triggers) if early results disappoint; a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "**Business Associate Agreement (BAA) signed**. Only private network endpoints. Hospital-held encryption keys in Key Vault. **No PHI in logs or traces.**"
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "List every connection: HL7 feeds, patient portal, SMS/phone reminders, billing, kiosks, printers, fax, reports, fixed IP addresses in config."
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "Nightly data check: row counts plus checksums per table, and a field-by-field comparison of next-30-days appointments."
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "One database accepts bookings at any moment; the copy replicates in one direction. No setup where both sites accept bookings during the migration."
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "**Switch-back rehearsal** to on-prem... Define go/no-go criteria and rollback triggers... keeping the on-prem database as a live reverse copy for switch-back"
+    },
+    {
+      "id": "P6-06",
+      "status": 2,
+      "evidence": "**ExpressRoute** (private line to Azure, with a VPN backup)... If the network delay between hospital and cloud is >10 ms at peak"
+    },
+    {
+      "id": "P6-07",
+      "status": 2,
+      "evidence": "a copy in a second Azure region, plus a DR test... Drill the clinical downtime procedures: printed schedules, read-only fallback."
+    },
+    {
+      "id": "P6-08",
+      "status": 2,
+      "evidence": "extend Active Directory to Azure (Entra ID hybrid)... multi-factor login for admins... Emergency \"break-glass\" accounts tested"
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "Load test at 2× the busiest real hour (for example Monday 08:00)... tested by replaying captured incoming patient-admission messages."
+    },
+    {
+      "id": "P6-10",
+      "status": 1,
+      "evidence": "quiet time (for example Sunday 02:00, outside flu surge and month-end)... Change freeze... 2–4 weeks of hypercare"
+    },
+    {
+      "id": "P6-11",
+      "status": 2,
+      "evidence": "the vendor's supported hosting options set the rules... Archive data under the records-retention policy... Retire on-prem, with NIST 800-88 disk wiping."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "Move schedule-*viewing* traffic to the cloud clinic by clinic: pilot clinic → 25% → 100%... Two clean rehearsals in a row"
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "No setup where both sites accept bookings during the migration... double-booking is a patient-safety issue."
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "no PHI in dev/test without de-identification... Only private network endpoints."
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "Interface engine to cloud connections over secure channels, tested by replaying captured incoming patient-admission messages."
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "**Move first, improve later.** Same app build... A migration is not the time to redesign."
+    }
+  ],
+  "note": "An unusually strong, correctly sequenced zero-downtime migration plan that avoids all domain traps; its only material weaknesses are unquantified costs and thin incident ownership/cutover-communication detail.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6900,
+    "thinking_tokens": 4125,
+    "cache_read_input_tokens": 923,
+    "cache_creation_input_tokens": 13372
+  },
+  "cost_usd": 0.513093,
+  "latency_s": 107.769,
+  "raw_file": "raw/judge-de29fa6af3ed.engineering-quality-v1.fable-5.k1.txt"
+}

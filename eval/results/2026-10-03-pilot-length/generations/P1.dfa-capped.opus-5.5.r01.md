@@ -1,0 +1,151 @@
+# BUILD PLAN: Customer-support RAG chatbot over help-center docs
+
+## 1. Classification and constraints
+- **What:** a chat widget on the help center. It answers customer questions from help-center articles, cites its sources, and hands off to a human agent.
+- **Type:** an AI system on top of ordinary software. Greenfield. Not a small build, because outside users see it.
+- **Dominant constraint:** correctness. Answers must come from the docs.
+- **Worst failure:** the bot states a policy or promise the docs don't contain, such as an invented refund term, and customers act on it.
+
+**Budgets**
+
+| Budget | Target | Label | Checked by |
+|---|---|---|---|
+| Latency | first token ≤2 s, full answer ≤8 s at p95 | ASSUMPTION (usual chat expectation) | V0 baseline, Phase 3 |
+| Throughput | peak chats/min | UNKNOWN: support analytics owner supplies it, needed by Phase 3 | Phase 3 load test |
+| Availability | 99.5%; if down, widget shows "contact support" | ASSUMPTION (support email is the fallback) | Phase 1 |
+| AI inference cost | ≤10% of human ticket cost per resolved conversation; hard cap of 6k input + 600 output tokens per turn | ASSUMPTION (deflection economics); support finance confirms in Phase 1 | V4 |
+| Index freshness | an article edit is live in ≤1 h | ASSUMPTION | Phase 2 |
+| Operational complexity | 1 service + managed vector store + hosted LLM | ASSUMPTION | Phase 0 |
+
+**Missing inputs:**
+- Which help-center platform you use (Zendesk, Intercom, a custom CMS). This decides the ingestion API.
+- Ticketing system for handoff.
+- Languages.
+- Data residency.
+- **The phase order assumes public docs only, no account-specific answers and no actions.** If the bot needs to read account data or take actions (refunds, order changes), a phase for login, per-user retrieval permissions and human approval comes before any exposure.
+
+## 2. Dependency map
+
+| What waits | Depends on | Kind | Blocked from being |
+|---|---|---|---|
+| Retrieval and answer tuning | 300 real past queries, labeled by support | organizational (starts Phase 0) | specified |
+| Any outside traffic | V2 injection containment, V3 grounding, V5 privacy sign-off | risk/security | exposed |
+| Scaling past canary | V4 cost per resolved conversation | economic | committed |
+| Human handoff | ticketing API credentials and support-ops approval | organizational | exposed |
+| Vendor choice | LLM vendor agreement (DPA, zero data retention) | organizational | exposed |
+
+No structural or runtime dependencies beyond what the phase order shows.
+
+## 3. Tradeoff gates
+
+| Decision | Reversibility | Default | Assumption | Validated by | Flip condition |
+|---|---|---|---|---|---|
+| Build vs buy | R2: weeks of integration either way | Build a thin service | The vendor's built-in bot can't meet V3 grounding or cost | Same labeled set run on a vendor trial, Phase 1 | Vendor bot passes V3 at lower cost |
+| Prompt+RAG vs fine-tune | R2: retraining and evals | Prompt+RAG | Docs change often; failures are retrieval failures | V1, V3 | V3 fails on tone or format while V1 passes |
+| Hosted API vs self-host | R2: prompts and evals are tuned to one model | Hosted API, zero retention, provider abstraction | Vendor terms pass V5 | V5, V4 | A residency requirement, or V4 fails |
+| Data-privacy boundary | R3: transcripts hold customer PII once real users exist | Redact PII before logging; keep transcripts 30 days; never train on them | Users will paste PII into chat | V5 | Counsel requires regional processing or shorter retention |
+| Embedding model and chunking | R2: switching means re-embedding the corpus | Managed embeddings; version pinned in the index name | The corpus is small enough to re-embed in hours | V1 | V1 fails after re-chunking |
+
+**R1 defaults:** one service rather than microservices; synchronous streaming replies; the index may lag the docs by up to the freshness budget; handoff creates a ticket only after the user confirms.
+**N/A:** migration and cutover, because no existing bot is being replaced (ASSUMPTION).
+
+## 4. Walking skeleton (Phase 0)
+- **The request:** a staff member asks "How do I reset my password?" in the widget. The reply cites the right article.
+- **Tiers it crosses:** widget → API service (container) → ingestion of a full help-center export into the vector store → retrieval of the top 5 chunks → hosted LLM, with the system prompt kept separate from user and retrieved text, which go in delimited data blocks → streamed answer with links to cited articles.
+- **Deploy and monitor:** shipped through CI/CD with a feature flag. OpenTelemetry traces each step and records tokens, cost and latency per request. Alerts fire on error rate and on cost per hour.
+- **Hard caps:** the token caps from §1, plus a daily spend cap set on the API key.
+- **Rollback:** redeploy the previous image, or flip the kill-switch flag to hide the widget.
+- **Who can reach it:** employees only (SSO allow-list).
+- **Exit check V0:** see §6.
+
+## 5. Phases
+
+**Phase 1: Defenses and budgets**
+- Unlocks: Phase 2. Depends on: V0.
+- Tasks:
+  - Injection suite in CI (V2 starts).
+  - Output filter: links only to allow-listed domains, no rendering of images or markdown URLs.
+  - PII redaction in logs.
+  - Per-session cost cap; a timeout that falls back to "contact support".
+  - Escalation path to a human agent.
+  - Legal review starts (V5).
+  - Vendor trial for build vs buy.
+  - Support finance confirms the cost target.
+- Rollback: revert the image.
+- Exit check: a runaway session is cut off at its cap and emits a metric; handoff opens a ticket in a sandbox.
+
+**Phase 2: Retrieval and answer quality**
+- Unlocks: Phase 3. Depends on: Phase 1, the labeled set.
+- Tasks:
+  - Ingestion triggered by CMS webhook, with a versioned index.
+  - Hybrid search (BM25 + vectors) with reranking.
+  - Prompt that refuses or escalates when no source supports an answer.
+  - Fallback model behind the provider abstraction.
+  - Run V1, then V3.
+- Rollback: point the alias back to the previous index version.
+- Exit check: V1 and V3 pass; switching to the fallback model is a config change.
+
+**Phase 3: Canary exposure**
+- Unlocks: general availability. Depends on: V2, V3, V5.
+- Tasks:
+  - Shown to customers as an "AI assistant" with a visible notice.
+  - Rollout to logged-out visitors at 5%, then 25%, then 100%. Each step widens only if CSAT holds, the escalation rate is stable, and spend stays within the caps.
+  - Conversation memory lasts one session only.
+  - Load test against the throughput budget.
+  - Run V4.
+- Rollback: set the flag to 0%.
+- Exit check: V4 passes at 25% before going to 100%.
+
+**Phase 4: Feedback loop**
+- Depends on: Phase 3.
+- Tasks:
+  - Thumbs up/down plus agent corrections, reviewed before they enter the eval set.
+  - "No answer" reports go to the docs team.
+- Rollback: drop the feedback-derived eval additions.
+- Exit check: the next eval run improves V3's metric with no regression in V1 or V2.
+
+## 6. Validation gates
+
+| ID | Hypothesis | Method | Acceptance threshold | Evidence | Unlocks (if it fails) | Phase |
+|---|---|---|---|---|---|---|
+| V0 | A change can be deployed, observed and rolled back through every tier in production | Real staff query, deploy, rollback, injected LLM timeout | One trace across all tiers; deploy and rollback both succeed; alert fires; latency and cost per turn recorded as baselines | CI run log, trace ID, alert record in runbook | Phase 1 (fix the pipeline first) | 0 |
+| V1 | Retrieval finds the right article | Labeled set of 300 real queries | Correct article in top 5 for ≥85% (ASSUMPTION, common RAG baseline) | `evals/retrieval/<index-version>.json` | Answer tuning (fail: re-chunk, hybrid weights, fix doc gaps) | 2 |
+| V2 | Injection has bounded impact | ≥100 cases in user input and planted in a test doc | 0 off-allow-list links, 0 system-prompt leaks, 0 replies in another persona; pass rate tracked; security lead signs off | CI suite report, sign-off record | Exposure (fail: tighten filters, re-run) | starts 1, required before 3 |
+| V3 | Answers are grounded, and the bot refuses when it should; guards the worst failure | 300 answerable + 100 unanswerable labeled cases, judged by an LLM judge plus 20% human audit | ≥95% free of unsupported claims; ≥90% correct refusal or escalation; 0 invented policy or promises (all ASSUMPTION); support lead signs off | `evals/answers/<build>.json`, audit sheet | Canary (fail: stricter prompt or model swap; if style is the failure, revisit fine-tuning) | 2 |
+| V4 | It pays for itself | 2-week canary at 25%, ≥1,000 conversations | Cost per resolved conversation ≤10% of human ticket cost (ASSUMPTION); CSAT ≥ the human-channel BASELINE from ticketing data | Cost and CSAT dashboard export | Go to 100% (fail: routing, a smaller model, or the vendor bot) | 3 |
+| V5 | Transcript handling is acceptable | Privacy counsel reviews DPA, retention, AI notice | Named counsel signs off | Signed review in the legal tracker | Exposure (fail: change the vendor or region) | starts 0, required before 3 |
+
+## 7. Cross-cutting concerns
+
+| Phase | Security | Observability | Reproducibility | Resilience |
+|---|---|---|---|---|
+| 0 | SSO allow-list; secrets in a vault; delimited data blocks | Traces plus token and cost metrics | Prompts and index version in git | Kill switch, rollback |
+| 1 | Output filter, PII redaction | Cost-cap and injection metrics | Injection suite in CI | Timeout falls back to "contact support" |
+| 2 | Only public docs ingested | Retrieval hit-rate dashboard | Pinned embedding model and index | Fallback model |
+| 3 | Rate limiting, bot protection | CSAT, escalation and cost-per-conversation alerts | Canary config in git | Percentage flag, load test |
+| 4 | Feedback reviewed before use (blocks poisoning) | Doc-gap reports | Versioned eval set | Feedback can be rolled back |
+
+## 8. AI layer
+
+| Sublayer | In this system | Built in | Exit check or V-ID |
+|---|---|---|---|
+| 1. Injection / guardrail defense | Data blocks, link allow-list, no outbound tools | 0, then 1 | V2 |
+| 2. Cost + latency budget | Per-turn and per-session caps, timeout | 0, then 1 | Phase 1 exit check, V4 |
+| 3. Human-in-the-loop | Escalation to agents; no write tools; ticket opened only after user confirms | 1 | Handoff exit check |
+| 4. Retrieval | Hybrid search with reranking | 2 | V1 |
+| 5. Model access | Provider abstraction plus fallback | 2 | Phase 2 exit check |
+| 6. Memory | One session only | 3 | Nothing stored after the session ends |
+| 7. Orchestration | A single retrieve-then-answer chain | 0 | Covered by V0 |
+| 8. Routing | Not needed: one model (see §10) | — | — |
+| 9. Feedback | Reviewed corrections | 4 | Phase 4 exit check |
+
+## 9. Methodology exceptions
+None.
+
+## 10. Deliberately deferred
+- **Logged-in, account-specific answers.** Pulled forward if more than 20% of escalations need account data. Requires per-user retrieval permissions and a new R3 privacy row first.
+- **Actions such as refunds or order changes.** Pulled forward when a business owner asks for them. Requires approval gating enforced by the tool executor.
+- **Multilingual support.** Pulled forward when non-English traffic passes 10%.
+- **Routing to a cheaper model.** Pulled forward if V4's margin is thin.
+- **Fine-tuning.** Pulled forward by the V3 flip condition.
+- **Long-term memory.** Pulled forward when returning users need continuity.

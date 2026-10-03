@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "eda7c3a043ad.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "eda7c3a043ad",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 128,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: the Phase 1 `CaptureDate` contract.\" Phase 3 \"Depends on: the proven Phase 2 plan.\"",
+      "rationale": "Phases run from the date contract to the planner, then the executor, UX and distribution, and each phase names its dependency and a proving exit check."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "CI job installs that built wheel with `uv tool install` on Windows, macOS and Linux, then runs the request above on a fixture folder.",
+      "rationale": "Phase 0 is a real end-to-end slice through every tier, with a release pipeline and a no-overwrite guarantee."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Time semantics (permanent: names last forever) | Use the camera's local wall-clock time exactly as recorded | ... Then add opt-in `--normalize-tz=UTC`.",
+      "rationale": "A table of irreversible decisions, each with a default and a concrete flip condition, placed before the phases."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks (widest → narrowest): 1. **The `CaptureDate` data contract.** ... changing it later would mean rework everywhere.",
+      "rationale": "Each phase orders its tasks widest to narrowest, with reasons such as the contract first and `--json` fixed first."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Refuse ExifTool < 12.24 (CVE-2021-22204). Logs record only date fields, never GPS or other EXIF.",
+      "rationale": "The cross-cutting table gives concrete security items for every phase from 0 to 5."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "JSON-lines log in the platform log directory... Each run has a `run_id`... CI smoke test on the installed artifact",
+      "rationale": "Phase 0 has logging, exit codes and a smoke test, and every later phase adds concrete observability."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "`uv.lock` pinned. CI pins the ExifTool version. Folder scan sorted, so results don't depend on the OS.",
+      "rationale": "Reproducibility is covered in every phase, including fixture hashes, Hypothesis seeds, fault-injection seeds and reproducible wheels."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "No-overwrite rename. Any error before renaming → exit 2 with nothing changed.",
+      "rationale": "Resilience appears from Phase 0 onward, including the journal, resume, undo, timeouts and Ctrl-C handling."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "AI gates ... N/A. No model is involved. Dates come from deterministic metadata.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Network and cloud storage (SMB, Google Drive mounts): pull forward once the journal's guarantees have been checked on network filesystems.",
+      "rationale": "The deferred list is explicit, and each item has a pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is strong on every dimension. It has a real walking skeleton, up-front gates with flip conditions, per-phase cross-cutting concerns, and an explicit AI N/A.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1183,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 6511
+  },
+  "cost_usd": 0.0282285,
+  "latency_s": 34.834,
+  "raw_file": "raw/judge-eda7c3a043ad.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

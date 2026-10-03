@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "81a4051da0ef.engineering-quality-v1.fable-5.k1",
+  "blind_id": "81a4051da0ef",
+  "blind_sha256": "c5d043e7fcc1a3cea6704ae0ce8d3fd8cc2f119c0c850cf578494ab0d9c5b032",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 381,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Fence: demote the on-premises database to read-only and turn off the old app servers' database logins.",
+      "rationale": "Replication, fencing, crypto-erasure of keys, HL7 hold-and-release, and managed-DB replication caveats are all stated accurately, including the subtle limits (native replication only if the engine/version matches)."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "None visible to users; reading schedules works throughout",
+      "rationale": "Resolves the 'no downtime' ambiguity explicitly (≤30s write pause pending clinical ops confirmation), covers all implied needs, and defers out-of-scope items with reasons."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "One database accepts writes at any moment; no two-way live writing.",
+      "rationale": "Single write authority, proxy-based addressing, and the PHI boundary are chosen once and honored consistently across every phase, validation check and rollback path with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Zero unexplained differences for ≥ 14 consecutive days, including a peak Monday and a month-end",
+      "rationale": "V0–V7 tie checkable thresholds to the specific risks (split-brain, data divergence, HL7 loss), validate the riskiest assumptions early, label provisional targets, and continue post-cutover with 5-minute integrity checks and a 30-day soak."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Planning assumptions (if any is false, the plan changes as noted):",
+      "rationale": "Every number is labeled REQUIREMENT/ASSUMPTION/BASELINE/UNKNOWN, dependent assumptions state their fallback, and missing inputs are ranked by how much they would change the plan."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Two databases accepting writes at once (split-brain), or a cutover or rollback that silently loses or duplicates appointments.",
+      "rationale": "Covers the hardest domain failures — split-brain, duplicate/lost HL7 messages, replication divergence, link and zone failure, silent data loss — each with concrete detection (reconciliation, alerts, triggers) and recovery (reverse replication, paper procedures)."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Alerts go to the existing on-call: app health and replication delay.",
+      "rationale": "Deployment via pipeline/Terraform, scripted identical rehearsal-and-production runbooks, SIEM-based monitoring, named approvers, CAB integration, and a 90-day dual-run cap sized to one infrastructure team."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "UNKNOWN: Finance supplies the budget before Phase 1 sizing is committed",
+      "rationale": "Cost is gated (Phase 1 exit check vs Finance budget), dual-run duration capped, and reservations/autoscaling deferred with triggers, but no driver breakdown or order-of-magnitude estimates are given."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Point of no return: stopping reverse replication. V7 guards it.",
+      "rationale": "Decisions are explicitly graded R1–R3 with 'what would flip it' columns, the irreversible step is guarded by V7, and low-stakes choices are made quickly without over-analysis."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Monolith vs services: no re-architecture during a move.",
+      "rationale": "Lift-and-shift on the same engine, explicit refusal to re-architect, and a deferred list with pull-forward triggers give the simplest design that still meets every essential need."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "if it fails, fix the broken tier before anything else",
+      "rationale": "Phases have dependency-justified ordering, concrete first steps (long-lead items first), checkable exit criteria, and every validation check states what happens if it fails."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "PHI only in a hospital-owned account, in-country region, BAA-covered services, private network only, hospital-managed encryption keys."
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "Flow logs plus database connection audit, ≥ 35 days including a month-end; every flow traced to an owner"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "Continuous reconciliation per table and partition: counts plus checksums only ... zero lost or duplicate bookings against the injected traffic log"
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "One database accepts writes at any moment; no two-way live writing. The switch uses a short pause in saving, with fencing"
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "≥ 2 full rehearsals on a production-sized staging pair across the real circuit ... rollback ≤ 15 min with no data loss"
+    },
+    {
+      "id": "P6-06",
+      "status": 2,
+      "evidence": "Two private circuits on separate paths plus a backup VPN ... also measure the app calling the database across the link"
+    },
+    {
+      "id": "P6-07",
+      "status": 2,
+      "evidence": "Synchronous copies across availability zones in one region ... Refresh paper downtime procedures and the printed 48-hour schedules."
+    },
+    {
+      "id": "P6-08",
+      "status": 2,
+      "evidence": "Login stays on Active Directory ... sign-in with multi-factor authentication ... emergency access logged ... emergency access watched during the window"
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "Replay production load at 2× BASELINE peak for 4 h, including a simulated Monday-morning burst"
+    },
+    {
+      "id": "P6-10",
+      "status": 2,
+      "evidence": "in the quietest window from the baseline (never just before a release of new booking slots) ... staff on site; downtime packs ready"
+    },
+    {
+      "id": "P6-11",
+      "status": 2,
+      "evidence": "ask the vendor for its support and licensing statement ... Decommission: wipe media to NIST 800-88, revoke credentials"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "IT staff, then read-only consumers, then one clinic, then the full switch."
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "One database accepts writes at any moment; no two-way live writing."
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "Test environments use de-identified data. Logs and traces that contain identifiers are treated as PHI"
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "The interface engine holds incoming HL7 messages ... Release the held HL7 messages."
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "Monolith vs services: no re-architecture during a move."
+    }
+  ],
+  "note": "An exemplary, near-flawless migration plan — rigorous single-write-authority cutover, labeled assumptions, early risk validation and reversibility discipline; only cost analysis is governance-gated rather than estimated.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8217,
+    "thinking_tokens": 5687,
+    "cache_read_input_tokens": 864,
+    "cache_creation_input_tokens": 16104
+  },
+  "cost_usd": 0.613034,
+  "latency_s": 117.772,
+  "raw_file": "raw/judge-81a4051da0ef.engineering-quality-v1.fable-5.k1.txt"
+}

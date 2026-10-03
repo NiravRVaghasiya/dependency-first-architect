@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "5922facdb873.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "5922facdb873",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 200,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Critical path: access/IAM → Argo CD + config repos → pilot to prod → chart/workflow contract v1 (M2) → onboarding throughput → legacy shutdown",
+      "rationale": "Phases run from identity/infra substrate up to onboarding and enforcement, with spikes proving unknowns before the contract is frozen and Kyverno enforcement waiting for 50/50."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "One low-risk pilot service goes from merge to production through the real pipeline. A prod rollback is demonstrated in under 10 minutes.",
+      "rationale": "M1 is a real thin slice to prod with approval and rollback before the golden path and features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D2 ... Hard (all deploy config shaped around it) | Revisit if: Not on Kubernetes (A1)",
+      "rationale": "A decision table lists options, reversibility, and revisit triggers, and assumptions carry defaults and impact-if-wrong."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tier-1 services come last, once the platform has 30 services of history.",
+      "rationale": "Shared components (OIDC, Argo CD, chart, workflows) precede leaf services; the canary group and render-diff limit blast radius, and leaf onboarding goes from low risk to tier-1."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Security (built in M1; signing M2; enforcement M4)",
+      "rationale": "Security is concrete in M1 (OIDC, no keys, gitleaks, protected prod repo) and in M2 and M4, but M3 has little security work and it is mostly a standalone section."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "From M1: Argo CD metrics into Prometheus. Alerts: prod app Degraded for more than 10 min → owning team",
+      "rationale": "Alerts and Slack deploy messages are in M1, followed by workflow metrics in M2, delivery metrics in M3, and canary analysis in M4."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Each service is built once into a container image that never changes and is identified by its digest",
+      "rationale": "Immutable digests, Terraform infra, pinned actions, versioned charts and GitOps state are reproducible from M1, and Argo CD is rebuilt from Git."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "T14 Write and drill rollback ... decision → previous digest healthy ≤ 10 min; break-glass dry run in staging",
+      "rationale": "Rollback, retries, ancestry checks and PreSync migration handling are in M1; HA and rebuild drills are in M3; tag rollback and canary aborts are in M2 and M4."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "AI-specific concerns: not applicable. There are no AI components.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Ephemeral PR environments | Staging contention reported by > 3 teams",
+      "rationale": "The deferred table has concrete pull-forward triggers for each item, and the plan also lists deliberate shortcuts and non-goals."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong, well-sequenced plan with a thin prod slice first; the only weak spot is security, which is thin in M3 and partly a standalone section.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1219,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 21124
+  },
+  "cost_usd": 0.065121,
+  "latency_s": 24.293,
+  "raw_file": "raw/judge-5922facdb873.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

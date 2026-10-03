@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "be88dadcde44.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "be88dadcde44",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 92,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "M1 \"Measured thin slice\"... M2 \"Safe and good enough\"; T7→T8→T9→T10 in order; \"Depends on\" column per milestone",
+      "rationale": "Infra/CI → migration → ingestion → chunking → retrieval → orchestrator → eval, with explicit dependencies and spikes run after the things they need exist."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Merge to main deploys to staging automatically... `/v1/chat` streaming cited answers in staging",
+      "rationale": "A real thin slice is built with CI deploy, but it is staging only; production and widget come at M3, so it is not a true prod walking skeleton in Phase 0."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Key Decisions table: \"Reversibility\" and \"Revisit if\" columns, e.g. \"> 5M chunks, or p95 retrieval > 200 ms\"",
+      "rationale": "Decisions D1–D9 carry defaults, reversibility and flip conditions, and assumptions are tabulated with impact if wrong."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Critical path: ticket-export privacy approval → evaluation set v1 → spikes S1/S2 → M2 quality tuning → beta.",
+      "rationale": "Broad items like infra, schema, and gateway come first in M1 and the critical path is identified, but blast-radius ordering is not explicitly reasoned within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Security (built in M1, hardened in M2)",
+      "rationale": "PII masking and anonymous-only ingestion are in M1, but most security (rate limits, adversarial suite, XSS, retention) lands in M2 and the treatment is a standalone section, not in every phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Dashboard in M3. The trace table (`messages`) exists from M1.",
+      "rationale": "Trace logging with cost and latency starts in M1, but OTel, alerts and dashboards are deferred to M3."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Prompts as versioned files in `prompts/`; `terraform apply` from CI; recorded fixtures; `alembic upgrade head` and `downgrade base` both succeed in CI",
+      "rationale": "Reproducible builds, IaC, migrations, versioned prompts, eval cases in git, and fixtures are present from M1 onward."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Flow D/E/F: outbox with idempotency key; degraded mode; \"No deletions are applied\" on partial sync; 10% delete guard",
+      "rationale": "Timeouts, retries, degraded mode, and sync safety are built in M1 (T5, T7, T10), with outbox and more in M2, and restore test in M3."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Budgets: time to first token p95 2.5 s, cost ≤ $0.03 per turn, ≤ 2 model calls per turn... The one human approval point is the handoff itself.",
+      "rationale": "Eval gating and the retrieval→model ordering are good, but the defenses, budgets and human handoff are mostly built in M2 after the M1 model and retrieval slice, so the defenses do not come first."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Deferred table: \"Image and screenshot captioning at ingestion | S3 shows >20% of answers are only in images\"",
+      "rationale": "Explicit deferred list with concrete pull-forward triggers, plus intentional shortcuts and non-goals."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, well-reasoned plan with explicit decisions, deferrals, and resilience; weaker on a true prod walking skeleton, early observability, and defenses-before-capabilities ordering (security/budgets mostly land in M2–M3).",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 8,
+    "output_tokens": 2850,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 22514,
+    "cache_creation_input_tokens": 21384
+  },
+  "cost_usd": 0.0864788,
+  "latency_s": 66.147,
+  "raw_file": "raw/judge-be88dadcde44.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

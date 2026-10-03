@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "c0914a90d06a.engineering-quality-v1.fable-5.k1",
+  "blind_id": "c0914a90d06a",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 91,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Postgres requires the partition key in every unique index on a partitioned table, so dedupe can't live on the events table.",
+      "rationale": "Precise and accurate throughout the subtle areas plans usually get wrong: RLS under pooling, Stripe idempotency and webhook ordering, partition constraints, gapless numbering under row locks, SAQ A scope with Connect Standard."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "I read it as a billing product that other businesses (tenants) use to bill their own customers... If you meant billing for your own SaaS product, my advice changes a lot.",
+      "rationale": "Resolves the brief's central ambiguity explicitly, covers every implied billing capability, lists non-goals with reasons, and is credibly buildable by the stated 6-person team."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "A module reads and writes only its own Postgres schema... Each table has exactly one writer.",
+      "rationale": "Clear data ownership per module, a single transactional-outbox pattern applied everywhere, and the correctness-over-availability ranking honored consistently (e.g. never finalising without tax); no contradictions found."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Partner's last 3 months of invoices reproduced, 100% matching or each difference explained and signed off.",
+      "rationale": "The four riskiest assumptions get week-1 spikes with explicit 'changes the plan if' outcomes, shadow billing validates pricing against real invoices before live money, and 15-minute production invariant checks continue after launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Assumption | Impact if wrong | How and when validated",
+      "rationale": "Every design-bearing assumption is labelled [A#] with its sensitivity and a validation date, numbers are given as estimates, and open questions carry owners, defaults and deadlines."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "the tenant's client times out after step 4 committed and resends the same batch... all 100 events report `duplicate`",
+      "rationale": "Timeouts with unknown outcomes, out-of-order webhooks, mid-transaction crashes, SSRF, insider tampering and the month-start spike are all handled concretely, but dispute/chargeback handling is never specified."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "a `rollback` workflow that redeploys the previous image tag... Migrations are expand/contract, so the previous code always runs against the current schema.",
+      "rationale": "Symptom-based alerts with runbooks, safe rollback, expand/contract migrations, restore drills, on-call rotation, per-tenant kill switch and a 'billing day' watch are all sized to the stated team."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Aurora r7g.xlarge writer plus a failover reader: roughly $1.2k, plus $0.3–0.8k for storage and I/O",
+      "rationale": "Launch infra is itemised as labelled ranges with budget alerts and controls, scaling thresholds (D4) are explicit, and build-versus-buy trade-offs for payments, tax and the billing core are reasoned."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Point of no return per tenant: the first live invoice number issued to their end customers.",
+      "rationale": "Each decision carries an explicit reversibility rating and revisit trigger; the hard-to-reverse ones (tenancy model, money representation, public API, Stripe coupling) get early spikes, isolation behind adapters, and stated exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Postgres for everything at launch... Kafka and ClickHouse come in only when measured limits say so.",
+      "rationale": "A modular monolith with one database, deferred streaming/caching infrastructure gated on measured thresholds, and bought commodity components keep complexity matched to the need without omitting essentials."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Done when integration tests show (a) killing the worker mid-finalise and retrying produces one invoice with no number gap",
+      "rationale": "Nineteen tasks with dependencies and checkable done-criteria, day-1 long-lead actions, a stated critical path, and spikes whose outcomes explicitly redirect the plan let a team start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Money is stored as integer minor units (e.g. cents). Unit prices are fixed-point decimals. Rounding happens once per line item."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Finalised invoices and their lines can't be updated: a database trigger rejects updates... Corrections are credit notes."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "Its ID becomes the Stripe `Idempotency-Key`... stored in `payments.psp_events` with `ON CONFLICT (stripe_event_id) DO NOTHING`... re-fetches the PaymentIntent"
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "never stored (Stripe Elements on hosted pages; SAQ A)... signatures are verified... `requires_action` (SCA) emails the end customer a hosted-page link"
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "enforced by Postgres RLS and composite foreign keys... auto-generated isolation suite that calls every route with tenant B's key against tenant A's IDs"
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "Ingest inserts the key row with `ON CONFLICT DO NOTHING`... aggregates are frozen into `invoicing.usage_snapshots`... 35 days is the deduplication window"
+    },
+    {
+      "id": "P2-07",
+      "status": 2,
+      "evidence": "Proration is by seconds over the period length in the tenant's time zone... A price version can't be changed once any subscription references it"
+    },
+    {
+      "id": "P2-08",
+      "status": 2,
+      "evidence": "Gapless invoice numbers per tenant, assigned at finalisation under a row lock... Several countries' VAT rules expect continuous numbering... Financial records kept 10 years"
+    },
+    {
+      "id": "P2-09",
+      "status": 2,
+      "evidence": "retries on days 3, 5 and 7, then the subscription goes to `past_due`, then `cancelled` or `unpaid` per tenant policy"
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "a daily job compares our succeeded payments and refunds against Stripe balance transactions for each connected account, and alerts on any mismatch"
+    },
+    {
+      "id": "P2-11",
+      "status": 1,
+      "evidence": "Real-time usage and entitlement API (hourly rollups) | M4, or a partner needs usage limits enforced in their app"
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Build the billing core; buy tax, payments, identity provider and email... If it's for your own product, I'd recommend buying the billing core"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Money as `bigint` minor units + `numeric(38,12)` unit prices... Floats are banned by a lint rule."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "a database trigger rejects updates, and the app role has no `UPDATE` on `invoice_lines`. Corrections are credit notes."
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "Retries reuse the same key... signatures are verified... re-fetches the PaymentIntent from Stripe rather than trusting arrival order."
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "Payment card data: never stored (Stripe Elements on hosted pages; SAQ A)."
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "enforced by Postgres RLS and composite foreign keys... isolation suite as a release gate."
+    }
+  ],
+  "note": "An exemplary, near-reference plan that avoids every domain trap, validates its riskiest decisions first, and is immediately actionable; the only notable gaps are dispute/chargeback handling and an explicit entitlements-vs-billing-availability story.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 11283,
+    "thinking_tokens": 5442,
+    "cache_read_input_tokens": 33073,
+    "cache_creation_input_tokens": 41819
+  },
+  "cost_usd": 1.1200005,
+  "latency_s": 182.438,
+  "raw_file": "raw/judge-c0914a90d06a.engineering-quality-v1.fable-5.k1.txt"
+}

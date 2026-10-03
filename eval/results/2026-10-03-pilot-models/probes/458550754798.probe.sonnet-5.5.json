@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "458550754798.probe.sonnet-5.5",
+  "blind_id": "458550754798",
+  "judge": "sonnet-5.5",
+  "order_index": 44,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.1,
+  "cues": [
+    "Generic chatty opener ('I'll provide you with a comprehensive plan') and closing offer ('Would you like me to elaborate...')",
+    "Emoji header, heavy bold markdown and ASCII diagrams typical of default unstructured LLM output",
+    "Broad survey of technology options (Pinecone/Weaviate/Milvus, Datadog/New Relic) rather than committed decisions",
+    "Invented, unjustified numeric targets (80%+ reduction, >95% accuracy, severity score weights) with no stated assumptions or verification",
+    "No explicit methodology artifacts: no problem restatement, assumptions/open questions, risk-ranked steps, or validation criteria tied to steps; just a generic phases checklist",
+    "Sample code uses non-existent model name 'claude-opus' and PyGithub(api_key), showing unverified boilerplate"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 362,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 5785
+  },
+  "cost_usd": 0.0180905,
+  "latency_s": 22.705,
+  "raw_file": "raw/probe-458550754798.probe.sonnet-5.5.txt"
+}

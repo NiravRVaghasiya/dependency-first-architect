@@ -1,0 +1,11 @@
+{
+  "drops_early_refund": "ordering",
+  "float_money": "money",
+  "memory_dedup": "idempotency",
+  "no_replay_window": "security",
+  "non_atomic": "failure-injection",
+  "non_idempotent": "idempotency",
+  "rejects_old_events": "security",
+  "reserialized_signature": "security",
+  "swallow_store_errors": "failure-injection"
+}

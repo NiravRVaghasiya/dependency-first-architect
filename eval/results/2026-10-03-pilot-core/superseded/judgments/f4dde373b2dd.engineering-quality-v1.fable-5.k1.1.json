@@ -1,0 +1,31 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f4dde373b2dd.engineering-quality-v1.fable-5.k1",
+  "blind_id": "f4dde373b2dd",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 118,
+  "status": "error",
+  "error": "the CLI exited 1 (subtype=success, api_error=None): ",
+  "validation_errors": [],
+  "scores": [],
+  "checklist": null,
+  "traps": null,
+  "note": null,
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "cost_usd": 0.0,
+  "latency_s": 306.584,
+  "raw_file": "superseded/raw/judge-f4dde373b2dd.engineering-quality-v1.fable-5.k1.1.txt"
+}

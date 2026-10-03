@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "17e9347ef8b2.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "17e9347ef8b2",
+  "blind_sha256": "c16ee236e1c534f3cb2a154a105adf6a8590611822bc335eba219b92d3940d67",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 9,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Depends on: V0\"; Phase 2 \"Depends on: V0, Phase 1, V1\"; dependency map and V-gates gate each phase.",
+      "rationale": "Phases progress substrate→Vault→scale→prod with explicit gates, though Vault HA and canary arrive late in Phase 3."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Developer pushes a commit... webhook, build, tests, image push, GitOps manifest update, rollout in dev, records result, and rolls back",
+      "rationale": "Phase 0 is a real end-to-end path with rollback and failure injection, though in dev rather than prod."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Decision | Reversibility | Default | ... | Flip condition: \"Oper. burden exceeds 2 FTE or a service needs its own scheduler\"",
+      "rationale": "Irreversible decisions have defaults, reversibility ratings, validation, and flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Rework is widest here: every service must adopt the config schema and pass the rollout check.",
+      "rationale": "Scale is staged 1→10→50 and schema precedes onboarding, but ordering within phases is not explicitly by blast radius (e.g., canary after Vault HA but bulk onboarding in-phase)."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: Webhook secret (static) guards SCM → controller; no secrets in logs (redaction filter); controller TLS to registry",
+      "rationale": "Concrete security measures appear in every phase from Phase 0 onward."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Traces: one W3C trace ID follows the commit from webhook to cluster state.",
+      "rationale": "Observability is built in Phase 0 and specified concretely in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Entire setup stands up from code (IaC: Terraform or Helm) on day zero; no manual steps after the first apply.",
+      "rationale": "Reproducibility is addressed concretely per phase, including digests, versioned configs, and scripted decommission."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 1: failed secret injection fails the build (no silent fallback); Phase 3: Canary rollback is automatic if error rate > baseline + 5%",
+      "rationale": "Failure handling and rollback appear in every phase, starting with Phase 0 failure injection."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A — no AI component.",
+      "rationale": "Plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Multi-region deployment... Pull forward when customers are in multiple regions and latency from the primary region becomes a blocking complaint",
+      "rationale": "Deferred items are listed with phase and mostly concrete pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, well-gated plan with real skeleton and threaded concerns; weaker on explicit blast-radius ordering within phases, plus minor inconsistencies (skeleton in dev, Vault HA late).",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1141,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10910
+  },
+  "cost_usd": 0.038693,
+  "latency_s": 21.796,
+  "raw_file": "raw/judge-17e9347ef8b2.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

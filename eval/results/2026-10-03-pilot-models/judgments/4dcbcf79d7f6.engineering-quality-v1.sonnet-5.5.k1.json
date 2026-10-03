@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "4dcbcf79d7f6.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "4dcbcf79d7f6",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 80,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Ephemeral sandbox with no credentials and restricted egress. Never run fork or untrusted CI with privileged tokens.",
+      "rationale": "Claims are accurate and sensible (GitHub App, gVisor/Firecracker, draft PRs from agent branches), with minor imprecision like embedding-based dedupe and the ≥0.8 LLM confidence being treated as calibrated."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Resolve a safe subset automatically by opening a PR with a fix, tests, and an explanation.",
+      "rationale": "Covers triage and resolution with explicit non-goals and phased rollout; some gaps (retrieval freshness, event coordination, who owns the work) remain."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "a durable per-issue state machine (`NEW → TRIAGED → NEEDS_INFO | REPRODUCING → FIXING → VERIFYING → PR_OPEN | ESCALATED`)",
+      "rationale": "Consistent pipeline with clear components; minor loose ends such as the sandbox clone vs. no-network and the queue-vs-Temporal ambiguity, and the modes in config are not tied to the state machine."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Shadow mode first: the agent produces output privately and maintainers compare it to what they did.",
+      "rationale": "Offline replay, shadow mode, online metrics and phase exit criteria are present, but thresholds (90%, 50%) are not justified and some per-action thresholds are absent."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Which repos and languages come first? That determines the sandbox images and test tooling.",
+      "rationale": "Open questions are listed but the plan gives few explicit assumptions or sensitivity notes; numbers like 0.8, ≤5 files are presented as defaults without basis."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Ignore the agent's own comments and bots. Circuit breaker if the PR rejection rate spikes.",
+      "rationale": "Covers injection, sandbox, security issues, loops, cost and over-broad fixes with concrete mitigations; weaker on partial failures, duplicate events during work, and recovery/revert."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Who owns on-call for agent misbehavior, and how is it disabled (a kill switch per repo)?",
+      "rationale": "Observability and traces are mentioned and rollout is phased, but deployment, rollback, ownership and kill switch are left as open questions."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Per-issue token and time budgets, plus a global daily cap.",
+      "rationale": "Budgets, model tiering and cost per resolved issue are covered, but there are no cost estimates, scaling reasoning or build-cost accounting."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Thresholds are configurable per repo.",
+      "rationale": "Mode-based phasing and pluggable tech choices give some reversibility, but data models, identifiers and vendor lock-in are not analysed."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Don't auto-close in v1.",
+      "rationale": "Scope is restrained with phased rollout and non-goals; some optional extras (mutation check, embeddings plus vector store) are modest and justified."
+    },
+    {
+      "dim": 11,
+      "score": 2,
+      "evidence": "If you tell me the target repo, language, and preferred stack, I can turn this into a concrete implementation breakdown",
+      "rationale": "Stages and rollout phases are concrete, but no build order with dependencies or first steps; implementation breakdown is deferred."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 1,
+      "evidence": "mode: triage_only | suggest | autofix_draft_pr"
+    },
+    {
+      "id": "P4-02",
+      "status": 1,
+      "evidence": "a GitHub App with least-privilege permissions. It can read contents and issues, write issues and PRs, and push only to `agent/*` branches."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Treat issue content as untrusted data. Give the agent no secrets. Keep tool permissions fixed regardless of the text."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "an ephemeral container with the repo cloned at the default branch. It has no secrets, network egress limited to package mirrors, and CPU, memory, and time limits."
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "The new reproduction test must fail before the fix and pass after."
+    },
+    {
+      "id": "P4-06",
+      "status": 1,
+      "evidence": "Triage label accuracy and duplicate precision/recall."
+    },
+    {
+      "id": "P4-07",
+      "status": 1,
+      "evidence": "PR acceptance rate, review rounds, and revert rate."
+    },
+    {
+      "id": "P4-08",
+      "status": 1,
+      "evidence": "Per-repo and per-user rate limits. Ignore the agent's own comments and bots."
+    },
+    {
+      "id": "P4-09",
+      "status": 1,
+      "evidence": "Per-issue token and time budgets, plus a global daily cap."
+    },
+    {
+      "id": "P4-10",
+      "status": 1,
+      "evidence": "structured traces per issue, including every tool call and prompt, for debugging and audit."
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "a code search index (symbols and embeddings), CODEOWNERS, CONTRIBUTING.md"
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "Event queue (dedupe, rate limit, idempotency keys)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "A human always does the merge."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "Ephemeral sandbox with no credentials and restricted egress."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Have the agent ignore instructions found in issues."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "Don't auto-close in v1."
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Budget caps: max steps, wall-clock time, tokens, and files touched"
+    }
+  ],
+  "note": "Solid, safety-conscious plan with human merge, sandboxing, reproduction-first fixes and shadow rollout; weaker on operations, event coordination, cost quantification, assumptions and build sequencing.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2210,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 10320
+  },
+  "cost_usd": 0.048093,
+  "latency_s": 32.784,
+  "raw_file": "raw/judge-4dcbcf79d7f6.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

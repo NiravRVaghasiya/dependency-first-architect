@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "4c7b87ab1d6f.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "4c7b87ab1d6f",
+  "blind_sha256": "64c776e92e57231ca6792d6880bf037f3738a2c19634de72bfb5f099d90418f8",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 411,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: Phase 1. Every reading failure must be expressible as a `skipped` status with a reason, and any wrong date must be undoable.\"",
+      "rationale": "Safety layer precedes date accuracy, then traversal, then surface, with explicit dependencies justified per phase."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"the wheel built by CI, installed with `pipx` on all three OSes, renames a real 3-photo folder correctly. The journal exists, the exit code is `0`\"",
+      "rationale": "Phase 0 is a genuine thin end-to-end slice through CLI, scan, read, plan, apply, journal, built and deployed via CI."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"If the user is fine running a one-liner without undo, **stop here and ship a documented exiftool alias.**\"",
+      "rationale": "A full table lists irreversible decisions (naming contract, journal format, etc.) with defaults and flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "\"Tasks (widest blast radius first)\" — freeze RenamePlan record and journal version first, then conflicts, then journal/undo, then leaf items",
+      "rationale": "Blast-radius ordering is explicit and substantively applied within phases, with leaf work (Phase 4) last."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "\"`undo` refuses journal entries that point outside the folder (a tampered journal can't redirect it).\"",
+      "rationale": "Concrete security treatment appears in every phase 0–4 in the cross-cutting table."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"structured log lines on stderr (`--verbose` for detail). Exit codes: `0` all renamed, `1` some files skipped, `2` aborted.\"",
+      "rationale": "Observability is concrete in Phase 0 and in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"Lockfile with hashes (`uv lock`), pinned Python version, CI on 3 OSes, fixture folder in the repo, files processed in sorted name order.\"",
+      "rationale": "Reproducibility is concretely addressed in each phase, from lockfile to seeds to tagged releases."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"Journal written before each rename, resume after a crash, `undo`, temporary names for cycles.\"",
+      "rationale": "Resilience appears from Phase 0 (no overwrite, per-file failures) through every later phase with concrete mechanisms."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"N/A. This isn't an AI system: there's no model, no retrieval and no prompts.\"",
+      "rationale": "Plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Renaming sidecars together... *Brought forward if* Phase 3's warnings fire on more than a few percent of real user folders.\"",
+      "rationale": "A dedicated deferred list with specific pull-forward conditions for each item."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan: safety-first ordering, real walking skeleton, explicit gates, per-phase cross-cutting table, and explicit deferrals; no significant weaknesses found.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1188,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 6621
+  },
+  "cost_usd": 0.0284405,
+  "latency_s": 16.429,
+  "raw_file": "raw/judge-4c7b87ab1d6f.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

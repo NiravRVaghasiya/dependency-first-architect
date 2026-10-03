@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ddf58cd0d61b.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "ddf58cd0d61b",
+  "blind_sha256": "d115f668df1e9708eec367d6249b604d59ebd1f15c27d1bf984b182bcd18782e",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 446,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Depends on: Phase 2 search meeting its recall target. Otherwise the answer evals would mostly measure search failures.",
+      "rationale": "Each phase names explicit dependencies and gates on exit checks, going substrate → contracts/defenses → retrieval → model → memory → routing → feedback."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "An employee asks \"How do I reset my password?\" in the chat widget on the production help center.",
+      "rationale": "Phase 0 is a real end-to-end production slice (widget, API, search, LLM, deploy, monitoring) behind a flag."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Flip condition ... Over 5M chunks, or search p95 over 150 ms after tuning.",
+      "rationale": "A comprehensive table gives defaults and flip conditions for irreversible decisions, including AI-specific ones."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Database schema. This is the widest change: altering it later forces a full re-index.",
+      "rationale": "Tasks are explicitly ordered widest-first (response format, schema, exposure controls before leaf work like tone)."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Staff-only SSO and feature flag; secrets in a manager; TLS; system prompt kept separate from user text",
+      "rationale": "The per-phase table gives concrete security treatment in every phase from 0 through 6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OTel spans, metrics for latency/error/tokens/cost, Langfuse, dashboard plus one alert",
+      "rationale": "Observability is concrete in Phase 0 and extended specifically in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform; pinned image and lockfile; prompt template in git; temperature 0",
+      "rationale": "Reproducibility is addressed in each phase: pinned builds, versioned test sets, index/embedding versions, config in git."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "10 s LLM timeout falls back to links; health checks; quick rollback to the previous image",
+      "rationale": "Resilience is concrete in every phase, from day-zero fallback through queued retries and kill switch."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Phase 1: Contracts, test set, defenses ... Retrieval (Phase 2) ... Model access (Phase 3) ... Memory (Phase 4) ... Routing (Phase 5) ... Feedback (Phase 6)",
+      "rationale": "Defenses, budgets and human-in-the-loop come in Phase 1, followed by retrieval, model access, memory, orchestration, routing and feedback in correct order, with the Phase 0 exception explicitly justified."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Pull forward when more than 20% of handoffs need account data, and only after logged-in sessions ... are in place.",
+      "rationale": "The deferred list is extensive with concrete pull-forward conditions for each item."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan that satisfies every rubric dimension with concrete content; the only minor tension is Phase 0 using an LLM before guardrails, which the plan explicitly mitigates.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1164,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9137
+  },
+  "cost_usd": 0.0344905,
+  "latency_s": 20.916,
+  "raw_file": "raw/judge-ddf58cd0d61b.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

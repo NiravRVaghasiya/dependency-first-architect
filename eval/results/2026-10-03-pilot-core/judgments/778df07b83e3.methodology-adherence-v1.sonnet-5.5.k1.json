@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "778df07b83e3.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "778df07b83e3",
+  "blind_sha256": "533bb8b7fc3ef5ad365961b553adeb785b3649ece5afb30420d012775629c6f9",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 303,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "These are what everything else depends on, so they come first:",
+      "rationale": "Phases run discovery → foundations → skeleton → templates → gates/waves → progressive delivery, with explicit reasoning that canary needs trusted metrics; each is proven before the next."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Build → unit tests → image → push → deploy to dev → promote to staging → manual approval → prod",
+      "rationale": "A real end-to-end prod skeleton exists but is Phase 2, after discovery and foundations, and observability is only minimal; it is not Phase 0."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Make the core decisions: which CI engine, push-based deploys or GitOps (e.g. Argo CD), artifact registry, environment layout",
+      "rationale": "Irreversible decisions are listed up front, but with no defaults or flip conditions (only trunk-based is recommended)."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Business-critical or core services, now that the templates are proven",
+      "rationale": "Foundations-first and archetype grouping show some blast-radius thinking, but waves put low-risk services first and critical ones later, which is deliberate risk reduction rather than widest-impact first."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Secrets management (Vault or a cloud secrets manager) and passwordless OIDC login from CI to the cloud",
+      "rationale": "Security is present in Phase 1 (secrets, OIDC) but the main gates are in Phase 4; Phases 2, 3 and 5 don't show concrete security work."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Deploys show up as events in your observability tool",
+      "rationale": "Observability first appears in Phase 2, not in Foundations, and later phases mention it only in part (SLO metrics, DORA dashboards)."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "The platform's own infrastructure defined as code, so it can be rebuilt",
+      "rationale": "IaC, versioned templates and charts give reproducibility in Phases 1 and 3, but it isn't treated in every phase, and nothing covers pinned builds."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Rollback works and has been tested on purpose",
+      "rationale": "Rollback appears in Phase 2, the scorecard and Phase 6, but not in Foundations, and runner failure or HA is not covered."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, and the request is a non-AI system, so there is no N/A declaration."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "This comes late on purpose. Canary analysis needs metrics you can trust and a standardized deploy path",
+      "rationale": "Deferred items (progressive delivery, optimization, long-tail services) are placed later with some reasons, but there is no explicit not-built list with pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Solid, pragmatic sequence with good dependency ordering and a real skeleton. It lacks default/flip decision gates, observability from Phase 0, security and resilience threaded through every phase, and an explicit AI-N/A statement.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1154,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3768
+  },
+  "cost_usd": 0.020968,
+  "latency_s": 17.262,
+  "raw_file": "raw/judge-778df07b83e3.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

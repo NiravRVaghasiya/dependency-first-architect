@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a2eafcdd67c2.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "a2eafcdd67c2",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 105,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "These are prerequisites, and everything after depends on them.",
+      "rationale": "Phases run decisions → foundations → templates → pilot → CD → migration, with an explicit critical path, though observability is placed later than ideal."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 3: Pick 2–3 services... Migrate them onto the template and fix the rough edges.",
+      "rationale": "No thin end-to-end prod path exists in Phase 0; the first real deploy comes in Phase 4 after much foundation work, and Phase 0 is only discovery."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "CD model (GitOps with Argo CD or Flux is my default for this scale)",
+      "rationale": "Decisions are listed, but only one has a default and none has a flip condition. The 'Where the plan would change' section gives partial conditions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Start with low-risk and standard-tier services, and do the critical tier last, once the platform is proven.",
+      "rationale": "Pipeline templates are called the biggest lever and identity/infra come first, but the migration order puts leaf work first and there is no explicit blast-radius ordering within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Add security gates in warn-only mode first: SAST, dependency scanning, secret scanning, image scanning, and SBOM generation.",
+      "rationale": "Security appears in Phases 1, 2 and 5, but Phase 0, Phase 3 and the migration phase have little, and enforcement comes late."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Pipeline and deployment observability: DORA dashboards, and deploy markers in your monitoring.",
+      "rationale": "Observability is a late Phase 5 item, even though the plan warns against leaving it until the end. Only DORA metrics are defined early, and Phase 1–3 have no observability."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Target infrastructure as code: clusters, namespaces, and networking, with Terraform or similar.",
+      "rationale": "IaC, versioned templates, GitOps and ephemeral runners give reproducibility, but it is not treated explicitly or in every phase."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Keep the old pipelines running in parallel until each service has had a successful prod deploy on the new one.",
+      "rationale": "Resilience shows up in Phase 4 (rollback, canary) and Phase 6 (parallel running), but it is missing from the early phases."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so it does not declare N/A."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Add ephemeral preview environments.",
+      "rationale": "Phase 7 lists later work and the audit trails are conditional, but none of it has pull-forward triggers beyond the scenario notes."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "This is a competent conventional phased plan with sound dependency ordering. It has no walking skeleton, observability and resilience come late, decisions lack flip conditions, and it never addresses the AI question.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1118,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 3228
+  },
+  "cost_usd": 0.019371,
+  "latency_s": 33.12,
+  "raw_file": "raw/judge-a2eafcdd67c2.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

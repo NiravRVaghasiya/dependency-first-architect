@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "c58bd5137d6b.probe.sonnet-5.5",
+  "blind_id": "c58bd5137d6b",
+  "blind_sha256": "544e24b2ac934005f0cf9e978c010d521fff3c0c3a52819e54faf8d7ddd46448",
+  "judge": "sonnet-5.5",
+  "order_index": 82,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Section 2 is a 'Key decisions (resolved up front)' table with a 'Default (chosen now)' column and a 'Revisit trigger' column. It includes rows such as monolith vs services and sync vs async, and even has '(AI)' rows marked N/A. This reads like a fixed checklist.",
+    "Section 3 defines a 'First end-to-end slice (Phase 0)'. It names one real request and response, lists 'every tier it crosses', and covers deployed, logged and monitored. It ends with an exit check on all three OS runners.",
+    "Every phase has the same fixed fields: Unlocks, Depends on, Tasks (widest first), and Exit check. The ordering rule is 'ordered by dependency; within a phase, widest impact first'.",
+    "Section 5 is a per-phase cross-cutting matrix covering security, observability, reproducibility and resilience 'from the first commit'. Section 6 is a dedicated AI layer marked N/A, and Section 7 is a Deferred list with pull-forward triggers.",
+    "Section 1 opens with a Classification that names the type, the dominant constraint and the worst failure. The plan also has a 'before building anything' build-vs-buy check that points to the ExifTool one-liner."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 488,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 6708
+  },
+  "cost_usd": 0.021658,
+  "latency_s": 32.898,
+  "raw_file": "raw/probe-c58bd5137d6b.probe.sonnet-5.5.txt"
+}

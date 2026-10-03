@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "eee0fbaee76a.probe.sonnet-5.5",
+  "blind_id": "eee0fbaee76a",
+  "blind_sha256": "e7c862aafe49d4ca375c2531e5101df77f5a20df933eca2dc3329dec034af2df",
+  "judge": "sonnet-5.5",
+  "order_index": 73,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Rigid templated structure: numbered sections for Classification and constraints, Dependencies, Key decisions, First end-to-end slice (Phase 0), Phases, Validation checks, Cross-cutting, AI layer, Exceptions, Deferred. This looks like a prescribed written template.",
+    "Explicit labeling of every budget and threshold as ASSUMPTION, UNKNOWN or BASELINE, with an owner and a 'needed by Phase N' deadline. Ordinary plans rarely do this.",
+    "Decision table with reversibility ratings (R2/R3), a chosen default, a validating check and a revisit trigger for each decision.",
+    "Validation checks V0–V6 each have a hypothesis, method, acceptance threshold, evidence location, what it unlocks and what happens on failure. Phases have Unlocks, Depends on, Rollback and Exit check fields.",
+    "Methodology-specific items: a 'walking skeleton' Phase 0 slice that is deployed, observed and rolled back; an AI-layer sublayer table with nine rows; an 'N/A' line; 'Exceptions: None'; and a 'Deferred' list with triggers."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 467,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9633
+  },
+  "cost_usd": 0.0287605,
+  "latency_s": 28.195,
+  "raw_file": "raw/probe-eee0fbaee76a.probe.sonnet-5.5.txt"
+}

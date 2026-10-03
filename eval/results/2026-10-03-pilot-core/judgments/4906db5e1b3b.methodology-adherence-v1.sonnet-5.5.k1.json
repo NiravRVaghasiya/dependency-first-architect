@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "4906db5e1b3b.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "4906db5e1b3b",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 27,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Critical path: identity and secrets → registry → deployment model → pilot to prod with rollback.",
+      "rationale": "Phases run from contracts and substrate (runners, registry, identity, envs) up to pilots, templates, waves, and progressive delivery, with a stated critical path and a hard rule on dependencies."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Phase 2: Walking skeleton with 2–3 pilot services... commit → build → unit tests → image → dev → staging → manual promotion to prod → tested rollback.",
+      "rationale": "A real prod skeleton exists, but it comes after Phase 0 discovery and Phase 1 foundations rather than being the first phase, though Phase 1 does end with a hello-world deploy to dev."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Choose the tools: CI engine, artifact registry, CD approach (GitOps with Argo CD or Flux, or a push-based tool), secrets manager.",
+      "rationale": "Irreversible tool choices are listed, and assumptions are stated up front, but there are no defaults with flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Avoid the most critical service... move the remaining ~15 services, including the most critical ones, after safe rollout features are in place.",
+      "rationale": "Shared platform work precedes services and critical services are moved last, but within-phase ordering by blast radius is not explicit, and the critical-last choice runs opposite to widest-first."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Add these after the basic path works, so gates don't hold up adoption",
+      "rationale": "Short-lived OIDC credentials and signing appear in Phase 1, but scanning, SBOM, and admission policy are deferred to Phase 5, and migration phases have no security content."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Add basic deployment notifications and links to dashboards.",
+      "rationale": "Observability shows up in the contract (structured logs), Phase 2, Phase 7 (SLO analysis), and Phase 8, but there is no concrete treatment in Phase 1 or the migration waves, and it is only loosely described as a parallel hook."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Environment setup: dev, staging and prod clusters or namespaces, defined in infrastructure-as-code.",
+      "rationale": "IaC, immutable registry, versioned templates, and SHA artifact IDs give reproducibility, but it is not treated explicitly in each phase."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Hard rule: don't move critical services until rollback is tested and progressive delivery exists.",
+      "rationale": "Tested rollback in Phase 2, parallel old/new pipelines in Phase 4, and automatic rollback in Phase 7 give some resilience, but it is not present in every phase."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so there is no explicit N/A declaration."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Add these after the basic path works... Add self-service through a developer portal, cost visibility for runners, and preview environments.",
+      "rationale": "Later items are placed in later phases with some conditions (warn to blocking, critical services after progressive delivery), but there is no explicit not-yet-built list with pull-forward triggers."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is well sequenced and has a practical pilot-to-template-to-waves structure, but it lacks explicit decision defaults and flip conditions, defers security, and does not address the AI layer or threaded observability.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1281,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 3461
+  },
+  "cost_usd": 0.0215835,
+  "latency_s": 21.864,
+  "raw_file": "raw/judge-4906db5e1b3b.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

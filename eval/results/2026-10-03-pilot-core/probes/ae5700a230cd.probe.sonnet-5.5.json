@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "ae5700a230cd.probe.sonnet-5.5",
+  "blind_id": "ae5700a230cd",
+  "blind_sha256": "18ec15b39392557464c4dcfb5bc0e1ac28c9b29a3a4b7c79d8f34833359a7fb2",
+  "judge": "sonnet-5.5",
+  "order_index": 38,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.88,
+  "cues": [
+    "Opening provenance note: empty workspace, proceeded on stated defaults, each marked [A] and collected in an assumptions section — a systematic protocol for handling missing context",
+    "Rigid numbered section skeleton (Summary, Context/Goals, ranked quality attributes with measurable targets, Current State, Assumptions/Open Questions, Architecture, Decisions, Cross-cutting, Build Sequence, Rollout, Risks, Deferred Work, Next Steps)",
+    "Decision table with options considered, rationale tied to numbered drivers, reversibility, and 'revisit if' triggers (D1–D9)",
+    "Milestone table with goal/risk cleared, in/out scope, deliverables, exit criteria, dependencies, size; plus explicit critical path and time-boxed spikes with 'result that changes the plan'",
+    "Assumptions table with 'impact if wrong / how validated' and open questions with 'default if no answer / needed by'; also deferred work with triggers and 'shortcuts taken on purpose'"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 420,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 21022
+  },
+  "cost_usd": 0.056763,
+  "latency_s": 26.498,
+  "raw_file": "raw/probe-ae5700a230cd.probe.sonnet-5.5.txt"
+}

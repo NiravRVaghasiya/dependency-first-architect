@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "463b06ff24a6.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "463b06ff24a6",
+  "blind_sha256": "175a9dd9ff1d9a3e13d91bfb6f2ad529103ba9ad62882f666eaf025405491aaf",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 437,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Invoicing, payments and rating logic | V1: ledger and money math are correct | validation | specified",
+      "rationale": "Explicit dependency map and phases go tenancy/ledger → invoicing → payments → usage → external tenants, with gates proven before dependents."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Internal tenant 0 ... calls POST /v1/subscriptions ... invoice is finalized and charged ... tenant 0's webhook endpoint receives invoice.paid.",
+      "rationale": "Phase 0 is a real end-to-end production path across nine tiers with deploy, rollback and alerts, validated by V0."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Tenancy and isolation | R3 ... Default (chosen now) ... Flip condition: V2 fails, V3 fails, or a contract requires a dedicated database",
+      "rationale": "Irreversible decisions are tabulated with reversibility, default, assumption and concrete flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1: Tenancy, identity, ledger and contracts (widest rework first)",
+      "rationale": "Within and across phases, widest-impact items (tenancy, RLS, ledger) come first and Phase 5 goes smallest exposure first."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "0 | Secrets in AWS Secrets Manager/KMS; TLS; allow-listed keys; PSP test mode; IDs-only log schema",
+      "rationale": "The per-phase table gives concrete security items in every phase from 0 through 6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "One OpenTelemetry trace runs from the API through the database, outbox, worker and PSP call to the webhook.",
+      "rationale": "Observability with alerts is built in Phase 0 and each later phase adds specific dashboards and alerts."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform; images pinned by digest; migrations run in CI; lockfiles",
+      "rationale": "Reproducibility has concrete items in every phase, including seeds, test clocks, replay, and sandbox parity."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Idempotency keys; Multi-AZ database; rehearsed rollback",
+      "rationale": "Failure handling is specified in every phase, from outbox/inbox and circuit breakers to DLQ, DR drills and rollbacks."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: no AI component.",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Temporal workflow engine: pull forward if dunning or retry logic outgrows the job tables",
+      "rationale": "A deferred list names each item with a specific pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan that meets every rubric dimension with concrete, phase-tied content.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1067,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11967
+  },
+  "cost_usd": 0.0405955,
+  "latency_s": 16.579,
+  "raw_file": "raw/judge-463b06ff24a6.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

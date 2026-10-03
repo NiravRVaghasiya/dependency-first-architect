@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f191c8bc4c9e.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "f191c8bc4c9e",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 58,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Sandbox: \"has no secrets, limits network access to an allow-list (package registries only), and caps CPU and time.\"",
+      "rationale": "Technical claims are largely correct (GitHub App, idempotent queue, branch protection), though \"Strip or flag prompt-injection patterns\" overstates sanitization and \"queue so retries are idempotent\" is imprecise."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Out of scope at first: merging its own PRs, security vulnerabilities, breaking API changes, architecture decisions, and anything that touches secrets or infrastructure.",
+      "rationale": "Covers triage and resolve with explicit exclusions and buildable scope, though the 11-week timeline is optimistic and the index freshness is thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Orchestrator: A state machine for each issue. Every state change is persisted, so work survives restarts and the full history can be audited.",
+      "rationale": "Consistent design with policy layer, orchestrator, sandbox and verifier; minor loose ends such as the MERGED state without owning merge, and the sandbox versus ephemeral Actions runners."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Replay historical issues that have known fix PRs... hold out recent data to avoid contamination.",
+      "rationale": "Shadow mode, offline triage evaluation, red-teaming, regression gate and online metrics are domain-appropriate; per-action precision thresholds are only a generic 90% and the 'diff similarity' metric is weak."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Target: at least 90%.",
+      "rationale": "Thresholds and budgets are given as examples (e.g., 30 tool calls, four weeks), but the plan does not set out assumptions about scale, team or repo types, or their sensitivity, and the 90% target has no stated basis."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Flaky tests can give false signals. Re-run failures and keep a quarantine list of known flaky tests.",
+      "rationale": "Covers injection, spam, wrong closures, vulnerability reports, flaky tests and cost runaway with mitigations; missing races with human edits mid-work, webhook duplicates in detail and bot loops."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Dashboard: issues per state, acceptance rates, spend, and failure reasons.",
+      "rationale": "Tracing, dashboard, audit log, slash commands and per-repo config exist, but there is no rollback, deployment, incident ownership or alerting plan."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Token and time budgets per task; daily spend cap per repo; circuit breaker",
+      "rationale": "Controls exist and a cheap/strong model split is used, but there is no estimate of cost magnitudes, cost per fix, or build cost."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Temporal (or a similar tool) for durable workflows.",
+      "rationale": "Progressive autonomy and per-repo config are reversible by design, but the plan does not address one-way decisions such as state schema, embeddings or vendor coupling, and it labels the tech stack \"Suggested\"."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "L0, Shadow: Triage runs but writes nothing.",
+      "rationale": "Staged rollout starting with triage is proportionate; multi-agent planner, critic and vector DB plus Temporal are somewhat heavy but mostly justified."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Weeks 1–2: GitHub App, webhook ingestion, state machine, triage classifier in shadow mode, and building the historical evaluation set.",
+      "rationale": "Milestones follow dependencies with concrete components and promotion criteria, but few explicit checkpoints or adaptation rules if results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "L0, Shadow: Triage runs but writes nothing... A repo moves up a level only once its metrics hit targets for a set period"
+    },
+    {
+      "id": "P4-02",
+      "status": 1,
+      "evidence": "GitHub App with least-privilege, per-repo scopes; short-lived tokens"
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "no tool calls are driven directly by issue text; policy layer validates every action"
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "Short-lived sandbox, no secrets, network egress allow-list, resource limits"
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "The new test fails on the original code and passes on the fix."
+    },
+    {
+      "id": "P4-06",
+      "status": 1,
+      "evidence": "Measure precision and recall per label, and precision on duplicate detection."
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "A clear label: `agent-authored`."
+    },
+    {
+      "id": "P4-08",
+      "status": 1,
+      "evidence": "Rate limits per repo and per issue; one bot comment per state change; quiet hours"
+    },
+    {
+      "id": "P4-09",
+      "status": 1,
+      "evidence": "Token and time budgets per task; daily spend cap per repo; circuit breaker"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "Audit log: every GitHub write action, linked to its trace ID."
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "Retrieve relevant files using stack traces, symbol search, embeddings and `git blame` / recent commits."
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "Events go into a durable queue (SQS, Pub/Sub or Redis Streams) so retries are idempotent."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent cannot merge; branch protection requires human approval and CI passing"
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "Short-lived sandbox, no secrets, network egress allow-list, resource limits"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Treat the issue text as untrusted data, never as instructions."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "Never auto-close except for `needs-info` staleness under explicit policy"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Run edit → test → reflect until it succeeds or a budget runs out (for example, 30 tool calls, 20 minutes or a token cap)."
+    }
+  ],
+  "note": "A solid, safety-conscious plan with no human-less merging, progressive autonomy and good verification. It is thin on assumptions, cost magnitudes, operations, event-race handling and the index refresh.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2320,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 11685
+  },
+  "cost_usd": 0.0526055,
+  "latency_s": 50.243,
+  "raw_file": "raw/judge-f191c8bc4c9e.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

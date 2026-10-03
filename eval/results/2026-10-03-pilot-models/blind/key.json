@@ -1,0 +1,969 @@
+{
+  "schema": "dfa-eval/blind-key@1",
+  "salt": "5bb03eb9d0b703fc",
+  "neutralize_terms_for": [
+    "engineering-quality-v1"
+  ],
+  "entries": [
+    {
+      "blind_id": "002459306ee2",
+      "gen_id": "P4.dfa.sonnet-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "6be060a494a8541e3de2b0c85f9ef638122cec41fc43fb1e06a088d16d31743d",
+      "replacements": 10,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "004472a6c6ce",
+      "gen_id": "P5.dfa.sonnet-5.5.r02",
+      "variant": "plain",
+      "sha256": "aaeeba97dc3185cbffaf3aca2a55ea393ccaf124f39fdf9eeb486373e95589b0",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0499ecdf1302",
+      "gen_id": "P4.dfa.sonnet-5.5.r02",
+      "variant": "plain",
+      "sha256": "e7a3643788a0fe367a7a74ddc3368763d77371c19cf780500761dad21e34be5b",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "05757b635b60",
+      "gen_id": "P2.dfa.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "74e1a9c78a8c43c6e744285047759a862ef08e689071ef14601b383dea550259",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "070e75f47c06",
+      "gen_id": "P4.dfa.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "300cffc70846451bc5a445c7fa3ae26ac8a1bfe4979496d7c3080e8f6bacac8c",
+      "replacements": 14,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "073ffd475180",
+      "gen_id": "P3.baseline.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "53bbe792dfb464aed49a864a52f94b9d73c5b23ba1e0203a5c75f0005ef97a5b",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0a9fdc8f115e",
+      "gen_id": "P3.dfa.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "e2914b4d8bf1fa82d80c3406784ef6957b83cad55f386b81284eaf59c22cc1ba",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0b08a52737ec",
+      "gen_id": "P2.dfa.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "4e0f59f74deb1758b0eb86d4811b9d12f232c748ece26b5c25f8d4ea05afd393",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0b8733db7ffe",
+      "gen_id": "P2.dfa.sonnet-5.5.r02",
+      "variant": "plain",
+      "sha256": "45fe928476836ec8efbfab7c8f84595ed79668d8a83af05e3419e2444ae94785",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0cff3e4beeeb",
+      "gen_id": "P1.baseline.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "96940b4242bee2449b9c5536d6819e73a7097411eb00c2527a382670960cf1d8",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "10645947c4d9",
+      "gen_id": "P4.dfa.sonnet-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "812cf3b6374b8fd5039d2054cb9e42f31452712cb71de3c53ffa121b34ac73c6",
+      "replacements": 11,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "19198bf772db",
+      "gen_id": "P4.dfa.sonnet-5.5.r03",
+      "variant": "plain",
+      "sha256": "563870e5054ba5373bc1b02824f11659453f3a03e56489c6a02c22cd7d107f42",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "1b3e9edaa3b6",
+      "gen_id": "P2.baseline.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "9521c0ead07e09c3607a5b180e4cbf4c1a21f9aadaf2074a4d1b805204d100d1",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "1facf4fe8397",
+      "gen_id": "P3.baseline.sonnet-5.5.r03",
+      "variant": "plain",
+      "sha256": "cb370bbd301c4a8873f879fc44044c5f4213eddb256f53a131087b4d733cb81b",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "1fbf316d9832",
+      "gen_id": "P5.dfa.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "70917c33a04a9a060d958cd92048ba32eac3e9cd46570ca785573fb29587244e",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "2711a8b22a00",
+      "gen_id": "P5.baseline.sonnet-5.5.r01",
+      "variant": "plain",
+      "sha256": "5ade316f73f320259baeef42bb3e053f7114a9e036d54a4afb9546a4bee10fed",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "276e34281372",
+      "gen_id": "P3.dfa.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "22d216fd58edbc27bb860c2fcb2d2ee0201c6fdff8bf86032679ac7bb1339e60",
+      "replacements": 38,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "27b25ffdd203",
+      "gen_id": "P1.dfa.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "0a9195971536550fbd05686a3b8c0d74c261b4dc79cc95f20184337a8b40dcfd",
+      "replacements": 18,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "28b99ee89b69",
+      "gen_id": "P3.baseline.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "ec83fe575b7a421c928376f346e3e9a44d255abe5076ae1e3cee37e7edc3f26c",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "2a7d62cce6b0",
+      "gen_id": "P4.dfa.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "8da3f19fedd71afb47fb3c800422ab54cea27de1013d6446708bccab7c1a8c6d",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "2bbc0f21da3f",
+      "gen_id": "P5.dfa.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "cdf93fe2ca1181afaf20bd6303afb188a5e34c8ca1d887b2e9b9fa995ffa06ff",
+      "replacements": 19,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "30aebb8bdbc3",
+      "gen_id": "P2.dfa.sonnet-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "0e456238daa24b4b21ace8a946d65300caef18f281f54be35ef9d4596dc48c24",
+      "replacements": 10,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "324156580bb7",
+      "gen_id": "P2.dfa.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "fb0f4731961c046ee0888260f98106b0cfa8dadbabd4c74c9b78c0039ccc128f",
+      "replacements": 24,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "326ef4f16e2c",
+      "gen_id": "P2.baseline.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "9521c0ead07e09c3607a5b180e4cbf4c1a21f9aadaf2074a4d1b805204d100d1",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3530206dab54",
+      "gen_id": "P4.baseline.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "6115d4034b1c431e11a7b273a00d30f5531df8d6bf5da7740d4bf4a36f4d5caf",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3632dd2e62da",
+      "gen_id": "P1.baseline.sonnet-5.5.r01",
+      "variant": "plain",
+      "sha256": "39610dd569411d14c79c4ce8e125f634da19a5958bac5bc22172a5fc6cf5264f",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3829c14ef5af",
+      "gen_id": "P5.baseline.sonnet-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "271018a82da046cc758699f6969584e2fb022dcfaf4aca4102446fd86933c411",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "383de6c54efb",
+      "gen_id": "P4.dfa.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "c79c25548c8a38aa0b14f66aea8b64c4af5fe8914beb5e8ff894386be70b994f",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "39d9bbbf807d",
+      "gen_id": "P1.dfa.sonnet-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "ee9e9a90da3f635041d7c0cbe2a9c512266ebef666de997b19bdc2638d0b9f65",
+      "replacements": 10,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3c332bf404b5",
+      "gen_id": "P4.dfa.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "5e253359981b5cf4af820d81d4f0d5b91424028f7c209a9ad43e0478485f3490",
+      "replacements": 12,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3e905cabeb5c",
+      "gen_id": "P2.baseline.sonnet-5.5.r03",
+      "variant": "plain",
+      "sha256": "cd0b7bf34bf8000bbe450f47317650a4e9c51605b0226a97f97c592db37e26bf",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3ee16456c677",
+      "gen_id": "P2.dfa.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "831dae2f8eda448d440008177eb988a5b9186380f8a55dbbb47a0c28a04958d9",
+      "replacements": 14,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "40a721d4ef72",
+      "gen_id": "P5.baseline.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "0d46d2ef5660e98ee3fa2e141b58af5c2c7a29b1b5fcd9c3c76c7a012cc6cefe",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "4521bff5ddc6",
+      "gen_id": "P2.baseline.sonnet-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "cd0b7bf34bf8000bbe450f47317650a4e9c51605b0226a97f97c592db37e26bf",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "458550754798",
+      "gen_id": "P4.baseline.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "6cb1d5bb78a48a27554723ccb98e122b930c15daf290cceecd37941a90cc98d2",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "45b02f85d7e5",
+      "gen_id": "P3.dfa.sonnet-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "3a8edbb8c8032cc2d027bdaeb24af10b9d0ffab7b369484e451d8953ba9f6792",
+      "replacements": 11,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "483c01bd1c3f",
+      "gen_id": "P5.baseline.sonnet-5.5.r03",
+      "variant": "plain",
+      "sha256": "ab72e7f2ff25a4e71e8e24d37279a63b330d7c2e451515f358360ad10c937f95",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "49c2cfec1c58",
+      "gen_id": "P2.baseline.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "c39090a7b41c05ad528a6ce80c1b93958d748bea1e811fab6b34f7c86c0bb3b3",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "4bc1a12c4dc1",
+      "gen_id": "P3.dfa.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "e052f591216be6e82e43c5220648ecbb93912cc56bd391b4001770f294196205",
+      "replacements": 30,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "4dcbcf79d7f6",
+      "gen_id": "P4.baseline.sonnet-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "d6540f7c5c72d00c5ca5aaeaf56682739e3b0ad7d039de464e56234e35d301dd",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "4e34418a8f43",
+      "gen_id": "P4.baseline.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "6115d4034b1c431e11a7b273a00d30f5531df8d6bf5da7740d4bf4a36f4d5caf",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5129f7d23391",
+      "gen_id": "P4.baseline.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "6cb1d5bb78a48a27554723ccb98e122b930c15daf290cceecd37941a90cc98d2",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "519f2a9796c5",
+      "gen_id": "P3.dfa.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "4f71845ebb1dfc9a5af94ea342e0cc757290a02666cd4bd3272615d7ec53637a",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5807bb948eaf",
+      "gen_id": "P2.dfa.sonnet-5.5.r01",
+      "variant": "plain",
+      "sha256": "5c4e8527578dd2fceae773db0341ffec85b285b406c176b5fd9b7252d4cc7af5",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "59de5cb569d7",
+      "gen_id": "P2.baseline.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "93500c9629399db7e7984635ec467476a821079227125a3ae237e257b9c5ccc6",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5a271cb8f559",
+      "gen_id": "P3.baseline.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "82e50726ea3cd8a3a3c03fa6b7cfb4c7ba2d5ad1e338b8c47ec1412177fe1e0c",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5ae61386e1b4",
+      "gen_id": "P3.dfa.sonnet-5.5.r01",
+      "variant": "plain",
+      "sha256": "11173713f8d6b07cd9a6c3a4d21be10006f92a8917da8acaf5fc6174ed0f1ae7",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5df896846a0f",
+      "gen_id": "P3.dfa.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "f6a56ac994ad4e0b328d17c31dee5766c83a2539497fba7dda80fb0ee00d36be",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5fa8100104e7",
+      "gen_id": "P2.dfa.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "39c893b922ea5060ecb9c237c63663fc4320554dca6035239a94529b15c10738",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "620d95b43dc9",
+      "gen_id": "P5.baseline.sonnet-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "ab72e7f2ff25a4e71e8e24d37279a63b330d7c2e451515f358360ad10c937f95",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "63df27fe5e03",
+      "gen_id": "P4.dfa.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "dcc1c056c25f666e19f8253c953fe37070851a2b8742527e318143daf76ada75",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "6538edaef176",
+      "gen_id": "P4.baseline.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "e68987236489ca9f9a86dd0dec6cfaf693d202ca1769fa36585f2eb1ff3681d1",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "65742694cb5f",
+      "gen_id": "P4.baseline.sonnet-5.5.r01",
+      "variant": "plain",
+      "sha256": "c15cbc8614c4ed90375a192ed74084cecea39d6e2491ff1a73cc94b731fa7488",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "6682d8c38fbc",
+      "gen_id": "P4.baseline.sonnet-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "c15cbc8614c4ed90375a192ed74084cecea39d6e2491ff1a73cc94b731fa7488",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "688feff955c6",
+      "gen_id": "P1.dfa.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "c2beeaddd2219d9ced223985b0cee32e3f69856af557b51c843d20858836ebc0",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "69fe2f17b59b",
+      "gen_id": "P5.dfa.sonnet-5.5.r03",
+      "variant": "plain",
+      "sha256": "db8a0742b615d8c815c1aede790445245aed286f159edcf30d9efec2cd75efa9",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "6a80095fb737",
+      "gen_id": "P4.baseline.sonnet-5.5.r02",
+      "variant": "plain",
+      "sha256": "d6540f7c5c72d00c5ca5aaeaf56682739e3b0ad7d039de464e56234e35d301dd",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "6d78abdf653a",
+      "gen_id": "P5.dfa.sonnet-5.5.r01",
+      "variant": "plain",
+      "sha256": "c185f5fff2dd230f463972ece04ee94be16afc0f6e136d1684b4d59e27f3067c",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "6d8307c49cf9",
+      "gen_id": "P5.dfa.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "eebd36ec0b978dd7ff0c64bfb8f479369c5cef8302be895f5e967df97cdfb372",
+      "replacements": 21,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "6f048567d6f2",
+      "gen_id": "P5.baseline.sonnet-5.5.r02",
+      "variant": "plain",
+      "sha256": "271018a82da046cc758699f6969584e2fb022dcfaf4aca4102446fd86933c411",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "71352a2336f9",
+      "gen_id": "P1.dfa.sonnet-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "34af5f3dfb58c24780b2e44e97e294181ef85277a71b301109fbf65d22ce65e8",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "716c58de0618",
+      "gen_id": "P5.baseline.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "ba286a25afb506b3dd427b641626429cb572c71842f2b7c2e0a3b19883503abe",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "71e750a228cf",
+      "gen_id": "P5.dfa.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "3985316347fc2b57646d5d257ce7cbb39e73bbd0e56554891f5cf29207bec4ec",
+      "replacements": 19,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "73c0f2abfe6d",
+      "gen_id": "P1.baseline.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "8ce749c5663fc3c95a246a9439ffc88cfe4f7b2158d66ff73f200231cfa1f526",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "75d951529fe7",
+      "gen_id": "P4.dfa.sonnet-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "f321c88df8a6751f2a568d47c3f040cba3e79ab93c60f8e62168b3496d51aab8",
+      "replacements": 10,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "76479ca7d812",
+      "gen_id": "P1.dfa.sonnet-5.5.r01",
+      "variant": "plain",
+      "sha256": "a9dd7583e251533dda8104edba8b8c228ad34a45f045cc252b792a375be37c4e",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "79306bbbd329",
+      "gen_id": "P2.baseline.sonnet-5.5.r02",
+      "variant": "plain",
+      "sha256": "91822fbbdcb26519173dcd8fa5375ff5a555f3bf0234d628f5a39be7c7f0e914",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "795426eb15d1",
+      "gen_id": "P2.baseline.sonnet-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "498247ec88c9aec38d50a802b464b4ad7b179dd435e03589987baa89d460bc00",
+      "replacements": 1,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "7b4270e6d1c3",
+      "gen_id": "P1.dfa.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "adbb1b9ae9f828f8b59efef1c571c25214566f870dd1f242b9f019b804d71843",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "7c2cff7a78be",
+      "gen_id": "P1.baseline.sonnet-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "39610dd569411d14c79c4ce8e125f634da19a5958bac5bc22172a5fc6cf5264f",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "7d500d5dfb1d",
+      "gen_id": "P3.dfa.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "310e26381370ec5168041b0a688e162f409e3fcdce4494bd241814dc16d2ea4a",
+      "replacements": 27,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "824f9c3bb3df",
+      "gen_id": "P1.baseline.sonnet-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "6950ddf8e6a31b8d149bd5af1c845095337b3d9f766c45e0dbacd40cdab524ba",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "82e0fcb18f13",
+      "gen_id": "P3.baseline.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "82e50726ea3cd8a3a3c03fa6b7cfb4c7ba2d5ad1e338b8c47ec1412177fe1e0c",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8365382e5e58",
+      "gen_id": "P4.baseline.sonnet-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "11246f649a64b30b72c3d106efa3557a98f7f7c96a6c9b29a9928a59d00f2c56",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "88e47533cea5",
+      "gen_id": "P1.dfa.sonnet-5.5.r03",
+      "variant": "plain",
+      "sha256": "5e1a0dfe3a0a20ec819ad63a66cc9d8cd971710ad3b4012d4480f1a6c29dd4ec",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "893bdb384587",
+      "gen_id": "P5.dfa.sonnet-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "5f876007b63d804ad8f119b6ce17a97f66b48b82ba0d2a237d83e90dba245099",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8a2577ffc418",
+      "gen_id": "P2.dfa.sonnet-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "c454ea08cd8cc939420faf6d2d0e5da4481c6d702272f2d03e9ccc71511ad73f",
+      "replacements": 10,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8c22bb10adf2",
+      "gen_id": "P4.dfa.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "f5729a6491a7755e8c47fc7e9f3b6bddc2881d6e8bc026a3a592ecceaa84420e",
+      "replacements": 17,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8d1856dea14d",
+      "gen_id": "P1.baseline.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "d27d3d323c438c20aa1fdfb19e8423ad6c809dbf62edc9d7d086cfdfd61fff35",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8d93d07863ae",
+      "gen_id": "P4.baseline.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "e68987236489ca9f9a86dd0dec6cfaf693d202ca1769fa36585f2eb1ff3681d1",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "90fa8d32ab86",
+      "gen_id": "P1.baseline.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "8ce749c5663fc3c95a246a9439ffc88cfe4f7b2158d66ff73f200231cfa1f526",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9191712a618b",
+      "gen_id": "P1.dfa.sonnet-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "465b48a7ad7a3a238d2f75a331fdfaa698091378f1003c208faff19054ba1366",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "948eb3633bf3",
+      "gen_id": "P3.baseline.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "53bbe792dfb464aed49a864a52f94b9d73c5b23ba1e0203a5c75f0005ef97a5b",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "97a9562f8fd5",
+      "gen_id": "P3.baseline.sonnet-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "0959b95800fa774f4e74268d0993b5002a01e7cb9de6fa30a910e19b97f8a832",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "98e182ae7521",
+      "gen_id": "P1.dfa.sonnet-5.5.r02",
+      "variant": "plain",
+      "sha256": "1c9bb3342d61e8f45a9139b8cc6d3bd5663b41494ec32f94d0410287118c5aba",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9e4fe0b84d4c",
+      "gen_id": "P3.baseline.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "ec83fe575b7a421c928376f346e3e9a44d255abe5076ae1e3cee37e7edc3f26c",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a1829804f0ce",
+      "gen_id": "P5.dfa.sonnet-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "5df38fbfa04e7cd92e5b3fe6dc061ab3f18fc17ef0aebff5889f3afc09f7ed4e",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a2eafcdd67c2",
+      "gen_id": "P3.baseline.sonnet-5.5.r02",
+      "variant": "plain",
+      "sha256": "0959b95800fa774f4e74268d0993b5002a01e7cb9de6fa30a910e19b97f8a832",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a50db20cb446",
+      "gen_id": "P2.baseline.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "c39090a7b41c05ad528a6ce80c1b93958d748bea1e811fab6b34f7c86c0bb3b3",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a725fd955dce",
+      "gen_id": "P1.baseline.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "d27d3d323c438c20aa1fdfb19e8423ad6c809dbf62edc9d7d086cfdfd61fff35",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a86457e0d194",
+      "gen_id": "P1.baseline.sonnet-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "e021a2391b0802e81ea5889a1e5805e733595d60fe5944938f2877a106bc5e34",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "aca0689ed570",
+      "gen_id": "P5.baseline.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "0d46d2ef5660e98ee3fa2e141b58af5c2c7a29b1b5fcd9c3c76c7a012cc6cefe",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ade1f55b45de",
+      "gen_id": "P1.baseline.sonnet-5.5.r03",
+      "variant": "plain",
+      "sha256": "6950ddf8e6a31b8d149bd5af1c845095337b3d9f766c45e0dbacd40cdab524ba",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ae8eb25d2edc",
+      "gen_id": "P4.dfa.sonnet-5.5.r01",
+      "variant": "plain",
+      "sha256": "dea0572fb23648f6687665e49a75f4ad55d4cb303ed988d112013c8a781ba2ae",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "b115cf3ae9bb",
+      "gen_id": "P4.baseline.sonnet-5.5.r03",
+      "variant": "plain",
+      "sha256": "11246f649a64b30b72c3d106efa3557a98f7f7c96a6c9b29a9928a59d00f2c56",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "b6d58bc60693",
+      "gen_id": "P1.dfa.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "2510565860f8974afb615ee27d14c4aea97e179452ab694a404969e12564007a",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "b930096823c3",
+      "gen_id": "P5.dfa.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "52d99fd4d0f82eec25ec6e0a1eef80834dae7daf3bf9cbac5a048dc04093cbef",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ba4507b2b31e",
+      "gen_id": "P5.dfa.sonnet-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "c85a0a9a74fd620419af09f376a36fe3b7fbb03181d32de6ed82e6e36b8a8aa4",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "bb7d0c6ac6c7",
+      "gen_id": "P3.dfa.sonnet-5.5.r02",
+      "variant": "plain",
+      "sha256": "deb7f46e4ac6903ffdc8d5975b1e39bc846b9249256febc06892fa95b5444549",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "bee2a8d0bc48",
+      "gen_id": "P2.dfa.sonnet-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "6a107de203f346de05421270d6a2bcce08a41425a4611dd2d8e38d83d415b268",
+      "replacements": 10,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "bf1b9cf5daf7",
+      "gen_id": "P5.baseline.sonnet-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "5ade316f73f320259baeef42bb3e053f7114a9e036d54a4afb9546a4bee10fed",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "c45672fb6bfd",
+      "gen_id": "P3.dfa.sonnet-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "f2e8eced74e7d9d6e5d522cd7785a30b46996f87532c926b3295662ad29c549d",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "c50364726ee9",
+      "gen_id": "P2.baseline.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "93500c9629399db7e7984635ec467476a821079227125a3ae237e257b9c5ccc6",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "c5b5db86cf79",
+      "gen_id": "P3.baseline.sonnet-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "2997ce7ee19d14cb2ab5a18f662ab7429a9fd64d606d80193721fd65e5757221",
+      "replacements": 1,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "c5fbf5a5ba1d",
+      "gen_id": "P1.dfa.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "3a8576394f93b815dcbb2de2b98b834d05965c903c8f1905b15a8a5ac72506a5",
+      "replacements": 11,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "cab697a7aacf",
+      "gen_id": "P2.dfa.sonnet-5.5.r03",
+      "variant": "plain",
+      "sha256": "704c37ef07403e692948be91df082e5b282479ca010bc111eac200d204bbf55d",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ce2c56f94e58",
+      "gen_id": "P5.dfa.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "3ada4b0573fb9bee9f056da5da707ef278817f641a5322bdde7f8b2cc159c20c",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "cfbf4a71a179",
+      "gen_id": "P5.baseline.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "22ba3c6e2d295154506a75c5f5ec3e853750156ea93d32804b2b18a2410ca272",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "cfdec8c5b7e6",
+      "gen_id": "P1.baseline.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "96940b4242bee2449b9c5536d6819e73a7097411eb00c2527a382670960cf1d8",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "d2f7fbe1f796",
+      "gen_id": "P3.baseline.sonnet-5.5.r01",
+      "variant": "plain",
+      "sha256": "a5dc977dba2ce2368b2a7e47d31eae95376084cb93869473fde829ddbd65bde5",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "d42dbf3f8491",
+      "gen_id": "P2.baseline.sonnet-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "6b73ad3b1ade7466c72312256c071f841d785c15ff0beb461a682a4ff014e762",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "d677bb7b448c",
+      "gen_id": "P3.dfa.sonnet-5.5.r03",
+      "variant": "plain",
+      "sha256": "6e0d0cbf02af4b94828880194a37176422457e65d9e94e7095bd533384ce9fde",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ddd47dfd00d9",
+      "gen_id": "P3.baseline.sonnet-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "cb370bbd301c4a8873f879fc44044c5f4213eddb256f53a131087b4d733cb81b",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "dfd4356212de",
+      "gen_id": "P1.dfa.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "1a42d075f1b0a09cef474a3ab2011937ff25929e75066a70f33bf8bbb0e7470d",
+      "replacements": 13,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ea5249b0ee08",
+      "gen_id": "P2.baseline.sonnet-5.5.r01",
+      "variant": "plain",
+      "sha256": "6b73ad3b1ade7466c72312256c071f841d785c15ff0beb461a682a4ff014e762",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f4b850774c11",
+      "gen_id": "P2.dfa.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "4691d82a221d7b59211f8be741fb1be4f5c105034455aab6a0188456656ce6ba",
+      "replacements": 16,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f7872a714707",
+      "gen_id": "P1.baseline.sonnet-5.5.r02",
+      "variant": "plain",
+      "sha256": "e021a2391b0802e81ea5889a1e5805e733595d60fe5944938f2877a106bc5e34",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "fd1ff071b667",
+      "gen_id": "P5.baseline.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "22ba3c6e2d295154506a75c5f5ec3e853750156ea93d32804b2b18a2410ca272",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ff17acc9fc2a",
+      "gen_id": "P3.dfa.sonnet-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "3f4e5f0eea97751c07cdf167e39ad7baf20cdc2ecd6cf6a2a12dbb9492ebafaf",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ffb4f3cea617",
+      "gen_id": "P5.baseline.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "ba286a25afb506b3dd427b641626429cb572c71842f2b7c2e0a3b19883503abe",
+      "replacements": 0,
+      "self_score_removed": false
+    }
+  ]
+}

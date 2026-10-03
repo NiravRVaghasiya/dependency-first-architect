@@ -1,0 +1,172 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "fc79acb18849.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "fc79acb18849",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 108,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Python's `os.rename` behaves differently by OS: on POSIX it silently replaces an existing file, on Windows it raises an error.",
+      "rationale": "The rename, hard-link, FAT and case-insensitivity claims are accurate; small gaps remain, such as case-only renames via link and the unlink crash window."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Check \"buy\" first. `exiftool '-FileName<DateTimeOriginal' ...` already does the core job",
+      "rationale": "It solves the real problem with preview, undo and no-overwrite, and defers items explicitly. Sidecar renaming is deferred even though iPhone pairs make it a core need."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "One process with four internal modules: `scan → read → plan → apply`.",
+      "rationale": "Responsibilities and data flow (the journal and RenamePlan record) are consistent. Loose ends: Phase 0's exit check expects an idempotent rerun that Phase 1 only builds, and the all-or-nothing abort sits awkwardly beside exit code 1 for skipped files."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "property-based tests (Hypothesis) on generated folders that include collisions, case clashes and cycles ... killing the process at a random rename and running `undo`",
+      "rationale": "Validation targets the real risks (data loss, crash recovery, corrupt files, fuzzing, 3-OS CI). The exifread format risk is tested only in Phase 2, and nothing continues after release."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Formats it can't read reliably (CR3, MP4/MOV, odd RAW) show up in the fixture tests → switch to running `exiftool -j -n`",
+      "rationale": "Defaults and revisit triggers are stated in a table. Some thresholds (20k files, 60 s, ≥30 files) are arbitrary, and the user base and threat model are not stated as assumptions."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "`undo` refuses journal entries that point outside the folder (a tampered journal can't redirect it).",
+      "rationale": "Covers crash mid-run, collisions, case clashes, cycles, corrupt or malicious EXIF, symlinks, vanishing files and Ctrl-C with concrete handling. Live Photo and sidecar orphaning is only warned about."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Exit codes: `0` all renamed, `1` some files skipped, `2` aborted. ... CI fails if any OS is red.",
+      "rationale": "Exit codes, logs, CI, tagged releases, a versioned journal and undo as rollback suit a local CLI. There is no support or issue-handling path."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "If the user is fine running a one-liner without undo, **stop here and ship a documented exiftool alias.**",
+      "rationale": "The build-versus-buy trade-off is addressed, but there is no effort estimate or dependency cost. Run cost is near zero and goes unremarked."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Version the journal format (`\"v\":1`), because a later `undo` must still read old journals.",
+      "rationale": "It identifies the one-way items (naming contract, journal format), isolates EXIF reading behind `DateSource`, and gives explicit exit paths and revisit triggers."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "One process with four internal modules ... Splitting it into services would be absurd.",
+      "rationale": "It stays a small local CLI and gates optional work. Phase 4 polish (man page, completions, colored table) and the hard-link mechanism add some weight."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: the wheel built by CI, installed with `pipx` on all three OSes, renames a real 3-photo folder correctly.",
+      "rationale": "Phases are ordered by dependency and risk, with concrete tasks, checkable exit criteria and stated adaptation triggers, so a team could start now."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "Use `DateTimeOriginal`, then `DateTimeDigitized`, then `DateTime`."
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "Files with no usable date are **skipped and reported**, never given a guessed date."
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "`_NN` breaks ties within the same second, ordered by `SubSecTimeOriginal` and then the original filename."
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "`photorename ~/Pictures/trip` (preview is the default)"
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "swaps and cycles (A→B, B→A), handled by renaming to temporary names first and then to final names."
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "Add `photorename undo DIR`, which replays the journal backwards and resumes cleanly after a crash halfway through."
+    },
+    {
+      "id": "P7-07",
+      "status": 1,
+      "evidence": "No timezone conversion: the camera's local time is used as recorded."
+    },
+    {
+      "id": "P7-08",
+      "status": 1,
+      "evidence": "Detect and warn only; actually renaming them together is deferred."
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "`YYYY-MM-DD_HHMMSS[_NN].<original ext>`. It sorts correctly as text, is legal on Windows (no colons)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "before each rename, check that the target doesn't exist and refuse if it does."
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "Use `DateTimeOriginal`, then `DateTimeDigitized`, then `DateTime`."
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "Splitting it into services would be absurd."
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "pure-Python `exifread`, read-only."
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "Only parsed date digits ever go into filenames, never raw EXIF text."
+    }
+  ],
+  "note": "Strong, safety-first plan for a small CLI: it avoids every trap and has concrete journal, undo and validation design. Its main gaps are deferring sidecar renaming and OffsetTimeOriginal, and thin cost and assumption treatment.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 5687,
+    "thinking_tokens": 3394,
+    "cache_read_input_tokens": 907,
+    "cache_creation_input_tokens": 11886
+  },
+  "cost_usd": 0.0867744,
+  "latency_s": 59.395,
+  "raw_file": "raw/judge-fc79acb18849.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

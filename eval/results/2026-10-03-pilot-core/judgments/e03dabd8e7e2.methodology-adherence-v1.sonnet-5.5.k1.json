@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e03dabd8e7e2.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "e03dabd8e7e2",
+  "blind_sha256": "bda92257b3d1daeb2a83095c3205df1017c4661e231dfcd0c730f3b0773812ff",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 262,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1: \"Event logging to Kafka and the lakehouse, label pipeline, rules engine on the auth path, latency harness\"",
+      "rationale": "Phases broadly go data → features → model → rollout, but the architecture and feature design are specified up front and the ordering is loosely justified; the control group comes last though it affects labels."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Phase 1 ... \"rules engine on the auth path, latency harness\"",
+      "rationale": "Phase 1 puts a rules engine on the auth path, which is somewhat end-to-end, but it is a 6-week bundle, not a thin slice through to production decisions, and no model or step-up is included."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "\"Fall back to rules only, then approve with limits (fail-open with limits)\"",
+      "rationale": "A defaults table exists, but it has no flip conditions or revisit triggers, and irreversible choices such as the feature store, the Kafka/Flink stack, and the tokenization point are not listed as gates."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Nothing orders work within phases by blast radius; items are just listed."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "\"Tokenize the full card number (PAN) at the edge so the fraud stack sees only tokens.\"",
+      "rationale": "Security has a standalone section, but the phased delivery table never mentions it, so it is not threaded through the phases."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Phase 2: \"first GBDT model in shadow mode, monitoring dashboards\"",
+      "rationale": "Monitoring is detailed in section 6, but the phases introduce dashboards only in Phase 2, with just a latency harness in Phase 1."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "\"log the exact feature vector served with every decision... point-in-time joins\"",
+      "rationale": "Train/serve skew and versioned rules and models are covered, but there is no reproducible build, environment, or infrastructure treatment per phase."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "\"a hard timeout on the scorer, then rules only, then default approve under a capped amount.\"",
+      "rationale": "Fallbacks and kill switches are concrete, but they sit in a standalone section and are not placed in each phase."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "\"Kill switches: per model, per rule, and per segment\"; \"shadow mode (score everything, act on nothing\"",
+      "rationale": "The system is a GBDT fraud model (classical ML) with human analysts, rules, kill switches, and shadow/canary rollout. It has no explicit layered AI ordering of defenses, budgets, and human-in-the-loop before capabilities, and the feedback loop lands in Phase 3."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "\"Phase 4 | 18+ | Device and graph features, anomaly model, automated retraining, control group\"",
+      "rationale": "Later work is listed in Phase 4 and as optional add-ons, but there are no pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A solid domain-level fraud design with good technical depth, but it is weak on process structure: no flip conditions, no blast-radius ordering, and security, observability, and resilience are not threaded through the phases.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1209,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4795
+  },
+  "cost_usd": 0.0240855,
+  "latency_s": 18.627,
+  "raw_file": "raw/judge-e03dabd8e7e2.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

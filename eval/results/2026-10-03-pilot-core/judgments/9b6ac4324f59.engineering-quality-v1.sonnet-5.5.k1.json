@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9b6ac4324f59.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "9b6ac4324f59",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 16,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Promote the cloud database to primary and set up **reverse replication back to on-prem** so you can roll back.",
+      "rationale": "Mechanisms (CDC, promote, queue hold, keep app and DB co-located) are accurate; minor imprecision such as reverse replication being set up after promotion and heterogeneous tool caveats."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Integrations are where scheduling migrations usually fail. List every connection:",
+      "rationale": "Covers core needs including integrations, replication, cutover, and decommissioning, with a credible timeline; generic because the vendor and stack are unknown, and a brief read-only pause is a near-zero-downtime interpretation."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "The core idea: never let two systems accept bookings at the same time.",
+      "rationale": "Single-writer principle is applied consistently across replication, cutover and rollback; the interface engine placement is left undecided."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Rehearse cutover and rollback at least twice in a production-like environment, and time every step.",
+      "rationale": "Validation covers shadow reads, load at 1.5–2× peak, reconciliation, failure tests and rehearsals with checkable go/no-go criteria; thresholds are vague ('a few seconds') and there is limited post-launch validation."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "I don't know your vendor, database, cloud provider or integrations, so this plan is written to work across most setups.",
+      "rationale": "Unknowns are stated openly and resolved with reasonable defaults with questions, but sensitivity of the design to each answer is only loosely explained."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Pause the interface engine's outbound queues. Messages build up safely instead of being lost.",
+      "rationale": "Covers double booking, message loss, link failure, missed integrations and vendor risk with concrete mitigations; weaker on duplicate messages, in-flight transactions and reverse-replication failure or divergence."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Hypercare: help desk staff on site with users, daily check-ins, and close watching of performance, interface errors and replication.",
+      "rationale": "Cutover, rollback and hypercare are covered, but ongoing monitoring signals, alerting, incident ownership and access administration are thin."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "None",
+      "rationale": "Cost is essentially not addressed beyond the rough timeline, apart from the keep-warm reverse replication and an optional DR region."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Interface engine: decide whether it moves first, moves with the scheduling system, or stays on-prem.",
+      "rationale": "Reversibility is central through reverse replication, a stable endpoint abstraction, a phased option and IaC, though lock-in to a cloud or vendor is not discussed."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Phased alternative: if your system can separate data by location, cut over one clinic or department at a time.",
+      "rationale": "Lift-and-shift with no rewrite and a minimal set of components, each justified; the 90-day reconciliation and the second region are optional extras but reasonable."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Sequence (the switch itself takes seconds to a few minutes): 1. Pause the interface engine's outbound queues.",
+      "rationale": "Phased with timeline, concrete cutover steps and go/no-go gates; stack-specific decisions are deferred and there is no plan for early-result failures."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 1,
+      "evidence": "encryption in transit and at rest, customer-managed keys, audit logging, access controls, network separation"
+    },
+    {
+      "id": "P6-02",
+      "status": 1,
+      "evidence": "Integrations are where scheduling migrations usually fail. List every connection:"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "Daily reconciliation: compare row counts and checksums by date, provider and location. Also check that the next 90 days of appointments match exactly."
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "Only one system accepts bookings at any moment; never write to both"
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "Rehearse cutover and rollback at least twice in a production-like environment, and time every step."
+    },
+    {
+      "id": "P6-06",
+      "status": 1,
+      "evidence": "a dedicated private link to the cloud (AWS Direct Connect, Azure ExpressRoute or GCP Interconnect) with a site-to-site VPN as backup."
+    },
+    {
+      "id": "P6-07",
+      "status": 2,
+      "evidence": "printed or exported schedules for the next 72 hours at every clinic, plus paper booking forms."
+    },
+    {
+      "id": "P6-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "Shadow traffic: replay real read and search traffic against the cloud copy and compare results and response times."
+    },
+    {
+      "id": "P6-10",
+      "status": 2,
+      "evidence": "lowest-volume period, such as early Sunday morning... help desk staff on site with users"
+    },
+    {
+      "id": "P6-11",
+      "status": 2,
+      "evidence": "Vendor check: if the scheduling software is commercial, confirm the vendor supports your target cloud setup and licensing."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "Copy data to the cloud continuously while the on-prem system stays in charge."
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "never let two systems accept bookings at the same time."
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "Use only services the BAA covers."
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "Outbound feeds | HL7 SIU messages (appointment updates) to the EHR, billing/eligibility, lab, radiology"
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "so cutover is a configuration change, not a reinstall."
+    }
+  ],
+  "note": "A solid, generic lift-and-shift plan with a strong single-writer cutover, reverse replication and integration inventory; it is weak on cost, identity and break-glass access, and operational detail.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2181,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 919,
+    "cache_creation_input_tokens": 10374
+  },
+  "cost_usd": 0.0479368,
+  "latency_s": 25.904,
+  "raw_file": "raw/judge-9b6ac4324f59.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

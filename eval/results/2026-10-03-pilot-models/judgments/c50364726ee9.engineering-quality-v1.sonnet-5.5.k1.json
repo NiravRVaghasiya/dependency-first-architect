@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "c50364726ee9.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "c50364726ee9",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 45,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "const invoiceNumber = ... SELECT COUNT(*) as count FROM invoices WHERE billing_account_id = $1",
+      "rationale": "Several material errors: count-based invoice numbers race, usage ON CONFLICT key is timestamp-based (drops distinct events), tier join prices usage incorrectly, Date.now()/Math.random() for UUID ids, event emitted before commit, 'RLS policies' claimed but none shown."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Integration with Stripe, transaction tracking, retry logic",
+      "rationale": "Covers basic subscriptions, usage and invoices, but omits tax, dunning details, proration, webhooks, reconciliation, entitlements; retryTransaction is an empty stub."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Tenant ID in all tables, RLS policies, JWT tenant context",
+      "rationale": "Claims tenant_id in all tables but subscriptions, invoices, and others lack it; a usage service and metering service are both shown; the diagram is not matched by the code, which uses in-process EventEmitter instead of Kafka; the schema is MySQL-style INDEX syntax in Postgres."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "Comprehensive tests for subscription lifecycle and invoicing",
+      "rationale": "Only a generic testing mention; no concrete validation of risks."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "This architecture is production-ready and scales to handle millions of subscriptions",
+      "rationale": "No assumptions stated; unsupported certainty claims like SOC 2 ready and production-ready."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "catch (error) { console.error(`Failed to process subscription ${row.id}:`, error);",
+      "rationale": "Only minimal error logging and a stubbed retry; no handling of duplicate cycle runs, partial failures, webhooks, or disputes."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "image: billing-service:latest",
+      "rationale": "Basic K8s manifest with probes, but :latest image tag, no rollback, migration, alerting, or ownership; monitoring is a single table row."
+    },
+    {
+      "dim": 8,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No cost analysis at all, despite Kafka, Redis, Postgres and Stripe fees."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "amount_cents BIGINT NOT NULL,",
+      "rationale": "Nothing on reversible versus one-way decisions; plan amount lives in the plan row with no versioning, and ids are hand-rolled."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Distributed Event Bus (Kafka)",
+      "rationale": "Kafka, Redis, an analytics service and many services are proposed without justification, yet essentials such as tax, reconciliation and webhooks are missing."
+    },
+    {
+      "dim": 11,
+      "score": 1,
+      "evidence": "// Implementation for retrying failed transactions",
+      "rationale": "Lots of code but no build order or checkpoints; the code is buggy and stubbed, so the team would have to redo decisions."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 1,
+      "evidence": "amount_cents BIGINT NOT NULL,"
+    },
+    {
+      "id": "P2-02",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-03",
+      "status": 1,
+      "evidence": "idempotency_key VARCHAR(255) UNIQUE, -- Prevent duplicate charges"
+    },
+    {
+      "id": "P2-04",
+      "status": 1,
+      "evidence": "last_four VARCHAR(4),"
+    },
+    {
+      "id": "P2-05",
+      "status": 1,
+      "evidence": "Tenant ID in all tables, RLS policies, JWT tenant context"
+    },
+    {
+      "id": "P2-06",
+      "status": 1,
+      "evidence": "ON CONFLICT (idempotency_key) DO NOTHING"
+    },
+    {
+      "id": "P2-07",
+      "status": 1,
+      "evidence": "cancel_at_period_end BOOLEAN DEFAULT FALSE,"
+    },
+    {
+      "id": "P2-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-09",
+      "status": 1,
+      "evidence": "AND attempt_count < 3"
+    },
+    {
+      "id": "P2-10",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "amount_cents BIGINT NOT NULL,"
+    },
+    {
+      "id": "P2-T2",
+      "present": true,
+      "evidence": "status VARCHAR(50) NOT NULL, -- 'draft', 'finalized', 'paid', 'failed'"
+    },
+    {
+      "id": "P2-T3",
+      "present": true,
+      "evidence": "const invoiceNumber = await this.generateInvoiceNumber(billingAccountId);"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "last_four VARCHAR(4),"
+    },
+    {
+      "id": "P2-T5",
+      "present": true,
+      "evidence": "req.app.locals.currentTenantId = decoded.tenantId;"
+    }
+  ],
+  "note": "Code-heavy, boilerplate plan with many latent bugs, missing tax, webhook, reconciliation and entitlement design, no assumptions, cost or validation, and it overclaims being production-ready.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1903,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 19309
+  },
+  "cost_usd": 0.0674955,
+  "latency_s": 36.559,
+  "raw_file": "raw/judge-c50364726ee9.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

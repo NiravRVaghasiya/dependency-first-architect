@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e0467deb7edc.engineering-quality-v1.fable-5.k1",
+  "blind_id": "e0467deb7edc",
+  "blind_sha256": "9558fbcce55efc8a58ef941569b56355e3cc871daf142301ad34a1d60e08e412",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 301,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Managed Instance changes authentication, DNS-alias behaviour and failback rules (failback only works from SQL Server 2022)",
+      "rationale": "Claims about log shipping with NORECOVERY tail backups, Basic vs full availability groups, ExpressRoute lacking default encryption, MACsec requiring ExpressRoute Direct, and MSH-10 idempotency are all accurate, including the subtle areas."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "A database that only one place can write to can't switch locations with literally zero interruption",
+      "rationale": "It resolves the 'no downtime' ambiguity honestly with a ≤15-min write pause requiring clinical sign-off, covers all implied capabilities, and lists explicit, justified exclusions and a fallback if zero is mandated."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Booking integrity (no double booking) stays in the app's existing database transactions, which we don't touch.",
+      "rationale": "Single-writer rule, data ownership table, sticky-session handling and the one-way sync choice are honored consistently across flows, cutover steps, rollback and decisions with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Spike: hidden dependencies (30 days) ... Changes the plan if: we find clients that hard-code IPs",
+      "rationale": "Riskiest assumptions get early spikes with explicit plan-changing triggers, rehearsals have measurable exit criteria, baselines are measured rather than invented, and the synthetic probe continues validation in production."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Everything about the current system below is an assumption, numbered A1–A14 in Section 5.",
+      "rationale": "Every design-bearing assumption is explicit with impact-if-wrong and a validation task and date, and unsupported figures are consistently labeled as assumptions or estimates."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Duplicate HL7 message when the queue is released ... the engine's duplicate filter is turned on for the 2 hours around cutover.",
+      "rationale": "Covers the hard domain failures—double-booking, HL7 loss/duplication, double-running jobs, WAN loss, time-zone drift, ransomware, hidden dependencies—each with concrete detection, containment and a specified recovery path."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Alerts, each with a runbook in runbooks/ ... Same owners as today. The infrastructure on-call team covers VMs and network, the DBA covers SQL",
+      "rationale": "Domain-meaningful probes and alerts, IaC with what-if gates, named incident ownership, retained hospital tooling (SCCM, EDR, SIEM) and runbooks are sized realistically to the stated small team."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Production runs at about $5k–15k/month ... The biggest variables are SQL licensing (close to zero with Hybrid Benefit, A12) and Log Analytics ingestion.",
+      "rationale": "Run costs are a labeled range with components, dominant variables and concrete controls (log caps, budget alerts, reserved instances), dual-run cost and build effort (team, 4.5–7 months) are both covered."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Point of no return | Reverse sync is stopped on day 30 (M5). Cloud SQL must stay on the same version until then",
+      "rationale": "Every decision carries a reversibility rating and revisit trigger, the one-way point is explicitly dated, 30-day no-data-loss failback is maintained, and hard-to-reverse choices (D4, D5) get the most scrutiny."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Copy across, don't rebuild ... Moving to a managed database or containers. This is listed under Deferred Work.",
+      "rationale": "A minimal rehost with deliberate shortcuts (NSGs only, route-back internet, same engine version) and an explicit deferred-work list; every component is justified and nothing essential is cut."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T1/T1b/T1c, T2, T3 and S3 start day 1. T4→T5→T6/T7/T8. T9–T14 after T5 and T7.",
+      "rationale": "Day-1 tasks, dependency-justified ordering, per-task 'done when' criteria, timed cutover runbook, and spikes with explicit 'changes the plan if' adaptation triggers let a team start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "Legal confirms the HIPAA BAA covers every service used. Security completes the HIPAA risk analysis before any PHI enters Azure"
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "Inventory the current system: ... engine channels, outbound vendor endpoints ... Each item marked migrate / repoint / retire."
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "log backups shipped and applied every 1 min for 2 weeks ... row counts, plus CHECKSUM_AGG(BINARY_CHECKSUM(*)) over the key tables"
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "The migration keeps exactly one writable copy at any moment ... one-way log shipping and an ordered cutover, and reject syncing in both directions"
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "2 rehearsals in a row: pause ≤15 min, reconciliation passes, rollback ≤10 min ... Start reverse log shipping, cloud → old on-site DB"
+    },
+    {
+      "id": "P6-06",
+      "status": 2,
+      "evidence": "ExpressRoute 1 Gbps + site-to-site VPN on a different ISP ... Extra latency per page is one round trip on ExpressRoute (~2–10 ms)"
+    },
+    {
+      "id": "P6-07",
+      "status": 2,
+      "evidence": "Data loss (RPO): ≤5 min ... availability group across zones ... staff use the business continuity extract (at most 15 minutes old)"
+    },
+    {
+      "id": "P6-08",
+      "status": 2,
+      "evidence": "Entra ID with MFA, plus PIM ... Two break-glass accounts ... Break-glass sign-in tested ... SQL Audit sent to the SIEM"
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "Replay recorded user journeys at 2× peak against a production-sized copy ... Replay a synthetic set of 500 messages. Compare message counts."
+    },
+    {
+      "id": "P6-10",
+      "status": 2,
+      "evidence": "quietest hour is Sunday 02:00–04:00 ... App releases are frozen from 2 weeks before cutover to 2 weeks after ... 2 weeks of hypercare"
+    },
+    {
+      "id": "P6-11",
+      "status": 2,
+      "evidence": "Ask the vendor for a written statement of support for Azure IaaS ... Old disks are wiped to NIST 800-88 after retirement."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "The cloud DB has had log backups shipped and applied every 1 min for 2 weeks ... 3 full rehearsals on a production-sized copy"
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "Writing to both systems risks double bookings (#1) ... keeps exactly one writable copy at any moment"
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "the scheduling test environment contains synthetic data, not copies of real patient data ... No public IPs, enforced by an Azure Policy deny rule"
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "repointing the scheduling inbound and outbound connections to the cloud listener ... Interface engine stays on site"
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "Rewriting the app, changing the database schema, upgrading the app version or changing the user interface during the move"
+    }
+  ],
+  "note": "An exemplary migration plan: technically precise, single-writer discipline, early risk spikes, rehearsed rollback and honest assumptions; it avoids all traps and concretely addresses every checklist item.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8947,
+    "thinking_tokens": 6122,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 28732
+  },
+  "cost_usd": 0.8065200000000001,
+  "latency_s": 128.608,
+  "raw_file": "raw/judge-e0467deb7edc.engineering-quality-v1.fable-5.k1.txt"
+}

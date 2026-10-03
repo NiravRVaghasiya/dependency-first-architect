@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "df255070b54d.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "df255070b54d",
+  "blind_sha256": "645313a410c5edaf9a27aafe1d605eb6199829dd858e6f5c25e2f8b4a54ae685",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 47,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "\"Input filter: reject queries with known jailbreak keywords (red-team list, e.g., \\\"ignore instructions,\\\" \\\"execute code\\\").\"",
+      "rationale": "Keyword filters are presented as injection defense, the \"confidence score\" from LLM output is unsound, and there is a contradiction over log retention, though RAG basics are sound."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"Internal support team only (auth required, allow-listed IP or SSO) behind a feature flag.\"",
+      "rationale": "The plan targets a RAG bot with sensible phases but blurs internal agent-assist with customer-facing use, and has no doc update/deletion flow, no visibility model and no account boundary."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"Chat history persistence: in-session only (no DB writes)\" vs \"All queries and answers logged\" in Phase 2",
+      "rationale": "The overall design is recognizable but contradicts itself on log retention, sync agent-typed chat versus customer chat, and the 20 req/s versus 1,000 req/s scale."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "\"Hit rate @ top-5 ≥ 0.90 (ASSUMPTION: typical for embedding models; 200 questions ~±4% sampling error)\"",
+      "rationale": "There is a staged eval with retrieval gates, injection suite, canary and CI, but faithfulness eval is weak, some thresholds are invented, and sample sizes are inconsistent (100 vs 200)."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "\"ASSUMPTION: two-person team, no self-hosted inference\" and \"UNKNOWN: needs human support cost per ticket\"",
+      "rationale": "The plan labels assumptions and unknowns well, though some invented thresholds like 0.90 and 40% are unqualified and sensitivity is partial."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"Feedback poisoning check: if one user submits >10 corrections in 1 day, flag for review\"",
+      "rationale": "The plan covers degradation, timeouts, cost cap and feedback poisoning, but misses stale or deleted content, retrieved-content injection handling beyond a test, and ACL leakage."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "\"Rollback: previous Helm release redeployed; feature flag off stops LLM calls, routes to \\\"escalate to human\\\" message.\"",
+      "rationale": "The plan covers rollout, rollback, SLIs, alerts, runbooks and on-call, but ownership and the team burden (Jaeger, k8s for two people) are questionable."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"per-session cost cap: $5 (5 turns × $1 avg per turn)\"",
+      "rationale": "It covers cost gating versus human cost, token caps and alerts, but gives no grounded per-conversation estimate, and the $1 per turn and $0.05 per query figures are inconsistent and unbased."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "\"R3 (cannot extract consent retroactively)\" and \"Abstraction layer (e.g., LiteLLM): swappable provider\"",
+      "rationale": "The plan includes a reversibility table, index versioning, pinned embedding model and a model abstraction layer, though some ratings are inconsistent (R1/R2 usage)."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"At 1,000 req/s readiness: horizontal scale app service; vector store tiering (auto-scaling); batch inference for off-peak queries.\"",
+      "rationale": "The plan is a simple single-call pipeline, but it adds speculative scale, Jaeger, SBOM, Kubernetes and fine-tuning paths for a two-person team, while omitting essentials like ingestion sync."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "\"Confirm retrieval latency < 200 ms for top-5\" and \"Exit check (V0): One real support query ... rollback via flag toggle succeed within 2 minutes\"",
+      "rationale": "The phases are ordered with a thin first slice and checkable exit gates, but ingestion refresh, ACLs and some decisions are left open."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 1,
+      "evidence": "\"async writes (doc updates) use eventual consistency (standard for knowledge bases).\" and \"run eval in CI on every index update\""
+    },
+    {
+      "id": "P1-02",
+      "status": 1,
+      "evidence": "\"Metadata: doc ID, section, version, created date, last updated.\""
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "\"Support team labels ≥100 real support queries ... Store in CI-tracked YAML; run eval in CI on every index update.\""
+    },
+    {
+      "id": "P1-04",
+      "status": 1,
+      "evidence": "\"Answer only from the provided docs; if unsure, escalate\""
+    },
+    {
+      "id": "P1-05",
+      "status": 1,
+      "evidence": "\"triggered by low confidence score (< 0.6), user request (\\\"talk to agent\\\"), or injected query flagged by input filter\""
+    },
+    {
+      "id": "P1-06",
+      "status": 1,
+      "evidence": "\"Hard block: no tool calls.\" and \"Input filter: reject queries with known jailbreak keywords\""
+    },
+    {
+      "id": "P1-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P1-08",
+      "status": 1,
+      "evidence": "\"Do not retain logs initially; ... explicit opt-in consent at chat start\""
+    },
+    {
+      "id": "P1-09",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P1-10",
+      "status": 1,
+      "evidence": "\"Alerts: cost spike (>1.5× baseline), latency spike (>10 s p95), injection attempts, error rate > 5%.\""
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "\"Per-request token cap: 2,000 tokens max; per-session cost cap: $5 (5 turns × $1 avg per turn)\""
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "\"Answer only from the provided docs; if unsure, escalate\""
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "\"Prompt + RAG: simpler, reversible, no retraining on customer data yet\""
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "\"run eval in CI on every index update\""
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "\"Single-call: query → retrieve → LLM call → respond (no loops, no chaining)\""
+    }
+  ],
+  "note": "A solid phased, gated RAG plan with good validation and assumption labeling, but it lacks a doc update/deletion pipeline, retrieval-time visibility ACLs and an account-data boundary. It leans on keyword filters for injection defense and has internal inconsistencies on logging and scale.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2468,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 860,
+    "cache_creation_input_tokens": 18658
+  },
+  "cost_usd": 0.07150500000000001,
+  "latency_s": 50.781,
+  "raw_file": "raw/judge-df255070b54d.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

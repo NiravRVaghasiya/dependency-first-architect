@@ -1,0 +1,107 @@
+{
+  "schema": "dfa-eval/checklist@1",
+  "prompt_id": "P5",
+  "request": "Order the build of a real-time collaborative document editor.",
+  "provenance": "eval/rubrics/authoring/eq-rubric-and-checklists-p1-p5.json (blind-authored; see eval/rubrics/AUTHORING.md)",
+  "items": [
+    {
+      "id": "P5-01",
+      "title": "Deliberate choice of concurrency approach",
+      "addressed_means": "The plan chooses between operational transformation and CRDTs based on its needs (whether a server holds the authoritative copy, offline editing, rich-text support, document size) and prefers a proven library over a custom algorithm.",
+      "category": "correctness"
+    },
+    {
+      "id": "P5-02",
+      "title": "Document model and merge semantics for rich text",
+      "addressed_means": "A structured document schema (blocks, inline formatting, embedded objects) is defined, along with how concurrent edits to structure and formatting merge, such as overlapping formatting ranges or moving a block while it is being edited, and how the schema is versioned.",
+      "category": "correctness"
+    },
+    {
+      "id": "P5-03",
+      "title": "Convergence testing",
+      "addressed_means": "Randomized or property-based tests apply concurrent edits with reordered, delayed and duplicated delivery, and assert that every copy of the document ends up identical and keeps the users' intended changes.",
+      "category": "correctness"
+    },
+    {
+      "id": "P5-04",
+      "title": "Durable persistence and compaction",
+      "addressed_means": "Edits are stored durably before they are acknowledged to the client, using an operation log or update history plus periodic snapshots. Acknowledged edits survive a server crash. Growth of history and deletion markers (tombstones) is managed.",
+      "category": "data"
+    },
+    {
+      "id": "P5-05",
+      "title": "Real-time transport and session routing",
+      "addressed_means": "Persistent client connections reconnect automatically, all editors of a document are routed to one coordinating process or share a fan-out channel, the service scales horizontally, and backpressure is handled.",
+      "category": "reliability"
+    },
+    {
+      "id": "P5-06",
+      "title": "Offline editing and reconnection",
+      "addressed_means": "The plan either supports offline editing, with local buffering of edits, resync and handling of long divergence, or explicitly limits the editor to online use and handles disconnects without losing typed content.",
+      "category": "product"
+    },
+    {
+      "id": "P5-07",
+      "title": "Per-document authorization on live sessions",
+      "addressed_means": "Read and write permissions are enforced on the server for every subscription and every incoming edit, and revoking access or changing a share link takes effect on connections that are already open.",
+      "category": "security"
+    },
+    {
+      "id": "P5-08",
+      "title": "Collaborative undo and version history",
+      "addressed_means": "Undo reverses only the current user's own edits, correctly adjusted for others' concurrent changes. Version history allows viewing and restoring earlier states without breaking collaborators who are editing.",
+      "category": "product"
+    },
+    {
+      "id": "P5-09",
+      "title": "Temporary presence kept separate from document state",
+      "addressed_means": "Cursors, selections and presence travel on a lightweight channel that is never saved into the document, and cursor positions shift correctly when others make concurrent edits.",
+      "category": "product"
+    },
+    {
+      "id": "P5-10",
+      "title": "Sync core built and proven first",
+      "addressed_means": "The build order puts the document model, sync engine, persistence and convergence tests first, proven with multiple concurrent users, before features such as comments, sharing UI or advanced formatting are layered on.",
+      "category": "reliability"
+    },
+    {
+      "id": "P5-11",
+      "title": "Large documents and many concurrent editors",
+      "addressed_means": "The plan addresses initial load size, snapshot loading, memory growth, batching of edits, and behavior when many people edit the same document at once, with stated limits or degradation strategies.",
+      "category": "reliability"
+    },
+    {
+      "id": "P5-12",
+      "title": "Protocol and client version compatibility",
+      "addressed_means": "The sync protocol and edit formats are versioned so that older clients still connected during a deploy keep working or are upgraded safely, and stored documents are migrated when the schema changes.",
+      "category": "operations"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "title": "Last-write-wins or locking passed off as real-time collaboration",
+      "recognize": "Whole-document saves overwrite each other, or paragraphs or sections are locked to one editor, while the plan describes this as real-time co-editing. Concurrent edits are silently lost or blocked."
+    },
+    {
+      "id": "P5-T2",
+      "title": "Inventing a custom merge algorithm",
+      "recognize": "The plan designs its own transformation or CRDT algorithm from scratch with no rigorous testing or proof, ignoring that many such algorithms, including published ones, have turned out to be incorrect."
+    },
+    {
+      "id": "P5-T3",
+      "title": "Sync bolted onto a single-user editor late",
+      "recognize": "The build order starts with a single-user editor and its features and adds multi-user sync near the end, so the document model and storage must be reworked once concurrency arrives."
+    },
+    {
+      "id": "P5-T4",
+      "title": "Edits acknowledged before they are durable",
+      "recognize": "The server keeps document state only in memory, or confirms edits to clients before saving them durably, with no recovery plan if the process holding a document crashes."
+    },
+    {
+      "id": "P5-T5",
+      "title": "Misstated guarantees",
+      "recognize": "The plan makes technically wrong claims, for example that CRDTs automatically preserve user intent for every rich-text conflict, need no server for storage, access control or delivery, or have no metadata overhead, or that operational transformation easily works peer-to-peer with no central ordering."
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9f8e2c30a0b9.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "9f8e2c30a0b9",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 55,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1: \"Kafka ingestion, tokenization, decision logging, rules engine inline, basic velocity counters\"; Phase 2: Flink, feature store, GBDT in shadow",
+      "rationale": "Phases broadly go substrate→model→canary→advanced, but Phase 1 velocity counters precede the online store, and dependency proof gates are not explicit."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Phase 1: \"Live rules-based protection, plus the data foundation\"",
+      "rationale": "Phase 1 is a live rules-based path, which is close to a skeleton, but it is 6–8 weeks of bundled scope rather than a thin end-to-end slice."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "\"Assumptions (change these and the design changes)\"",
+      "rationale": "Assumptions are listed with why they matter, but there are no defaults with flip conditions for irreversible choices such as partition key, store or model serving."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No ordering of work by blast radius within phases is stated."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "\"PCI DSS: tokenize at the edge, keep the CDE small, encrypt in transit and at rest\"",
+      "rationale": "Tokenization is in Phase 1, but security is mostly a standalone section and is not tied to the later phases."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "\"Each fallback level is tagged on the decision so you can monitor how often it happens.\"",
+      "rationale": "Monitoring is a standalone section, and only decision logging appears in Phase 1, with no per-phase observability."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "\"each model is stored with its feature list, threshold set and training data snapshot, so any past decision can be reproduced.\"",
+      "rationale": "Reproducibility covers the model registry, logged features and versioned rules, but it is not tied to the environments or builds of each phase."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "\"Timeouts and fallbacks, from best to worst: Full model... Rules only... Static network or stand-in rules\"",
+      "rationale": "The fallback ladder, canary rollback and multi-AZ serving are well designed, but they are not threaded through the phases."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "\"Canary rollout: 1%, then 10%, then 50%, then 100% by card hash, with automatic rollback\"",
+      "rationale": "Rules fallbacks and human review precede the ML model, so the order is sensible, but there are no explicit budgets or guardrails before capability, and the plan has no retrieval, memory, orchestration or routing layers to order."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "\"Phase 4 (ongoing): Card-testing and CPP detectors, exploration holdout, sequence/graph features, automated retraining\"",
+      "rationale": "Deferred items are listed in Phase 4 and under 'Later, consider', but none has a pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong domain-specific fraud design with a sensible rules→shadow→canary progression, but it lacks explicit decision gates, blast-radius ordering, per-phase threading of security, observability and resilience, and pull-forward conditions.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1183,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 5688
+  },
+  "cost_usd": 0.026171,
+  "latency_s": 23.38,
+  "raw_file": "raw/judge-9f8e2c30a0b9.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

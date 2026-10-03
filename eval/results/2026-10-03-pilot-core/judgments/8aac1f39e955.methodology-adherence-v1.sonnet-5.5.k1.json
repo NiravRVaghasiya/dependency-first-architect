@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "8aac1f39e955.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "8aac1f39e955",
+  "blind_sha256": "c1cb29e871a3570ce45625168c2c1fd2670bc908f8eb5c2c0910ad361ccab5db",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 332,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1: \"Ingestion, hybrid retrieval and basic prompt; offline evaluation only\"",
+      "rationale": "Phases roughly go discovery→prototype→beta→launch and eval precedes tuning, but there's no substrate (infra, security, environments) phase and guardrails are not sequenced before features."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 1: \"Prototype ... offline evaluation only\"",
+      "rationale": "No thin end-to-end production slice first; Phase 0 is discovery and production exposure only arrives in Phase 3."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "\"Start with a strong general model for quality. Once the eval set exists, test whether a smaller, cheaper model holds up.\"",
+      "rationale": "Some defaults are given (pgvector, model choice) and questions listed, but there's no explicit irreversible-decision list with flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No ordering of work by blast radius within phases; phases list scope only."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "\"Filter on visibility at index time, not just at query time\"",
+      "rationale": "Security controls (PII redaction, injection, visibility) are described in architecture/risks sections, not tied to each phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "\"Limited launch ... with escalation and monitoring on\"",
+      "rationale": "Monitoring is described in a standalone section and tied to launch phase, not present from the first phase."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "\"Version the index. Upsert by article_id + chunk hash\"",
+      "rationale": "Index versioning and a regression gate exist, but environments, builds and data reproducibility are not threaded across phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "\"Two failed turns in a row\" escalation; \"Webhook re-sync\"",
+      "rationale": "Failure handling (escalation, confidence gate) exists in design but isn't threaded per phase; no timeouts, fallbacks or outage handling."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "\"Evaluation (build this before tuning)\"; Guardrails section after retrieval and generation",
+      "rationale": "Has guardrails, escalation, eval and retrieval→model→feedback, with copilot human-in-loop before launch, but defenses and budgets are not sequenced before capabilities and cost budgets are weak."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "\"Look up or change accounts ... come in a later phase.\" Phase 5: \"Actions (optional) ... later\"",
+      "rationale": "Deferred items are named (actions, tickets as source) but without explicit pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Solid RAG content design, but it's a design doc with a discovery-first rollout: no production walking skeleton, no decision gates with flip conditions, and cross-cutting concerns aren't threaded through phases.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1082,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4751
+  },
+  "cost_usd": 0.022705499999999997,
+  "latency_s": 20.103,
+  "raw_file": "raw/judge-8aac1f39e955.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

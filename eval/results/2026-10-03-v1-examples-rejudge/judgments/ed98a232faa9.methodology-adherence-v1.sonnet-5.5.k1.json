@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ed98a232faa9.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "ed98a232faa9",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 10,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "decisions → runners, registry, access and GitOps → pilot in production → versioned templates → Wave 1 → 2 → 3.",
+      "rationale": "Clear substrate-up sequencing with explicit done-when gates and prerequisites (e.g., versioning templates before 50 depend on them, signed images before admission)."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Pilot service to production (weeks 6–12)... Why one service to production before many to dev",
+      "rationale": "A real pilot through prod with rollback drill precedes wide rollout, though Foundations comes first as a thin substrate phase with a test service commit-to-prod."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Write down the decisions that are expensive to reverse: One repo or many... GitOps (Argo CD or Flux)... Leave easy-to-change choices... for later.",
+      "rationale": "Irreversible decisions are listed with some recommended defaults, but flip/revisit conditions are mostly absent."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Size them for peak load... Version the templates before 50 services depend on them... One careless change to an unversioned template can break all 50 pipelines",
+      "rationale": "Widest-impact items (foundations, templates, pilot) precede leaf services, and within phases shared work precedes per-service; critical services deliberately last with reasoning."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "secret scan (blocking from day one...)... software bill of materials → sign → push... Secrets manager, plus OIDC trust",
+      "rationale": "Security appears in foundations (OIDC, SSO, audit), pilot (scan, sign, SBOM), templates, migration criteria and enforcement, though Phase 0 security is light."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Metrics, logs and tracing for both the services and the pipelines.",
+      "rationale": "Observability begins in Foundations and recurs (pipeline stats, dashboards), but Phase 0 baseline is only DORA measurement and later phases are thinner."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Build once, deploy the same artifact everywhere... Build everything as infrastructure-as-code... Services pin a version",
+      "rationale": "Immutable artifacts, IaC, GitOps, pinned template versions and fresh runners thread reproducibility across phases."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "expand/contract... a rollback you've actually practiced... Run in audit mode first... time-limited exceptions",
+      "rationale": "Resilience (rollback drills, migration safety, template canary rollout, peak sizing, canary releases) appears in most phases from pilot onward."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so no N/A declaration."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Add a developer portal only after the standard path is proven... Developer portal: after Wave 1, and never allowed to delay the main sequence.",
+      "rationale": "Deferred items (portal, PR environments, blocking, admission, removal of approvals) are explicit with 'Needs' pull-forward prerequisites."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, well-sequenced CI/CD plan with concrete prerequisites and deferrals; weaker on flip conditions for decisions, Phase 0 observability, and never declaring the AI layer N/A.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1220,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 570,
+    "cache_creation_input_tokens": 4041
+  },
+  "cost_usd": 0.0224245,
+  "latency_s": 37.714,
+  "raw_file": "raw/judge-ed98a232faa9.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

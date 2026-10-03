@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "8f1695fa9ef2.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "8f1695fa9ef2",
+  "blind_sha256": "6b8ab72c176315b857ffdb412346facc2de162308e754053be8dbfd449057667",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 51,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "const total = lineItems.reduce((sum, line) => sum + line.amount, 0);",
+      "rationale": "Several material errors: float arithmetic in proration/tiers, mutable transaction/invoice updates, HS256 shared-secret JWT, retry references undefined invoice, 'DB per tenant' contradicted by sharding/RLS, non-atomic Redis counter TTL."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Hybrid Approach: Database Per Tenant + Shared Services",
+      "rationale": "Covers subscriptions, usage, invoices, dunning and payments broadly, but omits reconciliation, entitlements, build-vs-buy, proper tax and numbering, with no sequencing."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Row-level security (RLS) in shared DB ├── Separate database per tenant",
+      "rationale": "Contradictory tenancy models (DB per tenant vs RLS vs sharding), and dunning defined twice with differing schedules (day 1/3/5/10 vs 3 retries)."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Unit: Jest / Pytest Integration: Docker Compose + TestContainers Load: k6 / JMeter",
+      "rationale": "Only generic tool lists and a CI pipeline; nothing tests billing-specific risks like idempotency, proration, tenant leaks, or reconciliation."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "This architecture is production-ready and handles enterprise-scale requirements while maintaining developer experience and operational simplicity.",
+      "rationale": "No assumptions stated about scale, team, jurisdictions or budget; dashboard shows invented figures and the plan asserts production-readiness unsupported."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Suspend subscription after 3 failed attempts",
+      "rationale": "Some retry/dunning and signature verification, but no handling of duplicate or out-of-order webhooks, crash between charge and record, late usage, disputes, or corruption."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Deploy with blue-green strategy",
+      "rationale": "Has CI/CD, blue-green deploy, metrics and alerts, but no migration across per-tenant databases, no rollback procedure, ownership or incident process, and the burden is large."
+    },
+    {
+      "dim": 8,
+      "score": 0,
+      "evidence": "Cost optimization: Pay-as-you-grow database resources",
+      "rationale": "Costs essentially ignored; per-tenant databases, Kubernetes, Kafka, Elasticsearch, fallback provider and VPC-per-tenant imply heavy cost with no remark."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Payment gateway abstraction layer",
+      "rationale": "A gateway abstraction is mentioned, but tenancy model, ID scheme, money format and price versioning one-way decisions are unexamined and inconsistent."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Kubernetes (container orchestration)",
+      "rationale": "Microservices, Kafka, Elasticsearch, SMS, HIPAA, SOC2, VPC per tenant, fallback provider are speculative, while essentials like ledger and reconciliation are missing."
+    },
+    {
+      "dim": 11,
+      "score": 1,
+      "evidence": "Language: Node.js / Python / Go",
+      "rationale": "Lots of code but no build order, no first steps, and most real decisions left open (language, queue, tenancy model)."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 1,
+      "evidence": "amount DECIMAL(18, 2),  currency VARCHAR(3)"
+    },
+    {
+      "id": "P2-02",
+      "status": 0,
+      "evidence": "await this.invoiceRepo.update(tenantId, invoiceId, { status: 'sent', sent_at: Date.now() });"
+    },
+    {
+      "id": "P2-03",
+      "status": 1,
+      "evidence": "idempotency_key: transaction.transaction_id,"
+    },
+    {
+      "id": "P2-04",
+      "status": 1,
+      "evidence": "Never store full card numbers ... Use tokenization for payment methods"
+    },
+    {
+      "id": "P2-05",
+      "status": 1,
+      "evidence": "Row-level security (RLS) in shared DB"
+    },
+    {
+      "id": "P2-06",
+      "status": 1,
+      "evidence": "idempotency_key VARCHAR(255) UNIQUE,"
+    },
+    {
+      "id": "P2-07",
+      "status": 1,
+      "evidence": "proration_behavior\": \"create_prorations\"  // create_prorations, none, always_invoice"
+    },
+    {
+      "id": "P2-08",
+      "status": 1,
+      "evidence": "tax = await this.taxService.calculateTax({ customer_tax_id: customer.tax_id, amount: subtotal });"
+    },
+    {
+      "id": "P2-09",
+      "status": 1,
+      "evidence": "Day 1: Send first reminder ... Day 5: Suspend subscription ... Day 10: Cancel subscription"
+    },
+    {
+      "id": "P2-10",
+      "status": 0,
+      "evidence": "Reconciliation"
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": true,
+      "evidence": "const dailyRateCurrent = currentAmount / totalDays;"
+    },
+    {
+      "id": "P2-T2",
+      "present": true,
+      "evidence": "await this.invoiceRepo.update(tenantId, invoiceId, { status: 'sent', sent_at: Date.now() });"
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "const verified = await gateway.verifyWebhookSignature(signature, payload);"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "Never store full card numbers"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "Row-level security (RLS) in shared DB"
+    }
+  ],
+  "note": "A broad, code-heavy feature catalogue with contradictory tenancy, float money math, mutable invoices, and missing reconciliation, entitlements, build-vs-buy, assumptions, cost and real validation; declares itself production-ready without support.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 4514,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 31133,
+    "cache_creation_input_tokens": 32301
+  },
+  "cost_usd": 0.1321311,
+  "latency_s": 57.385,
+  "raw_file": "raw/judge-8f1695fa9ef2.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,172 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "c916efee92ef.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "c916efee92ef",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 146,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "QuickTime `CreateDate` is often stored in **UTC**, so it has to be converted to local time.",
+      "rationale": "Mostly correct (ExifTool batch, QuickTime UTC, case-insensitive FS, two-pass rename), but the exiftool one-liner's %-c usage is loose, the two-pass temp renaming is wasteful, and \"converted to local time\" for videos without a known tz is hand-wavy."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Not in v1: moving files into date folders, editing metadata, and deduplication. These could be added later.",
+      "rationale": "Fits the request precisely, covers sidecars, collisions, fallbacks, undo, with explicit exclusions and a note that plain exiftool may suffice."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "scan → read metadata (batch) → group → compute target names → resolve collisions → validate → [preview] → apply → write log",
+      "rationale": "Coherent pipeline; minor loose ends such as the log default location inside PATH (could be scanned/affected) and log written at end vs. 'immediately' per step."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Property tests: after apply followed by undo, the folder is identical to the start. A second apply changes nothing.",
+      "rationale": "Domain-appropriate tests and sample files and CI on three OSes, but no measurable acceptance criteria, no early risk spike, and no post-use validation."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Is it OK to require it, or must the tool be pure Python or a single executable?",
+      "rationale": "Open questions on timezone, ExifTool dependency, and library size are stated, and defaults are reasonable, but sensitivity to answers is only lightly explained; '100× slower' and pre-1990 cutoff are unqualified."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Treat `0000:00:00 00:00:00`, empty values and dates before 1990 or in the future as missing.",
+      "rationale": "Covers bogus dates, collisions, chains, locked files, symlinks, interruption with incremental log; lacks handling of undo collisions, crash between pass one and two detail, and tmp-name cleanup."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Exit codes: 0 = success, 1 = some files failed, 2 = usage error.",
+      "rationale": "Exit codes, packaging via pipx and verbose/quiet exist, but little on versioning, rollback of the tool, or support; acceptable for a small CLI yet thin."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Calling it once per file is about 100× slower.",
+      "rationale": "Cost is mostly people-time (5-6 days estimate) and runtime; no explicit cost discussion, though essentially negligible for a local CLI."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Save a JSON file of `{old, new, tmp}` entries. `--undo` reads this log and reverses each rename.",
+      "rationale": "Filesystem renames are reversible via the log and v1 scope is deferred; log format versioning and CLI flag stability are not addressed, but little lock-in exists."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "If that's all you need, you may not need a custom tool.",
+      "rationale": "Appropriately a small CLI; some extras (--camera, --tz-shift, multiple fallbacks, Go alternative, two-pass always) are slightly more than necessary."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "| 1 | Scanning, ExifTool batch reading, date order, preview only | 1 day |",
+      "rationale": "Ordered milestones with concrete deliverables and specific CLI/pipeline, but no explicit checkpoints or adaptation criteria, and undo comes late relative to apply."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "`DateTimeOriginal`, plus `SubSecTimeOriginal` and `OffsetTimeOriginal` ... `CreateDate` / `DateTimeDigitized`"
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "--fallback MODE none | filename | mtime (default: none → skip)"
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "`suffix`: add a counter in capture order (`_18-32-05_01`, `_02`)"
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "-n, --dry-run Show planned renames, change nothing (DEFAULT)"
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "First rename everything to temporary names (`.exifren-tmp-<uuid>`), then rename those to the final names."
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "`--undo` reads this log and reverses each rename."
+    },
+    {
+      "id": "P7-07",
+      "status": 1,
+      "evidence": "Use the camera's local time as recorded (the usual choice), or convert everything to UTC"
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "Every file in the group gets the same new base name."
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "default: \"{date:%Y-%m-%d_%H-%M-%S}\" ... The extension is always lowercase."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Check names against both files already in the folder and other planned names."
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "1. `DateTimeOriginal`, plus `SubSecTimeOriginal` and `OffsetTimeOriginal`"
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "-n, --dry-run ... editing metadata not in v1"
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "This is why the default format uses `-` instead of `:` in times."
+    }
+  ],
+  "note": "Strong, well-scoped plan for a small CLI with safe defaults, sidecars, undo and collisions; weaker on timezone semantics, quantified validation and operations.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2147,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10870
+  },
+  "cost_usd": 0.048653,
+  "latency_s": 36.025,
+  "raw_file": "raw/judge-c916efee92ef.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

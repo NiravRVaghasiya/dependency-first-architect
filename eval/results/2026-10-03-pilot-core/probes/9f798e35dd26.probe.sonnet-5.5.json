@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "9f798e35dd26.probe.sonnet-5.5",
+  "blind_id": "9f798e35dd26",
+  "blind_sha256": "454ca11395cea91b1378ae80cc4ecf589cc72b6e8e21a3b834f7419e0aee2c49",
+  "judge": "sonnet-5.5",
+  "order_index": 139,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.88,
+  "cues": [
+    "Rigid, numbered section structure (Summary, Context/Goals, Drivers, Current State, Assumptions/Open Questions, Architecture, Component Details, Data Design, Key Flows, Key Decisions, Cross-Cutting, Build Sequence, First Milestone Tasks, Testing, Rollout, Risks, Deferred Work, Next Steps) that looks template-driven",
+    "Explicit tagged assumptions [A1–A9] with 'impact if wrong' and 'how/when validated' columns, plus open questions with owner, default-if-no-answer and needed-by",
+    "Ranked quality attributes with measurable targets, and a decision table listing options considered, reversibility and 'revisit if' triggers",
+    "First-milestone task breakdown with 'Done when' criteria and spikes framed as 'Question / Build / Changes the plan if', which reads as a prescribed procedure",
+    "Begins by checking the empty workspace (README says no existing code) and has a 'Current State' section, plus a fixed 'AI-specific concerns: not applicable' line, which is typical of a checklist methodology"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 446,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 25226
+  },
+  "cost_usd": 0.067533,
+  "latency_s": 31.266,
+  "raw_file": "raw/probe-9f798e35dd26.probe.sonnet-5.5.txt"
+}

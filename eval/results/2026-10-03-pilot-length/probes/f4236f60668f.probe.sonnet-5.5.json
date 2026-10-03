@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "f4236f60668f.probe.sonnet-5.5",
+  "blind_id": "f4236f60668f",
+  "judge": "sonnet-5.5",
+  "order_index": 11,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.6,
+  "cues": [
+    "Every phase has explicit \"Exit criteria\" tied to verifiable outcomes, suggesting a structured planning template",
+    "Explicit \"Why first\" / \"Why here and not earlier\" rationale for ordering, and a dependency-chain summary diagram",
+    "Opens with a statement of the ordering principle (pick concurrency model first, keep everything simple until clients converge)",
+    "Closing \"Three rules for the whole build\" gives cross-cutting invariants, as a disciplined methodology would",
+    "Counterpoint: the content is very comprehensive and generic (10 phases, 39 numbered items, optional extras), which a default-style model answer could also produce. That keeps my estimate moderate instead of high."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 314,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3511
+  },
+  "cost_usd": 0.011925499999999999,
+  "latency_s": 38.081,
+  "raw_file": "raw/probe-f4236f60668f.probe.sonnet-5.5.txt"
+}

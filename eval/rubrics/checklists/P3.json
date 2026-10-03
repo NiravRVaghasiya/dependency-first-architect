@@ -1,0 +1,107 @@
+{
+  "schema": "dfa-eval/checklist@1",
+  "prompt_id": "P3",
+  "request": "Sequence building a CI/CD platform for 50 microservices.",
+  "provenance": "eval/rubrics/authoring/eq-rubric-and-checklists-p1-p5.json (blind-authored; see eval/rubrics/AUTHORING.md)",
+  "items": [
+    {
+      "id": "P3-01",
+      "title": "Service inventory and a common build contract",
+      "addressed_means": "The plan surveys the languages, build tools and deployment targets of the 50 services and defines a shared pipeline interface or reusable templates, with a controlled escape hatch, instead of 50 bespoke pipelines.",
+      "category": "operations"
+    },
+    {
+      "id": "P3-02",
+      "title": "Incremental migration with a pilot",
+      "addressed_means": "Work starts with a few representative services (for example different stacks, and both critical and non-critical ones). The rest move in waves with old and new pipelines running side by side, and there are explicit criteria for moving each service and a way to fall back.",
+      "category": "reliability"
+    },
+    {
+      "id": "P3-03",
+      "title": "Build once, promote immutable artifacts",
+      "addressed_means": "Each commit produces one versioned, immutable artifact identified by commit or content hash, and that same artifact is promoted through every environment without being rebuilt.",
+      "category": "correctness"
+    },
+    {
+      "id": "P3-04",
+      "title": "Pipeline credentials and secrets",
+      "addressed_means": "Pipelines use short-lived, least-privilege credentials, for example identity federation to the cloud provider, and pull secrets from a secrets manager. Untrusted builds, such as pull requests from forks, never receive production secrets.",
+      "category": "security"
+    },
+    {
+      "id": "P3-05",
+      "title": "Software supply-chain integrity",
+      "addressed_means": "Dependencies are pinned and scanned, artifacts are signed or carry provenance records, changes to pipeline definitions are protected by review, and the production deploy path cannot be bypassed.",
+      "category": "security"
+    },
+    {
+      "id": "P3-06",
+      "title": "Safe deployment, rollback and database migrations",
+      "addressed_means": "Deployments roll out progressively with automated health checks and a fast rollback path, and schema migrations stay compatible with both old and new code versions so rollback stays possible.",
+      "category": "reliability"
+    },
+    {
+      "id": "P3-07",
+      "title": "Independent deploys and contract compatibility",
+      "addressed_means": "Each service deploys independently. API and event-schema compatibility is checked automatically, for example with contract tests or schema checks, so no change requires deploying several services in lockstep.",
+      "category": "correctness"
+    },
+    {
+      "id": "P3-08",
+      "title": "Test environments and flaky tests",
+      "addressed_means": "There is a defined approach to test environments (short-lived per-change environments, shared staging, or a mix) along with test data handling, and flaky tests are detected and quarantined so they do not erode trust in the pipeline.",
+      "category": "reliability"
+    },
+    {
+      "id": "P3-09",
+      "title": "Feedback speed through caching and parallelism",
+      "addressed_means": "Dependency and image-layer caching, parallel test execution and build-only-what-changed strategies keep build feedback within a stated target time.",
+      "category": "operations"
+    },
+    {
+      "id": "P3-10",
+      "title": "Runner capacity and compute cost",
+      "addressed_means": "The plan chooses between hosted and self-hosted runners, plans autoscaling and concurrency limits, and estimates compute cost from expected commit and build volume across 50 services.",
+      "category": "cost"
+    },
+    {
+      "id": "P3-11",
+      "title": "Platform reliability and delivery metrics",
+      "addressed_means": "The CI/CD platform is treated as critical production infrastructure with its own monitoring, a named owner and a plan for its own outages, and delivery metrics such as lead time, deployment frequency, change failure rate and recovery time are tracked.",
+      "category": "operations"
+    },
+    {
+      "id": "P3-12",
+      "title": "Production change control and audit",
+      "addressed_means": "Production environments have protection rules (approvals where required, restricted deployers), every production deploy leaves an audit trail, and ownership and change procedures for shared pipeline templates are defined.",
+      "category": "compliance"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "title": "Big-bang cutover",
+      "recognize": "All 50 services move to the new platform at once, or the old system is switched off before the new one is proven on a pilot, with no parallel running and no fallback."
+    },
+    {
+      "id": "P3-T2",
+      "title": "Rebuilding per environment or mutable tags",
+      "recognize": "Artifacts are rebuilt for each environment, or deployments reference movable tags such as 'latest', so what was tested is not provably what was deployed."
+    },
+    {
+      "id": "P3-T3",
+      "title": "Long-lived, over-privileged CI credentials",
+      "recognize": "Static cloud keys with broad or admin permissions are stored in CI settings and shared across pipelines, or secrets are available to builds of untrusted pull requests."
+    },
+    {
+      "id": "P3-T4",
+      "title": "Lockstep releases or a single shared gate",
+      "recognize": "One pipeline or shared staging gate releases all services together, so one service's failure blocks all 50 and a distributed monolith grows."
+    },
+    {
+      "id": "P3-T5",
+      "title": "Building a custom CI orchestrator from scratch",
+      "recognize": "The plan writes its own build scheduler or pipeline engine instead of configuring existing tools, and gives no requirement that existing tools fail to meet."
+    }
+  ]
+}

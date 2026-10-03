@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "184798b59715.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "184798b59715",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 27,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Append-only update log plus periodic snapshots in Postgres; UUIDv7 doc IDs; versioned content schema",
+      "rationale": "Yjs/Hocuspocus, ProseMirror, RLS, and ack-after-commit are used correctly, but Yjs is wrongly described as having bounded metadata growth, and the OT fallback is glossed over as if the formats were interchangeable."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "The plan assumes no, only reconnects after short drops. A CRDT handles offline editing either way.",
+      "rationale": "It covers the core needs and sensible phasing, and it explicitly defers offline editing, suggestions and search. It is thin on rich-text merge semantics and collaborative undo."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "A modular monolith API, plus a separate stateless sync gateway",
+      "rationale": "Ownership of data is clear (Postgres for permissions and updates, Redis for fan-out) and the choices are applied consistently. Minor loose ends: the gateway is called stateless though it holds in-memory Yjs docs, and the ≤3 stateful components limit is unexamined."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "0 divergences in 10,000 runs; 0 lost acked edits in 500 crashes; p95 load time <500 ms for a doc with 1 MB of history. All ASSUMPTION",
+      "rationale": "Each validation check targets a specific risk, and the thresholds are labelled as assumptions. The riskiest checks run early with fallback triggers, and production checks follow (divergence hash metric, staged exposure with SLOs)."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Concurrency | 50 editors per doc, 10k connections per cluster | ASSUMPTION (to confirm with product)",
+      "rationale": "Numbers are labelled as assumptions or UNKNOWN. Missing inputs are listed and each has a stated consequence, such as the residency gate and pulling offline editing forward."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "kill -9 of the gateway and Postgres in the middle of writes; old-schema docs loaded after a schema migration",
+      "rationale": "It covers crash loss, divergence, cross-tenant leaks, revocation, XSS, size and rate limits, and disaster recovery. It is thin on gateway failover for the live doc, on backpressure and malicious Yjs updates, and on the split of history and tombstone growth."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Deployed through CI to Kubernetes with Helm and rolled back with `helm rollback`. One OpenTelemetry trace follows an edit",
+      "rationale": "It has deploy and rollback, traces, alerts, SLOs, runbooks, and staged exposure with flags. Incident ownership and on-call are only lightly covered, and the team size isn't stated."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Infra cost per 1k concurrent connections | UNKNOWN: product/finance supply a ceiling, needed by Phase 3",
+      "rationale": "It covers build vs buy, a cost check in V2, and cost as a revisit trigger. It gives no estimate of cost drivers (storage growth, memory per doc, connections) and no concrete cost controls."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: it fixes the format every document is stored in",
+      "rationale": "Decisions are rated by reversibility, the one-way ones (sync algorithm, schema, IDs, tenancy) are validated early in V1 and V3, and the table gives revisit triggers and exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Open-source Yjs and Hocuspocus, self-hosted, rather than a hosted service such as Liveblocks",
+      "rationale": "It starts from a proven library and defers the heavy features. Redis, a synchronous replica and the phase/dependency machinery add some overhead, but each has a stated need."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Tasks (in order): 1. Final persistence schema and doc IDs. 2. Update log plus snapshot compaction. 3. Server acks an edit only after commit.",
+      "rationale": "It gives ordered phases, a concrete Phase 0 slice, and exit checks with thresholds and fallbacks. A few details, such as the compaction design, the protocol versioning and the undo approach, are left to the team."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "CRDT (Yjs) ... V1 fails ... → server-authoritative OT (ShareDB)"
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "ProseMirror schema (TipTap), with a version stamped on every doc and migrations"
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "Randomized fuzz runs with 10 clients, reordered and dropped packets, partitions"
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "Append-only update log plus periodic snapshots in Postgres; A server acks an edit only after it is durably written"
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "Redis pub/sub keyed by doc ID ... sticky routing that pins each doc to one node"
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "The plan assumes no, only reconnects after short drops."
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "authorization checked when a socket joins a doc and on every incoming edit; Revoking access drops live sockets."
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Version history from snapshots."
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "Presence and cursors (temporary state, never persisted)."
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Phase 4: Editor features (the visible part, built last)"
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "p95 load time <500 ms for a doc with 1 MB of history"
+    },
+    {
+      "id": "P5-12",
+      "status": 1,
+      "evidence": "Content schema migrations versioned in the repo"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "Document content is eventually consistent and edits apply locally first."
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Use open-source Yjs and Hocuspocus, self-hosted"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Phase 1: Sync engine correctness and data model"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "Server acks an edit only after commit."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "Converges under any order of edits; metadata growth stays bounded"
+    }
+  ],
+  "note": "A strong, risk-first plan with explicit assumptions, reversibility ratings and a sync-first build order. It is weaker on rich-text merge semantics, collaborative undo, protocol versioning, large-document and backpressure handling, and cost quantification.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2458,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 12373
+  },
+  "cost_usd": 0.055705500000000005,
+  "latency_s": 43.293,
+  "raw_file": "raw/judge-184798b59715.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

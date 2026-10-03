@@ -1,0 +1,173 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "04eb221dcdb4.engineering-quality-v1.fable-5.k1",
+  "blind_id": "04eb221dcdb4",
+  "blind_sha256": "32a02e83282cce5c118b259c2a849a7a0768a8c36784920185374dc8027c04d7",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 297,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Windows `os.rename` already refuses to overwrite. On Linux use `renameat2(RENAME_NOREPLACE)`, on macOS `renamex_np(RENAME_EXCL)`",
+      "rationale": "Platform-specific no-clobber syscalls, the QuickTime-stores-UTC quirk, EXIF timezone absence, and the mtime-reset-on-copy caveat are all stated accurately, including subtle areas."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Dominant constraint: Correctness, and specifically not losing data. Speed matters much less.",
+      "rationale": "Solves exactly the stated problem with sensible ambiguity resolution (dry-run default, skip-on-missing-date), and every exclusion is explicitly deferred with a pull-forward trigger."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "an internal `core` package (planner, validator, renamer) kept separate from the `cli` layer",
+      "rationale": "Plan→validate→apply with a journaled renamer is applied consistently everywhere; the rename-unit data model, filename contract and exit codes are honored across all phases with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "A property-based test (Hypothesis) generates random folders with duplicate timestamps, case clashes, pre-existing targets and swap cycles.",
+      "rationale": "The riskiest assumption (safe, undoable apply) is validated first via property tests, fault injection with byte-identical hash checks, a real golden corpus, dual-timezone runs, and continuing CI smoke on three OSes."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Never fall back to file mtime silently, because copying files resets mtime.",
+      "rationale": "Every default is stated with a 'revisit trigger' describing what would change it if wrong, numbers like the 10k/30s budget are framed as thresholds, and no unsupported certainty appears."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "A fault-injection test kills the process at a random step. Undo must restore the folder.",
+      "rationale": "Covers timestamp collisions, swap cycles, case-insensitive filesystems, mid-run crashes, corrupt files, argument injection via crafted filenames, path traversal from metadata, and read-only files, each with concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "documented exit codes: 0 ok, 1 completed with skips, 2 usage error, 3 environment error such as ExifTool missing",
+      "rationale": "For a local CLI it defines the right operational surface: pipx install on three OSes in CI, documented exit codes, `doctor` and `--debug-report`, versioned journals so upgrades never strand an undo."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "It handles JPEG, HEIC, RAW (CR2/NEF/ARW/DNG) and MOV/MP4, plus the vendor quirks, better than any library I could write.",
+      "rationale": "The dominant cost (engineering time) is controlled via the buy-ExifTool decision and aggressive deferral, but effort is never estimated even roughly per phase; infra cost is genuinely negligible here."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "**Filename contract** (the most expensive decision to reverse)",
+      "rationale": "Explicitly ranks reversibility, isolates ExifTool behind a `MetadataReader` interface, defers contract freezes to v1 after a 0.x stability cycle, and guarantees v1 can undo v0.x journals."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Single CLI process... A service split never applies.",
+      "rationale": "The simplest workable design—no database, service or GUI—with every added mechanism (journal, temp-name two-step, validator) justified by the data-loss constraint and growth paths listed under Deferred."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Depends on: Phase 2's correct per-file behaviour. Scaling a wrong answer just spreads it faster.",
+      "rationale": "A concrete first end-to-end slice, dependency-justified phase ordering, specific implementable decisions (tags, syscalls, suffix rules), and checkable exit criteria for every phase let a team start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "Tag precedence: `DateTimeOriginal` → `CreateDate` / `DateTimeDigitized` → QuickTime `CreateDate` for video."
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "Placeholder values like `0000:00:00 00:00:00`, empty strings and garbage count as missing."
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "Collisions get `_01`, `_02`… in a fixed order: sub-second time, then original name."
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "**Dry run is the default**; `--apply` is required to change anything."
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "every unit first gets a unique temporary name (`.photoname-tmp-<run>-<n>`), then its final name. This handles swaps and cycles"
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "write and fsync the journal before each step. `undo` works after Ctrl-C or `kill -9`."
+    },
+    {
+      "id": "P7-07",
+      "status": 2,
+      "evidence": "Use the wall-clock time exactly as recorded (EXIF `DateTimeOriginal` has no timezone). Never convert to the host's local time."
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "A unit = the primary image plus any same-stem siblings (`.xmp`, `.aae`, Live Photo `.mov`), renamed together."
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "`YYYY-MM-DD_HHMMSS.ext`. The original extension is kept exactly, case included."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Make the rename itself no-clobber on every OS."
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "Skip the file and report why. Never fall back to file mtime silently"
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "Single CLI process, with an internal `core` package (planner, validator, renamer)"
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "Renamer: journal line written and fsynced, then a no-clobber rename."
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "`YYYY-MM-DD_HHMMSS.ext`. The original extension is kept exactly, case included."
+    }
+  ],
+  "note": "An exemplary plan: technically precise on the subtle filesystem and EXIF details, safety-first with journaled undo validated by property and fault-injection tests, proportionate, and immediately actionable; only explicit effort/cost estimation is thin.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 9987,
+    "thinking_tokens": 4957,
+    "cache_read_input_tokens": 13551,
+    "cache_creation_input_tokens": 21086
+  },
+  "cost_usd": 0.776516,
+  "latency_s": 192.895,
+  "raw_file": "raw/judge-04eb221dcdb4.engineering-quality-v1.fable-5.k1.txt"
+}

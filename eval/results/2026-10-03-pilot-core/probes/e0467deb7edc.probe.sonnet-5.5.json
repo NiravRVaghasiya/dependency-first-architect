@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "e0467deb7edc.probe.sonnet-5.5",
+  "blind_id": "e0467deb7edc",
+  "blind_sha256": "9558fbcce55efc8a58ef941569b56355e3cc871daf142301ad34a1d60e08e412",
+  "judge": "sonnet-5.5",
+  "order_index": 76,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.9,
+  "cues": [
+    "Rigid numbered-section structure (Summary, Context/Goals/Non-goals, Drivers with ranked quality attributes, Current State, Assumptions, Architecture, Component Details, Data Design, Key Flows, Key Decisions, Cross-Cutting, Build Sequence, First Milestone Task Breakdown, Testing, Rollout/Rollback, Risks, Deferred Work, Next Steps) looks like a prescribed template",
+    "Explicit handling of empty workspace: numbered assumptions A1–A14 with 'impact if wrong' and 'how/when validated' columns, plus open questions with defaults and needed-by dates",
+    "Decision table D1–D11 with options considered, rationale against ranked drivers, reversibility, and 'revisit if' triggers; ADR references",
+    "Named 'hard parts' H1–H6 and time-boxed risk spikes S1–S5 each with 'changes the plan if', plus Milestone 1 defined as a thin slice with exit criteria",
+    "Includes an 'AI-specific concerns: not applicable' line and a Deferred Work section with triggers and deliberate shortcuts, which shows a checklist-driven template"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 472,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 21214
+  },
+  "cost_usd": 0.057763,
+  "latency_s": 33.79,
+  "raw_file": "raw/probe-e0467deb7edc.probe.sonnet-5.5.txt"
+}

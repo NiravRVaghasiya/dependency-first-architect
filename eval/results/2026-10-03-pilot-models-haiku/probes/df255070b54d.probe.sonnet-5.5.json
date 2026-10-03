@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "df255070b54d.probe.sonnet-5.5",
+  "blind_id": "df255070b54d",
+  "blind_sha256": "645313a410c5edaf9a27aafe1d605eb6199829dd858e6f5c25e2f8b4a54ae685",
+  "judge": "sonnet-5.5",
+  "order_index": 16,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Rigid templated structure: Classification and constraints, Dependencies, Key decisions, First end-to-end slice (Phase 0), Phases, Validation checks, Cross-cutting, AI layer, Exceptions, Deferred",
+    "Reversibility labels (R1/R2/R3) on every key decision, plus a 'point of no return' and 'revisit trigger' columns",
+    "Explicit ASSUMPTION / UNKNOWN labels on budgets with 'Checked by' column and a 'Missing inputs' list",
+    "Numbered validation gates V0–V5 with hypothesis, method, acceptance threshold, evidence, and failure action; V0 is a thin end-to-end walking skeleton",
+    "Per-phase cross-cutting table (security/observability/reproducibility/resilience) and a 9-sublayer AI layer table, with 'N/A', 'minor defaults', 'Exceptions: None' sections typical of a checklist methodology"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 396,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11979
+  },
+  "cost_usd": 0.0339155,
+  "latency_s": 29.65,
+  "raw_file": "raw/probe-df255070b54d.probe.sonnet-5.5.txt"
+}

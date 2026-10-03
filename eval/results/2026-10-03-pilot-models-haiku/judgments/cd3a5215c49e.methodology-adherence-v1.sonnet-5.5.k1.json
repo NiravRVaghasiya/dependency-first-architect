@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "cd3a5215c49e.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "cd3a5215c49e",
+  "blind_sha256": "74919984d589488c7bf078acd18978e0961caae0a5febcd67c84cc48b7321a7f",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 28,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1 \"Run V1 (CRDT vs OT spike)\" after Phase 0 already uses Yjs; \"Depends on: Phase 0 (V0 passes).\"",
+      "rationale": "Overall substrate-upward order with gates, but the irreversible CRDT choice is validated after the skeleton already builds on Yjs, and offline/undo gates have some out-of-order references (V3 labelled differently across sections)."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"Client 1 types 'Hello' at position 0... Server receives, appends to log, broadcasts\" plus deploy, logging, monitoring, rollback on day zero",
+      "rationale": "Phase 0 is a genuine end-to-end slice across client, network, backend, broker with deploy, metrics, alert, and rollback, though internal-only and in-memory."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"CRDT (Yjs or Automerge)... Flip condition: V1 fails on latency > 200 ms, or undo unreliable after 3+ concurrent edits, → try OT\"",
+      "rationale": "A table lists irreversible decisions with reversibility class, default, validation, and explicit flip conditions, plus missing inputs."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Phase 1 tasks: algorithm validation first, then persistence, then single-writer, audit log, observability",
+      "rationale": "Phase ordering mostly puts broad decisions first, but within phases ordering isn't justified by blast radius (e.g., Phase 4 rate limiting and compliance come last, sharding first without explicit reasoning)."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Phase 0: \"no auth required (internal spike, allow-listed IP only via firewall rule)\"; Phase 1: \"Auth stubs (no login yet)\"",
+      "rationale": "Security appears in each phase but is thin early, with auth and permissions deferred to Phase 5 and rate limiting/compliance late."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"Grafana with Prometheus scrape (backend exports edits_received, clients_connected, broadcast_latency_ms); alert if clients_connected == 0\"",
+      "rationale": "Observability is concrete in Phase 0 and every subsequent phase with specific metrics, tracing, and alerts."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "\"docker-compose.yml checked in; deployment script runnable locally\"; \"Database schema versioned (schema.sql + migrations/001_init.sql)\"",
+      "rationale": "Reproducibility is addressed each phase, but some entries are weak (Phase 1 'git commits include schema changes', no pinned dependencies or IaC) and skeleton uses a 'helm chart stub'."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Phase 0: \"Manual rollback (kill container); state lost (acceptable for spike); no recovery mechanism\"",
+      "rationale": "Resilience is present in every phase and grows well (WAL, circuit breaker, offline queue), but Phase 0 has essentially none and durable persistence arrives late."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"N/A — no AI component. The system is collaborative real-time editing, not AI/agentic.\"",
+      "rationale": "Plan explicitly declares the AI layer N/A (the deferred AI suggestions item is only deferred, not added)."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Multi-user authentication and authorization... Phase 5 (pull condition: when a second organization requests access).\"",
+      "rationale": "Deferred list is explicit with pull conditions for most items."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, concrete plan with real walking skeleton, decision gates and deferrals; weaknesses are thin early security, the CRDT decision validated after skeleton commits to Yjs, and inconsistent gate labelling.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1404,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 15125
+  },
+  "cost_usd": 0.0518605,
+  "latency_s": 35.01,
+  "raw_file": "raw/judge-cd3a5215c49e.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

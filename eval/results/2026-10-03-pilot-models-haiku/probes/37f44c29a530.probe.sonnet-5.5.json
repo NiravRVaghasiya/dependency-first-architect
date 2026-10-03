@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "37f44c29a530.probe.sonnet-5.5",
+  "blind_id": "37f44c29a530",
+  "blind_sha256": "d0d193441a7ace20f9fb5b90aabf1d425eb0bd186a5df1d180ed1771c8e0e301",
+  "judge": "sonnet-5.5",
+  "order_index": 28,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.97,
+  "cues": [
+    "Opens with \"following the the plan methodology\", a direct reference to a prescribed methodology",
+    "Rigid numbered sections: Classification and constraints, Dependencies, Key decisions, First end-to-end slice (Phase 0), Phases, Validation checks, Cross-cutting concerns, AI layer, Exceptions, Deferred",
+    "Reversibility ratings (R1/R2/R3) with a revisit trigger on each decision, plus ASSUMPTION/UNKNOWN labels on budgets",
+    "Validation checks V0–V4 with hypothesis, method, acceptance threshold, evidence, and what each unlocks if it fails; every phase has a rollback and an exit check",
+    "Dedicated AI-layer table with nine sublayers (injection defense, cost/latency, HITL, retrieval, memory, routing, and others) and an Exceptions table that references \"principle 6\""
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 377,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 13183
+  },
+  "cost_usd": 0.036735500000000004,
+  "latency_s": 20.604,
+  "raw_file": "raw/probe-37f44c29a530.probe.sonnet-5.5.txt"
+}

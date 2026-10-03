@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "f7a48caa0e10.probe.sonnet-5.5",
+  "blind_id": "f7a48caa0e10",
+  "blind_sha256": "f4ca9feb6178777bf28317a79d4a29788b487de3ca234900f8a31c484f9b2d3c",
+  "judge": "sonnet-5.5",
+  "order_index": 91,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Section 1 'Classification' with 'Dominant constraint' and 'Worst failure' fields, which looks like a prescribed template step",
+    "'Key decisions (resolved up front)' table with Default and 'Revisit trigger' columns, including tagged '(AI)' gates",
+    "'First end-to-end slice (Phase 0)' that crosses all tiers, with day-zero observability and an explicit exit check",
+    "Every phase has a fixed 'Unlocks / Depends on / Tasks / Exit check' structure, ordered by dependency",
+    "A per-phase cross-cutting matrix (Security/Observability/Reproducibility/Resilience) and a 9-sublayer 'AI layer' table, plus a 'Deferred' section with pull-forward triggers"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 332,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 6333
+  },
+  "cost_usd": 0.0191605,
+  "latency_s": 27.012,
+  "raw_file": "raw/probe-f7a48caa0e10.probe.sonnet-5.5.txt"
+}

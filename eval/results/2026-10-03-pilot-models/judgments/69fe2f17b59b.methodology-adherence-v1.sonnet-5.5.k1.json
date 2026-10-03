@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "69fe2f17b59b.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "69fe2f17b59b",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 93,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2: \"Depends on: Phase 1 and V1 (the ACL rides on the frozen contract).\"",
+      "rationale": "Phases run from skeleton to convergence core to authz to durability to features to exposure, with each dependency validated before the work that relies on it."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Phase 0: \"allow-listed internal user signs in through OIDC and opens a document... types one character. A second browser session sees it. After a reload...\"",
+      "rationale": "A real end-to-end production slice through all tiers, with deploy, rollback and alerting, comes before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Flip condition: \"V1 fails, or product needs server-enforced per-operation rules... Then move to a centrally sequenced OT design.\"",
+      "rationale": "Irreversible decisions are listed with reversibility, default, assumption, validation and flip condition; unknowns are flagged."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "\"Phase 1: Convergence core and data contract (widest rework first)\"",
+      "rationale": "The format and protocol freeze comes first, then authz, then durability and scale, with leaf features last. Within Phase 1, the harness and freeze come before export."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"OIDC auth, TLS, allow-list and flag. Synthetic tenant only. No secrets in the repo.\"",
+      "rationale": "The cross-cutting table gives concrete security treatment in every phase from 0 to 6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: \"Traces across WebSocket messages, SLIs, an alert, and an integrity hash check.\"",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Phase 0: \"Infrastructure as code, pinned dependencies, pipeline-only deploys.\"",
+      "rationale": "Reproducibility is addressed in each phase: IaC, seeded fuzz, expand/contract migrations, chaos as code, and config-driven rollout."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: \"Rollback exercised once. Single-node failure visible.\"",
+      "rationale": "Resilience appears in every phase: rollback, export seam, fail-closed authz, failover, soft delete, staged fallback, and game days."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"AI (no AI component).\" and \"## 8. AI layer N/A — no AI component.\"",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Long-lived offline editing. Pull it forward when a customer needs edits across days of disconnection.\"",
+      "rationale": "The deferred items are explicit, and each has a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A very strong plan that meets all ten dimensions with concrete content, and I found no significant gaps.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1108,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 8914
+  },
+  "cost_usd": 0.033486,
+  "latency_s": 29.611,
+  "raw_file": "raw/judge-69fe2f17b59b.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

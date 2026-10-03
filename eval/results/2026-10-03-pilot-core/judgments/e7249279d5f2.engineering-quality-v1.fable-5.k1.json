@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e7249279d5f2.engineering-quality-v1.fable-5.k1",
+  "blind_id": "e7249279d5f2",
+  "blind_sha256": "9f036f605974151094677b76ece7a17f616bc9b5d348379aedc2629ca54889ab",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 459,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "GitHub expects webhook replies within about 10 s... changing them forces every installation to re-approve",
+      "rationale": "GitHub App mechanics (permission re-approval, HMAC verification, installation token lifetimes, webhook timing, branch protection enforced server-side), gVisor, SKIP LOCKED queues and injection realities are all stated accurately, including the subtle parts the design depends on."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "triages them (labels, priority, duplicates, requests for info...) and for issues a maintainer approves, writes a fix in a sandbox and opens a draft PR",
+      "rationale": "Addresses both triage and resolution exactly as asked, resolves autonomy ambiguity sensibly with maintainer gating, and every exclusion is explicit with a pull-forward trigger."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Every side effect is a typed `Action`... Every later phase writes through this, so it is the widest contract in the system.",
+      "rationale": "One consistent design: the ledger as the single write path, policy engine mediating all tools, and the security/consistency choices in §2 honored identically in every later phase and the cross-cutting table."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "An injection test suite (40 or more known payloads in issue bodies) changes no action outside the allow-list.",
+      "rationale": "Each phase has checkable exit criteria tied to the plan's named risks (injection suite, sandbox red-team, frozen eval sets, shadow mode), riskiest assumptions are tested before write autonomy expands, and regression gates continue post-launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "These are starting numbers to tune from Phase 3 and 5 data.",
+      "rationale": "Every default decision carries an explicit revisit trigger, numeric targets are labeled provisional, and the single-org, hosted-model and scale assumptions are stated with what changes if they fail."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "The design assumes injections will sometimes get through and limits what they can do: no `workflows` permission, no secrets in the sandbox, no merge rights.",
+      "rationale": "Covers the hard domain failures—prompt injection, missed/duplicate webhooks, runaway loops, memory poisoning, secret leakage, public disclosure of security reports—each with concrete detection, containment and revert paths."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Terraform for all infrastructure... An OpenTelemetry trace whose root is the GitHub `delivery_id`... Kill switch",
+      "rationale": "Deployment, meaningful alerts, dry-run, kill switch and config rollback exist from day zero and the burden is sized to a small team, but incident ownership and on-call response are never assigned."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Cost per merged PR drops ≥ 30% with merge rate within 2 points of before.",
+      "rationale": "The dominant driver (model inference) is metered from the first commit, bounded by per-task/repo/org budgets with stop behavior, tracked per outcome, and build-vs-buy and self-host decisions include explicit cost crossover triggers."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Freeze the GitHub App permission set and the installation/tenant schema. Changing either later means every installation re-approves.",
+      "rationale": "Hard-to-reverse choices (App permissions, tenant schema, persisted ledger contract) are identified and locked deliberately early, while vendor and agent-loop couplings sit behind interfaces with stated exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "A Postgres `SKIP LOCKED` job queue (simplest thing that works).",
+      "rationale": "Starts with a modular monolith and one-label slice, defers multi-agent, SQS, fine-tuning and custom UI behind explicit triggers, and the complexity it does add (sandbox, ledger, policy engine) is justified by the stated safety constraint."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: a real issue opened in `acme/agent-sandbox` gets a valid label in ≤ 60 s p95.",
+      "rationale": "Dependency-ordered phases with concrete schemas, permission lists and per-phase measurable exit checks mean a team could start immediately, and the deferred list states exactly when course changes."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Autonomous | Reads, labels from the allow-list... Gated | Public comments, closing as duplicate... Always human | Merging"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "No `workflows`, `administration` or `secrets` permissions... short-lived installation token"
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "All issue text, comments, code, retrieved chunks and tool output are treated as *data* inside delimited blocks, never as instructions."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "gVisor, no IAM, no secrets, egress allow-list, read-only base... CPU/memory/disk/time limits"
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "includes evidence that the test failed before the fix and passes after"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "a triage set (≥ 500 closed issues with final labels and known duplicates)... Label precision ≥ 90% on the held-out set."
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Outcome capture: label corrections, PR merged/closed/edited diff... an action tier becomes autonomous only after ≥ 95% approval"
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "Kill switch (a flag in Postgres checked before every write)... ≤ 40 tool calls, ≤ 20 min wall clock... ≤ $50 per day"
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Triage | ≤ 8k input tokens, ≤ $0.05, ≤ 3 LLM calls... Triage cost ≤ $0.05 per issue."
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "Each run fully replayable from the ledger (SHA, prompt hash, model, retrieved IDs, tool-call log)."
+    },
+    {
+      "id": "P4-11",
+      "status": 2,
+      "evidence": "Hybrid search: BM25 plus embeddings... code chunked by symbol (tree-sitter)... Incremental re-index on push to the default branch."
+    },
+    {
+      "id": "P4-12",
+      "status": 2,
+      "evidence": "Replaying the same delivery 10 times produces exactly one action... resumable, so an issue comment or PR review can restart the loop"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "Always human | Merging (enforced by GitHub, not by trusting the agent)"
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "No cloud IAM role, no secrets, outbound traffic only through a proxy with an allow-list"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "title and body are wrapped as delimited *untrusted data*"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "In shadow repos, ≥ 25% of draft PRs are merged with only minor edits."
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "a deliberately looping run is cut off at the cap and emits `budget_exceeded{scope}`"
+    }
+  ],
+  "note": "An exemplary plan: technically precise, safety-first, phased with measurable exit checks and explicit reversibility; the only notable gap is unassigned incident ownership/on-call.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 10107,
+    "thinking_tokens": 4484,
+    "cache_read_input_tokens": 18214,
+    "cache_creation_input_tokens": 24210
+  },
+  "cost_usd": 0.8262289999999999,
+  "latency_s": 126.243,
+  "raw_file": "raw/judge-e7249279d5f2.engineering-quality-v1.fable-5.k1.txt"
+}

@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a9f3e7f038a1.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "a9f3e7f038a1",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 4,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Any service beyond the Phase 0 skeleton | V2 (CI has no direct production credentials; unsigned images rejected)",
+      "rationale": "Explicit dependency map and validation gates (V1, V2, V3, V4, V5) ensure each phase is proven before dependents are specified or exposed."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "a one-line change to one low-criticality internal service reaches production, and its `/health` endpoint returns the new version string.",
+      "rationale": "Phase 0 is a real end-to-end production path with deploy, trace, alert and rollback before any feature work."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "OIDC-federated short-lived credentials; CI only pushes signed images... Flip condition: V2 fails, or the runtime can't enforce admission policy",
+      "rationale": "The gates table gives reversibility, default, assumption, validation and flip condition for each irreversible decision, and it lists the missing inputs."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks, widest rework first: 1. Service manifest schema and template v1 (V1). 2. OIDC federation",
+      "rationale": "Phase 1 is ordered widest first, waves go lowest criticality first, and trust and contract work comes before onboarding."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "0 | OIDC for the skeleton; branch protection",
+      "rationale": "The cross-cutting table gives concrete security work in every phase from 0 to 5."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OpenTelemetry traces span the CI job through to the pod, and an alert fires on failed sync or failed deploy.",
+      "rationale": "Observability is built in Phase 0 and each later phase has concrete items."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Pinned base image; pipeline-as-code",
+      "rationale": "Each phase names reproducibility measures, including versioned templates, SBOMs, hermetic builds and a restore runbook."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Git-revert rollback tested",
+      "rationale": "Every phase has rollback or failure handling, including the break-glass drill, the legacy fallback and canary auto-rollback."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: no AI component.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Remote build cache (e.g. Bazel): pulled forward if V3 shows build time p90 above 10 minutes.",
+      "rationale": "Five deferred items each carry a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is strong and covers all 10 dimensions with concrete content. Its weak points are small: the threaded concerns are terse table cells, and some thresholds are assumptions.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1028,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 5829
+  },
+  "cost_usd": 0.024973500000000003,
+  "latency_s": 39.316,
+  "raw_file": "raw/judge-a9f3e7f038a1.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

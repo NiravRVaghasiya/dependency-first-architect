@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "f716ccc23c2d.probe.sonnet-5.5",
+  "blind_id": "f716ccc23c2d",
+  "blind_sha256": "262c122547ff8806bba57dc0d37908dbed06f33d5441910a4893467d6b1a3ee9",
+  "judge": "sonnet-5.5",
+  "order_index": 112,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Rigid numbered template with many fixed sections (Summary, Context and Goals, Drivers, Current State, Assumptions, Architecture, Data Design, Key Flows, Decisions, Cross-Cutting, Build Sequence, Testing, Rollout, Risks, Deferred Work, Next Steps) that looks prescribed",
+    "Assumptions tagged [A1]–[A11] with 'impact if wrong' and 'validate how/when' columns, plus open questions with defaults and 'needed by' dates",
+    "Opening context note states the directory was checked (README says it's empty) and that the plan emphasizes ordering, with sections 12–13 given the most detail, which reflects a procedural step to inspect the environment first",
+    "Ranked quality attributes with measurable targets, named 'hard parts' (H1–H5), and a decision table with options considered, reversibility and 'revisit if' triggers",
+    "Milestones with explicit exit criteria, risk spikes with time boxes and 'result that changes the plan', critical path marking, and an 'AI-specific concerns: Not applicable' line that reads like a template checklist item"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 450,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 18492
+  },
+  "cost_usd": 0.050738000000000005,
+  "latency_s": 28.86,
+  "raw_file": "raw/probe-f716ccc23c2d.probe.sonnet-5.5.txt"
+}

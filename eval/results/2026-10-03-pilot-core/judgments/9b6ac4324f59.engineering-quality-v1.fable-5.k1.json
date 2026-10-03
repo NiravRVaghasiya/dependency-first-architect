@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9b6ac4324f59.engineering-quality-v1.fable-5.k1",
+  "blind_id": "9b6ac4324f59",
+  "blind_sha256": "4752a2a22f61d79570ab02a9bd11c6fdf7eb08ed03e01aaea57dee0e5bd7cc42",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 455,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Scheduling apps make many small database calls, and the network delay between sites hurts performance.",
+      "rationale": "Replication options (Always On/distributed AGs, Data Guard, logical replication, DMS), queue-pause semantics, latency effects of split tiers, and single-writer cutover mechanics are all stated accurately, including real vendor-support limits."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Users should see at most a few seconds of slowness, not an outage.",
+      "rationale": "Directly solves zero-downtime migration with a realistic lift-and-shift, interprets the ambiguity honestly, states what it cannot know, and offers a lower-risk phased alternative."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "One switch point: put a load balancer or proxy in front of the app, and a stable DNS name or connection endpoint in front of the database",
+      "rationale": "The single-writer principle is honored consistently from core idea through cutover sequence, rollback and the phased alternative, with clear data ownership at every phase."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Go/no-go criteria are met: replication lag under a few seconds, reconciliation clean, rehearsals passed.",
+      "rationale": "Validation targets the actual risks (lag, reconciliation checksums, shadow reads, load at measured peak, zone/network failure tests, twice-rehearsed rollback) with checkable criteria before commitment and hypercare after."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "I don't know your vendor, database, cloud provider or integrations, so this plan is written to work across most setups.",
+      "rationale": "Unknowns are declared upfront, estimates are labeled as rough and conditional, and the closing questions identify exactly which assumptions would change the plan."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Messages lost during the switch | Pause and queue at the interface engine, then reconcile message counts",
+      "rationale": "Double-booking, lost HL7 messages, missed integrations, link failure and vendor refusal all get concrete handling, but duplicate messages on queue resume, backup/restore from corruption and security-abuse failures are thin."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Hypercare: help desk staff on site with users, daily check-ins, and close watching of performance, interface errors and replication.",
+      "rationale": "Cutover operations, IaC, monitoring signals and command-center roles are concrete, but steady-state incident ownership, alerting, backup/restore operations and access administration after hypercare are not addressed."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "confirm the vendor supports your target cloud setup and licensing",
+      "rationale": "Beyond a licensing check and a rough timeline, cloud run costs, Direct Connect, dual-running costs during replication and people costs are ignored."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Keep on-prem warm with reverse replication for 2–4 weeks as a rollback option.",
+      "rationale": "Effort is concentrated on the one-way decision (cutover) with explicit, rehearsed exit paths, deferred decommissioning, and the interface-engine placement flagged as a decision with trade-offs."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "This lowers risk but adds complexity, because every location needs one clear system of record at any given moment.",
+      "rationale": "Pure lift-and-shift with no re-architecting; every component (proxy, replication, hybrid link, IaC) earns its place and added complexity is explicitly weighed."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Pause the interface engine's outbound queues. Messages build up safely instead of being lost.",
+      "rationale": "Phased ordering with dependencies, a numbered second-by-second cutover sequence, measurable gate criteria and rollback triggers let a team start immediately, with remaining specifics tied to stated unknowns."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "Business Associate Agreement (BAA) signed with the cloud provider... encryption in transit and at rest, customer-managed keys, audit logging, access controls"
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "Integrations are where scheduling migrations usually fail. List every connection... Pause the interface engine's outbound queues... Point the load balancer, DNS and interface endpoints"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "first full copy of the data, then keep it in sync continuously... Daily reconciliation: compare row counts and checksums... next 90 days of appointments match exactly"
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "never let two systems accept bookings at the same time... Put the on-prem app into read-only mode, or hold new connections at the proxy"
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "Rehearse cutover and rollback at least twice... set up reverse replication back to on-prem so you can roll back"
+    },
+    {
+      "id": "P6-06",
+      "status": 2,
+      "evidence": "a dedicated private link to the cloud (AWS Direct Connect, Azure ExpressRoute or GCP Interconnect) with a site-to-site VPN as backup"
+    },
+    {
+      "id": "P6-07",
+      "status": 1,
+      "evidence": "maximum acceptable data loss and recovery time (RPO/RTO)... spread over at least two zones... printed or exported schedules for the next 72 hours"
+    },
+    {
+      "id": "P6-08",
+      "status": 1,
+      "evidence": "Internal | Call center/phone system, reporting/data warehouse, single sign-on"
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "Shadow traffic: replay real read and search traffic against the cloud copy... Load test at 1.5–2× your measured peak"
+    },
+    {
+      "id": "P6-10",
+      "status": 2,
+      "evidence": "lowest-volume period, such as early Sunday morning... change freeze around cutover... A command center is staffed... Hypercare: help desk staff on site"
+    },
+    {
+      "id": "P6-11",
+      "status": 2,
+      "evidence": "confirm the vendor supports your target cloud setup and licensing... final archive, data retention per policy, certified media destruction"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "Copy data to the cloud continuously while the on-prem system stays in charge. Then switch... in one quick, rehearsed step that you can undo."
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "Only one system accepts bookings at any moment; never write to both"
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "Business Associate Agreement (BAA) signed with the cloud provider (HIPAA in the US...). Use only services the BAA covers."
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "Inbound feeds | ADT (patient admit/transfer feeds)... HL7 SIU messages (appointment updates) to the EHR, billing/eligibility"
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "Keep the app and its database together."
+    }
+  ],
+  "note": "An exemplary zero-downtime migration plan—single-writer discipline, CDC with reconciliation, rehearsed reversible cutover—weak only on cost realism, identity/break-glass, and tested backups.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7889,
+    "thinking_tokens": 5363,
+    "cache_read_input_tokens": 864,
+    "cache_creation_input_tokens": 10443
+  },
+  "cost_usd": 0.5258715,
+  "latency_s": 135.069,
+  "raw_file": "raw/judge-9b6ac4324f59.engineering-quality-v1.fable-5.k1.txt"
+}

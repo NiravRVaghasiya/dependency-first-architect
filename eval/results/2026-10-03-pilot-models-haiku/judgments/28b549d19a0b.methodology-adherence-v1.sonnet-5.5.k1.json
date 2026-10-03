@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "28b549d19a0b.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "28b549d19a0b",
+  "blind_sha256": "f7133d8330bbaf99f8d2abad39eb5268ccb7f941921e618fd15d40fed6a170e3",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 5,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 0,
+      "evidence": "Phase 4: Core Features ... Escalation Flow - Route to human agent if uncertain",
+      "rationale": "Phases run docs→ingestion→pipeline→features→integration, but QA, security, and deployment come last, and escalation/memory are specified after the pipeline with nothing proven first."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 1: Document Preparation",
+      "rationale": "The first phase is document prep, not a thin end-to-end production slice; deployment is Phase 7."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "Store in vector database (Pinecone, Weaviate, Chroma, Milvus)",
+      "rationale": "Options are listed with no defaults, flip conditions, or irreversible-decision gates."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There is no ordering by blast radius within phases; items are flat lists."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "Backend: API endpoints with rate limiting",
+      "rationale": "Security is barely mentioned (rate limiting only); there is no auth, PII, or injection handling in any phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Real-time monitoring & logging",
+      "rationale": "Observability appears only in Phase 7, with analytics in Phase 5, not from day zero."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Version control & track updates",
+      "rationale": "Doc versioning in Phase 1 and Docker in Phase 7 are minimal, with no threaded reproducibility."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Fallback Responses - Graceful handling of out-of-scope questions",
+      "rationale": "Fallback and escalation appear only in a mid-plan feature phase, with no resilience in early phases."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "Budget tracking (tokens, API costs)",
+      "rationale": "Budgets come last; defenses and human-in-the-loop are not placed before capabilities; memory and feedback are listed after the pipeline, with no ordered layering."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There is no explicit deferred-work list or pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A generic, feature-ordered RAG outline with no walking skeleton, decision gates, threaded security, or deferred-work list.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 867,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2794
+  },
+  "cost_usd": 0.015663,
+  "latency_s": 30.708,
+  "raw_file": "raw/judge-28b549d19a0b.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

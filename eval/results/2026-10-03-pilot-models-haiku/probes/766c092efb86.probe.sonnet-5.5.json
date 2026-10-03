@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "766c092efb86.probe.sonnet-5.5",
+  "blind_id": "766c092efb86",
+  "blind_sha256": "707771f948f03df16f106999a47a445fdc5e4628984e21296480df742e6719b1",
+  "judge": "sonnet-5.5",
+  "order_index": 9,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Rigid numbered template: Classification and constraints, Dependencies, Key decisions, First end-to-end slice (Phase 0), Phases, Validation checks, Cross-cutting concerns, AI layer, Exceptions, Deferred",
+    "Budget table where each row is labeled REQUIREMENT, ASSUMPTION or UNKNOWN and names the check that verifies it",
+    "Decisions table with reversibility grades (R1/R2/R3), a default, a validating check and a revisit trigger",
+    "Phase 0 walking skeleton crossing every tier, with day-zero deploy, logging, monitoring and rollback, plus numbered validation checks (V0–V5) with hypothesis, method, threshold and evidence",
+    "Boilerplate sections such as 'AI layer: N/A' and 'Exceptions: None', per-phase cross-cutting matrix and 'Deferred' with pull conditions. The odd preamble ('Perfect. Now I'll create a comprehensive the plan...') suggests a template was being filled in"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 423,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 14172
+  },
+  "cost_usd": 0.039668,
+  "latency_s": 21.074,
+  "raw_file": "raw/probe-766c092efb86.probe.sonnet-5.5.txt"
+}

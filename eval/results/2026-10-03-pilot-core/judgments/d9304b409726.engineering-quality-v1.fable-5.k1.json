@@ -1,0 +1,173 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "d9304b409726.engineering-quality-v1.fable-5.k1",
+  "blind_id": "d9304b409726",
+  "blind_sha256": "e4b36723088e488a06cae2724c2140f4c4ed235016d67761c1d804c2363035d5",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 239,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "On POSIX systems (Linux, macOS), `os.rename` silently replaces an existing target. On Windows it refuses.",
+      "rationale": "Technical claims are accurate and precise throughout, including subtle areas (POSIX rename semantics, case-insensitive filesystems, IFD0 DateTime vs DateTimeOriginal, renameat2/renamex_np escape hatches), and real limits like the POSIX race window are stated honestly."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "This tool is worth building only if you want what ExifTool doesn't give by default: a preview that is the default, an undo",
+      "rationale": "Solves exactly the stated problem, questions build-vs-buy, resolves ambiguities with explicit defaults, and lists non-goals with reasons; clearly buildable by one developer."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Scanner → MetadataReader → Planner → Executor... The Planner is a pure function... Every change on disk goes through a write-ahead **Journal**",
+      "rationale": "Each component has a single responsibility, data ownership is tabulated, and cross-cutting choices (case-folding, no-overwrite, journal-before-rename) are honored consistently in every section."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "**Spike S1: EXIF coverage.**... runs both over a corpus of at least 200 files... **Changes the plan if** any needed format is below 100% agreement",
+      "rationale": "The riskiest assumptions (EXIF coverage, rename semantics) get day-1 time-boxed spikes with explicit plan-change triggers, backed by property tests, fault injection, and a real-folder demo with checkable criteria."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Everything marked *assumption* above is my default rather than something you told me: Windows first, Python and `pipx`, flat folders",
+      "rationale": "Assumptions are tabulated with impact-if-wrong and validation timing, estimates are explicitly labeled, and open questions carry defaults so work can proceed."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "at step 57 of 400 the process is killed, between writing `intent` and finishing `os.rename`... The folder ends up with exactly its original names",
+      "rationale": "Covers partial runs, locked files, corrupt/hostile EXIF, tampered journals, case-collisions, cycles, cloud-sync churn and the POSIX race, each with concrete detection, containment and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "the maintainer is the developer, and support is through repository issues. README sections cover: back up first, how undo works",
+      "rationale": "For a local CLI, deployment (pipx, CI release gate), rollback (undo plus uninstall), observability (report, --verbose, journal audit trail) and ownership are all addressed and sized to one part-time developer."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "No budget is needed and there is nothing to host... Assumes one experienced Python developer... 4–6 dev-days",
+      "rationale": "Correctly identifies engineering time as the only cost driver, gives labeled per-milestone estimates and prices alternatives (+2–3 days for ExifToolBackend), and weighs build-vs-buy explicitly."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Reversibility... **Hard** (data model)... retrofitting it later would be costly",
+      "rationale": "Each decision carries a reversibility rating and revisit trigger; the hard-to-reverse ones (group-as-unit data model, journal format, language) get versioning, interfaces and early validation, while easy choices are made quickly."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "one Python package that installs with `pipx`. It runs in a fixed pipeline",
+      "rationale": "Simplest design that fully meets the need — no database, GUI or service — with deferrals listed with triggers and essentials (undo, grouping, collision safety) kept in."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "the order is T1 → T3/T4 (spike day) → T2 → T5 → T6/T7/T9... → T12",
+      "rationale": "Twelve tasks with locations and 'done when' criteria, a dependency-justified order, and explicit 'changes the plan if' conditions mean a team could start immediately and adapt."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "Date priority: `DateTimeOriginal`, then `DateTimeDigitized`, otherwise skip... It never uses IFD0 `DateTime`, which records when the file was last edited"
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "It rejects empty values, `0000:00:00 00:00:00` and strings it can't parse, and returns `Skip(reason)`... `--fallback mtime`... is opt-in"
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "Groups with the same target stem are sorted by (sub-second, original stem). The first keeps the plain stem; the rest get `_01`, `_02`"
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "`preview DIR` → scan → read dates → plan → print the table and the skipped list → exit. **Nothing is written"
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "Check `os.path.lexists(to)`... a cycle... is resolved with a temporary hop... A group already at its target is a no-op"
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "Write a journal entry before each rename, and provide an `undo` command that is safe to run more than once"
+    },
+    {
+      "id": "P7-07",
+      "status": 2,
+      "evidence": "EXIF time is used as-is (camera local time), with no time-zone conversion... or using the EXIF time-zone offset? *Default:* camera local time"
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "Keeps RAW+JPEG pairs, `.xmp`/`.aae` sidecars and Live Photo `.mov` files paired. The group is the unit of planning and journalling"
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "Name format `YYYY-MM-DD_HH-MM-SS` + original extension... ISO format with `T` and colons (not allowed on Windows)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Never overwrite a file... Check `os.path.lexists(to)`. Call `os.rename`."
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "Date priority: `DateTimeOriginal`, then `DateTimeDigitized`, otherwise skip. `--fallback mtime`... is opt-in"
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "one Python package that installs with `pipx`... A graphical interface [non-goal]"
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "Non-goals: Changing file contents or metadata."
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "Name format `YYYY-MM-DD_HH-MM-SS`... Sorts correctly, valid on every filesystem"
+    }
+  ],
+  "note": "An exemplary plan: it hits every domain checklist item, explicitly recognizes and avoids all five traps, and concentrates spikes, property tests and fault injection exactly where the risk lives.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7160,
+    "thinking_tokens": 4598,
+    "cache_read_input_tokens": 852,
+    "cache_creation_input_tokens": 19026
+  },
+  "cost_usd": 0.596697,
+  "latency_s": 110.29,
+  "raw_file": "raw/judge-d9304b409726.engineering-quality-v1.fable-5.k1.txt"
+}

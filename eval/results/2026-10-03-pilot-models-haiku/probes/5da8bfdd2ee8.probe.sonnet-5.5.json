@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "5da8bfdd2ee8.probe.sonnet-5.5",
+  "blind_id": "5da8bfdd2ee8",
+  "blind_sha256": "e488fb3f56cb6de7189e254bfa1cba9edff2616431c1cfaeb0c588f762e39f1c",
+  "judge": "sonnet-5.5",
+  "order_index": 1,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.1,
+  "cues": [
+    "Opens with 'Let me explore the directory structure differently' then gives a generic plan, which suggests no structured process and a failed exploration",
+    "Generic, option-listing content (Pinecone/Weaviate/Milvus/FAISS; LangChain/LlamaIndex) with no commitments or decisions",
+    "Heavy emoji and bold-everything formatting, ASCII diagrams, checkmark lists, typical of unguided chat output",
+    "Ends with a menu of follow-up offers ('Would you like me to...') and asks the user to share docs, with no grounding in the actual repo",
+    "No explicit assumptions, risks tied to specifics, verification steps, or acceptance criteria; the timeline is boilerplate"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 315,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3344
+  },
+  "cost_usd": 0.011518,
+  "latency_s": 24.178,
+  "raw_file": "raw/probe-5da8bfdd2ee8.probe.sonnet-5.5.txt"
+}

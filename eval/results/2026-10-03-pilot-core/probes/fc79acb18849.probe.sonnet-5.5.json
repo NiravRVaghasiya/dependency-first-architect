@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "fc79acb18849.probe.sonnet-5.5",
+  "blind_id": "fc79acb18849",
+  "blind_sha256": "1ed32d33520d85baaa1c333f94f7d2472ab1cf259f48f0698829299f95d9fb67",
+  "judge": "sonnet-5.5",
+  "order_index": 152,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Section 1 'Classification' states type, dominant constraint and worst failure before any design work",
+    "Key decisions table with 'Default (chosen now)' and 'Revisit trigger' columns, including rows marked N/A for AI and services",
+    "Phase 0 is a 'first end-to-end slice' that crosses every tier and ends with a 'production' definition and an exit check",
+    "Phases are ordered by dependency, each with 'Unlocks', 'Depends on' and 'Exit check' fields",
+    "Per-phase cross-cutting table (security, observability, reproducibility, resilience) and a Deferred list with 'brought forward if' triggers"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 290,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 5672
+  },
+  "cost_usd": 0.017088,
+  "latency_s": 27.178,
+  "raw_file": "raw/probe-fc79acb18849.probe.sonnet-5.5.txt"
+}

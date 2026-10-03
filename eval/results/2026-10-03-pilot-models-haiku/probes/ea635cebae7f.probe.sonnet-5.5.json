@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "ea635cebae7f.probe.sonnet-5.5",
+  "blind_id": "ea635cebae7f",
+  "blind_sha256": "89786daf99b3dc2c3172a8e47d909a70b9f772a2f89f82acd29a3b99d50fdbde",
+  "judge": "sonnet-5.5",
+  "order_index": 2,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.97,
+  "cues": [
+    "Opens with \"Now I have the reference materials... I'll follow all 10 steps carefully,\" explicitly stating it is following a multi-step methodology",
+    "Rigid numbered template sections (classification/constraints, dependencies, key decisions, Phase 0 slice, phases, validation checks, cross-cutting, AI layer, exceptions, deferred)",
+    "Methodology-specific jargon and labels: reversibility tiers R1/R2/R3, ASSUMPTION/UNKNOWN labels, gated V0–V4 validation IDs with pass bars, 'Phase 0 first end-to-end slice'",
+    "Dedicated 'AI layer (AI/agentic systems only)' table with nine sublayers plus 'Exceptions: None' and 'Deferred' with flip triggers, which looks like template-mandated sections",
+    "Every phase has rollback and exit-check entries, and a per-phase cross-cutting matrix (security/observability/reproducibility/resilience), which indicates a prescribed structure"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 417,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 13432
+  },
+  "cost_usd": 0.037758,
+  "latency_s": 10.512,
+  "raw_file": "raw/probe-ea635cebae7f.probe.sonnet-5.5.txt"
+}

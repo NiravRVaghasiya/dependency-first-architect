@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "26c266f6cb11.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "26c266f6cb11",
+  "blind_sha256": "62a4aae13d0e6d0928ecd5c9f923e2ef9b94488fea456ce6a8c81dc21d814b11",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 0,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 0 skeleton includes CRDT merge, offline catch-up and persistence; auth/sharing deferred to Phase 2 while Phase 1 sits on URL tokens",
+      "rationale": "Mostly substrate-upward with a dependency map, but the skeleton bundles catch-up and CRDT before the merge is proven (V1 is in Phase 1), and the spike exception sits awkwardly before Phase 0."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Phase 0: user types a character, server applies to CRDT, broadcasts, persists to PostgreSQL; server restarts and reconstructs text; deploy, rollback, metrics.",
+      "rationale": "A real end-to-end slice is deployed with logging, monitoring, rollback and an exit check before features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "CRDT vs OT: Default CRDT (Yjs or Automerge)... Flip condition: V1 fails: switch to an OT library... re-scope to turn-taking locking",
+      "rationale": "The gate table lists irreversible decisions with reversibility, default, assumption, validation and flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Phase 1 tasks: CRDT layer, version vectors, protocol, operation log, catchup... then snapshot, purge, load test",
+      "rationale": "The ordering is roughly sensible (CRDT and schema first) but blast radius is never explicitly used, and the load test and purge are not ordered by impact."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: internal IP allow-list, feature flag off; Phase 1: input validation; Phase 2: auth; Phase 3: rate limiting; Phase 4: CSP",
+      "rationale": "Each phase has concrete security measures, starting from Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: Structured JSON logs to stdout; baseline latency metrics to Prometheus; Phase 1 correlation IDs; Phase 2 SLIs and alerts; Phase 3 tracing",
+      "rationale": "Observability is concrete in Phase 0 and in every phase after."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Phase 0: Docker image build is reproducible (pinned base image, dependencies); database schema is version-controlled",
+      "rationale": "Each phase has concrete reproducibility items, such as pinned images, versioned migrations, expand/contract migrations, runbooks and release playbooks."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: Graceful shutdown: on SIGTERM, flush pending edits to database; Phase 1 circuit breaker; Phase 2 client auto-retry; Phase 3 failover",
+      "rationale": "Failure handling appears concretely in all phases, including Phase 0."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A — no AI component. The system does not use large language models, retrieval-augmented generation, or agent orchestration.",
+      "rationale": "The plan explicitly declares the AI layer N/A."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Offline editing... pulled forward if product feedback shows users need it.",
+      "rationale": "The deferred list is explicit and each item has a pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, well-threaded plan with real skeleton and gates. Weak spots: Phase 0 overloaded before CRDT proof, blast-radius ordering implicit, and some internal inconsistencies.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1257,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 12445
+  },
+  "cost_usd": 0.0436905,
+  "latency_s": 20.1,
+  "raw_file": "raw/judge-26c266f6cb11.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

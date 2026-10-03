@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "6eba33d6e87c.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "6eba33d6e87c",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 59,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "OIDC short-lived tokens scoped to one service. Images signed with cosign; Kyverno admission accepts only signed, digest-pinned images",
+      "rationale": "Mechanisms (OIDC, cosign, Kyverno, Argo pull, expand-contract) are used correctly; minor slips like 'tagged with git SHA' alongside digest referencing and no explicit treatment of fork PR secrets."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Re-platform in waves. The old pipeline is the system of record and fallback until the service cuts over",
+      "rationale": "Covers migration, deploy, signing, progressive delivery with explicit deferrals, but omits contract testing, flaky tests and caching/build-time strategies."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Pull (GitOps with Argo CD). CI never holds cluster credentials",
+      "rationale": "Consistent GitOps/OIDC/admission design with clear ownership; minor loose ends such as Phase 0 deploying prod before enforce-mode admission and the automated PR bump into GitOps repo trust."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Red-team: a malicious pull request in the pilot repo tries cross-namespace deploy, a static-key push, and applying an unsigned image",
+      "rationale": "Validation checks are tied to the riskiest decisions, with measurable thresholds labeled ASSUMPTION, early pilot, and ongoing per-wave DORA comparison and alerts."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Deploy target. I assume Kubernetes on one cloud. If it is VMs or serverless, the push-vs-pull row flips",
+      "rationale": "Assumptions and unknowns are explicitly labeled, with how they change the design and where they are confirmed."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Prod deploys stop when the platform is down. An audited break-glass path, owned by on-call, stays available",
+      "rationale": "Covers compromise, platform outage, rollback, legacy secrets and decommission risk, but fork-PR secrets, flaky tests, duplicate or partial runs and dependency poisoning are thin."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Rollback is a git revert in the GitOps repo, which Argo then syncs.",
+      "rationale": "Deploy, rollback, alerts, break-glass and on-call ownership are concrete and sized for 3–5 people; platform self-monitoring and SLO are thin."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Runner cost/month | UNKNOWN: finance supplies the budget before Phase 3 wave 3",
+      "rationale": "Runner cost is identified and load-tested with build-vs-buy choice, but no estimate basis, cost controls or people cost."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: a compromise causes harm that can't be undone, across every service",
+      "rationale": "Decisions have reversibility ratings, revisit triggers, fallbacks, and the point of no return is isolated and guarded by V5."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "≤ 3 platform components run by us",
+      "rationale": "Hosted CI with deferred extras is well sized, though Argo, Rollouts, Kyverno, cosign and OTel push the component count against the stated limit."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Tasks, widest rework first: 1. Freeze the artifact contract. 2. Build pipeline template v1",
+      "rationale": "Ordered phases with dependencies, exit checks and fallbacks; some details like caching and test strategy are left to the team."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "Dry-run 5 representative services, one per runtime (V1)"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "disable its old pipeline trigger only after 5 successful new-path deploys"
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Immutable image, referenced by digest, tagged with git SHA, SBOM attached"
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "OIDC short-lived tokens scoped to one service."
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Kyverno admission accepts only signed, digest-pinned images"
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "Argo Rollouts canary (5% → 25% → 100%) with automatic analysis on error rate and latency."
+    },
+    {
+      "id": "P3-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-08",
+      "status": 0,
+      "evidence": "Throwaway preview environments: when more than 30% of pull requests need manual integration testing."
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "build cache → registry layer cache"
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Load test at 1.5× peak builds/hour (UNKNOWN until Phase 0 history)"
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "Rollout analysis dashboards; DORA metrics"
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "An audited break-glass path, owned by on-call, stays available"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Re-platform in waves. The old pipeline is the system of record and fallback"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Immutable image, referenced by digest"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "OIDC short-lived tokens scoped to one service."
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Each service deploys ... Central, versioned reusable templates that each service pins by version"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Buy hosted CI (GitHub Actions or GitLab CI) plus self-hosted throwaway runners"
+    }
+  ],
+  "note": "Strong risk-driven sequencing with pilot, waves, explicit assumptions and reversibility; weaker on test/flaky handling, contract testing, caching and runner cost estimation.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2166,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 12001
+  },
+  "cost_usd": 0.0518555,
+  "latency_s": 48.564,
+  "raw_file": "raw/judge-6eba33d6e87c.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

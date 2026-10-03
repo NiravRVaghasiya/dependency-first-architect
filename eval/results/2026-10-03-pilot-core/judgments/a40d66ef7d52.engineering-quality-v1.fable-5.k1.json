@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a40d66ef7d52.engineering-quality-v1.fable-5.k1",
+  "blind_id": "a40d66ef7d52",
+  "blind_sha256": "66a679aecb893e1d8c25368af0de8aa00585f4b3dad16348f76a9a6e9fb360ae",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 246,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "The server writes it durably to Postgres before acknowledging it (synchronous), then broadcasts it to other users immediately.",
+      "rationale": "Claims about Yjs/CRDT behavior, fencing tokens, lease ownership, relative positions, and durability semantics are accurate and precise, including honest limits like CRDT metadata overhead triggers."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "A browser-based rich-text editor where many users edit the same document at once, see each other's cursors, and get version history",
+      "rationale": "Covers nearly every implied core need with explicit, justified deferrals, but collaborative per-user undo is never addressed, a core implied editor capability."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Exactly one sync server owns each document at a time, via a lease in Redis with a fencing token so an old owner can't keep writing.",
+      "rationale": "Responsibilities, data ownership, and the availability-vs-consistency split by data type are declared once and honored consistently across every phase with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Simulate 5+ clients making random concurrent edits under random network splits, delays and reorderings. Assert that all states end up byte-identical.",
+      "rationale": "Riskiest assumptions (convergence, durability, failover) are tested early with checkable exit criteria, chaos tests, and a production divergence detector that continues validation after launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Or merge metadata exceeding about 3× the document's content size on typical documents after compaction.",
+      "rationale": "Every major decision states a default plus an explicit revisit trigger, numbers are hedged ('about'), and design-sensitive assumptions like server-readable content are flagged before lock-in."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Divergence detector: clients periodically report a hash of their state. Mismatches raise a metric and a page-out alert.",
+      "rationale": "Covers the hard domain failures: silent divergence, stale-owner split-brain, duplicate edits, malicious viewer writes, XSS, orphaned anchors, reconnect storms, each with concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Terraform builds the infrastructure. GitHub Actions builds the image, runs tests and database migrations, and does a rolling deploy to ECS",
+      "rationale": "Deployment, graceful drain, meaningful metrics, alerting and staging parity are concrete and team-sized, but deploy/migration rollback and incident ownership are not explicitly specified."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Postgres full-text search first; OpenSearch is deferred.",
+      "rationale": "Money, compute and vendor costs are never discussed; cost awareness is only implicit in buy-vs-build and deferral choices, with no drivers, scaling behavior or estimates."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "This is effectively irreversible after Phase 1, because it changes storage, validation, search and export. Decide before the data format is locked.",
+      "rationale": "One-way doors (data format, encryption, tenancy) are identified, validated early, and isolated with explicit exit paths, while reversible choices get quick defaults with revisit triggers."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Modular monolith. One repo and one container image, run in three roles",
+      "rationale": "Starts with the simplest workable design (monolith, Postgres-first, pg-boss, Hocuspocus scaffold) and defers microservices, OpenSearch and multi-region behind concrete pull-forward triggers."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "A signed-in user opens document /d/{id} and types \"hello\". A second user in another browser sees \"hello\" appear.",
+      "rationale": "A team could start immediately: a concrete first slice, dependency-justified phase ordering, specific technology decisions, measurable exit checks per phase, and triggers for changing course."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "CRDT (Yjs). It merges edits made offline or during a network split without a central sequencer."
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "a versioned ProseMirror schema (schema_version stamped on every document)... add-only node types, and unknown nodes are kept intact"
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "Simulate 5+ clients making random concurrent edits under random network splits, delays and reorderings. Assert that all states end up byte-identical."
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "append-only doc_updates log plus periodic snapshots... A compaction job runs in the worker role."
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "Connections go to the owning server via consistent hashing on doc_id... Cap edit size and rate per connection."
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "The client keeps an offline queue in IndexedDB (y-indexeddb), and reconnects with backoff plus jitter."
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "Checks happen when a connection opens and on every incoming edit... A permission change disconnects affected sessions."
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "A restore is applied as a new forward edit, never a destructive rewrite."
+    },
+    {
+      "id": "P5-09",
+      "status": 2,
+      "evidence": "Presence data (cursors, who's online) goes on a separate channel and is never stored."
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Phase 1 — Document substrate: data format, storage, permissions, merge correctness... Unlocks: every feature that stores or changes document content."
+    },
+    {
+      "id": "P5-11",
+      "status": 2,
+      "evidence": "500 concurrent editors on one document, and 50,000 documents open... Batch broadcasts for very busy documents."
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "An old client opening a document with new node types keeps the content intact; the client is gated on version and forced to refresh."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Buy or adopt: Yjs, TipTap/ProseMirror... Scaffold: Hocuspocus as the first sync server."
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Phase 0... A second user in another browser sees \"hello\" appear."
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "The server acknowledges only after the write commits."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "none"
+    }
+  ],
+  "note": "An exceptionally strong, correctly sequenced CRDT-based plan with early convergence/durability validation and explicit reversibility reasoning; its only material gaps are the complete absence of cost treatment and no collaborative undo.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7820,
+    "thinking_tokens": 5281,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 14129
+  },
+  "cost_usd": 0.5685025,
+  "latency_s": 137.501,
+  "raw_file": "raw/judge-a40d66ef7d52.engineering-quality-v1.fable-5.k1.txt"
+}

@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "37d888ff8716.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "37d888ff8716",
+  "blind_sha256": "ed27b79645b426ebc5adf28112e9bf4495f406e79cc0306f233a50c6b3a6d015",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 444,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Set the on-premises database to read-only. The write pause starts here, and the app retries bookings automatically.",
+      "rationale": "Mechanisms (CDC, write freeze, reverse replication, SIU only from active system) are sound; minor imprecision, e.g. reverse replication setup with DMS/CDC and 'nothing visibly changes' claim."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Avoid having both systems write at once (dual-write)... move \"write authority\" over in a single controlled switch.",
+      "rationale": "Solves the actual problem with an honest definition of no downtime and covers core needs, though it is generic and defers vendor/scale specifics."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Only the active system may send outbound HL7 appointment (SIU) messages, so the EHR never gets duplicates.",
+      "rationale": "Single write authority, routing layer, replication direction and interface ownership are applied consistently; minor loose ends like the ordering of interface repointing after writes resume."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Run at least two full dress rehearsals of the cutover and the rollback, using production-sized data, and time each step.",
+      "rationale": "Validation is tied to risks (checksums, business checks, shadow reads, rehearsals, go/no-go), but post-launch monitoring and some thresholds (2–3×, 1 sec) are unjustified."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "I checked your workspace first. It contains only a README... This plan is generic, and the assumptions are flagged where they matter.",
+      "rationale": "States US assumption, generic nature, and questions that would change the plan; sensitivity partly addressed, figures like timelines are not labeled as estimates."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Duplicate or missing HL7 messages | Only the active system sends; message IDs that can safely be resent; reconcile counts",
+      "rationale": "Covers double bookings, duplicate HL7, link failure, rollback triggers, but thin on data corruption, adversarial input, and partial failure during cutover."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Watch the system closely with on-site support in the first week, and survey scheduling staff.",
+      "rationale": "Deployment via IaC, rollback and hypercare exist, but monitoring signals, incident ownership and access administration are thin."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "none",
+      "rationale": "Cost is essentially not addressed beyond choosing replatforming; no cost drivers, controls or estimates."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Every step must be reversible until the on-premises system is shut down.",
+      "rationale": "Reversibility is central, with reverse replication and a routing layer; lock-in to provider/managed DB and identifier concerns not discussed."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "I'd usually recommend replatforming: the same app on cloud VMs or containers, plus a managed database.",
+      "rationale": "Avoids rewrite and keeps components justified; reasonable for the need."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Pause queued outbound jobs... Set the on-premises database to read-only... Wait for replication lag to reach zero",
+      "rationale": "A phased, ordered plan with a detailed cutover runbook and checkable gates; lacks concrete tool choices and contingency if early results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 1,
+      "evidence": "sign a BAA (Business Associate Agreement) with the cloud provider, use only HIPAA-eligible services"
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "Make integration endpoints configurable, so the interface engine can be repointed without code changes."
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "Check row counts and checksums, and also business checks such as \"appointments per provider per day match\""
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "Only one system takes bookings at any moment."
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "Start reverse replication (cloud → on-premises) so the old system stays current for rollback."
+    },
+    {
+      "id": "P6-06",
+      "status": 1,
+      "evidence": "Redundant private network links between the hospital and the cloud (e.g., Direct Connect or ExpressRoute), with VPN backup."
+    },
+    {
+      "id": "P6-07",
+      "status": 1,
+      "evidence": "with backups and a multi-zone setup for high availability."
+    },
+    {
+      "id": "P6-08",
+      "status": 1,
+      "evidence": "Single sign-on tied to your existing directory (AD/Entra), using least-privilege access."
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "Run the cloud app read-only against the copied data. Replay or mirror real read traffic and compare responses."
+    },
+    {
+      "id": "P6-10",
+      "status": 2,
+      "evidence": "Pick the lowest-volume window, typically early on a Sunday morning. Clinical leadership signs off, and the change freeze is in effect."
+    },
+    {
+      "id": "P6-11",
+      "status": 1,
+      "evidence": "If this is a vendor product (e.g., Epic Cadence), the vendor's hosting and migration path will drive most of this plan."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "Do an initial bulk copy, then continuous one-way change data capture (CDC), on-premises → cloud."
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "Avoid having both systems write at once (dual-write)"
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "sign a BAA (Business Associate Agreement) with the cloud provider, use only HIPAA-eligible services"
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "the interface engine (e.g., Mirth or Rhapsody)"
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "replatforming: the same app on cloud VMs or containers, plus a managed database."
+    }
+  ],
+  "note": "Solid, sound single-write-authority cutover plan with reverse replication and rehearsals; weak on cost, operations detail, DR targets and decommissioning/vendor licensing specifics.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2169,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 860,
+    "cache_creation_input_tokens": 9983
+  },
+  "cost_usd": 0.0468275,
+  "latency_s": 28.307,
+  "raw_file": "raw/judge-37d888ff8716.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

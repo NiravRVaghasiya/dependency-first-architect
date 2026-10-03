@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f987ef47ab80.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "f987ef47ab80",
+  "blind_sha256": "404fd46c835db088c144e2805870ccbebdaed42101f5bf2475270495de38d950",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 44,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No phases or ordering exist; the response only asks clarifying questions."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No walking skeleton or any phase is specified."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "What platform/framework would you like to use? (e.g., LangChain, LlamaIndex, custom implementation)",
+      "rationale": "It asks questions but lists no decisions with defaults or flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No work items are ordered by blast radius."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Security is not mentioned anywhere."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Observability is not mentioned."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Reproducibility is not addressed."
+    },
+    {
+      "dim": 8,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No failure handling is described."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "Retrieval strategy (vector search, ranking, etc.)",
+      "rationale": "Only a promised list of topics appears, with no defenses, budgets, human-in-the-loop, or layer ordering."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Nothing is explicitly deferred and no pull-forward conditions are given."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The response is a request for clarification with a promised outline and contains no actual plan, so it scores 0 on every dimension.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 606,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2119
+  },
+  "cost_usd": 0.011365499999999999,
+  "latency_s": 19.633,
+  "raw_file": "raw/judge-f987ef47ab80.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

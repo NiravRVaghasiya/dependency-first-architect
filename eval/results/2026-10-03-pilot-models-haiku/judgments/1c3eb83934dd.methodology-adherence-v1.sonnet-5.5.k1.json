@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "1c3eb83934dd.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "1c3eb83934dd",
+  "blind_sha256": "4b36306bcc25e5101bf6d0544cfe087950c6697e32f4951be2e34e399da1d493",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 40,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1: Foundation & Toolchain ... Phase 4: Observability & Reliability",
+      "rationale": "Broadly substrate-upward, but nothing is proven before dependents, and observability and GitOps come after deployment automation."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There is no thin end-to-end production slice early. Phase 1 is infrastructure only, and pilot services do not arrive until Phase 5."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "Select cloud provider (AWS/Azure/GCP)",
+      "rationale": "Choices are listed as open options with no defaults or flip conditions, so irreversible decisions are not gated."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Select least complex services first",
+      "rationale": "Onboarding is staged by batch, but the ordering starts with the least complex services rather than the widest-impact work."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Implement secrets vault (HashiCorp Vault, AWS Secrets Manager)",
+      "rationale": "Security appears in Phase 1 (secrets, RBAC) and in Phase 2 (SAST). It is absent from the later phases, and hardening is left to the end."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Configure centralized logging and monitoring",
+      "rationale": "Basic logging and monitoring are in Phase 1, but the main observability work is in Phase 4, and later phases do not treat it concretely."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Staging environment with production parity",
+      "rationale": "Versioning, config as code and GitOps appear, but GitOps comes late and reproducibility is not threaded through every phase."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Automated rollback triggers",
+      "rationale": "Rollback appears in Phases 2 and 3, but DR and chaos engineering are left to the end."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never says whether an AI layer applies, so it does not declare N/A."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "Advanced Features (Weeks 25-28)",
+      "rationale": "Later work is grouped into a phase, but there are no explicit deferrals and no pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "This is a generic phased checklist. It has no walking skeleton, no decision gates and no deferral triggers, and observability, security and resilience are mostly late or partial.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 902,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3431
+  },
+  "cost_usd": 0.0176055,
+  "latency_s": 37.283,
+  "raw_file": "raw/judge-1c3eb83934dd.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

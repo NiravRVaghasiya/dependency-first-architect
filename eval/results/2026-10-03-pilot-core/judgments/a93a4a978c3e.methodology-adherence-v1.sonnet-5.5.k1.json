@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a93a4a978c3e.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "a93a4a978c3e",
+  "blind_sha256": "974a1c5481440e1e4b7c027afca4c9886c10c829923f9fab2abb4e42e107725f",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 399,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 0. Shadow | Runs on all issues and logs decisions only",
+      "rationale": "Rollout moves from shadow to triage to fixes in a sensible order, but the build itself (queue, gateway, sandbox, index) is not phased by dependency."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Phase 0. Shadow | Runs on all issues and logs decisions only",
+      "rationale": "Shadow mode is an early end-to-end path on real issues, but it only logs decisions, is a rollout stage not a build phase, and leaves out the write path."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Open questions: \"Autonomy ceiling: is draft-PRs-only the permanent limit...\"; \"Tech choices (suggested defaults)\"",
+      "rationale": "There are defaults and open questions, but no irreversible-decision list with flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Enforce the action allowlist at the gateway, not in the prompt.",
+      "rationale": "The gateway and policy layer are described as central, but no work ordering inside phases puts wide-impact items first."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Rollout Phase 3: \"Draft PRs only when a maintainer types `/agent fix`\"",
+      "rationale": "Security is strong in design (least privilege, sandbox, injection defenses), but it sits in a standalone section and is not tied to each rollout phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Auditability: every LLM call, tool call and GitHub write is traced and tied to the issue ID.",
+      "rationale": "Tracing and metrics are specified, but in a standalone section, and the plan never says they exist from Phase 0."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan says nothing about reproducible builds, environments or pinned model and prompt versions. The only related item is a prebuilt sandbox image per repo."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Events are processed idempotently, keyed on event ID, and work is serialized per issue.",
+      "rationale": "Resilience appears in the design (idempotency, retries, budgets, escalation on failure), but it is not threaded through rollout phases."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Budgets per attempt: about 40 tool calls, 30 minutes of wall-clock time, and a hard token and dollar limit.",
+      "rationale": "Defenses, budgets and human review are present and rollout is gated, but the plan does not order AI layers (retrieval, then model, memory, orchestration, routing, feedback) and has no memory layer."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Out of scope for v1: large features, architecture changes, security vulnerabilities...",
+      "rationale": "Out-of-scope items are listed, but without pull-forward conditions, except for the rollout exit criteria."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan has strong technical design and safety content and a staged rollout, but it is not organized as dependency-ordered build phases. Reproducibility is missing, and most dimensions score partial.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1128,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 5611
+  },
+  "cost_usd": 0.025315499999999998,
+  "latency_s": 33.715,
+  "raw_file": "raw/judge-a93a4a978c3e.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

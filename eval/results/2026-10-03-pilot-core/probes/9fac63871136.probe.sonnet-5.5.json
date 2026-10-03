@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "9fac63871136.probe.sonnet-5.5",
+  "blind_id": "9fac63871136",
+  "blind_sha256": "bd0fb24f156bc450812cca1c5e19fe734918e0ccc317737ef0d3ade0d396db55",
+  "judge": "sonnet-5.5",
+  "order_index": 13,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.4,
+  "cues": [
+    "Clean, consistent structure: goal/scope, tech options table, CLI, architecture, key logic, testing, milestones, open questions — fits a planning template",
+    "Explicit 'Version 1 leaves out' non-goals and an 'Open questions' section listing decisions that would change the design",
+    "Options comparison table followed by a clear recommendation",
+    "Thorough edge-case coverage (two-phase rename, undo log written before each step, casefold, idempotency), but this is also typical of a strong unconstrained plan",
+    "Prose is fairly natural and not formulaic with risk/assumption/verification headings; no explicit assumptions or success criteria sections, which tempers the methodology signal"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 302,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3602
+  },
+  "cost_usd": 0.012033000000000002,
+  "latency_s": 12.617,
+  "raw_file": "raw/probe-9fac63871136.probe.sonnet-5.5.txt"
+}

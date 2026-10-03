@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0fa56924e876.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "0fa56924e876",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 32,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Critical path: LLM data approval → SME labels evaluation set v0 → harness baseline → S1/S2 decisions → M2 quality gate → beta.",
+      "rationale": "Milestones build substrate (repo, infra, migrations, ingestion, gateway) before retrieval, pipeline, API, with evals gating later work and dependencies explicit."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "M1: Ingest → index → hybrid search → generate → validate → internal chat page in staging via CI. (No widget, handoff, ... or public access.)",
+      "rationale": "A real end-to-end slice exists first but only in staging behind SSO, not a production path, and after a 3–4 week milestone that also includes spikes."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D11 Python 3.12 / FastAPI ... Reversibility Hard ... Revisit if: Team is TypeScript-first. Then switch now, not later.",
+      "rationale": "Decision table with options, reversibility, flip conditions, plus assumptions table with defaults and validation dates."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Then T2/T3 ∥ T4 → T5 ∥ T6. Then T7 → T8 → T9/T10",
+      "rationale": "Platform, schema and gateway precede leaf work, but blast-radius ordering is not stated explicitly, and risky items like security controls are pushed to M2."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Security (built in M1 and M2, reviewed in M3)",
+      "rationale": "Security is a standalone table mostly scheduled for M2; M1 has only SSO ALB, dependency scanning and anonymous ingestion, with the main controls arriving later."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "T17 Add baseline observability: JSON logs with IDs, OTel spans per pipeline stage to the APM, dashboard",
+      "rationale": "Observability is in M1 (traces, dashboard), completed in M2 with alerts, and extended in M3 through runbooks and production metrics."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform ... Remote state with locking; Alembic migrations tested up and down in CI; versioned prompts/config; index_version blue/green",
+      "rationale": "IaC, CI, migrations, pinned versioned prompts/config, versioned datasets and rebuildable index are threaded from M1 onward."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "If the listing returns fewer than 80% of the previous active count, or an error, skip all removals",
+      "rationale": "Strong resilience design (timeouts, fallbacks, outbox, circuit breaker), but handoff and degraded mode land in M2 and fault injection and runbooks later, not in every phase."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Human approval: none needed, because the bot takes no irreversible actions. Commitments are routed to humans.",
+      "rationale": "Retrieval→model→orchestration ordering is sound and budgets/guardrails exist, but defenses and spend caps are built in M2 after the pipeline, there is no memory/routing layer sequencing, and HITL is dismissed."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Streaming responses | p95 above 6 s or \"slow\" feedback in beta",
+      "rationale": "Deferred table lists items with explicit triggers, plus deliberate shortcuts and extension points."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, well-reasoned plan with explicit decisions, triggers and eval gating. It is weakened by a staging-only first slice and by security, defenses and spend caps arriving in M2, after the capabilities are built.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 8,
+    "output_tokens": 2638,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 21549,
+    "cache_creation_input_tokens": 20419
+  },
+  "cost_usd": 0.0817533,
+  "latency_s": 39.365,
+  "raw_file": "raw/judge-0fa56924e876.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

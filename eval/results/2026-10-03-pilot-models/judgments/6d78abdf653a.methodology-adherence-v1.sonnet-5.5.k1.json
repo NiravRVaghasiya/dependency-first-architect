@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "6d78abdf653a.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "6d78abdf653a",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 6,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1: \"Data model, contracts, and decisions (widest rework first)\"; Phase 3 \"Depends on: Phase 1, V2; Phase 2.\"",
+      "rationale": "Phases go from walking skeleton to contracts to durability to access control to features to scale to exposure, with explicit dependency map and validation gates before dependents."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Two allow-listed internal users open the same document in a browser. User A types a character and user B sees it. Both reload and the text is still there.",
+      "rationale": "Phase 0 is a real production end-to-end slice across all tiers with deploy, rollback and alert."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Eventual convergence (AP) using a CRDT... Flip condition: V1 fails, or the product needs strict server-ordered semantics (then OT with a central sequencer).",
+      "rationale": "Irreversible decisions have reversibility class, default, assumption, validation and flip condition, with assumptions labelled."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1: Data model, contracts, and decisions (widest rework first)",
+      "rationale": "Widest-impact items (schema, protocol, authz, durability) precede features, and within phases the order is frozen contracts first, compaction only after restore rehearsal."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "0: OIDC token check, allow-list, synthetic data, no content in logs; 2: Encrypt backups and snapshots at rest; 4: Paste and import sanitization (XSS)",
+      "rationale": "Every phase in the cross-cutting table has concrete security content starting from Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Each edit carries a trace across the browser, gateway, and database... Dashboards show connections, propagation latency, commit latency, and error rate.",
+      "rationale": "Observability is concrete in Phase 0 and each later phase has specific additions."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform, containers, pipeline deploy; Penetration test suite in CI; Flag state in version control",
+      "rationale": "Reproducibility has concrete entries in each phase, from IaC in Phase 0 to scripted load tests and versioned flags."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "One-command rollback; gateway restart recovers clients... Ack-after-commit, resend, restore rehearsal... Fails closed",
+      "rationale": "Failure handling is concrete in every phase, with rollback per phase and chaos testing."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "## 8. AI layer N/A — no AI component.",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Offline-first mobile or long-offline editing: pulled forward if the Missing inputs show mobile is required.",
+      "rationale": "The plan lists deferred items, each with an explicit pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong, consistent plan that scores at the top on all ten dimensions, with concrete content on every threaded concern and explicit flip and pull-forward conditions.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1147,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 7500
+  },
+  "cost_usd": 0.030341,
+  "latency_s": 28.215,
+  "raw_file": "raw/judge-6d78abdf653a.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

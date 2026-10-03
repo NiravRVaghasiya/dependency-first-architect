@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e27be501d82b.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "e27be501d82b",
+  "blind_sha256": "5e71b628e55948616b2b844cc87897c2f7e9fa72fc8ec725b7d4ea8847983ef7",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 354,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Shadow (2–4 wks): Triage runs silently and decisions are only logged. Compare them against what humans did.",
+      "rationale": "Rollout phases progress sensibly from triage to fixes, but no substrate-first build ordering (infra, sandbox, ingest) is specified and evaluation is placed late."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Shadow (2–4 wks): Triage runs silently and decisions are only logged.",
+      "rationale": "Shadow mode is a thin end-to-end slice of triage, but it is not in prod, is not called Phase 0, and does not exercise the full path."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Issues above the threshold → `ELIGIBLE`, or wait for a maintainer to add an `agent:fix` label (the recommended default).",
+      "rationale": "Some defaults are given and open questions are listed, but there is no systematic list of irreversible decisions with flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Path deny-list: Never edit CI workflows, `CODEOWNERS`, security-sensitive modules, or lockfiles unless the change is explicitly allowed.",
+      "rationale": "Safety is listed, but there is no explicit widest-impact-first ordering within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Security screen: Look for vulnerability reports, leaked secrets, or personal data.",
+      "rationale": "Security is thorough but sits in standalone sections (§4, §8) and not tied to each rollout phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Each transition is logged with the inputs, the model output, the confidence score, and the action taken.",
+      "rationale": "Audit logging and metrics exist, but they are not phased from day zero, and evaluation is mostly a separate section."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Nothing on pinned models or prompts, environment pinning, or reproducible builds and data across phases. Only a dependency cache and fresh sandboxes are mentioned."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Queue | Per-repo ordering, retries, backpressure, dead-letter queue.",
+      "rationale": "Retries, limits, and flaky-test handling exist in components and pipelines, but they are not threaded through the rollout phases."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Rate limits: Caps on comments and PRs per repo per day, and a global kill switch",
+      "rationale": "Defenses, budgets, and human review are present, and rollout gates capabilities. However, the architecture builds everything together and no retrieval → model → memory → orchestration → routing → feedback order is given."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Out of scope (at first): Merging PRs, releases, or deploys.",
+      "rationale": "Deferred items are listed, and auto-eligible has a pull-forward metric, but most deferred items have no explicit conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Solid, detailed agent design with good safety content, but it is organized by component and not by dependency-ordered build phases. Reproducibility is missing, and most cross-cutting concerns are standalone sections.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1142,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 5505
+  },
+  "cost_usd": 0.025190499999999998,
+  "latency_s": 25.061,
+  "raw_file": "raw/judge-e27be501d82b.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

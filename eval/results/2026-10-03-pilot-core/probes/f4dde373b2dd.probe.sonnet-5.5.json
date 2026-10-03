@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "f4dde373b2dd.probe.sonnet-5.5",
+  "blind_id": "f4dde373b2dd",
+  "blind_sha256": "4f357f129bea642ae5d34da652877202734f63a4cb61c4ece9c54963030e227b",
+  "judge": "sonnet-5.5",
+  "order_index": 121,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.97,
+  "cues": [
+    "Rigid numbered-section template (Classification and constraints, Dependencies, Key decisions, First end-to-end slice, Phases, Validation checks, Cross-cutting, AI layer, Exceptions, Deferred) that reads like a prescribed methodology",
+    "Reversibility labels (R2/R3) on each decision with default, assumption, validated-by and revisit trigger columns",
+    "Validation checks V0–V6 with hypothesis, method, acceptance threshold, evidence path and 'unlocks (and if it fails)' columns; every assumption is explicitly labeled ASSUMPTION or UNKNOWN",
+    "Phase 0 walking-skeleton slice with deploy, logs, tracing, monitoring and rollback, plus explicit 'point of no return' and per-phase rollback",
+    "Boilerplate N/A rows ('no AI component', 'Exceptions: None'), 'seven kinds of dependency' taxonomy, and a per-phase security/observability/reproducibility/resilience matrix"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 417,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9895
+  },
+  "cost_usd": 0.0289155,
+  "latency_s": 27.516,
+  "raw_file": "raw/probe-f4dde373b2dd.probe.sonnet-5.5.txt"
+}

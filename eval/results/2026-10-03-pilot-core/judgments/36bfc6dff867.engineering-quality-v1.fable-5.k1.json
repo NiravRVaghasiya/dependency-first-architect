@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "36bfc6dff867.engineering-quality-v1.fable-5.k1",
+  "blind_id": "36bfc6dff867",
+  "blind_sha256": "454b959839c0b471eaa8afbf925222dff89ec37cfb6748a3c52009af80b23046",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 448,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Hybrid search: pgvector (HNSW) plus Postgres full-text, merged with reciprocal rank fusion. Then a reranker",
+      "rationale": "Mechanisms (RRF, HNSW, SSE, ZDR agreements, LLM-judge calibration, pinned embedding versions with stored raw text) are described accurately with real limits stated; only trivial imprecision like upserts keyed on content_hash."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "A chat widget that answers customer questions using only the published help-center articles. Every answer cites the article it came from.",
+      "rationale": "Solves exactly the stated problem, resolves ambiguities (account data, languages, channels) with explicit, justified deferrals and pull-forward triggers, and is clearly buildable by a small team."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Fix the response format... The widget, logs, evals, handoff and feedback all depend on it.",
+      "rationale": "One service plus one loader with clear data ownership, a shared response contract honored by every downstream consumer, and consistency choices (15-min lag, deletion exception) applied uniformly; the one guardrail-ordering tension is explicitly acknowledged and bounded."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Runs in CI on every PR. Faithfulness is graded by an LLM judge, calibrated against 50 answers graded by people.",
+      "rationale": "A ticket-derived eval set is built before retrieval or generation work, every phase has measurable exit checks (recall@5 ≥ 0.85, faithfulness ≥ 0.95, injection suite 0 behavior changes), and validation continues post-launch via staged rollout auto-stops and the Phase 6 loop."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Stack assumptions (please confirm): help center on Zendesk Guide... If your stack is different, change the connectors.",
+      "rationale": "Assumptions are explicit and flagged for confirmation, every key decision has a stated revisit trigger describing what changes if the assumption fails, and numeric budgets are presented as chosen caps rather than invented facts."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "When a load is forced to fail, chat keeps serving the last good index... switch-over refused if document count drops > 10%",
+      "rationale": "Covers the hard domain failures—withdrawn-policy staleness, hallucinated citations, injection via indexed docs, cost attacks, duplicate loads, ticket-API outage with queued retry, session-store loss, parse-failure repair—each with concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "OTel spans, metrics for latency/error/tokens/cost, Langfuse, dashboard plus one alert",
+      "rationale": "Deployment, rollback, index-version switch-over, kill switch, and domain-meaningful signals are concrete and sized to a small team, but incident ownership and on-call response are never explicitly assigned."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "If it comes within 5 points of our targets at lower total cost, buy it.",
+      "rationale": "Inference as the dominant driver is controlled (token caps, per-session $0.25, routing, rate limits, spend alert) and the build-vs-buy trade-off is gated, but there is no order-of-magnitude estimate of expected run spend or engineering cost."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Database schema. This is the widest change: altering it later forces a full re-index.",
+      "rationale": "Hard-to-reverse choices (schema, embedding version, vendor coupling) get early scrutiny with explicit exit paths—stored raw text for re-embedding, a model wrapper for switching, index versioning, and a buy-out gate—while reversible choices are decided quickly with revisit triggers."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "One service (FastAPI) plus one scheduled loading job, in one repo, sharing one Postgres.",
+      "rationale": "Simplest workable design (monolith, pgvector, no agent loop, no fine-tuning) with every added element justified by a target, and ten speculative features explicitly deferred behind measurable pull-forward triggers."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Depends on: Phase 2 search meeting its recall target. Otherwise the answer evals would mostly measure search failures.",
+      "rationale": "A team could start immediately: a concrete Phase 0 slice, dependency-justified ordering, specific schemas, thresholds and exit checks per phase, and stated adaptation paths (lower threshold, buy instead of build) if results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "Full sync plus webhook updates... Records deletions when articles are unpublished or removed... An unpublished article disappears from results within 15 min."
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Split on H2/H3 headings into chunks of 300–500 tokens... documents(doc_id, url, title, locale, visibility, product_area, cms_updated_at, content_hash, status)"
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "150–300 real questions taken from the last 90 days of tickets and help-center searches... Runs in CI on every PR."
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "Answer only when the bot can cite a retrieved chunk. Otherwise it says it can't answer and hands off."
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "The bot never answers refunds, billing disputes, legal, security incidents... create a ticket in Zendesk Support... with the transcript, the citations and the handoff reason."
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "User text and retrieved docs are treated as data... v1 has no tools, so there is nothing to hijack."
+    },
+    {
+      "id": "P1-07",
+      "status": 2,
+      "evidence": "Index only published articles marked public... only after logged-in sessions, per-user access filters and a data-protection review are in place."
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "Personal data in user text is removed before logging. Transcripts are kept for 30 days... zero-data-retention agreement."
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Answers that use account data (order status, billing lookups through tools)... Deferred... No customer account data reaches the model."
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "Weekly content-gap report for the docs team... Resolution/deflection rate, CSAT, content-gap clusters... Agents tag \"bot was wrong\" or \"doc missing\"."
+    },
+    {
+      "id": "P1-11",
+      "status": 2,
+      "evidence": "at most 8k input tokens... Per session: 20 turns or $0.25... first token in under 2.5 s... rate limits per IP and per session."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "The core rule: the bot cites a source or it doesn't answer."
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Index only published articles marked public... per-user access filters in search... Deferred, see §7."
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Never fine-tune to teach facts: facts change, and the index updates in minutes."
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "CI posts a baseline eval report on every PR."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "No agent loop and no multiple agents... Training a custom reranker. Pull forward when recall stalls below target."
+    }
+  ],
+  "note": "An exemplary, proportionate RAG plan—grounding, eval-first sequencing, deletion propagation and explicit reversibility—weakened only by missing incident ownership and no grounded run-cost estimate.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7734,
+    "thinking_tokens": 4927,
+    "cache_read_input_tokens": 864,
+    "cache_creation_input_tokens": 14873
+  },
+  "cost_usd": 0.5734965000000001,
+  "latency_s": 137.298,
+  "raw_file": "raw/judge-36bfc6dff867.engineering-quality-v1.fable-5.k1.txt"
+}

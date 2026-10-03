@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0d96cb1309b4.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "0d96cb1309b4",
+  "blind_sha256": "4afa83787a0567641ac34e9cffc6d85116cc03e12533d864395e94fafcbbe39d",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 337,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Order: T1 → (T2 → T3) ∥ (T4, T5, T8) ∥ T12 → T6 → T7 → T9/T10 → T11, T13 → S1 → S2 ∥ S3.",
+      "rationale": "Infra/migration, then ingestion, retrieval, gateway, pipeline, widget, with explicit dependencies and milestone exit gates."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "M1: Walking skeleton and evaluation baseline ... Merging to main deploys to staging. The widget demo answers 10 SME-chosen questions",
+      "rationale": "A real thin end-to-end slice with CI/CD deploy is M1, though to staging rather than production."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D1 ... Revisit if: The vendor agent scores within 5 points on the S3 evaluation subset at an acceptable cost. If so, buy",
+      "rationale": "Assumptions A1–A15 and decision table D1–D8 each give default, reversibility, and flip condition, plus open questions with defaults."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Order: T1 → (T2 → T3) ∥ (T4, T5, T8) ∥ T12 → T6 → T7 → T9/T10",
+      "rationale": "Long-lead items and schema/scaffold come first, but blast-radius ordering isn't explicit and security hardening is pushed to M2."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Security (built in M1–M2, reviewed at the M2 gate).",
+      "rationale": "M1 has visibility filter, XSS sanitisation, scans, but rate limits, spend cap, and hardening are deferred to M2 and M3 has little new."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Observability (M1 trace rows; M2 dashboards and alerts).",
+      "rationale": "Trace rows and correlation IDs from M1, but metrics and alerts only arrive in M2, and the skeleton has no metrics."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform for VPC, ECS Fargate ... Alembic upgrade/downgrade in CI; frozen corpus snapshot; versioned prompts; index rebuildable with sync --full",
+      "rationale": "IaC, migrations, pinned eval datasets and corpus snapshots, versioned prompts and rebuildable index are present from M1 onward."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Retries: at most 2, with jittered backoff, only on 429 and 5xx responses.",
+      "rationale": "Timeouts and retries exist in M1 gateway/connector, but fallbacks, outbox, and fault injection land in M2, and the plan isn't phase-by-phase."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Limits: history of 4 turns, at most 2 LLM calls per turn, 15 s per turn, 20 turns per conversation, the daily spend cap.",
+      "rationale": "Evals, retrieval→gateway→pipeline order and human handoff are good, but spend caps, injection defenses and routing rules come in M2 after capabilities are built in M1."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Deferred | Trigger to build ... Multilingual ... Non-English share above 10%",
+      "rationale": "A deferred table gives each item a concrete pull-forward trigger, plus explicit shortcuts and exclusions per milestone."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, evaluation-first plan with explicit decisions and deferrals, but security, observability, resilience and AI defenses/budgets mostly land in M2 rather than the M1 skeleton.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1316,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 23274
+  },
+  "cost_usd": 0.071353,
+  "latency_s": 18.725,
+  "raw_file": "raw/judge-0d96cb1309b4.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

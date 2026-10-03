@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "da0937713016.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "da0937713016",
+  "blind_sha256": "eae7821aef18e036464fd0bd6d8c2ab2ddae422bd5f66b9b822d01a35b3f0b55",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 10,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 2 \"Depends on: Phase 1, V1\"; Phase 3 \"Depends on: Phase 2, V2 (data-flow audit), V3\"",
+      "rationale": "Mostly substrate-upward (tenancy→aggregation→payments), but inconsistencies exist: V2 is scheduled in Phase 1 yet PCI audit sits in Phase 4 after live payments in Phase 3, and V6 gates Phase 2 but is also listed as needed by Phase 3."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Phase 0: ingestion request → stored in Postgres → logged via structured JSON → monitored by Datadog; helm rollback succeeds",
+      "rationale": "Phase 0 is a thin end-to-end slice deployed with observability and rollback, though in staging rather than true production."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Tenancy model: default shared schema + RLS; \"Switch to isolated schemas if V1 fails; cost then is re-partitioning in Phase 3\"",
+      "rationale": "Table lists irreversible decisions with reversibility, default, assumption, validation, and flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Phase 1: tenancy and event contract first; V1 RLS benchmark before aggregation",
+      "rationale": "Widest-impact items (tenancy, schema) come first across phases, but within-phase ordering is not explicit and some tasks like PCI are left late."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"Tenant_id validated on every ingest request; no logs contain API keys or event payloads\"",
+      "rationale": "The cross-cutting table gives concrete security controls in every phase from 0 onward."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: \"Structured JSON logs (tenant_id, event_id, status, latency_ms) → Datadog; event rate and latency dashboards live\"",
+      "rationale": "Observability is concrete in Phase 0 and in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Phase 0: \"Git commit hash in every log line\"; Phase 2: \"Aggregation job deterministic (same events → same invoice); dry-run in CI\"",
+      "rationale": "Reproducibility is addressed in every phase, with build, data, and test specifics."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: \"Health check endpoint; Helm rollback tested\"; Phase 2: \"retry logic (exponential backoff)\"",
+      "rationale": "Failure handling is concrete in each phase, and rollback plans accompany every phase."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A — no AI component. This system is deterministic billing logic; no LLM, retrieval, or agentic decision-making.",
+      "rationale": "The plan explicitly declares the AI layer N/A."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "ACH: \"Condition: pilot customer explicitly requests ACH and provides signed wire-transfer agreement. Build in Phase 4\"",
+      "rationale": "Deferred items are listed with pull-forward conditions and target phases."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, well-structured plan with explicit gates, a real walking skeleton, and threaded concerns; weaknesses are some dependency inconsistencies (PCI audit after live payments, V-gate phase mismatches) and no explicit within-phase blast-radius ordering.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1265,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 12348
+  },
+  "cost_usd": 0.043528,
+  "latency_s": 20.588,
+  "raw_file": "raw/judge-da0937713016.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

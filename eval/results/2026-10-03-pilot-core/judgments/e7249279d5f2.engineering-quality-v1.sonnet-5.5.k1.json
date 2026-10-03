@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e7249279d5f2.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "e7249279d5f2",
+  "blind_sha256": "9f036f605974151094677b76ece7a17f616bc9b5d348379aedc2629ca54889ab",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 390,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Minimal and fixed now (changing them forces every installation to re-approve): `issues:write`, `pull_requests:write`, `contents:write` (agent branches only, enforced by rulesets)",
+      "rationale": "Mechanisms are mostly accurate (HMAC, SKIP LOCKED, gVisor, installation tokens, rulesets), with minor imprecision such as idempotency key semantics with delivery_id and contents:write being repo-wide while scoped only by rulesets."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "for issues a maintainer approves, writes a fix in a sandbox and opens a draft PR for human review.",
+      "rationale": "Covers triage and resolve with a maintainer gate, sensible scoping, and explicit deferrals each with a reason and pull-forward trigger."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The sandbox runner is a separate service only because it is a security boundary, not for scaling.",
+      "rationale": "Responsibilities, ledger ownership, and choices are applied consistently across phases, the decision table and cross-cutting table."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Replaying the same delivery 10 times produces exactly one action. An injection test suite (40 or more known payloads...)",
+      "rationale": "Risk-specific exit checks at each phase, frozen eval sets, shadow mode, red-team sandbox tests, and ongoing regression gates and autonomy demotion, though some thresholds are unjustified but labeled as starting numbers."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "These are starting numbers to tune from Phase 3 and 5 data.",
+      "rationale": "Revisit triggers are given for each decision and numbers are labeled provisional, but scale, team size and repo size assumptions are not stated explicitly and many thresholds are invented."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "The design assumes injections will sometimes get through and limits what they can do: no `workflows` permission, no secrets in the sandbox, no merge rights.",
+      "rationale": "Covers injection, duplicates, missed webhooks, sandbox escape, runaway loops, memory poisoning, security-report leakage, re-index failure and model failure with concrete handling."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Terraform for all infrastructure. The container image is built in CI and pinned by digest. Promotion is a single command.",
+      "rationale": "Good signals, alerts, kill switch, rollback of config, but on-call ownership, DB migration and incident response are thin."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Resolve | ≤ $3, ≤ 40 tool calls, ≤ 20 min wall clock | Per repo | ≤ $50 per day",
+      "rationale": "Per-task, per-repo and per-org caps, routing to cheaper models and build-vs-buy triggers, but no overall run-cost estimate or engineering effort estimate."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Freeze the GitHub App permission set and the installation/tenant schema. Changing either later means every installation re-approves.",
+      "rationale": "Identifies one-way doors (permissions, tenant schema, ledger contract, embedding versions), front-loads them, and isolates model, inner loop and sandbox behind interfaces with revisit triggers."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Modular monolith (one deployable: webhook intake, worker, policy engine).",
+      "rationale": "Starts simple with Postgres queue and single agent and defers much, though the eight phases, routing, and extensive eval infrastructure are somewhat heavy."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "The one real request: someone opens an issue in a private test repo... within 60 s the GitHub App applies one label",
+      "rationale": "Concrete thin first slice, dependency-ordered phases with checkable exit criteria and fallbacks, and adaptation triggers."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Autonomous | Reads, labels from the allow-list, project-board moves ... Never | Force-push, workflow edits, touching secrets"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "No `workflows`, `administration` or `secrets` permissions. The App is not a branch-protection bypass actor."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Every action is checked against the allow-list and validated before it runs."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "gVisor, no IAM, no secrets, a read-only base image, egress proxy with an allow-list, CPU/memory/disk/time limits."
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "includes evidence that the test failed before the fix and passes after; diff scanner flags... extra CODEOWNER review"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "a triage set (≥ 500 closed issues with final labels and known duplicates); Label precision ≥ 90% on the held-out set."
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Outcome capture: label corrections, PR merged/closed/edited diff... drops back automatically below 90%."
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "Kill switch (a flag in Postgres checked before every write)... Revise on review feedback. Capped at 2 rounds"
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Resolve | ≤ $3, ≤ 40 tool calls, ≤ 20 min wall clock ... Cost per merged PR drops ≥ 30%"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "Every run can be replayed from its ledger record."
+    },
+    {
+      "id": "P4-11",
+      "status": 2,
+      "evidence": "Incremental re-index on push to the default branch. Hybrid search: BM25 plus embeddings, with re-ranking."
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "Replaying the same delivery 10 times produces exactly one action; an issue comment or PR review can restart the loop"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The App cannot bypass branch protection, so it can never merge."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "no IAM, no secrets, a read-only base image, egress proxy with an allow-list"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "treated as *data* inside delimited blocks, never as instructions."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "Cost per merged PR drops ≥ 30% with merge rate within 2 points of before."
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "a deliberately looping run is cut off at the cap and emits `budget_exceeded{scope}`."
+    }
+  ],
+  "note": "Very strong, safety-first plan with a concrete first slice, defense-in-depth against injection, and well-gated autonomy. Weaknesses are mainly unstated scale/team assumptions, thin incident ownership, and arbitrary thresholds.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2486,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 16475
+  },
+  "cost_usd": 0.0662287,
+  "latency_s": 41.144,
+  "raw_file": "raw/judge-e7249279d5f2.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

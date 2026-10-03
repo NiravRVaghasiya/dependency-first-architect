@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "c26b685c4739.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "c26b685c4739",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 2,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Tag images with the git commit and promote that exact image through every environment. Never rebuild per environment.",
+      "rationale": "Mechanisms (OIDC, expand/contract, GitOps rollback, admission audit mode) are correct; the runner concurrency math (~50 at once) is loose but minor, and git-tag immutability isn't enforced explicitly."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Sort them into 4–6 types... you build about 5 shared pipeline templates instead of 50 separate pipelines.",
+      "rationale": "Covers the sequencing request well with pilot, waves and explicit deferrals, though test environments and runner buy/build are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Main sequence: decisions → runners, registry, access and GitOps → pilot in production → versioned templates → Wave 1 → 2 → 3.",
+      "rationale": "Consistent design with clear dependencies; minor loose ends such as a pilot in production before templates and overlapping phase timings."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "the pilot has shipped through the platform for 2+ weeks, a rollback drill has passed, and lead time has been compared with the baseline.",
+      "rationale": "Risky assumptions are validated early with checkable gates and a DORA baseline, but criteria like the change failure threshold are left unspecified."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "the services are (or will be) in containers on Kubernetes, code is on GitHub or GitLab, and a platform team of 4–6 people",
+      "rationale": "Key assumptions are stated with a note on timing sensitivity; the runner volume figures are illustrative, and compliance and budget are not covered."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "One careless change to an unversioned template can break all 50 pipelines at once.",
+      "rationale": "Covers template blast radius, migration stalls, vulnerability-block workarounds and rollback, but omits CI outage plans, fork/untrusted PR handling, and flaky-test detail."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Build everything as infrastructure-as-code, and give the platform its own pipeline from day one.",
+      "rationale": "Deployment, rollback drills, migrations, monitoring and support model are concrete; the platform owner and on-call/outage plan are not named."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "50 services × ~15 runs a day × ~10 minutes, with 3× peaks during working hours",
+      "rationale": "Runner sizing has a basis, but there's no dollar estimate, hosted vs self-hosted choice, or concrete cost controls beyond retention and a mention of PR environments."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Write down the decisions that are expensive to reverse... Leave easy-to-change choices, like which scanner to buy, for later.",
+      "rationale": "Order is explicitly driven by reversibility, with hard-to-undo decisions first, versioned templates, and reversible choices deferred."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Add a developer portal only after the standard path is proven.",
+      "rationale": "Proportionate, with deferral of portal, PR environments and enforcement; GitOps, admission control and 8 months are mild overhead but justified."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "it uses a pinned template version, deploys through GitOps to every environment, ships a signed image... and its old pipeline is deleted.",
+      "rationale": "Ordered by dependencies with done-when criteria, wave definitions and prerequisites per step; tool choice and backlog left open."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "you build about 5 shared pipeline templates instead of 50 separate pipelines... extension points so unusual cases don't need their own copies"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "run the old and new pipelines side by side briefly, then switch."
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Tag images with the git commit and promote that exact image through every environment. Never rebuild per environment."
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "CI signing into the cloud with short-lived tokens (OIDC) instead of stored keys."
+    },
+    {
+      "id": "P3-05",
+      "status": 1,
+      "evidence": "software bill of materials → sign → push... only signed images from your registry"
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "Database migrations run before each deploy using expand/contract... a rollback you've actually practiced."
+    },
+    {
+      "id": "P3-07",
+      "status": 2,
+      "evidence": "Contract tests (e.g., Pact) check that services still agree on their APIs. They let services deploy independently."
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Temporary environments per pull request, but only where they're worth the cost... Quarantine flaky tests"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "CI duration under 10–15 minutes... runners... cache builds"
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Size them for peak load... 50 services × ~15 runs a day × ~10 minutes, with 3× peaks"
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "Targets for the platform itself: availability, queue time... DORA metrics per service"
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "Keep a manual production approval for now... Single sign-on, role-based access and audit logs."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Wave 1 (~7)... End each wave by deleting the old pipelines by a fixed date."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "no `:latest` tags... Never rebuild per environment."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "short-lived tokens (OIDC) instead of stored keys."
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Contract tests... let services deploy independently. Keep full end-to-end tests to a small set"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "none"
+    }
+  ],
+  "note": "Strong sequencing plan with good reversibility and migration reasoning; thinner on runner cost, untrusted PR handling, test environments and platform ownership and outage planning.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2221,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11165
+  },
+  "cost_usd": 0.0501305,
+  "latency_s": 33.27,
+  "raw_file": "raw/judge-c26b685c4739.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "b51a6b19847f.probe.sonnet-5.5",
+  "blind_id": "b51a6b19847f",
+  "blind_sha256": "f72695c313eeabde4bae36da4e3deb0af09713ca850fc099827fa6faa960add8",
+  "judge": "sonnet-5.5",
+  "order_index": 68,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Clean phased structure with numbered steps and a closing 'Why this order' rationale section, which is a common default for this request",
+    "Explicit statement of assumption at the end ('I assumed \"order the build\" means...') and an offer to adapt to files in the directory, which reads like an ordinary assistant reply",
+    "No signs of a rigid methodology template, such as named stages, risk/verification tables, explicit acceptance criteria per step, or labeled dependencies",
+    "Opening line states the organizing principle (riskiest part first), which fits a general good-practice plan rather than a prescribed format",
+    "Includes a 'Minimum shippable version' cutoff, which is a mild sign of structured planning but is also common in unguided plans"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 313,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2287
+  },
+  "cost_usd": 0.0088555,
+  "latency_s": 30.097,
+  "raw_file": "raw/probe-b51a6b19847f.probe.sonnet-5.5.txt"
+}

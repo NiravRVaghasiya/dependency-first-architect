@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "5fa8100104e7.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "5fa8100104e7",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 33,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1: Tenant Isolation & Audit Validation ... Depends on: Phase 0 (V0 passes); V1, V3 (must pass before Phase 2 starts).",
+      "rationale": "Gated ordering (isolation/audit before invoicing, V-gates before next phase) is good, but webhooks come after processor integration and Phase 0 already includes webhook/processor stubs, and some gates like cost sit oddly."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A single invoice generated end-to-end ... in production, deployed through CI/CD, monitored, and rolled back.",
+      "rationale": "Phase 0 is a real thin end-to-end slice in prod behind a flag with rollback and exit checks."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Default: Row-level security in shared schema ... Flip condition: V1 fails, or audit finds cross-tenant queries → switch to schema-per-tenant",
+      "rationale": "Irreversible decisions have reversibility, default, assumption, validation and flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Phase 1 tasks: Tenant isolation hardening ... then Audit schema hardening ... Cost baseline",
+      "rationale": "Broad-impact items (tenancy, audit) come early and gates precede leaf work, but within-phase ordering is not explicitly reasoned by blast radius."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: Feature flag + allow-list + internal JWT (test service account). No real customer data.",
+      "rationale": "Security has concrete treatment in every phase from Phase 0 through Phase 5."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: Log every API call (method, endpoint, tenant_id, HTTP status, latency). Sentry for errors. CloudWatch for logs.",
+      "rationale": "Observability present in Phase 0 and concretely in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "CI/CD pipeline: lint → unit tests → staging deploy ... Commit hash tagged. Test data seeded in /var/dfa-data/phase-0-seed.sql.",
+      "rationale": "Reproducibility is addressed per phase with pipelines, seeds, Ansible, fixtures, tagged releases."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: Rollback: Feature flag off (1 min). Phase 2: Retry with exponential backoff; Phase 3: Chaos test",
+      "rationale": "Resilience appears concretely in every phase, from rollback in Phase 0 to retries, chaos tests, backups and gradual rollout."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A — no AI component. The system does not use LLMs, RAG, fine-tuning, or agentic orchestration.",
+      "rationale": "Plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Advanced proration rules ... Pull forward if: (a) customer demand > 10% of early cohort, or (b) revenue impact analysis shows ≥ 5% MRR",
+      "rationale": "Eight deferred items each have reasons and concrete pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong plan: real prod walking skeleton, concrete gates and flip conditions, per-phase threaded concerns and explicit deferrals; weaker on explicit blast-radius ordering and some dependency-order quirks.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1265,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 18305
+  },
+  "cost_usd": 0.0585335,
+  "latency_s": 40.416,
+  "raw_file": "raw/judge-5fa8100104e7.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

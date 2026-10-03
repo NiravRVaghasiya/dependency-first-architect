@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "10645947c4d9.probe.sonnet-5.5",
+  "blind_id": "10645947c4d9",
+  "judge": "sonnet-5.5",
+  "order_index": 30,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Rigid, templated structure: numbered sections for Classification/constraints, Dependencies, Key decisions, First end-to-end slice (Phase 0), Phases, Validation checks, Cross-cutting, AI layer, Exceptions, Deferred",
+    "Explicit labeling of every budget as ASSUMPTION / UNKNOWN / BASELINE / REQUIREMENT, with named owners and the phase that needs each unknown",
+    "Reversibility ratings (R3) in a key-decisions table with defaults, assumptions, validation IDs, and revisit triggers",
+    "Validation checks V0–V5 with hypothesis, method, acceptance threshold, evidence, and 'unlocks (and if it fails)' columns; phases carry 'Unlocks / Depends on / Rollback / Exit check' fields",
+    "A walking-skeleton Phase 0 with observability, rollback, and kill switch from the first commit; a nine-sublayer AI table; an 'Exceptions: None' section; and a 'Deferred' section with pull-forward triggers",
+    "Cross-cutting matrix (security/observability/reproducibility/resilience by phase) and 'N/A' rows with reasons, which is formulaic checklist behavior"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 488,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9023
+  },
+  "cost_usd": 0.0274455,
+  "latency_s": 23.682,
+  "raw_file": "raw/probe-10645947c4d9.probe.sonnet-5.5.txt"
+}

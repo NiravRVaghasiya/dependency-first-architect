@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "70ced1ad398e.probe.sonnet-5.5",
+  "blind_id": "70ced1ad398e",
+  "blind_sha256": "12d14272848a91b55934a085baf2abb3d03ea9ef80c24f65893f1a60063fc04a",
+  "judge": "sonnet-5.5",
+  "order_index": 27,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.1,
+  "cues": [
+    "Does not deliver a plan; only asks clarifying questions",
+    "Generic opener 'I'd be happy to help' typical of unstructured default response",
+    "No phases, dependencies, milestones, or structured sections a methodology would produce",
+    "Offers a menu of options rather than committing to an ordering",
+    "Mentions checking the working directory but takes no action"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 191,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 974
+  },
+  "cost_usd": 0.004353,
+  "latency_s": 19.626,
+  "raw_file": "raw/probe-70ced1ad398e.probe.sonnet-5.5.txt"
+}

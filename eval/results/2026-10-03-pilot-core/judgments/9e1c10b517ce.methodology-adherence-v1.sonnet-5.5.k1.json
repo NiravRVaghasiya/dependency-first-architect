@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9e1c10b517ce.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "9e1c10b517ce",
+  "blind_sha256": "b5f7f5324b5bc79ee90051deb58241346710ff8e1563d5c6df92a4da9f369ff0",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 369,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Critical path: \"S3 → T6 journal → T7 executor → T8 CLI → T9 real-library check.\"",
+      "rationale": "Spikes prove unknowns before dependent modules; journal precedes executor precedes CLI, and M2 companions build on the M1 safe slice."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "M1. Safe slice: \"JPEG/HEIC, one folder, preview / apply / undo, crash detection.\"",
+      "rationale": "M1 is a thin end-to-end slice, but it is a 4–7 day milestone with no separate Phase 0. Scaffold and spikes come first, and it's a local CLI validated on a copy rather than a tiny production path."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Key Decisions table with \"Reversibility\" and \"Revisit if\" columns; e.g. \"S3 shows the primitives can be called cheaply and reliably → adopt them\"",
+      "rationale": "Irreversible decisions are listed with defaults, options, reversibility and explicit flip conditions. Assumptions and open questions also carry defaults."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "\"Clear hard parts 1, 2 and 4 end to end\" and spikes S1–S3 on day 1 before implementation",
+      "rationale": "Riskiest and widest-impact work (rename safety, journal) is on the critical path early. The task table order is mostly dependency-driven, not explicitly blast-radius-ordered within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "\"Security (Milestone 1): The main threat is a malicious file attacking ExifTool's parser.\"",
+      "rationale": "Security treatment is concrete in M1 (version check, no shell, path assertions). M2 gets only a `{model}` sanitisation note, and M3 nothing, so it isn't threaded through every phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "\"Observability (Milestone 1): The report gives a reason for every skip. `--json` produces machine-readable output. `-v` logs the ExifTool command line\"",
+      "rationale": "Observability is concrete in M1 (reports, -v, journal audit trail), but M2 and M3 have no observability work beyond what carries over."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "\"Generator is deterministic and runs in a pytest session fixture on all OSes\"; CI matrix with ExifTool version pinned ≥12.24",
+      "rationale": "M1 has a deterministic fixture generator, a CI matrix and a version check. There is no lockfile or pinning strategy, and M2/M3 reproducibility is thin apart from the clean-machine install check."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "\"Every subprocess call has a timeout. There are no retries in Milestone 1.\" ... \"Milestone 2 adds a per-file retry: bisect the failed batch\"",
+      "rationale": "Resilience is very strong in M1 (journal, rollback, crash recovery, fault injection) and extends to M2 with retries and M3 with resume. It is concentrated in M1 and not treated per phase."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"AI-specific: not applicable, because there are no model components.\"",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Opt-in fallbacks... Trigger: M3, or earlier if S2 shows many files without EXIF.\"",
+      "rationale": "Section 17 and the non-goals list what is deferred, each with a pull-forward trigger. Spikes also give explicit \"plan changes if\" conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A strong, safety-focused plan with explicit decision gates and deferrals. Cross-cutting concerns (security, observability, reproducibility) are concentrated in M1 instead of being threaded through every phase.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1400,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 14562
+  },
+  "cost_usd": 0.050413,
+  "latency_s": 36.963,
+  "raw_file": "raw/judge-9e1c10b517ce.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "bf1b9cf5daf7.probe.sonnet-5.5",
+  "blind_id": "bf1b9cf5daf7",
+  "judge": "sonnet-5.5",
+  "order_index": 11,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens with a rationale sentence ('each one rests on the one before it, riskiest decisions first'), a natural explicit ordering principle, but not a formal methodology template",
+    "Phases, numbered steps and milestones are clean, yet this is typical of a strong default LLM answer to an ordering request",
+    "Ends with a conversational offer ('If you tell me your stack, team size...'), typical of unconstrained chat output rather than a prescribed-format plan",
+    "No methodology-specific artifacts such as explicit assumptions, dependency tables, risk register, acceptance criteria, or verification sections",
+    "Includes inline justification notes ('Put this before the social features...', 'Do this before adding features'), which are helpful but ad hoc, not systematic"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 322,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2287
+  },
+  "cost_usd": 0.0089455,
+  "latency_s": 28.647,
+  "raw_file": "raw/probe-bf1b9cf5daf7.probe.sonnet-5.5.txt"
+}

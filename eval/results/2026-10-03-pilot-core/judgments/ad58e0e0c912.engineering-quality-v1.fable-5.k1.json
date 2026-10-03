@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ad58e0e0c912.engineering-quality-v1.fable-5.k1",
+  "blind_id": "ad58e0e0c912",
+  "blind_sha256": "47f01bcbb088031b3de944eca75e37f1697f072e9dd2a345a9735ea21a19bbd5",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 234,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Yjs converges for our schema; its leftover deleted-content markers (\"tombstones\") stay within the storage and load budgets",
+      "rationale": "Technology claims (Yjs/ProseMirror/Hocuspocus, tombstone overhead, ack-after-durable-commit, consistent hashing, RLS) are accurate throughout, and library guarantees are treated as assumptions to validate rather than asserted."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "A browser-based rich-text editor where several people edit the same document at once. Each person's edits show up for the others live",
+      "rationale": "Covers the core collaborative-editing needs with explicit, justified deferrals, but collaborative undo is neither included nor explicitly excluded, a minor gap in an otherwise precise fit."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The server acks only after a durable Postgres commit; the UI shows \"unsaved\" until then",
+      "rationale": "Decisions made once (durability semantics, one owning server per doc, tenancy, privacy boundary) are honored consistently across phases, validation gates and cross-cutting tables with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Property-based fuzz testing: 3–10 simulated clients with random reorder, duplication, delay and partition, 1M generated edit sequences",
+      "rationale": "Each validation (V0–V5) targets a specific risk with checkable thresholds labeled as assumptions, runs before the dependent commitment, and production monitoring (convergence checksum, divergence alerts) continues post-launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "UNKNOWN: needs projected peak concurrent editors and open docs. Product owner supplies it in Phase 1",
+      "rationale": "Assumptions and unknowns are explicitly labeled, each has a confirmation path, and sensitivity is stated (E2EE restarts the plan, offline-first pulls storage into Phase 1)."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Chaos tests under load: kill the owning server mid-edit, rolling deploy, dropped connections, Postgres failover",
+      "rationale": "Covers the hard domain failures — silent divergence, lost acked edits, revocation mid-session, cross-tenant leaks, malicious input, duplicates — each with concrete detection (checksum, canaries) and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Two deployables, managed Postgres, Redis only if V4 flips; ≤ 2 pages/week",
+      "rationale": "Deployment, rollback, drain/handover, expand/contract migrations, meaningful alerts and an explicit on-call budget sized to a ≤6-engineer team are all designed in from Phase 0."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "GA infrastructure commitment and pricing [depends on] Cost per open document-hour, measured in V4",
+      "rationale": "Storage growth, per-doc-hour run cost and build-vs-buy trade-offs are grounded and gated on measurement, but build-side people cost and absolute magnitudes are thin."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: it fixes the stored format and the client protocol; real docs cannot be safely re-encoded",
+      "rationale": "Every decision is classified by reversibility with revisit triggers, irreversible ones are validated before real documents exist, and the point of no return is explicitly marked."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Several servers per doc (Redis fan-out): pulled forward when V4 fails or a doc needs more than 50 editors",
+      "rationale": "Two deployables and managed services are the simplest workable design for this domain, with every added component justified and speculative scale explicitly deferred with pull-forward triggers."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "If V1 fails: switch to OT and delete the disposable docs",
+      "rationale": "Phases have ordered concrete tasks, dependency reasoning, checkable exit criteria, and explicit adaptation paths if validations fail, so a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "Yjs CRDT bound to ProseMirror (Tiptap + y-prosemirror)... V1 fails... → OT (prosemirror-collab, server-assigned versions)"
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Minimal Tiptap schema (paragraphs, headings, lists, marks, links, images by reference), versioned, with migrate-on-load"
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "3–10 simulated clients with random reorder, duplication, delay and partition, 1M generated edit sequences"
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "Postgres append-only edit log plus snapshots... Ack only after a durable commit... Compact the edit history into snapshots"
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "One owning server per open doc (consistent hash on doc_id)... Add backpressure and per-tenant connection quotas"
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Keep unacked updates in the browser (IndexedDB) and resend them after a reload... Offline-first editing (days offline): pulled forward when product requires it"
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "Check permissions on HTTP calls, on WebSocket join and on every update. Close live sessions within 5 s when access is revoked"
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Version history and restore, built on snapshots"
+    },
+    {
+      "id": "P5-09",
+      "status": 2,
+      "evidence": "presence (live cursors) via Yjs awareness, which is temporary and not saved"
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Phase 1: Merge core and data model (biggest rework if wrong)... Phase 4: Collaboration features (leaf work)"
+    },
+    {
+      "id": "P5-11",
+      "status": 2,
+      "evidence": "50 editors in one doc, plus the whole-system mix at 2× projected peak... Unload idle docs from server memory"
+    },
+    {
+      "id": "P5-12",
+      "status": 1,
+      "evidence": "tenant_id and schema_version on every row... versioned, with migrate-on-load... Schema-migration tests on a synthetic set of docs"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Self-host open-source Yjs and the Hocuspocus sync server"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "A second browser session... sees the line appear [in Phase 0]; Phase 1: Merge core and data model"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "The server acks only after a durable Postgres commit; the UI shows \"unsaved\" until then"
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "Yjs converges for our schema... [ASSUMPTION] Validated by V1"
+    }
+  ],
+  "note": "An exemplary plan: proven CRDT library validated early by fuzzing, durability-before-ack, reversibility-aware sequencing and risk-targeted validation; the only notable gaps are collaborative undo and client protocol-version compatibility during deploys.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7972,
+    "thinking_tokens": 5291,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 15548
+  },
+  "cost_usd": 0.59384,
+  "latency_s": 135.811,
+  "raw_file": "raw/judge-ad58e0e0c912.engineering-quality-v1.fable-5.k1.txt"
+}

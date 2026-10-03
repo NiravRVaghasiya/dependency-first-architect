@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "19aa76d5ec68.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "19aa76d5ec68",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 86,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "MVP: catalog with versioning, flat and per-seat subscriptions, the invoice state machine, the ledger, a single PSP (Stripe)",
+      "rationale": "Phases broadly go from core (catalog/ledger) to usage to enterprise to scale, but nothing is proven before dependents and the MVP is a lump with no substrate-first ordering or proof gates."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "MVP (one cell, about 3 to 4 months, small team): catalog with versioning, flat and per-seat subscriptions, the invoice state machine, the ledger, a single PSP (Stripe)",
+      "rationale": "The MVP is a reduced end-to-end slice, but it is 3–4 months of many features and not a thin prod walking skeleton."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Decisions to make early (they're expensive to change later): Merchant of record or tenant-owned PSP accounts... Ledger-first design.",
+      "rationale": "Irreversible decisions are listed up front with reasons, but there are no explicit defaults or flip conditions, except partly for the database-per-tenant choice."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Nothing orders work within phases by blast radius; phases are flat lists of features."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "MVP: ... outbox webhooks, RLS isolation, test clocks.",
+      "rationale": "RLS is in the MVP and security is covered in detail in standalone sections, but later phases don't carry per-phase security work."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Invariants to monitor continuously, with pages on violation: Ledger debits equal credits.",
+      "rationale": "Observability is a standalone section on invariants and is absent from the phase plan, including the MVP."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Test clocks... Golden invoice fixtures for every pricing model, compared in CI.",
+      "rationale": "Reproducibility is strong in design (deterministic rating, explicit time, replayable lake), but there is no phase-tied environment or build reproducibility such as IaC."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Worker crashes mid-invoice | Workflow resumes, and a unique key on (subscription, period) prevents duplicates",
+      "rationale": "The failure-mode table and idempotency are thorough, but they sit in a standalone section and are not tied to each phase."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never states whether an AI layer applies or is N/A."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Some of those answers could remove large parts of this design, such as the metering pipeline or the cells.",
+      "rationale": "Later phases imply deferral of usage, enterprise and scale work, but there are no explicit not-built-yet lists or pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The design is technically deep, but the plan is weak on delivery-process discipline: no explicit flip conditions, blast-radius ordering or per-phase threading, and the AI layer is never addressed.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1118,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 9305
+  },
+  "cost_usd": 0.034563500000000004,
+  "latency_s": 49.91,
+  "raw_file": "raw/judge-19aa76d5ec68.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

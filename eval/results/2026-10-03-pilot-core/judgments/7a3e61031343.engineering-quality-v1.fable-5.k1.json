@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "7a3e61031343.engineering-quality-v1.fable-5.k1",
+  "blind_id": "7a3e61031343",
+  "blind_sha256": "8ac035b876a744744af97f5690401d9f310caad482ecb53ba9ed1840c5283363",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 280,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Velocity counters (e.g., transactions per card per hour) may be up to about 2 s stale.",
+      "rationale": "Technical claims about ISO 8583 ingress, tokenization scope, Flink checkpointing, Kafka replication, in-process tree serving and label maturity are accurate, and the plan states real limits (staleness, latency slices) honestly."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Assumption (please confirm): You are the issuer or issuer-processor, receiving ISO 8583 authorization messages from a switch.",
+      "rationale": "Solves exactly the stated problem with a synchronous auth-path decision, resolves the issuer-vs-merchant ambiguity explicitly, and defers scope (3DS, other payment types) with reasons and triggers."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Modular monolith on the hot path. One decision service with in-process rules, model and policy.",
+      "rationale": "Decisions made in §2 (sync hot path, async everything else, PCI boundary, fallback ladder) are honored consistently through phases and the cross-cutting table with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "In shadow, the challenger beats rules alone on net fraud loss plus false-decline cost over ≥ 4 weeks of matured labels.",
+      "rationale": "Shadow mode on real traffic in Phase 0, backtests, parity checks, canary ramps and measurable exit checks per phase validate the riskiest assumptions early and continue in production via drift and decline-rate monitoring."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Sizing assumptions to replace with your numbers: 2k TPS on average, 10k TPS at peak",
+      "rationale": "Key assumptions (issuer role, TPS, SLO) are explicit and marked for confirmation, and every major decision carries a stated revisit trigger describing what would change the design."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Fall back in steps: full score → rules only → static fallback. The static fallback fails open below an amount threshold",
+      "rationale": "Covers the hard domain failures concretely: scoring outage policy, duplicates and partial reversals, mass false declines (kill switches, auto-rollback), card-testing probes, label poisoning, store failure, and region loss, each with detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Alerts fire on p99 > 50 ms, error rate > 0.1%, and any shift in how decisions are distributed.",
+      "rationale": "GitOps deploys, canaries, one-flip rollback, domain-meaningful alerts, schema-registry migrations, tested runbooks and failover drills make this operable by a realistic team; only explicit incident ownership is thin."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Infrastructure cost per 1k transactions. Error-budget burn alerts.",
+      "rationale": "Build-vs-buy trade-offs and a cost-per-1k-transactions metric exist, but the dominant cost drivers, how costs scale with TPS, people costs and any grounded estimates are absent."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Entity identity model... Everything else joins on these keys, so this goes first.",
+      "rationale": "Hard-to-reverse commitments (identity model, idempotency key, schemas, PCI boundary) are front-loaded and scrutinized, while reversible choices get swappable interfaces, deferral triggers and one-flip rollback."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Rules first, then a gradient-boosted tree model (LightGBM), with the rules kept as a guardrail layer.",
+      "rationale": "Starts with the simplest enforcing design (one rule, shadow slice), defers GNNs, GPU serving, managed feature stores and multi-region until proven needed, with explicit pull-forward triggers."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Contract with the switch: message fields, timeout slice, response meaning.",
+      "rationale": "Phases are ordered by real dependencies with the reasoning stated, first steps are concrete, each phase has checkable exit criteria, and revisit triggers say how to adapt if results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "p99 50 ms total, split as: parsing: 2 ms, feature fetch: 10 ms, rules: 2 ms, model: 5 ms"
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "The static fallback fails open below an amount threshold and fails closed (decline) above it, and for high-risk merchant categories (MCCs)."
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "The same definition generates both the Flink streaming job and the offline point-in-time SQL."
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "Point-in-time joins, a label-maturity window, splits by time (no random shuffling), and a cost matrix"
+    },
+    {
+      "id": "P8-05",
+      "status": 2,
+      "evidence": "a cost matrix (value of fraud dollars caught vs cost of a false decline)... Tune thresholds per segment against the cost matrix."
+    },
+    {
+      "id": "P8-06",
+      "status": 2,
+      "evidence": "CEL rules versioned in git and reviewed by a second person... ramped as a canary percentage, and has its own kill switch."
+    },
+    {
+      "id": "P8-07",
+      "status": 2,
+      "evidence": "Cardholder confirmation (\"Was this you?\" by SMS or push), with replies fed back as labels."
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "It only sees the tokenized card number, the BIN (first digits) and the last 4 digits, never the full card number."
+    },
+    {
+      "id": "P8-09",
+      "status": 2,
+      "evidence": "A transaction ID built from the RRN, STAN, acquirer and timestamp. Clear handling of retries, reversals and partial reversals."
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "Run the model in shadow → as a challenger on a few % of traffic → as champion... One-flip rollback."
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "In-process serving, with model version and top-feature reason codes logged per decision."
+    },
+    {
+      "id": "P8-12",
+      "status": 2,
+      "evidence": "2k TPS on average, 10k TPS at peak... Multi-region active-active decision service and online store... Capacity tests at 2× peak."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "Synchronous for the authorization decision only. Everything else is asynchronous over Kafka"
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "There is a hard timeout and a fallback... An injected slow store still returns within budget through the fallback path"
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "splits by time (no random shuffling)... ≥ 4 weeks of matured labels"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "This prevents training and serving from drifting apart... Parity mismatch < 0.5% on replay."
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "A CI test fails the build if a full card number pattern shows up in logs."
+    }
+  ],
+  "note": "An exemplary, trap-free plan with accurate domain mechanics, early shadow validation and proportionate phasing; its only material weakness is thin cost analysis.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 9289,
+    "thinking_tokens": 6618,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 15532
+  },
+  "cost_usd": 0.6586200000000001,
+  "latency_s": 148.432,
+  "raw_file": "raw/judge-7a3e61031343.engineering-quality-v1.fable-5.k1.txt"
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "71a6eab69c7f.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "71a6eab69c7f",
+  "blind_sha256": "6ab40db46b1718c96afb2d27e0238bc11a4503e284d17dfae0cffd7cf8ecd05f",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 341,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Each phase below depends on the ones before it",
+      "rationale": "Mostly sensible order (CRDT core, persistence, then features), but auth/permissions come after sharing and persistence, and the single-user editor is built before the merge model is proven."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 1: Single-user editor ... one person can create, edit and save a document.",
+      "rationale": "Phase 0 is only decisions; the first milestone is a local single-user editor with no deployed end-to-end production path."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "CRDT (Yjs or Automerge): Recommended. ... OT ... Needs a central server.",
+      "rationale": "Irreversible decisions (CRDT vs OT, doc model, targets) are listed up front with a default for one, but there are no explicit flip conditions, and the doc model and targets have no defaults."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "This is the riskiest part of the project, so test it early.",
+      "rationale": "Shared core and conflict tests precede leaf features, but auth and permissions (wide impact) are placed after presence, and ordering within phases isn't justified by blast radius."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "Security review covering XSS in rich text, permission bypass over the socket connection and data isolation",
+      "rationale": "Security is mostly a trailing review in Phase 8, and auth is Phase 5. Phases 1–4 have none."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "Monitoring: sync delay, connection counts and alerts if copies of a document drift apart.",
+      "rationale": "Observability appears only in Phase 7, not from Phase 0."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There is no mention of reproducible builds, environments, CI, or infrastructure as code in any phase."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "the server restarts while people are editing, and nothing is lost.",
+      "rationale": "Resilience appears in Phase 3 (reconnect, offline, restart) and Phase 7 (limits, compaction), but not in the early phases or every phase."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so there is no N/A declaration."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Suggestion mode (tracked changes), if you need it.",
+      "rationale": "Some items are marked optional and a demo shortcut is given, but there is no explicit deferred list with pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A readable, sensibly ordered feature sequence, but it has no production walking skeleton. Security, observability and reproducibility are not threaded through the phases, and the AI-layer question is never addressed.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1002,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2849
+  },
+  "cost_usd": 0.0171505,
+  "latency_s": 30.438,
+  "raw_file": "raw/judge-71a6eab69c7f.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

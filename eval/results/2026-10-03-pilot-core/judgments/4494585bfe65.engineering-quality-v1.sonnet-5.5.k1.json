@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "4494585bfe65.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "4494585bfe65",
+  "blind_sha256": "8a38217c39aa61681228eb1e727037c04a52f126699b19d6daedb9452f59d4f9",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 433,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Features defined once as code, compiled to both the Flink streaming job and an offline batch job that rebuilds each feature as of the exact transaction time",
+      "rationale": "Correct on the core mechanisms (event-time windows, in-process ONNX, HMAC tokenization, label maturity, selection bias); minor quibbles like exactly-once with Redis sink, 'byte-identical' replay, and 'compiled to both' are not fully spelled out."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Assumptions I made because the prompt didn't say: We are an issuer or processor, scoring authorization requests inline",
+      "rationale": "Solves the real inline problem, resolves issuer/merchant ambiguity, sequences from a production shadow slice, and defers items explicitly with pull-forward triggers."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Availability for the decision path... Strong consistency for the decision log and labels (durable, append-only, idempotent).",
+      "rationale": "Consistent design with clear ownership; minor loose ends such as the 50 ms budget split and whether Phase 2 features reach the decision service before Phase 3 fallback is defined, plus the generic 'AI layer' mapping."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Online and offline feature values disagree on < 0.1% of a replayed day. Feature read p99 < 5 ms.",
+      "rationale": "Checkable, risk-tied exit criteria, shadow-inline early validation, time-split evaluation, and drift injection; some thresholds are invented without being labeled provisional."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "The fraud decision gets p99 ≤ 50 ms end-to-end, inside the switch's own timeout. Confirm this with the switch team.",
+      "rationale": "Assumptions are stated with revisit triggers, but scale/TPS, team size and budget are not stated, and several numbers (0.1%, 98%, 5×) are unqualified."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Hard 50 ms timeout with fail-open. Circuit breaker in the switch client... DLQ instead of dropping events.",
+      "rationale": "Covers timeout/degraded mode, card testing, insider poisoning, selection bias, DLQ and chaos drills; duplicate/reversal handling and Redis divergence recovery are thinner."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Terraform for all infrastructure, plus a CI/CD pipeline (build → test → container image signed and pinned by digest → Argo CD).",
+      "rationale": "Deployment, rollback, per-BIN rollout, dashboards and alerts are concrete; incident ownership/on-call and team sizing are not addressed."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Fewer than about 3 fraud/ML staff, or less than 6 months of labelled history. Then buy a vendor engine",
+      "rationale": "Build vs. buy is considered, but there are no cost estimates, no cost drivers like managed Flink/Redis Enterprise/Kafka, and no scaling or cost controls."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Network tokens become the main identifier. Then re-key, which is why the token is an abstract `card_key`.",
+      "rationale": "Explicit revisit triggers for each decision, abstract card_key, schema contracts enforced in CI, model behind an interface, rail-agnostic event contract, and label contract started early."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "One decision service (rules plus model in-process), one stream-processing job group, one case-management app. No service per rule or per model.",
+      "rationale": "Starts simple and defers GNNs, multi-region and feature store, though the full managed stack and Phase 6/AI-layer ceremony are somewhat heavy."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "The one real request: a live production authorization, in shadow-inline mode.",
+      "rationale": "A concrete first slice, dependency-justified phases, specific tools and checkable exit criteria, and fallback revisit triggers if results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "≤ 5 ms for the feature read and ≤ 5 ms for the model, each enforced by timeout"
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "fail open for low-value and card-present transactions, step-up or decline for high-value card-not-present in high-risk merchant categories"
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "Features defined once as code, compiled to both the Flink streaming job and an offline batch job"
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "A label-maturity cutoff, e.g., exclude the last 60 days... Evaluate on a time-based split"
+    },
+    {
+      "id": "P8-05",
+      "status": 2,
+      "evidence": "precision at fixed recall; the dollar cost curve (fraud loss vs. false-decline cost)"
+    },
+    {
+      "id": "P8-06",
+      "status": 2,
+      "evidence": "Rules engine as versioned code... two-person review for every change... a per-rule kill switch"
+    },
+    {
+      "id": "P8-07",
+      "status": 1,
+      "evidence": "analyst dispositions and cardholder confirmations go into the label store, with provenance"
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "The full card number (PAN) never enters the pipeline. It is tokenized at ingress (keyed HMAC, keys in an HSM/KMS)."
+    },
+    {
+      "id": "P8-09",
+      "status": 1,
+      "evidence": "idempotency key (auth ID plus retry semantics); links between an authorization and its reversals, advices and clearing records"
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "PSI per feature and on the score... shadow → challenger → champion... Rollback to rules-only takes < 1 minute"
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "decision, score, reason codes, ruleset/model version, feature snapshot hash, latency. Every decision becomes auditable and replayable."
+    },
+    {
+      "id": "P8-12",
+      "status": 1,
+      "evidence": "load test at 5× peak through the real path... Single region, multiple availability zones"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "Synchronous gRPC call from switch to decision service, because an answer is needed."
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "a hard 50 ms timeout. If it times out, the authorization proceeds as it does today."
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "Evaluate on a time-based split"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "one source for online and offline"
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "The full card number (PAN) never enters the pipeline."
+    }
+  ],
+  "note": "A strong, actionable plan with a sound shadow-first build order and good reversibility reasoning. Its weaknesses are cost realism (almost absent), unstated scale and TPS assumptions, and thinner event-correctness detail for duplicates and reversals.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2474,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 15521
+  },
+  "cost_usd": 0.06355050000000001,
+  "latency_s": 24.861,
+  "raw_file": "raw/judge-4494585bfe65.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

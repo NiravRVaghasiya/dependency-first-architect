@@ -1,0 +1,125 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "webhook-ledger.generic-control.opus-5.5.r05",
+  "prompt_id": "webhook-ledger",
+  "condition": "generic-control",
+  "generator": "opus-5.5",
+  "run_index": 5,
+  "seed": 2379037435,
+  "seed_honored": false,
+  "request": "/architecture-planner Plan the build of the service described in this brief.\n\n# Ledger: customer balances from PayCo webhooks\n\n## Context\n\nWe sell prepaid credit. Customers top up through our payment provider, PayCo, and spend the\ncredit in our product. Today a nightly script copies PayCo's CSV export into a spreadsheet and\nsupport staff fix balances by hand. We want a small service, Ledger, that keeps every customer\naccount's balance current from PayCo's webhooks.\n\n## What PayCo sends\n\nPayCo sends an HTTP POST to our webhook URL for every event on our merchant account. The body is\nJSON, for example:\n\n```json\n{\"id\": \"evt_1Nq3xKp\", \"type\": \"payment.succeeded\", \"created\": 1700000000,\n \"data\": {\"account_id\": \"acct_42\", \"payment_id\": \"pay_9xk\", \"amount\": 2500, \"currency\": \"EUR\"}}\n```\n\n- `id` identifies the event. A redelivery of the same event has the same `id` and the same body.\n- `type` is one of:\n  - `payment.succeeded`: the customer paid `amount`; credit it to `account_id`.\n  - `refund.succeeded`: PayCo refunded the payment `payment_id` in full, and `amount` equals that\n    payment's amount; take it back from `account_id`.\n  - Other types: PayCo adds new event types from time to time (disputes, payouts, ...). We do not\n    handle any of them yet; we will add them later.\n- `created` is when the event happened, in Unix seconds.\n- `amount` is an integer number of minor units (cents). `currency` is an ISO 4217 code.\n\n## How PayCo delivers (from PayCo's integration guide)\n\n- **Signatures.** Every delivery carries the header `PayCo-Signature: t=<unix seconds>,v1=<hex>`,\n  where `<hex>` is the lowercase hex HMAC-SHA256 of the string `<t>.` followed by the exact request\n  body bytes, keyed with our webhook secret. The guide says to reject a delivery whose signature\n  does not verify, and one whose `t` is more than 300 seconds away from our clock, so that captured\n  requests cannot be replayed.\n- **Retries.** If our endpoint does not answer with a 2xx status, PayCo retries the delivery with\n  backoff for up to 72 hours. It treats any 2xx as \"delivered\".\n- **Ordering.** PayCo does not guarantee delivery order. A refund can arrive before the payment it\n  refers to.\n- **Duplicates.** PayCo may deliver the same event more than once, even after it received a 2xx.\n\n## Our side\n\n- The database is a managed network database. Writes occasionally fail partway through a request\n  (our client raises `StoreError`). The failure rate is low but not zero.\n- Finance reconciles every account against PayCo's monthly statement, and the two must match\n  exactly, to the minor unit.\n- Each customer account holds a single currency, fixed by its first payment.\n- Security: if we ever receive the same event `id` with a different body, treat it as an\n  incident: reject that delivery and leave the account untouched.\n- Volume is small today (a few thousand events a day) and expected to grow.\n\n## What we need\n\nA Python service, standard library only, with this interface:\n\n```\nLedgerService(store, secret, clock)\n    store:  our database client, a ledgerkit MemoryStore (see README.md)\n    secret: the webhook signing secret, bytes\n    clock:  an object whose now() returns the current Unix time in seconds\n\nhandle(raw_body: bytes, headers: dict) -> (status: int, body: dict)\n    Processes one webhook delivery. Header names may arrive in any letter case. Our HTTP layer\n    returns `status` to PayCo as the response code.\n\nbalance(account_id) -> int\n    The account's current balance in minor units; 0 for an account we have never seen.\n\nentries(account_id) -> list of dict\n    The money movements applied to the account, oldest first. Each has at least `event_id`,\n    `type` (the event's type, e.g. `payment.succeeded`), and `amount` (signed: positive for\n    payments, negative for refunds).\n```\n\nThe HTTP server, deployment, and monitoring are outside this codebase; a plan may still cover\nthem.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/webhook-ledger.generic-control.opus-5.5.r05.md",
+  "output_sha256": "18e592f6adc571abe5ab028a8e014e5406e220c7656fa913984eb2da6726bc68",
+  "metrics": {
+    "words": 6803,
+    "chars": 42638,
+    "visible_tokens_est": 10660
+  },
+  "turns": 6,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p2ab33809/skills/architecture-planner/reference/document-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p2ab33809/skills/architecture-planner/reference/guidance.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "w3619df41/README.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "w3619df41/ledgerkit/__init__.py",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w3619df41/ledgerkit.py",
+      "ok": false
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "architecture-planner:architecture-planner",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "eval/conditions/generic-architect/reference/document-template.md",
+      "sha256": "517670de5932f7ab0ecf24b9552eef0898f2878615236f7a28d2df41ea230c02",
+      "words": 1195
+    },
+    {
+      "path": "eval/conditions/generic-architect/reference/guidance.md",
+      "sha256": "a1221cbaa4130a04df554c6ee69526c259863c4ac6c0c5975970a4bbb636b6ad",
+      "words": 2023
+    }
+  ],
+  "started_at": "2026-10-03T02:20:11+00:00",
+  "finished_at": "2026-10-03T02:29:06+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [
+    "claude-opus-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 8,
+    "output_tokens": 40444,
+    "thinking_tokens": 23596,
+    "cache_read_input_tokens": 24294,
+    "cache_creation_input_tokens": 15806
+  },
+  "cost_usd": 0.8928008000000001,
+  "latency_s": 535.38,
+  "raw_file": "raw/gen-webhook-ledger.generic-control.opus-5.5.r05.txt"
+}

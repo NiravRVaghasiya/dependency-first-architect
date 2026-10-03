@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "82e0fcb18f13.probe.sonnet-5.5",
+  "blind_id": "82e0fcb18f13",
+  "judge": "sonnet-5.5",
+  "order_index": 18,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.1,
+  "cues": [
+    "Opens with conversational filler ('I'll help you create...', 'Let me provide a comprehensive roadmap') typical of default unstructured output",
+    "Closes with an offer ('Would you like me to detail any specific phase further...?') rather than a committed plan",
+    "Generic phase-by-phase template with heavy bold headers, emoji checkmarks and horizontal rules, and no explicit dependencies, risks, assumptions or verification criteria",
+    "Internal inconsistencies: Phase 5 migration (weeks 12-20) comes before observability and pipeline hardening, and the batch counts (3-5, 15, 15, 12-17) are loose. Phases overlap without reconciliation",
+    "Tool lists are laundry-list style ('Jenkins, GitLab CI, GitHub Actions, ArgoCD') with no decision rationale or tradeoffs. This suggests no structured methodology was applied"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 377,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3632
+  },
+  "cost_usd": 0.012858,
+  "latency_s": 20.806,
+  "raw_file": "raw/probe-82e0fcb18f13.probe.sonnet-5.5.txt"
+}

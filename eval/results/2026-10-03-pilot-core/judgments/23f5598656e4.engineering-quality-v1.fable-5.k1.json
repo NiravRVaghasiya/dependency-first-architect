@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "23f5598656e4.engineering-quality-v1.fable-5.k1",
+  "blind_id": "23f5598656e4",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 159,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Kubernetes doesn't let you change a Deployment's selector labels, so a label mismatch forces a side-by-side cutover",
+      "rationale": "Claims about Argo CD adoption semantics, OIDC sub claims with job_workflow_ref, ECR immutability, expand/contract migrations and GitHub Actions behavior are all accurate, including the subtle parts the design depends on."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "The bulk of the work is moving 50 live services onto it safely, not building the pipeline",
+      "rationale": "Correctly interprets the hard problem as migration of 50 live services, is credibly buildable by the assumed team, and every exclusion (PR envs, portal, contract testing) is explicit with a trigger to revisit."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Each cluster's Argo CD reads only its own config repo. CI holds no cluster credentials.",
+      "rationale": "Component responsibilities, data ownership (system-of-record table) and trust boundaries are stated and honored consistently everywhere, with no contradictions found across sections."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Four spikes answer the biggest unknowns... prod rollback ≤ 10 min demonstrated",
+      "rationale": "The riskiest assumptions (workload adoption, migration hooks, publish identity, service variety) get time-boxed spikes before commitment, exit criteria are measurable, baselines are taken, and validation continues post-launch via drills and metrics."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "this plan is built on stated assumptions (A1–A12 in §5)... Impact if wrong / Validated how",
+      "rationale": "Every load-bearing assumption is explicit with impact-if-wrong, a validation method and date, and all targets are labeled provisional until the M1 baseline."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Flow 4: Out-of-order builds... Flow 5: Shared workflow regression... Break-glass (if GitHub is unavailable)",
+      "rationale": "Covers races, duplicate/idempotent promotion, blast radius of shared components, malicious PRs and CD outages with concrete handling, but flaky-test detection and quarantine — a classic CI trust-eroding failure for 50 services — is absent."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Platform team owns... On-call is business hours for CI. A prod Argo CD outage is P2, because running services are unaffected.",
+      "rationale": "Ownership split, runbooks, drilled rollback and rebuild, meaningful alerts and a one-new-tool-per-milestone pacing are all sized to the stated 4-person team."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "400 runs/day × 10 min × 30 days ≈ 120k minutes/month... about $1–3k/month",
+      "rationale": "Dominant cost drivers (CI minutes, people time per service) are estimated with a stated basis, labeled as assumptions, with concrete controls and explicit cost triggers for the build-vs-buy runner decision."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Reversibility | Revisit if... Point of no return: Jenkins is decommissioned at the end of M4",
+      "rationale": "Every decision carries a reversibility rating and revisit trigger, hard-to-reverse choices (GitOps shape, chart contract, digest promotion) are validated first via pilot/spikes, and the one point of no return is explicit with a fallback archive."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Canary releases, ephemeral PR environments, a developer portal and self-hosted runners are deferred.",
+      "rationale": "Starts with the simplest workable path using existing tools, defers speculative components with explicit triggers, and omits no essential for a 50-service migration."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T1 on day 1. Week 1, in parallel: T2, T3, T5, T7... Changes plan if > 30% are C",
+      "rationale": "T1–T17 have concrete done-when criteria, the ordering is justified by dependencies and risk, and each spike states exactly how the plan changes if results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Spike S1: service inventory... classify A/B/C... Service-specific needs go through declared inputs... or an escape hatch (`pre-build` / `post-test` steps in the caller)"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Ring 0 is the pilot (M1). Ring 1 is the 6–8 diverse pilots (M2)... the old and new paths run side by side for each service"
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Build once, promote the digest... What was tested is what ships... ECR: one repo per service, immutable tags"
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "OIDC only, no stored AWS keys. One IAM role per service... PR builds get no role... PR workflows have no secrets"
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "cosign keyless signing... syft SBOM attestation... Third-party actions are pinned by commit SHA and allowlisted... Kyverno `verifyImages` in prod"
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "Migrations are expand/contract only... rolling back means redeploying the previous image, which must still work against the expanded schema"
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Services are already in prod and are deployed independently (no lockstep releases)... Contract tests are deferred"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Shared staging; no PR environments... Fixture services live in a `platform-sandbox` namespace. No production data is needed"
+    },
+    {
+      "id": "P3-09",
+      "status": 2,
+      "evidence": "Build time comes down through dependency caches, Docker layer cache (`type=gha`) and test splitting where p95 exceeds 20 min"
+    },
+    {
+      "id": "P3-10",
+      "status": 2,
+      "evidence": "400 runs/day × 10 min × 30 days ≈ 120k minutes/month... about $1–3k/month... ARC as fallback (D11)"
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Platform team owns... both Argo CD instances... delivery-metrics dashboard (deployment frequency, lead time, change failure rate, time to restore)"
+    },
+    {
+      "id": "P3-12",
+      "status": 2,
+      "evidence": "`main` is protected and needs 1 code-owner approval from someone other than the author... prod PR history = audit ledger... nightly mirror to S3 with Object Lock"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "the old and new paths run side by side for each service... After 2 weeks and ≥ 3 successful prod deploys, delete the legacy job"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "built once into a container image that never changes and is identified by its digest (a content hash)"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "It authenticates to AWS with GitHub's OIDC tokens, so there are no stored keys... PR builds get no role"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "each service's promotion runs in a concurrency group `promote-<service>-<env>`... deployed independently (no lockstep releases)"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "GitHub Actions with central reusable workflows... GitOps pull with Argo CD... avoids a third new tool in M1"
+    }
+  ],
+  "note": "An exemplary brownfield CI/CD migration plan — technically precise, risk-sequenced and fully actionable; the only notable gaps are deferred contract testing and no flaky-test handling.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7503,
+    "thinking_tokens": 4788,
+    "cache_read_input_tokens": 929,
+    "cache_creation_input_tokens": 27305
+  },
+  "cost_usd": 0.7174115000000001,
+  "latency_s": 143.518,
+  "raw_file": "raw/judge-23f5598656e4.engineering-quality-v1.fable-5.k1.txt"
+}

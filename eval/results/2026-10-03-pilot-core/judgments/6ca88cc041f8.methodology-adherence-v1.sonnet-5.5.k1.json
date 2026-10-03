@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "6ca88cc041f8.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "6ca88cc041f8",
+  "blind_sha256": "e2d1b08aeb81fb201871ff154b344bd7ba6cc6181eed6ef9c91c4f1c331682bf",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 453,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Unlocks: any exposure path\"; Phase 3 \"Depends on: V4\"; Phase 4 \"Depends on: V1, V2, V3, V5\"",
+      "rationale": "Explicit dependency map and per-phase Depends-on lines order substrate → defenses → retrieval → generation → exposure, with gates proving each before dependents."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "an allow-listed support agent... asks a real question... in the widget on the production help center... streamed answer citing the source article",
+      "rationale": "Phase 0 is a real end-to-end production path with deploy, trace, rollback, and failure injection before features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Decision | Reversibility | Default (chosen now) | Assumption | Validated by | Flip condition",
+      "rationale": "Irreversible decisions are tabulated with defaults, assumptions, validation, and concrete flip conditions; unknowns are labeled."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1 tasks: corpus-boundary filter at ingestion first, then unpublish, injection suite, redaction... before narrower items",
+      "rationale": "Within phases, widest-impact items (corpus boundary, data flow, defenses) precede leaf items like chunk schema before eval set; mostly well ordered."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "0: SSO allow-list; secrets in a vault; vendor spend limit; prompt/data separation; link allow-list renderer",
+      "rationale": "Security has concrete content in every phase 0–5, starting at Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OpenTelemetry carries one trace ID from widget to LLM. Metrics cover tokens, cost, latency, and error rate, with alerts",
+      "rationale": "Observability is in Phase 0 and specific in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "IaC; image digest, model version, prompt version, and index version stamped on every trace",
+      "rationale": "Reproducibility is addressed in each phase: IaC, versioned configs, pinned index, prompt registry, deterministic cohorts."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Timeout → degraded response; flag kill switch; rollback rehearsed",
+      "rationale": "Resilience is concrete in every phase, from Phase 0 failure injection through fallback model, blue/green, and failover drill."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Phase 1 — Defenses and budgets ... Human-in-the-loop rule: the model has no tools; Phase 2 Retrieval; Phase 3 Model access, memory, orchestration",
+      "rationale": "Defenses, budgets, and HITL precede retrieval → model → memory → orchestration, with routing explicitly deferred and feedback last."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Segment-restricted or logged-in-only articles: pulled forward if more than about 10% of handed-off questions are covered only by restricted articles.",
+      "rationale": "Deferred items are listed with pull-forward conditions and prerequisites."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan meeting every rubric dimension with concrete, phase-threaded content and correct AI-layer ordering.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1202,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10418
+  },
+  "cost_usd": 0.038072999999999996,
+  "latency_s": 32.621,
+  "raw_file": "raw/judge-6ca88cc041f8.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

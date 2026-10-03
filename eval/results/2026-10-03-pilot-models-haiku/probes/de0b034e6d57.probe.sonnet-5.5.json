@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "de0b034e6d57.probe.sonnet-5.5",
+  "blind_id": "de0b034e6d57",
+  "blind_sha256": "ce4d74c612e75b2fc84c16069b3e57742cbccaec69879eec9a898380cbca8e29",
+  "judge": "sonnet-5.5",
+  "order_index": 8,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.97,
+  "cues": [
+    "Opens by saying it is following the '10-step procedure and the exact output format', so it names a methodology outright",
+    "Fixed numbered sections (Classification and constraints, Dependencies, Key decisions, First end-to-end slice, Phases, Validation checks, Cross-cutting concerns, AI layer, Exceptions, Deferred) that look like a prescribed template",
+    "Methodology-specific vocabulary used throughout: reversibility ratings R1/R2/R3, 'Phase 0' walking skeleton with a V0 exit check, V-IDs (V0–V4), 'point of no return', and ASSUMPTION/UNKNOWN labels",
+    "Formulaic tables: budgets with 'Checked by', dependencies with 'Blocked from being', and decisions with 'Revisit trigger', plus a per-phase cross-cutting matrix covering security, observability, reproducibility and resilience",
+    "An 'Exceptions: None' section that says the plan follows the canonical order and lists alternatives considered, which reads like a compliance check against a written procedure"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 430,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 13837
+  },
+  "cost_usd": 0.0389005,
+  "latency_s": 26.734,
+  "raw_file": "raw/probe-de0b034e6d57.probe.sonnet-5.5.txt"
+}

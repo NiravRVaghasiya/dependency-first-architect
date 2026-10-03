@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "396e7b9d43df.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "396e7b9d43df",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 142,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "T8–T14 can run in parallel against the contract once T5 merges.",
+      "rationale": "Order runs contract/repo/infra/CI, then service components, then load, then shadow, enforcement and rollout; dependencies and spike gates are explicit."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "M1: Working slice + spikes ... staging on EKS ... Out: prod",
+      "rationale": "M1 is a real end-to-end slice with load test and Athena-queryable decisions, but it runs in staging on synthetic traffic and excludes prod, so it isn't a prod path."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D1 ... Hard (Auth Host integration) ... Revisit if: The Auth Host can't give ≥ 30 ms.",
+      "rationale": "The plan has an assumptions table and a decision table with options, reversibility and revisit triggers, plus open questions with defaults."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Order: start T1–T4 on day 1, because they are long-lead. T5–T7 come next.",
+      "rationale": "Widest-impact work (contract, accounts, repo skeleton, infra) comes first and shared libs before leaves, but the plan doesn't frame this as blast-radius ordering."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "T2 Submit the PCI scope review ... T8 mTLS, request checks (reject unknown fields) ... T10 tampered bundle is rejected",
+      "rationale": "Security shows up concretely in M1 (mTLS, signed bundles, Trivy, KMS, PCI review) and in M2 (parity tests, Lake Formation) and M3 (game days); it also appears in the rollout."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "T17 Add the dashboard and alerts ... Injected 50 ms latency in staging triggers the alert",
+      "rationale": "M1 includes per-stage timers, OTel, dashboards and alerts, and later milestones add paging, model-health metrics and reconciliation."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Applied only through the pipeline; `terraform plan` shows no drift; remote state with locking",
+      "rationale": "Terraform, pinned CI builds and tagged images, signed versioned artefacts, Replay Harness and logged feature vectors, and decision reproducibility are built in from M1."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "T14 Implement the degraded path: 10 ms Redis timeout, circuit breaker, missing-feature flags, `degraded=true`",
+      "rationale": "Failure handling is in M1 (degraded path, failover load test, Kafka buffer), M2 (fallback tests) and M3 (game days and rebuild drill)."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Guardrails: thresholds bounded ... decline-rate band with automatic canary rollback ... Human approval: Fraud Risk signs off every model promotion",
+      "rationale": "Guardrails, human sign-off and monitor-only mode precede enforcement, but the plan has no explicit budgets and no retrieval/memory/orchestration/routing layers (not needed for a GBDT system); its ordering is sensible but not in the rubric's order."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Rule-authoring UI ... Trigger: Analysts take more than 1 day per rule because of Git friction",
+      "rationale": "The deferred table gives pull-forward triggers, and the plan also lists deliberate shortcuts with payback conditions and the M1 placeholders."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "This is a strong, thorough plan: its gaps are a staging-only Phase 0 (no prod walking skeleton) and no explicit AI budgets or layer ordering.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1334,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 24967
+  },
+  "cost_usd": 0.0758785,
+  "latency_s": 32.962,
+  "raw_file": "raw/judge-396e7b9d43df.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

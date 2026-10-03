@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "8c33ada65eb3.engineering-quality-v1.fable-5.k1",
+  "blind_id": "8c33ada65eb3",
+  "blind_sha256": "1af754126ca3d39f725209d6a5b04248bd0dec4d680b430653fd3341d295e352",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 292,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "A provider timeout means the outcome is *unknown*: query the PaymentIntent status before retrying, and never retry a charge blind.",
+      "rationale": "Claims about Postgres RLS, SERIALIZABLE ledger postings, outbox semantics, SAQ-A via tokenization, idempotency and out-of-order webhooks are all accurate, including the subtle unknown-outcome retry case."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "If the real requirement is internal billing with only flat or per-seat pricing and no usage, buy Stripe Billing, Chargebee or Orb and drop this plan.",
+      "rationale": "Resolves the ambiguous prompt into a coherent billing-platform interpretation, states the alternative reading explicitly, covers all core billing capabilities, and defers non-essentials with named triggers."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Modules talk only through internal interfaces and outbox events, with no reads across module tables.",
+      "rationale": "The consistency split, sync/async rules, tenant context, clock injection and the Charge contract are applied uniformly across every phase with no internal contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "A chaos test passes: inject a provider timeout, a duplicate webhook and an out-of-order webhook, with 0 double charges and an unchanged ledger balance.",
+      "rationale": "Every phase has checkable exit criteria tied to the real risks (cross-tenant fuzzing, golden-file clock simulations, recompute-from-raw tests), plus continuous production validation via the ledger_imbalance page."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Extract `usage` first if it sustains more than ~5k events/s or needs its own scaling or deploy cadence.",
+      "rationale": "Revisit triggers make design sensitivities explicit and thresholds are marked approximate, but expected scale, tenant volume and team size are left implicit (e.g. '3× the projected peak load' with no stated projection)."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Missed webhooks are caught by polling reconciliation. Smart retry schedule for failed payments.",
+      "rationale": "Covers the hard billing failures concretely: duplicates, out-of-order and missed webhooks, unknown payment outcomes, tax-provider outage, cross-tenant leaks, late usage events, SSRF on tenant webhook URLs and crash-resumable billing runs."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Blue/green deploy with automatic rollback when the smoke test fails. Postgres point-in-time recovery on from day 0.",
+      "rationale": "Deploy, rollback, expand/contract migrations, restore drills with timing, DLQ redrive and domain-meaningful paging signals are all designed in; only on-call ownership structure ('pages someone') is thin."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "If a second processor is needed (regional coverage, lower fees), add a `PaymentProvider` adapter.",
+      "rationale": "Build-vs-buy weighs fees, compliance and lock-in qualitatively, but there is no reasoning about engineering effort, infrastructure run cost, or how costs grow with tenants and usage."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "None. This cannot be reversed cheaply once real invoices exist.",
+      "rationale": "The decision table explicitly separates one-way choices (money representation, ledger model) from triggered-revisit ones, and pre-builds exit paths (PaymentProvider interface, tenant→connection routing table, silo tier)."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Extracting usage into a separate service; Kafka + ClickHouse ... More than ~5k events/s sustained",
+      "rationale": "A modular monolith with bought payments/tax/email and explicitly deferred multi-region, second processor and streaming infra is close to the simplest design that fully meets the need, with growth triggers stated."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "An internal dogfood tenant calls `POST /v1/invoices` with an `Idempotency-Key` header for one customer on one hard-coded flat price ($1.00 USD).",
+      "rationale": "A team could start immediately: a concrete first slice, dependency-ordered phases with 'widest impact first' tasks, measurable exit checks per phase, and revisit triggers that say when to change course."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Integer minor units (`BIGINT`) plus an ISO-4217 currency on every amount ... Rounding happens once, at the invoice line, using a documented mode (banker's rounding)."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Double-entry, append-only and immutable. Corrections are reversing entries, never `UPDATE`."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "Replaying the same `Idempotency-Key` returns the same invoice and creates no second charge."
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "Buy: payment processing and card storage (Stripe/Adyen via tokenization, which keeps us at PCI SAQ-A) ... Stripe webhook signatures verified."
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "Postgres row-level security enforced by a non-`BYPASSRLS` app role ... It fuzzes every endpoint with tenant B credentials against tenant A objects."
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "Injecting 1% duplicate events gives rated totals exactly equal to an independent recompute from the raw events."
+    },
+    {
+      "id": "P2-07",
+      "status": 2,
+      "evidence": "Products and prices become **immutable once referenced**; changes create a new version ... Anchors, calendar vs anniversary billing, timezones, month-end edge cases (Jan 31 → Feb 28)."
+    },
+    {
+      "id": "P2-08",
+      "status": 1,
+      "evidence": "Per tenant, gap-free and sequential, allocated at finalization in the same transaction. EU rules require this."
+    },
+    {
+      "id": "P2-09",
+      "status": 2,
+      "evidence": "A configurable retry schedule per tenant, and on exhaustion the subscription moves to `past_due` and then `canceled`."
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "Match ledger `cash_clearing` against provider balance transactions and payouts. Any mismatch goes to an exceptions queue."
+    },
+    {
+      "id": "P2-11",
+      "status": 1,
+      "evidence": "Entitlements and feature gating | Tenants ask to gate product features on plan state. Subscription events already carry what's needed."
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "**Build:** ledger, catalog, subscription engine, rating, invoicing, dunning and reconciliation. These are the product."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Integer minor units (`BIGINT`) ... Floats are banned by a lint rule."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Corrections are reversing entries, never edits."
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "query the PaymentIntent status before retrying, and never retry a charge blind ... Verify the signature and store the raw payload."
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "Card data never reaches our servers (tokenization, SAQ-A)."
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "RLS with a non-bypass role. Cross-tenant fuzz suite blocks merges."
+    }
+  ],
+  "note": "An unusually strong, correctness-first billing architecture that avoids every classic trap; the only material gaps are run/build cost reasoning, implicit scale and team assumptions, and missing tax-ID/reverse-charge and entitlement-availability detail.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8556,
+    "thinking_tokens": 5691,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 15155
+  },
+  "cost_usd": 0.6181274999999999,
+  "latency_s": 133.7,
+  "raw_file": "raw/judge-8c33ada65eb3.engineering-quality-v1.fable-5.k1.txt"
+}

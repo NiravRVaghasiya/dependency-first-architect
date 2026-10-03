@@ -1,0 +1,399 @@
+{
+  "schema": "dfa-eval/authoring-session@1",
+  "purpose": "Domain checklists for P6-P8",
+  "blind_to_skill": true,
+  "session": {
+    "date": "2026-10-02",
+    "model": "claude-opus-5-5",
+    "effort": "high",
+    "claude_cli": "2.1.287.1066",
+    "invocation": "claude --bare -p --model claude-opus-5-5 --effort high --no-session-persistence --tools \"\" --output-format json --json-schema <schema>, in an empty directory",
+    "models_used": [
+      "claude-opus-5-5"
+    ],
+    "cost_usd": 0.151066,
+    "duration_s": 92.6,
+    "prompt": "You are writing scoring materials for a controlled study of AI-written software plans. AI models answer short requests by writing an architecture and build plan; independent expert reviewers score every plan without knowing which model or setup wrote it.\n\nFor each request below, write a DOMAIN CHECKLIST: the considerations an expert would expect a competent plan for that system to address, and the serious mistakes (\"traps\") a plan could make.\n\nThe requests (verbatim):\n- P6: \"Plan migrating our hospital's on-premises patient scheduling system to the cloud without downtime.\"\n- P7: \"Plan a command-line tool that renames a folder of photos by their EXIF capture date.\"\n- P8: \"Plan a real-time fraud-detection pipeline for card transactions.\"\n\nCHECKLIST REQUIREMENTS (one checklist per request)\n- 8 to 12 items: the domain considerations whose omission would most likely make a real system of this kind fail, be insecure, lose data or money, or be very expensive to fix later. Each item: an id (P6-01, P6-02, ...), a short title, one sentence on what \"concretely addressed\" means, and a category (correctness, security, reliability, operations, cost, data, compliance, or product). For a small or simple system, list fewer items rather than inventing enterprise concerns it does not have; overbuilding is itself a mistake.\n- 3 to 5 traps: specific, serious mistakes a plan for this system could make (known anti-patterns or dangerous choices in this domain, including scope or machinery out of proportion to the request). Each: an id (P6-T1, P6-T2, ...), a title, and how a reviewer recognizes it in a plan.\n- Items must be about the system's domain and engineering, never about plan format, document structure, or planning method. Prefer items that distinguish expert plans from superficially complete ones.\n\nReturn the result in the required structured format.\n",
+    "prompt_sha256": "51e6acf5ce737f53ea34d519a8564bfb99c57c8c43592e2c1675fad70815d2f6",
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "checklists": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "properties": {
+              "prompt_id": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "minItems": 5,
+                "maxItems": 12,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "addressed_means": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "type": "string",
+                      "enum": [
+                        "correctness",
+                        "security",
+                        "reliability",
+                        "operations",
+                        "cost",
+                        "data",
+                        "compliance",
+                        "product"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title",
+                    "addressed_means",
+                    "category"
+                  ]
+                }
+              },
+              "traps": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 5,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "recognize": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title",
+                    "recognize"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "prompt_id",
+              "items",
+              "traps"
+            ]
+          }
+        }
+      },
+      "required": [
+        "checklists"
+      ]
+    }
+  },
+  "structured_output": {
+    "checklists": [
+      {
+        "prompt_id": "P6",
+        "items": [
+          {
+            "id": "P6-01",
+            "title": "HIPAA/PHI safeguards and BAA",
+            "addressed_means": "The plan requires a signed BAA with the cloud provider, uses only HIPAA-eligible services, and specifies encryption in transit and at rest (with key management), least-privilege access, and PHI audit logging that is kept the same or better through the migration.",
+            "category": "compliance"
+          },
+          {
+            "id": "P6-02",
+            "title": "Integration and interface inventory",
+            "addressed_means": "The plan lists every upstream and downstream connection (EHR/ADT HL7 or FHIR feeds, interface engine, billing, patient portal, reminder/SMS, reporting, devices or kiosks) and gives each one a repoint, test, and cutover step.",
+            "category": "correctness"
+          },
+          {
+            "id": "P6-03",
+            "title": "Continuous data replication with reconciliation",
+            "addressed_means": "The plan describes an initial bulk load followed by change-data-capture replication, measures replication lag, and checks the data before cutover with row counts, checksums, and appointment-level comparisons.",
+            "category": "data"
+          },
+          {
+            "id": "P6-04",
+            "title": "Single write authority to prevent double-booking",
+            "addressed_means": "At every phase the plan names which system accepts writes, explains how the write role moves from one system to the other (a short write-freeze or a controlled switch), and states how slot-booking conflicts are avoided or resolved.",
+            "category": "correctness"
+          },
+          {
+            "id": "P6-05",
+            "title": "Tested rollback path",
+            "addressed_means": "The plan sets go/no-go and rollback criteria, keeps the on-prem system up to date (for example, replication running back from the cloud) after cutover, and rehearses the rollback before go-live.",
+            "category": "reliability"
+          },
+          {
+            "id": "P6-06",
+            "title": "Hybrid network connectivity and latency",
+            "addressed_means": "The plan specifies redundant private connectivity (e.g., Direct Connect or ExpressRoute plus VPN backup) between hospital systems and the cloud, with a latency budget that has been checked against the clinical workflows and interfaces that will cross it.",
+            "category": "reliability"
+          },
+          {
+            "id": "P6-07",
+            "title": "Cloud resilience, backup and DR targets",
+            "addressed_means": "The plan sets RPO and RTO targets, uses a multi-AZ deployment, keeps tested backups and restores, and covers the hospital's clinical downtime procedures (such as a read-only or printed schedule) in case the cloud or the WAN fails.",
+            "category": "reliability"
+          },
+          {
+            "id": "P6-08",
+            "title": "Identity integration and break-glass access",
+            "addressed_means": "The plan connects the cloud system to the hospital's identity provider (AD or SSO with MFA), keeps role-based access to schedules, and defines audited break-glass access.",
+            "category": "security"
+          },
+          {
+            "id": "P6-09",
+            "title": "Production-like load and parallel validation",
+            "addressed_means": "The plan load-tests at realistic peaks (e.g., Monday-morning booking surges and reminder batches) and runs shadow or parallel validation of reads and interface messages before moving users over.",
+            "category": "reliability"
+          },
+          {
+            "id": "P6-10",
+            "title": "Clinical cutover coordination",
+            "addressed_means": "The plan picks a low-volume cutover window, freezes configuration changes, communicates with clinic and scheduling staff, and provides on-site support plus a hypercare period after go-live.",
+            "category": "operations"
+          },
+          {
+            "id": "P6-11",
+            "title": "Vendor support, licensing, and decommissioning",
+            "addressed_means": "The plan confirms that the application vendor supports and licenses cloud hosting, and it covers retention of historical and audit data and certified secure destruction of on-prem PHI media when the old system is retired.",
+            "category": "operations"
+          }
+        ],
+        "traps": [
+          {
+            "id": "P6-T1",
+            "title": "Big-bang cutover posing as zero-downtime",
+            "recognize": "The plan moves everything in one weekend 'maintenance window' or a single DNS flip, with no replication, staged moves, or rehearsed rollback. This contradicts the no-downtime requirement."
+          },
+          {
+            "id": "P6-T2",
+            "title": "Uncontrolled dual-write",
+            "recognize": "The plan has both on-prem and cloud systems accept bookings at the same time with no conflict resolution, which risks double-booked slots or lost appointments."
+          },
+          {
+            "id": "P6-T3",
+            "title": "Casual PHI handling",
+            "recognize": "The plan copies unmasked production PHI into dev or test, uses services that are not covered by a BAA, exposes public endpoints, or does not mention HIPAA at all."
+          },
+          {
+            "id": "P6-T4",
+            "title": "Database-only migration that ignores interfaces",
+            "recognize": "The plan moves the app and database but never mentions HL7/FHIR feeds, the interface engine, or the downstream systems that depend on scheduling data."
+          },
+          {
+            "id": "P6-T5",
+            "title": "Re-architecting during the migration",
+            "recognize": "The plan combines the migration with a rewrite into microservices or new data models, which adds risk that has nothing to do with the goal of moving the system without downtime."
+          }
+        ]
+      },
+      {
+        "prompt_id": "P7",
+        "items": [
+          {
+            "id": "P7-01",
+            "title": "Correct capture-date tag and format support",
+            "addressed_means": "The tool reads DateTimeOriginal first, with a clear fallback order (DateTimeDigitized, then DateTime), uses a reliable metadata library or exiftool, and states which formats it supports (JPEG, HEIC, RAW, PNG).",
+            "category": "correctness"
+          },
+          {
+            "id": "P7-02",
+            "title": "Missing or malformed EXIF handling",
+            "addressed_means": "Files with no date or a bogus one (e.g., '0000:00:00 00:00:00') are skipped and reported by default, and file modification time is used only if the user explicitly asks for it.",
+            "category": "correctness"
+          },
+          {
+            "id": "P7-03",
+            "title": "Collision-safe naming",
+            "addressed_means": "When photos share the same timestamp (e.g., burst shots), the tool uses SubSecTimeOriginal or a deterministic counter suffix and never overwrites an existing file.",
+            "category": "data"
+          },
+          {
+            "id": "P7-04",
+            "title": "Dry-run preview",
+            "addressed_means": "A dry-run mode shows the planned old-to-new mapping and any conflicts before any file is touched.",
+            "category": "product"
+          },
+          {
+            "id": "P7-05",
+            "title": "Safe, idempotent rename execution",
+            "addressed_means": "Each rename refuses to overwrite (it checks first, or uses a no-replace rename). Renames that swap or chain names go through temporary names. Running the tool again on already-renamed files changes nothing.",
+            "category": "data"
+          },
+          {
+            "id": "P7-06",
+            "title": "Undo log",
+            "addressed_means": "Every run writes a mapping log (e.g., CSV of old and new paths), and the tool can use that log to reverse the run.",
+            "category": "data"
+          },
+          {
+            "id": "P7-07",
+            "title": "Timezone semantics",
+            "addressed_means": "The plan states that EXIF times are camera-local with no timezone offset. It uses OffsetTimeOriginal when present and does not silently convert times to UTC.",
+            "category": "correctness"
+          },
+          {
+            "id": "P7-08",
+            "title": "Companion and sidecar files",
+            "addressed_means": "Paired files (RAW+JPEG, .xmp, .AAE, Live Photo .MOV) are renamed together under the same base name so the pairs stay linked.",
+            "category": "correctness"
+          },
+          {
+            "id": "P7-09",
+            "title": "Portable, sortable filename template",
+            "addressed_means": "The default name format sorts by time (e.g., YYYY-MM-DD_HHMMSS) and contains no characters illegal on Windows such as colons. The template is configurable, and the original extension is kept.",
+            "category": "correctness"
+          }
+        ],
+        "traps": [
+          {
+            "id": "P7-T1",
+            "title": "Silent overwrite on collision",
+            "recognize": "The plan calls os.rename or mv on a computed name without checking whether the target exists. On POSIX this silently replaces one photo with another."
+          },
+          {
+            "id": "P7-T2",
+            "title": "Wrong date source",
+            "recognize": "The plan uses filesystem mtime or ctime as the main date, or uses the EXIF DateTime (modification) tag instead of DateTimeOriginal."
+          },
+          {
+            "id": "P7-T3",
+            "title": "Overbuilt machinery",
+            "recognize": "The plan adds databases, a GUI or web service, cloud sync, plugin systems, ML tagging, or a microservice layout to what is a small single-purpose CLI."
+          },
+          {
+            "id": "P7-T4",
+            "title": "Rewriting image files",
+            "recognize": "The plan opens and re-saves images with an imaging library (losing quality or metadata) or edits EXIF, when the task only needs a filesystem rename."
+          },
+          {
+            "id": "P7-T5",
+            "title": "Illegal or unsortable filenames",
+            "recognize": "The plan uses the raw EXIF string with colons as the filename, or a locale-dependent date format that does not sort in time order."
+          }
+        ]
+      },
+      {
+        "prompt_id": "P8",
+        "items": [
+          {
+            "id": "P8-01",
+            "title": "Inline authorization latency budget",
+            "addressed_means": "Scoring runs synchronously inside the authorization flow with an explicit p99 budget (tens of milliseconds) for feature lookup, model, and rules, and the plan shows how that budget is met.",
+            "category": "reliability"
+          },
+          {
+            "id": "P8-02",
+            "title": "Timeout and degraded-mode decision policy",
+            "addressed_means": "The plan defines what happens when scoring is slow or down: a strict timeout, fallback rules or limits, and a deliberate fail-open or fail-closed choice per risk tier.",
+            "category": "reliability"
+          },
+          {
+            "id": "P8-03",
+            "title": "Real-time stateful features",
+            "addressed_means": "Velocity and behavioral features (per card, merchant, device, IP over sliding windows) are kept up to date in a low-latency store, and the same feature logic is used for training and serving to avoid training-serving skew.",
+            "category": "correctness"
+          },
+          {
+            "id": "P8-04",
+            "title": "Delayed labels and leakage-free training",
+            "addressed_means": "The plan accounts for chargeback and fraud labels arriving weeks later, builds training data with point-in-time-correct features, and splits training and test data by time.",
+            "category": "data"
+          },
+          {
+            "id": "P8-05",
+            "title": "Cost-based thresholds and imbalance-aware metrics",
+            "addressed_means": "Thresholds are set by weighing fraud losses against the cost of false declines and customer friction, and are judged with precision and recall at the operating point (or PR-AUC) rather than accuracy.",
+            "category": "product"
+          },
+          {
+            "id": "P8-06",
+            "title": "Rules plus model with graded actions",
+            "addressed_means": "The plan combines analyst-managed rules (hot-deployable, versioned) with ML scores, and maps them to graded actions: approve, decline, step-up (3DS or OTP), or queue for review.",
+            "category": "product"
+          },
+          {
+            "id": "P8-07",
+            "title": "Case management and feedback loop",
+            "addressed_means": "There is an analyst review queue and a customer confirmation channel, and their outcomes flow back into labels and rule tuning.",
+            "category": "operations"
+          },
+          {
+            "id": "P8-08",
+            "title": "PCI DSS scope and PAN protection",
+            "addressed_means": "PANs are tokenized or hashed before they reach streams, feature stores, and logs. The plan limits PCI scope and enforces encryption and access controls on cardholder data.",
+            "category": "compliance"
+          },
+          {
+            "id": "P8-09",
+            "title": "Event correctness in the stream",
+            "addressed_means": "Processing is idempotent and handles duplicate, out-of-order, and reversal or refund events. Per-card ordering is preserved by partitioning, and window state survives failures.",
+            "category": "data"
+          },
+          {
+            "id": "P8-10",
+            "title": "Model monitoring, drift and safe rollout",
+            "addressed_means": "The plan monitors score distributions, feature drift, and decline and fraud rates, and releases models through shadow or champion/challenger deployment with fast rollback, because fraudsters adapt.",
+            "category": "operations"
+          },
+          {
+            "id": "P8-11",
+            "title": "Decision audit and explainability",
+            "addressed_means": "Every decision is logged with its model version, features, rules hit, and reason codes, so disputes, regulators, and model governance reviews can trace it.",
+            "category": "compliance"
+          },
+          {
+            "id": "P8-12",
+            "title": "Peak scale and high availability",
+            "addressed_means": "The plan sizes the system for peak transactions per second (e.g., holiday spikes), with horizontal scaling and multi-AZ or multi-region redundancy for the scoring path.",
+            "category": "reliability"
+          }
+        ],
+        "traps": [
+          {
+            "id": "P8-T1",
+            "title": "Batch pipeline labeled real-time",
+            "recognize": "The plan scores after authorization through micro-batches, nightly jobs, or a pipeline with minutes of lag, so fraud is found only after the money has moved."
+          },
+          {
+            "id": "P8-T2",
+            "title": "Scoring as a hard dependency with no fallback",
+            "recognize": "The plan has no timeout or degraded mode, so a scoring outage either declines every transaction or approves them all with no rules applied."
+          },
+          {
+            "id": "P8-T3",
+            "title": "Accuracy on imbalanced data and leaky evaluation",
+            "recognize": "The plan reports accuracy, uses a random train/test split, or ignores label delay, which produces inflated offline results."
+          },
+          {
+            "id": "P8-T4",
+            "title": "Features unavailable or inconsistent at auth time",
+            "recognize": "The model uses information not known at authorization (settlement data, later labels), or the batch and streaming feature code are written separately and drift apart."
+          },
+          {
+            "id": "P8-T5",
+            "title": "Raw PAN spread across the pipeline",
+            "recognize": "The plan puts raw card numbers into Kafka topics, feature stores, logs, or third-party or LLM services, with no tokenization and no limit on PCI scope."
+          }
+        ]
+      }
+    ]
+  }
+}

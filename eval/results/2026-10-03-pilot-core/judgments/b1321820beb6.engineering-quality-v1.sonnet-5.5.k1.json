@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "b1321820beb6.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "b1321820beb6",
+  "blind_sha256": "066b2716779ac1166c9c91e5bf5c3c0cfde766b8150761b33856d9638cfa88e6",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 359,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Signed with cosign using a cloud KMS key (not keyless, so repo names stay out of public transparency logs).",
+      "rationale": "Mechanisms (OIDC, digest pinning, Kyverno verifyImages, GitOps, Argo Rollouts) are accurate and the trade-offs are real, with only minor imprecision such as a 10-min rollback and the Kyverno failure policy left undefined."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Replatform the pipelines, not the services. ... Per service, a flag in the service catalog names the single path that is the source of truth.",
+      "rationale": "Covers the core needs, with explicit deferrals and sensible brownfield handling. Flaky-test handling and test environments are missing, and the Kubernetes assumption narrows fit."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "CI never holds prod cluster credentials. ... Argo CD in each cluster pulls and applies it.",
+      "rationale": "Pull-based deploy, fail-closed admission, source-of-truth flag, break-glass and the dependency table are applied consistently across sections. I could not name a contradiction."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "100% of cases (a)–(g) are blocked, each raising an alert within 5 min (ASSUMPTION)",
+      "rationale": "Validation is risk-specific (red-team, canary fault injection, game day, load test). Thresholds are labeled as assumptions. The riskiest parts are validated early, and the plan continues validation into production."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Each is followed by what changes if the assumption is false:",
+      "rationale": "Assumptions and UNKNOWNs are labeled, each with its sensitivity and how it is confirmed. There is no invented certainty."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Fail closed, with an audited break-glass path",
+      "rationale": "It covers fork PRs, stolen tokens, tampered templates, platform outage, admission outage, secret leaks and bad canaries. Flaky tests, partial failures of migrations and poisoned caches get little attention."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Platform team runs ≤ 3 components itself (Argo CD, admission controller, Argo Rollouts); everything else is managed",
+      "rationale": "Covers deploy, rollback, alerting, break-glass, SIEM audit and DORA dashboards. A named owner and on-call for the platform are thin."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "UNKNOWN: the platform or finance owner sets a monthly budget before wave 3.",
+      "rationale": "It meters cost per run and names a hosted vs self-hosted fallback, but there is no estimate from commit volume and no concrete cost controls beyond fallbacks."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Reversibility | R3: this is where the production trust boundary sits",
+      "rationale": "Each decision has an explicit reversibility class, a revisit trigger and an exit path. The one-way steps (artifact identity, signing, credential revocation) are validated early and isolated."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Assemble managed and OSS parts with thin glue. No custom platform services and no portal in v1.",
+      "rationale": "It buys the CI engine, defers the portal, preview environments and self-hosted runners, and keeps the component count to three. The controls it adds are justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: V1 passes; contract v1.0 is tagged; each pilot builds with a cold cache.",
+      "rationale": "The phases are ordered by dependency and risk. Each has a checkable exit, a rollback and a fallback if early results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Versioned reusable templates (GitHub reusable workflows or GitLab includes), one per archetype ... plus one declared custom-step slot."
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Per service, a flag in the service catalog names the single path that is the source of truth. Rollback: pause Argo CD auto-sync"
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "CI builds, signs and pushes an image to the registry by digest, then opens a PR that bumps the digest"
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "Scope OIDC trust per repo, branch and environment. ... Give fork PRs no secrets."
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "SLSA provenance and an SBOM (syft) attached to each image. ... Add CODEOWNERS and required reviews on the templates"
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "Add Argo Rollouts canaries with automated analysis ... pre-deploy database migration job (expand/contract"
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Each service deploys independently via per-service digests; Renovate opens the PRs that bump template versions."
+    },
+    {
+      "id": "P3-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "build cache in the vendor's cache; Phase 1 cold-cache builds; p90 ≤ 15 min"
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Vendor-hosted runners ... V3 2-hour synthetic burst; V4 Meter cost per run by archetype"
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "Publish DORA metrics dashboards. ... Platform toil per week is within the complexity budget."
+    },
+    {
+      "id": "P3-12",
+      "status": 2,
+      "evidence": "Deploy and break-glass audit logs go to the SIEM; Only the platform team and the service owner can change templates"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Wave 2: about 10 low-criticality stateless services. ... old deploy step is switched off but kept."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Immutable OCI digests. ... digest-pinned"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "Registry push by digest, authenticated with OIDC (no static keys)"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Each service deploys through its own app in Argo CD; a wave halts at thresholds rather than blocking all services"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Buy: use the CI built into the existing Git host"
+    }
+  ],
+  "note": "This is a very strong, risk-ordered, pilot-first plan with an explicit trust boundary and labeled assumptions. Its gaps are flaky tests and test environments, the lack of a cost estimate, and the thin build-speed strategy and platform ownership.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2384,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 16882
+  },
+  "cost_usd": 0.06622620000000001,
+  "latency_s": 26.406,
+  "raw_file": "raw/judge-b1321820beb6.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

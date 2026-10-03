@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ae90a10f2116.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "ae90a10f2116",
+  "blind_sha256": "a4b2744dada3a1fc83205dc0c878a67db8ca7de1db632cff3c8797b9a1e9d958",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 224,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Fix-attempt tools (running code in the sandbox) | V1 trust boundary ... Phase 3 Depends on: V1 and Phase 2",
+      "rationale": "Dependency map and phase gating put trust boundary, executor and injection containment before exposure, with each phase's dependencies proven by a gate."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A team member opens a real issue on the disposable repo ... response is a label applied by the agent, with a trace ID in the audit log.",
+      "rationale": "Phase 0 is a real end-to-end production slice across 9 tiers with deploy, rollback and alerts before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "V1 fails, so the agent produces patches only and tests run only in fork CI",
+      "rationale": "Irreversible decisions are tabled with reversibility, default, assumption, validator and flip condition, plus R1 defaults."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks, widest blast radius first: 1. Trust boundary ... 2. Executor policy ... 3. Output filter",
+      "rationale": "Phase 1 explicitly orders by blast radius, and the other phases order from the index/gateway down to narrower work."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: Least-privilege App on the sandbox repo only; HMAC check; author allow-list; secrets in a secret manager",
+      "rationale": "Concrete security treatment in every phase from 0 to 5 in the cross-cutting table."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "One OTel trace per issue across all tiers; token and cost metrics; dead-letter and error alerts",
+      "rationale": "Observability is concrete in Phase 0 and in every following phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform; pinned image digests; model and prompt versions stamped on every trace",
+      "rationale": "Reproducibility is addressed concretely per phase, including replay pins and versioned eval sets."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Webhook redelivery plus idempotency keys; dead-letter queue; kill switch; digest rollback",
+      "rationale": "Failure handling and rollback appear concretely in every phase, from Phase 0 onward."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Prompt-injection defense 0,1; cost budget 0,1; human-in-the-loop 1; retrieval 2,3; model access; memory; orchestration; routing 5; feedback",
+      "rationale": "Defenses, budgets and HITL precede retrieval, model access, memory, orchestration, routing and feedback, in the correct order."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Auto-merge: pull forward if one narrow class ... is merged unchanged ≥95% of the time for 3 months",
+      "rationale": "Each deferred item has a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan: Phase 0 is a real end-to-end slice, gates are concrete, and the AI layers come in the right order. Only minor assumptions are left open.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1113,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10522
+  },
+  "cost_usd": 0.037443000000000004,
+  "latency_s": 17.03,
+  "raw_file": "raw/judge-ae90a10f2116.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

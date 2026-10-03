@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f4dde373b2dd.engineering-quality-v1.fable-5.k1",
+  "blind_id": "f4dde373b2dd",
+  "blind_sha256": "4f357f129bea642ae5d34da652877202734f63a4cb61c4ece9c54963030e227b",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 118,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "CRDT: Yjs with y-prosemirror (conflict-free data type; no central server needed to order edits)",
+      "rationale": "Claims about CRDT/OT behavior, ack-after-commit durability, group commit, relative-position anchoring and Yjs compaction are accurate and precise, with only trivial imprecision ('state-vector hash')."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "A web-based rich-text editor where many users edit the same document at once. Each user sees the others' edits and cursors live",
+      "rationale": "Covers all core capabilities (live co-editing, presence, history, sharing, tenancy), resolves ambiguities with stated assumptions, and explicitly defers non-essentials with trigger conditions in §10."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Document affinity: all connections for one document land on one sync node via consistent hashing at the load balancer. Redis carries presence only",
+      "rationale": "Responsibilities, data ownership and consistency semantics ('saved' = durable commit) are defined once and honored consistently across phases, dependencies and validation with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "0 divergent final states and 0 schema-invalid documents over ≥ 1M operations in ≥ 10k sessions, plus a 24 h soak",
+      "rationale": "V0–V6 tie checkable, labeled thresholds to the specific risks, validate the riskiest assumptions (convergence, durability) before commitment, define failure flips, and continue in production via divergence alerts and synthetic probes."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "each assumption is stated with what changes if it is false",
+      "rationale": "Every number is labeled ASSUMPTION or UNKNOWN with a stated basis, missing inputs list what flips if wrong, and no unsupported certainty appears."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "kill -9 of sync nodes, Postgres failover, partitions, disk-full; compare the client-side ledger of acknowledged updates with the persisted log",
+      "rationale": "Covers divergence, lost acks, duplicates (idempotent apply), malicious updates, telemetry leakage, revocation, hot documents, node loss and IdP outage, each with concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Rolling deploys drain WebSocket connections and clients reconnect... Rollback: Redeploy the previous image digest. Database migrations only add things",
+      "rationale": "Deployment, rollback, add-only migrations, domain-meaningful signals (divergence metric, persist errors, SLO burn rate), runbooks, kill switch and on-call are designed in and sized to a stated team."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Stored bytes ≤ 3× visible content after compaction",
+      "rationale": "Storage/infra cost drivers, scaling gates (V5 cost model, pricing gated on it) and controls are concrete, but build-side cost magnitude and engineering effort are not estimated, keeping it just short of 4."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: the persisted update format and the client protocol sit inside every stored document and every open client",
+      "rationale": "Every decision carries an explicit reversibility class, revisit trigger and exit path, hard-to-reverse ones are validated earliest, and the point of no return is declared and guarded."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Adopt open-source and self-host (Yjs, Hocuspocus, TipTap). Not a hosted provider",
+      "rationale": "Simplest workable topology (monolith + sync + worker, managed stores), proven libraries over custom work, speculative features explicitly deferred with trigger conditions, and no essential omitted."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Staff user A signs in through OIDC, creates a document and types \"hello\". Staff user B, in a second browser, sees it live",
+      "rationale": "A dependency-justified build order with ordered tasks, checkable exit criteria per phase, concrete first slice, and explicit flips if validations fail means a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "CRDT: Yjs with y-prosemirror... → server-authoritative OT (operational transform: prosemirror-collab steps through a per-document central sequencer)"
+    },
+    {
+      "id": "P5-02",
+      "status": 2,
+      "evidence": "ProseMirror schema v1... server-side validation that rejects malformed or schema-breaking updates... `schema_version` on each document"
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "fast-check property fuzz: 2–20 in-process clients making random edits... messages reordered, duplicated, dropped and re-sent; network partitions"
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "Append-only update log plus periodic snapshots in Postgres... Ack-after-commit protocol... Snapshots and compaction in the worker"
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "all connections for one document land on one sync node via consistent hashing at the load balancer... client reconnect with backoff"
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Short reconnect buffer: unacknowledged updates kept in IndexedDB and re-sent"
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "Authorization on every WebSocket message (the server drops updates from viewers)... Revocation pushed to live sessions"
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Per-document version snapshots and restore... Version history UI and restore"
+    },
+    {
+      "id": "P5-09",
+      "status": 2,
+      "evidence": "Redis carries presence only... Presence cursors"
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Phase 5: Editor features and collaboration UX (the visible part, built last)"
+    },
+    {
+      "id": "P5-11",
+      "status": 2,
+      "evidence": "Heavy-edit documents (1 MB visible content, 1M-operation history): cold load time, sizes before and after compaction... 50 editors on one document"
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "Schema-evolution protocol: version negotiation, forced reload, preserving unknown nodes (V6)... Mixed-version fuzz: clients on schema vN and vN+1"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Adopt open-source and self-host (Yjs, Hocuspocus, TipTap)"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Phase 1: Document model and convergence... Phase 5: Editor features and collaboration UX (the visible part, built last)"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "\"Saved\" = acknowledged after a durable Postgres commit... Never ack before durable"
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "none"
+    }
+  ],
+  "note": "An exemplary plan: proven CRDT stack validated before commitment, durability and authorization gated ahead of exposure, assumptions labeled with flips; only build-cost estimation is thin.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7564,
+    "thinking_tokens": 4914,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 17449
+  },
+  "cost_usd": 0.5963325,
+  "latency_s": 261.795,
+  "raw_file": "raw/judge-f4dde373b2dd.engineering-quality-v1.fable-5.k1.txt"
+}

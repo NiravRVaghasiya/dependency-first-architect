@@ -1,0 +1,103 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P6.baseline.opus-5.5.r05",
+  "prompt_id": "P6",
+  "condition": "baseline",
+  "generator": "opus-5.5",
+  "run_index": 5,
+  "seed": 3568228450,
+  "seed_honored": false,
+  "request": "Plan migrating our hospital's on-premises patient scheduling system to the cloud without downtime.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P6.baseline.opus-5.5.r05.md",
+  "output_sha256": "ed27b79645b426ebc5adf28112e9bf4495f406e79cc0306f233a50c6b3a6d015",
+  "metrics": {
+    "words": 1234,
+    "chars": 7581,
+    "visible_tokens_est": 1896
+  },
+  "turns": 4,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "wd746203c",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "wd746203c/README.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "wd746203c/docs/architecture.md",
+      "ok": false
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": null,
+  "started_at": "2026-10-03T00:06:39+00:00",
+  "finished_at": "2026-10-03T00:08:18+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [
+    "claude-opus-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 8,
+    "output_tokens": 4619,
+    "thinking_tokens": 1681,
+    "cache_read_input_tokens": 2438,
+    "cache_creation_input_tokens": 937
+  },
+  "cost_usd": 0.0975846,
+  "latency_s": 98.662,
+  "raw_file": "raw/gen-P6.baseline.opus-5.5.r05.txt"
+}

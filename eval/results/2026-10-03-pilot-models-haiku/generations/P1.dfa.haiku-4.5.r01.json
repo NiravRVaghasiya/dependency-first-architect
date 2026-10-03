@@ -1,0 +1,125 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P1.dfa.haiku-4.5.r01",
+  "prompt_id": "P1",
+  "condition": "dfa",
+  "generator": "haiku-4.5",
+  "run_index": 1,
+  "seed": 1188003885,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Plan a customer-support RAG chatbot over our help-center docs.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P1.dfa.haiku-4.5.r01.md",
+  "output_sha256": "8f3507deab4056767aa7ec9f10af89d07139126eb8db2800cb8c16fdfab41853",
+  "metrics": {
+    "words": 4911,
+    "chars": 31916,
+    "visible_tokens_est": 7979
+  },
+  "turns": 5,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/ai-systems.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/validation.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "dependency-first-architect:dependency-first-architect",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "reference/ai-systems.md",
+      "sha256": "623e02a2b37bbf9bd637a2689d1510179b4a3a65cada3e2f162c1ed11444d579",
+      "words": 855
+    },
+    {
+      "path": "reference/plan-template.md",
+      "sha256": "95ccaec942bf8a640ff4d830daada167a340b6b652242e2ed41aec6d24605c2a",
+      "words": 1257
+    },
+    {
+      "path": "reference/validation.md",
+      "sha256": "d5ddad548e7b7be656dc51d5946c3da45ceb21ce5234164440fa5c5829edd407",
+      "words": 1879
+    }
+  ],
+  "started_at": "2026-10-03T04:20:04+00:00",
+  "finished_at": "2026-10-03T04:22:01+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-haiku-4-5-20251001",
+  "models_used": [
+    "claude-haiku-4-5-20251001"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 24,
+    "output_tokens": 9972,
+    "thinking_tokens": 511,
+    "cache_read_input_tokens": 10906,
+    "cache_creation_input_tokens": 12969
+  },
+  "cost_usd": 0.06718584999999999,
+  "latency_s": 116.559,
+  "raw_file": "raw/gen-P1.dfa.haiku-4.5.r01.txt"
+}

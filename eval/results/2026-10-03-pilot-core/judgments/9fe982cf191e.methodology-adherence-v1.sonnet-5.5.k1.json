@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9fe982cf191e.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "9fe982cf191e",
+  "blind_sha256": "c3f23e9f2e42cfdd49dd0a122e20cf99a0bfd3952c6e645d1151c3e472d4b688",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 300,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: V1 and V2\"; \"Running `--apply` on original folders (not copies)\" depends on \"V1 no-overwrite and undo proof\"",
+      "rationale": "Safety and date correctness are proven before formats, sidecars and templates, with explicit dependency map and gates."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "GitHub Actions runs tests... a tag builds the wheel into a GitHub Release; you install that release with `pipx install <release-wheel-url>`",
+      "rationale": "Phase 0 is a real end-to-end slice: scan, read, plan, apply, undo, released, installed and rolled back."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "V1 fails on any file system → use copy mode on that file system",
+      "rationale": "Irreversible decisions have reversibility class, default, assumption, validation and flip condition, with assumptions labeled."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks (widest rework first): 1. Ask for the sample folder... 2. Make the journal crash-safe",
+      "rationale": "Phase 1 explicitly orders long-lead and widest-impact items (sample, journal, collision) before leaf items; Phase 2 puts formats and sidecars before progress bar."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: No network or shell calls; symlinks not followed; disposable copies only",
+      "rationale": "Concrete security treatment appears in each of the three phases, starting at Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Run ID; summary counts; JSON Lines log; meaningful exit codes",
+      "rationale": "Observability built in Phase 0 and extended with concrete items in Phases 1 and 2."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Pinned lockfile (`uv lock`); wheel built by CI from a tag; version embedded",
+      "rationale": "Reproducibility is addressed concretely in every phase (lockfile, seeded fixtures, sample manifest)."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Preview by default; skip if the target exists; journal written before each rename",
+      "rationale": "Failure handling appears in every phase, with fault injection, rollback and undo tied to each."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: no AI component.",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Sorting into `YYYY/MM` folders: when you ask for it. It turns renames into moves across folders, so V1 must be re-run.",
+      "rationale": "Deferred items each have a pull-forward trigger and some include needed re-validation."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Excellent plan: safety-first ordering, real walking skeleton, explicit gates and flip conditions, all cross-cutting concerns threaded per phase, AI correctly N/A.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1067,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 6783
+  },
+  "cost_usd": 0.0276355,
+  "latency_s": 21.717,
+  "raw_file": "raw/judge-9fe982cf191e.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "ba589115caf7.probe.sonnet-5.5",
+  "blind_id": "ba589115caf7",
+  "judge": "sonnet-5.5",
+  "order_index": 12,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens with explicit assumptions statement ('I don't know your docs platform... so this plan assumes') and closes with open questions, which may reflect a methodology or just good default behavior",
+    "Highly comprehensive and well-organized 12-section structure with metrics table, architecture diagram, phased roadmap, and risk table, typical of a strong unconstrained model answer",
+    "No signs of a distinctive methodology artifact (e.g., named steps, explicit verification checklist, alternatives-considered section, or decision log)",
+    "Risks and open questions are generic and tacked on at the end rather than driving the plan's structure",
+    "Ends with an offer to turn answers into a stack recommendation and backlog, a typical conversational default"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 312,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4746
+  },
+  "cost_usd": 0.014993000000000001,
+  "latency_s": 33.659,
+  "raw_file": "raw/probe-ba589115caf7.probe.sonnet-5.5.txt"
+}

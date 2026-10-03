@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "c763e48afe8a.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "c763e48afe8a",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 11,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: V1 and V2\"; Phase 3 \"Depends on: V2 and V3\"; Phase 4 \"Depends on: V4\"",
+      "rationale": "Each phase names its predecessor and a validation gate that must pass before the dependent phase starts, going from skeleton to trust to scale to delivery to onboarding to decommission."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A real commit to one low-risk internal service is built, unit-tested, pushed to the registry by digest, written to the env repo, synced to a production canary by Argo",
+      "rationale": "Phase 0 is a real production end-to-end slice with rollback and an exit check, and it comes before any feature work."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Trust boundary... Default: OIDC federation... Flip condition: V2 fails, or a provider lacks OIDC (then use a vault with ≤1 h leases)",
+      "rationale": "The irreversible decisions are listed with reversibility, a default, an assumption, a validation and a flip condition, and the missing inputs are stated."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1: Trust and contracts (widest rework first); Phase 4 Waves of 4 → 10 → 15 → 20 services, lowest-criticality first",
+      "rationale": "Widest-impact items (credential model, contract) come first, and onboarding goes from the smallest exposure to the largest."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "0: Scoped deploy role, branch protection on the env repo | 1: OIDC, signing, admission policy | 2: Ephemeral runners, network egress allow-list",
+      "rationale": "Every phase, starting with Phase 0, has concrete security work."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OpenTelemetry traces carry the commit SHA end to end, plus pipeline logs and an alert on deploy failure or sync drift.",
+      "rationale": "Observability is in Phase 0 and has concrete items in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Pipeline-as-code, pinned action SHAs | Provenance attestations, digest-only deploys | Hermetic builds, locked base images",
+      "rationale": "Each phase has concrete reproducibility measures, from Phase 0 pinning to archived configs in Phase 5."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Git-revert rollback, legacy pipeline as fallback | Admission audit mode before enforce | Autoscale floor, break-glass drill",
+      "rationale": "Failure handling and per-phase rollback appear in every phase, starting with Phase 0."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: there is no AI component.",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Developer portal (Backstage): pull forward when onboarding friction becomes the top support ticket.",
+      "rationale": "Deferred items are listed and each has a concrete pull-forward trigger."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is strong and complete on all ten dimensions, with concrete content in each one and no claims that rest only on labels.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1174,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 6166
+  },
+  "cost_usd": 0.027275999999999995,
+  "latency_s": 43.47,
+  "raw_file": "raw/judge-c763e48afe8a.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

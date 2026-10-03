@@ -1,0 +1,83 @@
+{
+  "schema": "dfa-eval/config@1",
+  "name": "smoke",
+  "description": "Setup check before a real run: one AI prompt, the bare request and the skill, one run each, two judges (Fable on the engineering-quality rubric only), and the probe. About $3-5.",
+  "seed": 1,
+  "prompts": [
+    {
+      "id": "P1",
+      "title": "RAG support chatbot",
+      "kind": "AI",
+      "request": "Plan a customer-support RAG chatbot over our help-center docs.",
+      "checklist": "eval/rubrics/checklists/P1.json"
+    }
+  ],
+  "conditions": {
+    "baseline": {
+      "kind": "plain",
+      "description": "The request alone, no planning instructions."
+    },
+    "dfa": {
+      "kind": "skill",
+      "description": "The Dependency-First Architect skill (SKILL.md and the reference files it names, without reference/evals.md), invoked as /dependency-first-architect.",
+      "skill_dir": ".",
+      "skill_name": "dependency-first-architect"
+    }
+  },
+  "generators": [
+    {
+      "id": "opus-5.5",
+      "provider": "claude-cli",
+      "model": "claude-opus-5-5",
+      "effort": "high"
+    }
+  ],
+  "judges": [
+    {
+      "id": "sonnet-5.5",
+      "provider": "claude-cli",
+      "model": "claude-sonnet-5-5",
+      "effort": "high"
+    },
+    {
+      "id": "fable-5",
+      "provider": "claude-cli",
+      "model": "claude-fable-5",
+      "effort": "high",
+      "rubrics": [
+        "engineering-quality-v1"
+      ]
+    }
+  ],
+  "rubrics": [
+    "methodology-adherence-v1",
+    "engineering-quality-v1"
+  ],
+  "runs_per_cell": 1,
+  "contrasts": [
+    {
+      "treatment": "dfa",
+      "control": "baseline"
+    }
+  ],
+  "blinding": {
+    "strip_self_score": true,
+    "neutralize_terms_for": [
+      "engineering-quality-v1"
+    ]
+  },
+  "probe": {
+    "enabled": true,
+    "judges": [
+      "sonnet-5.5"
+    ]
+  },
+  "workspace": {
+    "readme": "eval/conditions/neutral-workspace-README.md"
+  },
+  "limits": {
+    "max_cost_usd": 10,
+    "jobs": 4,
+    "timeout_s": 3600
+  }
+}

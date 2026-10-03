@@ -1,0 +1,110 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P7.dfa-v1.opus-5.5.r04",
+  "prompt_id": "P7",
+  "condition": "dfa-v1",
+  "generator": "opus-5.5",
+  "run_index": 4,
+  "seed": 77608805,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Plan a command-line tool that renames a folder of photos by their EXIF capture date.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P7.dfa-v1.opus-5.5.r04.md",
+  "output_sha256": "9b821298aabec5411549e50b9fdc569b16a558b3b0779f108fb80c7e3e9b6081",
+  "metrics": {
+    "words": 2666,
+    "chars": 16506,
+    "visible_tokens_est": 4127
+  },
+  "turns": 3,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p1f4bc0e3/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p1f4bc0e3/skills/dependency-first-architect/reference/evals.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "dependency-first-architect:dependency-first-architect",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "eval/conditions/dfa-v1.0.0/reference/evals.md",
+      "sha256": "0963dcac6ec329c02bb18cf61be28bef74fd706baf296a8726575d3bcc286b07",
+      "words": 399
+    },
+    {
+      "path": "eval/conditions/dfa-v1.0.0/reference/plan-template.md",
+      "sha256": "7ee2689530ddeb6e7687d0b4fb047e05fa76399fa898b7b64cea9dd27e06d55f",
+      "words": 439
+    }
+  ],
+  "started_at": "2026-10-03T00:20:25+00:00",
+  "finished_at": "2026-10-03T00:23:10+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [
+    "claude-opus-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 10253,
+    "thinking_tokens": 3832,
+    "cache_read_input_tokens": 3290,
+    "cache_creation_input_tokens": 4748
+  },
+  "cost_usd": 0.22948200000000002,
+  "latency_s": 164.747,
+  "raw_file": "raw/gen-P7.dfa-v1.opus-5.5.r04.txt"
+}

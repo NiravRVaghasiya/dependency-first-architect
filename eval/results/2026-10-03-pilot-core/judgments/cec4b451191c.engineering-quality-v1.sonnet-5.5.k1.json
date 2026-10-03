@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "cec4b451191c.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "cec4b451191c",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 203,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Resending is safe because Yjs updates are idempotent.",
+      "rationale": "Yjs, y-protocols sync, relative positions, UndoManager and append-only log are used correctly; minor issues such as 'offline comes for free', 'AP with strong eventual consistency' alongside a per-doc single owner, and server-side validation of opaque CRDT updates (hard to do) without discussing it."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "plain text in a `<textarea>` bound to a `Y.Text`, with no rich text, cursors or styling.",
+      "rationale": "Covers collaboration, offline, history, presence, comments, sharing with explicit deferrals and reasons; some feasibility leaps (server-side validation of Yjs updates, 24h offline merges) remain."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "The server still relays, stores and authorizes.",
+      "rationale": "Consistent split of api/collab, Postgres log, single-owner routing; minor tension: AP claim vs single owner, and 'no cross-node fan-out' vs horizontal scale handled via deferred trigger."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "10k fuzz sessions with zero divergence. A `kill -9` on the collab node mid-edit loses zero acked updates.",
+      "rationale": "Validation is tied to specific risks, early, with fuzz harness, chaos tests, divergence detector in prod, and nightly load tests; some thresholds are invented but revisit triggers are explicit."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Switch to OT ... if more than 50 MB in memory for a large doc after compaction",
+      "rationale": "Revisit triggers show sensitivity, but scale, team size, compliance and budget assumptions are never stated and many numbers (200 editors, 500 GB, 20%) are unsupported thresholds."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "If a user lost access while offline, their rejected edits are saved as a private copy, never dropped silently.",
+      "rationale": "Covers divergence, crash loss, duplicates, revocation while offline, memory DoS, XSS paste, bad snapshot, auth provider outage, DLQ, with detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "One-command rollback to the previous image.",
+      "rationale": "Deploy, rollback, drain, PITR, dashboards, alerts, SLO burn rates are concrete; incident ownership/on-call and operational burden for a small team are not addressed."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Use WebRTC peer-to-peer for presence only, if server egress cost for presence dominates.",
+      "rationale": "Cost is mentioned only in passing in triggers; no build or run cost estimate, no scaling of cost with usage, Postgres log growth cost barely considered."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Concurrency algorithm (most irreversible: it fixes the stored data format).",
+      "rationale": "Explicitly identifies irreversible decisions (algorithm, data format, schema, ACL granularity), freezes format early with version byte, add-only schema, revisit triggers and migration gating."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Modular monolith: one repo, one codebase, two process types.",
+      "rationale": "Starts simple with textarea slice and monolith, defers multi-region and fan-out; some ceremony (transactional outbox, k6 nightly, OTel from day one) is slightly heavy but mostly justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: In prod, two browsers converge on the same text, a reload restores it",
+      "rationale": "Walking-skeleton first slice, dependency-justified phases, concrete tasks and exit checks per phase, and revisit triggers; a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "CRDT using Yjs. Merges are commutative and idempotent ... Switch to OT (ShareDB-style, server-ordered) if CRDT tombstone or memory overhead goes over budget"
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "A versioned ProseMirror/TipTap schema, add-only: node and mark types are never removed or renamed."
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "N simulated clients make random concurrent edits under partition, reordering and duplication. The test asserts that all replicas are identical"
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "Each update is appended to the Postgres update log before the ack ... Never delete log entries until the snapshot is verified."
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "One process owns each doc, assigned by consistent hash on doc ID ... Client reconnect with exponential backoff and jitter."
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "The client keeps unacked updates in IndexedDB and resends them on reconnect."
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "when an ACL changes, the server closes or downgrades active sockets within 5 seconds."
+    },
+    {
+      "id": "P5-08",
+      "status": 2,
+      "evidence": "A restore is applied as a *new forward update*; the log is never rewritten. ... Per-user undo with `Y.UndoManager`, tracking local edits only."
+    },
+    {
+      "id": "P5-09",
+      "status": 2,
+      "evidence": "Awareness channel on the same socket. It is ephemeral (never persisted) ... Remote cursors and selections via relative positions."
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Rich text depends on proven sync, so it waits."
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "Max update size of 1 MB to prevent memory DoS ... load tests on hot docs and large docs."
+    },
+    {
+      "id": "P5-12",
+      "status": 1,
+      "evidence": "Clients below the minimum schema version are forced to reload."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "CRDT using Yjs ... the library is mature."
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Rich text depends on proven sync, so it waits."
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "The server acks only after a durable write."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "The server still relays, stores and authorizes."
+    }
+  ],
+  "note": "Strong, sync-first, well-validated plan with good reversibility reasoning; weak on cost, explicit assumptions, and some depth on large-document limits and protocol versioning.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2337,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 14610
+  },
+  "cost_usd": 0.059903000000000005,
+  "latency_s": 50.668,
+  "raw_file": "raw/judge-cec4b451191c.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

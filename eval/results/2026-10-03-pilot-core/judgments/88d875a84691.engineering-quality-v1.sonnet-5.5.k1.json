@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "88d875a84691.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "88d875a84691",
+  "blind_sha256": "c4cbe2215ea63967971dbf9b8234f2d5ac2f574e0a6d2eaa2556cc6fb90415b1",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 284,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Add the current transaction to the counts in the request path so card-testing bursts aren't missed.",
+      "rationale": "Technically sound on the hard parts (read-your-writes, label maturity, selection bias, embedded model); minor slips like 'fail open... step up above' and \"label related transactions in same window\" are imprecise but not design-breaking."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "the authorization path is a synchronous request/response call. Kafka and Flink update features and record events next to it",
+      "rationale": "Solves the real inline problem, states issuer/processor interpretation, phases work; explicit exclusions are thin and cost/capacity is deferred."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Define each feature once (Feast/Tecton or in-house) and use that definition for both serving and training.",
+      "rationale": "Coherent hot path vs. async path with clear data flow; minor loose ends like batch-plus-streaming features and the 'never block' vs. timeouts, plus the 99.99% target with unclear ownership."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "shadow mode (score but don't act) → champion/challenger on 5–10% of traffic → gradual ramp, with automatic rollback",
+      "rationale": "Good domain-appropriate offline and rollout validation, but latency load test is late (phase 1 mention), thresholds are not justified, and risky assumptions aren't tested early."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Target (assumption, adjust to your numbers)",
+      "rationale": "Targets are labeled as assumptions and open questions say what changes the design, though sensitivity to each is not detailed."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "declined transactions never get a fraud label. Mitigate with a small controlled exploration group",
+      "rationale": "Covers timeouts, selection bias, label delay, card-testing, read-your-writes; weaker on duplicates, out-of-order events, data corruption and adversarial feature/vendor failures."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "automatic rollback if the decline rate or latency breaches limits",
+      "rationale": "Monitoring signals and rollout/rollback are good, but ownership, on-call, schema migration and rule rollback/incident response are absent."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "I can turn this into a sized design with capacity numbers, a cost estimate",
+      "rationale": "Cost is deferred; only a build-vs-buy question and expected-cost thresholds appear, with no cost drivers or controls for infrastructure."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Technology choices (swappable)",
+      "rationale": "Notes swappability and build-vs-buy, but doesn't identify one-way decisions like token/ID scheme, event schema, or feature definitions."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "a gradient-boosted tree model (LightGBM/XGBoost) is the right first model",
+      "rationale": "Starts with GBDT and defers graph/sequence models to later phases; the stack (Kafka, Flink, feature platform, lakehouse) is heavy but mostly domain-justified."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Phase 1 | Flink velocity features, online store, Fraud API with rules, latency SLOs met | 6–8 weeks",
+      "rationale": "Ordered phases with dependencies and concrete components, but checkable exit criteria and fallback if results disappoint are sparse."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "≤ 50 ms p99 ... Fetch budget: one batched read from the online store, about 5–10 ms p99; under 2 ms in-process"
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "Hard timeout around the fraud call (for example 40 ms). If it times out, fall back to a rules-only decision ... fail open below an amount threshold"
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "Define each feature once (Feast/Tecton or in-house) and use that definition for both serving and training."
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "train only on transactions old enough for their labels to have arrived ... Validate on later time periods than training (out-of-time)"
+    },
+    {
+      "id": "P8-05",
+      "status": 2,
+      "evidence": "tuned to an expected-cost function ... precision-recall AUC (not ROC), dollar-weighted recall at a fixed false-positive rate"
+    },
+    {
+      "id": "P8-06",
+      "status": 2,
+      "evidence": "Fraud analysts should be able to change rules without a code deploy, with versioning ... approve / step-up / decline / approve-and-queue-for-review"
+    },
+    {
+      "id": "P8-07",
+      "status": 1,
+      "evidence": "analyst outcomes on reviewed cases (hours) ... analyst case tool"
+    },
+    {
+      "id": "P8-08",
+      "status": 1,
+      "evidence": "Tokenize the card number (PAN) before it reaches the fraud system (PCI DSS). This keeps most of the pipeline outside PCI scope."
+    },
+    {
+      "id": "P8-09",
+      "status": 1,
+      "evidence": "Add the current transaction to the counts in the request path"
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "score distribution, feature drift (PSI) ... shadow mode ... champion/challenger ... automatic rollback"
+    },
+    {
+      "id": "P8-11",
+      "status": 1,
+      "evidence": "Each decision returns reason codes for analysts and customer service."
+    },
+    {
+      "id": "P8-12",
+      "status": 1,
+      "evidence": "Built for 10× normal peak ... multi-AZ deployment, and per-region online stores. Load-test at 10× peak."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "the authorization path is a synchronous request/response call"
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "If it times out, fall back to a rules-only decision or a default stand-in policy."
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "precision-recall AUC (not ROC) ... never a random split"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "Define each feature once ... prevents the model seeing different values in training than in production."
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "Tokenize the card number (PAN) before it reaches the fraud system"
+    }
+  ],
+  "note": "Strong, domain-aware plan with correct hot-path design, degraded mode and label handling; weak on cost, ownership/ops detail, stream event correctness and audit logging.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2283,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 10762
+  },
+  "cost_usd": 0.0499162,
+  "latency_s": 23.989,
+  "raw_file": "raw/judge-88d875a84691.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

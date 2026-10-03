@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "0567f8385683.probe.sonnet-5.5",
+  "blind_id": "0567f8385683",
+  "blind_sha256": "5f53a168789498ed37eae764a4d26dc4b1a259abbeec78ccb2029b410832d93b",
+  "judge": "sonnet-5.5",
+  "order_index": 114,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.9,
+  "cues": [
+    "Opening note on how the plan was produced: states no existing code, proceeds without asking, and tags every default as an [A#] assumption listed in a table with impact-if-wrong and validation",
+    "Rigid numbered-section structure (Summary, Context and Goals, Drivers, Current State, Assumptions, Architecture, Component Details, Data Design, Key Flows, Key Decisions, Cross-Cutting, Build Sequence, First Milestone Tasks, Testing, Rollout, Risks, Deferred Work, Next Steps)",
+    "Decision table with options considered, rationale against ranked drivers, reversibility and a 'revisit if' trigger; also a ranked quality-attributes table with measurable targets",
+    "Milestone table with goal/risk cleared, in/out scope, exit criteria, dependencies, critical path; first-milestone tasks with 'Done when' and 'Changes the plan if' spike outcomes",
+    "Explicit Current State, Deferred Work with build triggers, Debt taken on purpose, and closing 'open questions that would most change this plan' with defaults and needed-by dates"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 445,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 21045
+  },
+  "cost_usd": 0.05707050000000001,
+  "latency_s": 28.015,
+  "raw_file": "raw/probe-0567f8385683.probe.sonnet-5.5.txt"
+}

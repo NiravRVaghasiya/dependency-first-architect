@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9805de165834.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "9805de165834",
+  "blind_sha256": "9fa96360b2a8ee1b5c9cb3c2d3dacb76e87a079b34f75e03713949bcabf1b01d",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 460,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Saved-format design and any lasting document | V1 (the merge library converges and is fast enough) | ... specified",
+      "rationale": "Explicit dependency map and phases go skeleton → convergence → durability → access → scale → exposure, each gated by validation before dependents."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "An allow-listed staff member signs in, creates a document, and types \"hello\". A second browser session sees it. Reloading shows it was saved.",
+      "rationale": "Phase 0 is a real production end-to-end slice with deploy, rollback, tracing and exit check V0."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Flip condition: V1 fails, or the product needs the server to reject individual edits → server-ordered edits instead (OT)",
+      "rationale": "Each irreversible decision has reversibility class, default, assumption, validation and flip condition; missing inputs are flagged."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Phase 4: \"Then the lower-risk features, each one schema-evolved through the V2 suite\"",
+      "rationale": "Widest-impact work precedes leaf work in places (Phase 1 ID/schema freeze, Phase 4 scale before features), but ordering within phases isn't explicitly reasoned elsewhere."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "0: TLS everywhere; OIDC login; staff allow-list behind a flag; secrets in a secret manager; short-lived signed collaboration token",
+      "rationale": "Concrete security measures in every phase 0–5 in the cross-cutting table and phase tasks."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Trace from browser through database; content-free structured logs; save-failure alert; synthetic two-client check",
+      "rationale": "Observability is built in Phase 0 and has concrete additions in each subsequent phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform; locked dependencies; images by digest; CI pipeline",
+      "rationale": "Reproducibility appears in each phase: pinned builds, replayable fuzz seeds, scripted restore drills, versioned load tests, versioned releases."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Rollback by redeploy; add-only migrations; reconnect with backoff; daily backup",
+      "rationale": "Resilience has concrete treatment in each phase from 0 to 5, including rollback per phase."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "## 8. AI layer N/A: no AI component.",
+      "rationale": "Plan explicitly declares the AI layer N/A and adds no AI components, only deferring AI features."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Offline-first editing (browser storage): pull forward if product requires it, or if telemetry shows many sessions offline for more than 5 minutes.",
+      "rationale": "Deferred list is explicit with pull-forward conditions for each item."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan: skeleton-first, gated by validation, with explicit flip conditions and threaded cross-cutting concerns; only within-phase blast-radius ordering is less explicit.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1124,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10207
+  },
+  "cost_usd": 0.0367655,
+  "latency_s": 17.921,
+  "raw_file": "raw/judge-9805de165834.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

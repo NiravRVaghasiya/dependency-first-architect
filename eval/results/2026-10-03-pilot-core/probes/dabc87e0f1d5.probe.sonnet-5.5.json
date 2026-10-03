@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "dabc87e0f1d5.probe.sonnet-5.5",
+  "blind_id": "dabc87e0f1d5",
+  "blind_sha256": "ca655086015c73fdd1f911352d0523294876bec45505a9794268e7c4f50db07d",
+  "judge": "sonnet-5.5",
+  "order_index": 144,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.9,
+  "cues": [
+    "Opens with an 'About this plan' note that checks the workspace (README says empty) and states that nothing was inspected, so assumptions are tagged [A#] and collected in one table",
+    "Fixed, numbered section skeleton: ranked quality attributes, Current State, Assumptions/Open Questions, Key Decisions, Cross-Cutting Concerns, Build Sequence, Deferred Work, Next Steps",
+    "Decision table lists options considered, rationale against the drivers, reversibility, and a 'Revisit if' trigger for each decision",
+    "Assumptions table has impact-if-wrong and how/when-validated columns; open questions have owner, default-if-unanswered and needed-by date",
+    "First-milestone task breakdown with 'Done when' criteria and spikes carrying 'Changes plan if' conditions; closes with the questions that would change the plan most"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 363,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 20055
+  },
+  "cost_usd": 0.053775500000000004,
+  "latency_s": 28.546,
+  "raw_file": "raw/probe-dabc87e0f1d5.probe.sonnet-5.5.txt"
+}

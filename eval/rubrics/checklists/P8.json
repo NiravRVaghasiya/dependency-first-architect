@@ -1,0 +1,107 @@
+{
+  "schema": "dfa-eval/checklist@1",
+  "prompt_id": "P8",
+  "request": "Plan a real-time fraud-detection pipeline for card transactions.",
+  "provenance": "eval/rubrics/authoring/checklists-p6-p8.json (blind-authored; see eval/rubrics/AUTHORING.md)",
+  "items": [
+    {
+      "id": "P8-01",
+      "title": "Inline authorization latency budget",
+      "addressed_means": "Scoring runs synchronously inside the authorization flow with an explicit p99 budget (tens of milliseconds) for feature lookup, model, and rules, and the plan shows how that budget is met.",
+      "category": "reliability"
+    },
+    {
+      "id": "P8-02",
+      "title": "Timeout and degraded-mode decision policy",
+      "addressed_means": "The plan defines what happens when scoring is slow or down: a strict timeout, fallback rules or limits, and a deliberate fail-open or fail-closed choice per risk tier.",
+      "category": "reliability"
+    },
+    {
+      "id": "P8-03",
+      "title": "Real-time stateful features",
+      "addressed_means": "Velocity and behavioral features (per card, merchant, device, IP over sliding windows) are kept up to date in a low-latency store, and the same feature logic is used for training and serving to avoid training-serving skew.",
+      "category": "correctness"
+    },
+    {
+      "id": "P8-04",
+      "title": "Delayed labels and leakage-free training",
+      "addressed_means": "The plan accounts for chargeback and fraud labels arriving weeks later, builds training data with point-in-time-correct features, and splits training and test data by time.",
+      "category": "data"
+    },
+    {
+      "id": "P8-05",
+      "title": "Cost-based thresholds and imbalance-aware metrics",
+      "addressed_means": "Thresholds are set by weighing fraud losses against the cost of false declines and customer friction, and are judged with precision and recall at the operating point (or PR-AUC) rather than accuracy.",
+      "category": "product"
+    },
+    {
+      "id": "P8-06",
+      "title": "Rules plus model with graded actions",
+      "addressed_means": "The plan combines analyst-managed rules (hot-deployable, versioned) with ML scores, and maps them to graded actions: approve, decline, step-up (3DS or OTP), or queue for review.",
+      "category": "product"
+    },
+    {
+      "id": "P8-07",
+      "title": "Case management and feedback loop",
+      "addressed_means": "There is an analyst review queue and a customer confirmation channel, and their outcomes flow back into labels and rule tuning.",
+      "category": "operations"
+    },
+    {
+      "id": "P8-08",
+      "title": "PCI DSS scope and PAN protection",
+      "addressed_means": "PANs are tokenized or hashed before they reach streams, feature stores, and logs. The plan limits PCI scope and enforces encryption and access controls on cardholder data.",
+      "category": "compliance"
+    },
+    {
+      "id": "P8-09",
+      "title": "Event correctness in the stream",
+      "addressed_means": "Processing is idempotent and handles duplicate, out-of-order, and reversal or refund events. Per-card ordering is preserved by partitioning, and window state survives failures.",
+      "category": "data"
+    },
+    {
+      "id": "P8-10",
+      "title": "Model monitoring, drift and safe rollout",
+      "addressed_means": "The plan monitors score distributions, feature drift, and decline and fraud rates, and releases models through shadow or champion/challenger deployment with fast rollback, because fraudsters adapt.",
+      "category": "operations"
+    },
+    {
+      "id": "P8-11",
+      "title": "Decision audit and explainability",
+      "addressed_means": "Every decision is logged with its model version, features, rules hit, and reason codes, so disputes, regulators, and model governance reviews can trace it.",
+      "category": "compliance"
+    },
+    {
+      "id": "P8-12",
+      "title": "Peak scale and high availability",
+      "addressed_means": "The plan sizes the system for peak transactions per second (e.g., holiday spikes), with horizontal scaling and multi-AZ or multi-region redundancy for the scoring path.",
+      "category": "reliability"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "title": "Batch pipeline labeled real-time",
+      "recognize": "The plan scores after authorization through micro-batches, nightly jobs, or a pipeline with minutes of lag, so fraud is found only after the money has moved."
+    },
+    {
+      "id": "P8-T2",
+      "title": "Scoring as a hard dependency with no fallback",
+      "recognize": "The plan has no timeout or degraded mode, so a scoring outage either declines every transaction or approves them all with no rules applied."
+    },
+    {
+      "id": "P8-T3",
+      "title": "Accuracy on imbalanced data and leaky evaluation",
+      "recognize": "The plan reports accuracy, uses a random train/test split, or ignores label delay, which produces inflated offline results."
+    },
+    {
+      "id": "P8-T4",
+      "title": "Features unavailable or inconsistent at auth time",
+      "recognize": "The model uses information not known at authorization (settlement data, later labels), or the batch and streaming feature code are written separately and drift apart."
+    },
+    {
+      "id": "P8-T5",
+      "title": "Raw PAN spread across the pipeline",
+      "recognize": "The plan puts raw card numbers into Kafka topics, feature stores, logs, or third-party or LLM services, with no tokenization and no limit on PCI scope."
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "2e013eb0f38f.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "2e013eb0f38f",
+  "blind_sha256": "1091d3cf90992bec1844c93ad5a43cae92e21e8c7b14708e1c6c4499a9394942",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 31,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No technical content exists to evaluate; the plan makes no technical claims about the system, so nothing shows the design would work."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "I don't have the ability to execute orders, place builds with development systems",
+      "rationale": "It misreads the request as placing a build order and gives no build plan, so it answers a different problem."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No components, data flows or design are described."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No validation of any kind is mentioned."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No assumptions about scale, team or constraints are stated. It only asks what the user wants."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No failure modes are discussed."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Operations, deployment and monitoring are not addressed."
+    },
+    {
+      "dim": 8,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Costs are not addressed."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No decisions are made, so reversibility is not addressed."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Essentials are entirely omitted, so the response is stripped down to nothing."
+    },
+    {
+      "dim": 11,
+      "score": 0,
+      "evidence": "Would you like me to help you by: Creating a comprehensive specification document for this project?",
+      "rationale": "It offers to produce a plan later but contains no build order or concrete steps."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-02",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-03",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-04",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-05",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-06",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-09",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-10",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-11",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "none"
+    }
+  ],
+  "note": "The response is a refusal-style clarification with no architecture or build plan, so every dimension scores 0.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1101,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 7753
+  },
+  "cost_usd": 0.0305737,
+  "latency_s": 33.201,
+  "raw_file": "raw/judge-2e013eb0f38f.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "5cb36b17c052.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "5cb36b17c052",
+  "blind_sha256": "af722dfea571464112735885ee62690c3939c9bb15c21358ab85bb1c243bd71f",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 319,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "T9 needs T8 and the Spike B results. ... Start T8 (`planner.py`) with its property tests. It's the safety core and needs no other module.",
+      "rationale": "Pure planner and metadata contracts precede executor and CLI, spikes gate backend and executor, and M2 depends on Spike A outcomes."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "M1: Safe JPEG slice + spikes ... JPEG; preview, apply, undo; burst suffixes; journal; rollback; CI on 3 OSes.",
+      "rationale": "M1 is a thin end-to-end slice (preview→apply→undo) with CI subprocess e2e, before HEIC/RAW/companion features, though it's a CLI shipped later to PyPI in M3."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D2 ... Revisit if: Spike A shows more than 1% misses on target formats, which would make ExifTool the default or required",
+      "rationale": "Decision table lists options, reversibility, and revisit triggers, plus assumptions with defaults and open questions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Ordering: T1 comes first. T2, T3 and T4 run in parallel on day 1. ... Start T8 (planner.py) ... safety core",
+      "rationale": "Safety core and scaffold/CI are placed early, but widest-impact ordering is implicit and T7 leaf scanner is parallel rather than explicitly ordered by blast radius."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Security (M1): Threat 1, crafted image files exploiting the parser... Dependencies are pinned, and `pip-audit` runs in CI.",
+      "rationale": "Concrete security treatment is in M1 but it is a cross-cutting section rather than explicitly threaded through M2 and M3."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Observability (M1): `-v` prints the source tag and the reason for every skip. The journal serves as the audit log.",
+      "rationale": "Observability is in M1 via verbose, summary and journal, but not specified for M2 and M3 phases."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "dependency `exifread` (pinned) ... matrix of windows-latest, macos-latest, ubuntu-latest × Python 3.11 and 3.13 ... no committed binaries",
+      "rationale": "Pinned deps, generated fixtures and CI matrix are good in M1, but reproducibility of later phases (corpus, release builds) is thin."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Fault injection: monkeypatched `os.rename` fails at every step index k ... M2: recovery from unfinished journals",
+      "rationale": "Failure handling appears in M1 (rollback, journal, timeouts), M2 (recovery, per-file skips) and M3 (apply/undo on a copy), covering each phase."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "AI-specific: not applicable. The tool has no model components.",
+      "rationale": "Plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "`--recursive`. Trigger: users have nested year/event folders. ... Known shortcut: the check-then-rename race isn't fully closed... Trigger: any multi-process use.",
+      "rationale": "Deferred items are explicit with pull-forward triggers and a non-goals list."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, safety-focused plan with explicit decisions, deferrals, and N/A AI declaration; cross-cutting security, observability and reproducibility are concentrated in M1 rather than threaded through later phases.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1304,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 14189
+  },
+  "cost_usd": 0.0485205,
+  "latency_s": 20.766,
+  "raw_file": "raw/judge-5cb36b17c052.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

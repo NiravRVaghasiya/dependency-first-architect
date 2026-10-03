@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "d85351d45a31.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "d85351d45a31",
+  "blind_sha256": "5180c0b8d8992db60ffaddaebdf72783183d50551ca77a9cf156c57eb7530d39",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 318,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1 MVP: \"Catalog, flat and per-seat subscriptions, Stripe payments, invoices plus PDF, basic dunning, entitlements, RLS isolation, outbox events\"",
+      "rationale": "Roadmap goes roughly from core to usage to ledger, but ledger/tax come after invoices and payments, and nothing is tied to proving dependencies first."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Phase 1 MVP (6–10 weeks): Catalog, flat and per-seat subscriptions, Stripe payments, invoices plus PDF",
+      "rationale": "MVP is an end-to-end-ish slice, but it is a feature bundle with no stated production thin-slice or deploy/CI skeleton."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Shared plus RLS, with optional dedicated cells | Cheap to run, with a path for large or regulated tenants",
+      "rationale": "A trade-off table gives choices and reasons, but there are no explicit flip conditions, and the questions at the end are not tied to defaults."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Design rules that save you later: Prices are immutable and versioned... Every row carries `tenant_id`",
+      "rationale": "Foundational rules like tenant_id and immutability are placed early, but there is no explicit ordering of widest-impact work within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Phase 1 ... RLS isolation, outbox events",
+      "rationale": "Security appears in Phase 1 (RLS) and in the tenant isolation and access sections, but it is mostly a standalone section and is not shown in every phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Observability metrics: usage ingest lag, events dropped as duplicates, billing run backlog, invoice failure rate...",
+      "rationale": "Metrics are listed in a standalone section, not in Phase 0 or tied to each phase."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Build **test clocks** so QA can simulate a year of renewals in minutes.",
+      "rationale": "Replayability from the raw archive and test clocks exist, but there is no reproducible build, environment, or IaC treatment across phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Idempotency key = (subscription_id, period_start, period_end)... sagas with compensating actions",
+      "rationale": "Good resilience mechanisms (idempotency, outbox, retries, reconciliation) are described in the design, but the roadmap phases do not thread them; reconciliation is in Phase 3."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never states whether an AI layer applies or is N/A."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Phase 5 Platform: Merchant level (billing-as-a-service), a second PSP, smart retries, pricing experiments",
+      "rationale": "Later phases show what is deferred, but there are no pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Technically strong billing design, but the roadmap is a feature-phase list with no walking skeleton, flip conditions, per-phase threading of cross-cutting concerns, or AI N/A declaration.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1167,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7447
+  },
+  "cost_usd": 0.030295499999999996,
+  "latency_s": 19.581,
+  "raw_file": "raw/judge-d85351d45a31.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

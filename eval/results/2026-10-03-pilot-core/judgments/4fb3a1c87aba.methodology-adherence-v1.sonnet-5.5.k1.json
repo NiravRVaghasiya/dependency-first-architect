@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "4fb3a1c87aba.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "4fb3a1c87aba",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 80,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 3 \"Depends on: V1, V2\"; Phase 4 \"Depends on: V1, V3, V4\"",
+      "rationale": "An explicit dependency map and validation gates mean nothing is specified or exposed before its dependency is proven."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Widget on the live help center. Chat API. Retrieval from pgvector over real published articles. Hosted model call. Ticketing API.",
+      "rationale": "Phase 0 is a real thin end-to-end slice in production (staff-only), with deploy, observe and rollback proven."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Tradeoff table with columns Reversibility, Default, Assumption, Validated by, Flip condition",
+      "rationale": "Irreversible decisions have defaults and concrete flip conditions, and assumptions are labeled."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1 tasks \"in order\": trace store with redaction first, then renderer and PII redaction, then moderation, rate limits and caps",
+      "rationale": "Shared, widest-impact items (chunk schema, data store and redaction, defenses) come before leaf work in each phase, and the order is stated."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"Staff allow-list behind the flag; secrets in a secret manager; read-only CMS token\"",
+      "rationale": "Concrete security measures appear in every phase from 0 to 5."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"OpenTelemetry traces each turn end to end... Dashboards and alerts cover token use, cost and latency.\"",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"Terraform; pinned image; prompt, model and index versions on every trace\"",
+      "rationale": "Every phase versions something concrete: images, infrastructure, indexes, prompts, question sets, canary assignment."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"Timeout leads to fallback reply; daily spend cap; rollback rehearsed\"",
+      "rationale": "Failure handling is concrete in every phase, from the Phase 0 fallback to automatic ramp halts."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Phase 1 \"Defenses and budgets\" precedes Phase 2 Retrieval and Phase 3 Model access, memory, orchestration; routing deferred; feedback in Phases 4-5",
+      "rationale": "Defenses, budgets and human gating come first, then retrieval, model access, memory, orchestration, routing (deferred) and feedback, in the right order."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Routing to a cheaper model: pulled forward when V5 shows cost over budget while quality has room to spare\"",
+      "rationale": "Each deferred item is listed with an explicit pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "An exceptionally thorough plan with a real Phase 0 skeleton, explicit gates, threaded cross-cutting concerns and the correct AI layer order. I found no meaningful weaknesses.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 2505,
+    "thinking_tokens": 80,
+    "cache_read_input_tokens": 11131,
+    "cache_creation_input_tokens": 11408
+  },
+  "cost_usd": 0.0558082,
+  "latency_s": 31.912,
+  "raw_file": "raw/judge-4fb3a1c87aba.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

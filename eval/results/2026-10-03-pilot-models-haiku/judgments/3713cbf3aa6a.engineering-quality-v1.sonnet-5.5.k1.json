@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "3713cbf3aa6a.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "3713cbf3aa6a",
+  "blind_sha256": "a1afabe18cb6f1a6f0d34a74e733d0fdff63eb114c916e4d2613ff7b2906d43b",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 12,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Confidence: add a `confidence: 0.0–1.0` field to the LLM response (part of structured JSON).",
+      "rationale": "Self-reported LLM confidence is poorly calibrated and is used as the main decline gate, and the plan reads 99% uptime as \"<7 min/week\" (it is about 100 min/week). Chunking is not structure-aware, and \"injection caught by output parsing\" overstates what parsing can do."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Agent-style tool calls (e.g., create support ticket, escalate to human): Deferred to Phase 5+.",
+      "rationale": "It delivers a buildable RAG bot with a baseline, but human escalation with context handoff is deferred, as are account-specific boundaries and doc deletion handling, so core needs are missing."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Stateless per-turn (no multi-turn context in Phase 0–1)",
+      "rationale": "The overall design is recognizable, but there are contradictions. It is stateless yet enforces \"max 5 turns per session\"; it is \"single-tenant unregulated\" yet collects a PII-hashing/data-residency note; and the canary is both 1% of customers and internal-only."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Curate 100 real customer questions (from support logs or team) with expected answer doc IDs... Hit rate @5 ≥ 0.80",
+      "rationale": "Early retrieval and injection gates, a fixed eval set re-run on prompt/model changes, and a canary are all included. Thresholds are labeled as assumptions, but there is no faithfulness or citation metric and the post-launch regression monitoring is thin."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Proceeding on the assumption that help-center docs exist, are owned by support/product, and contain no customer PII",
+      "rationale": "Assumptions are labeled and the missing inputs are listed. However, some invented figures such as $10/hr and a 99% SLO are shaky, and sensitivity is only partly analyzed."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Failures: vector store outage, LLM API down, service crash. Each should have a fallback (return human-support contact).",
+      "rationale": "It covers injection, runaway cost, timeouts and circuit breakers. Stale or withdrawn content, access leaks, PII in queries and low-confidence hallucination detection are weak or missing."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Rollback: Feature flag off (instant, < 1 min); traffic returns to human-only path.",
+      "rationale": "It covers feature-flag rollback, index versioning, dashboards, alerts, an on-call rotation, runbook drills and cohort rollout, all sized for a small team. Review ownership of feedback is thin."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Set hard caps: max 2,000 tokens per request, max 5 turns per session, max $0.50 cost per session.",
+      "rationale": "It covers cost per conversation measured on shadow traffic, hard caps, model tier fallback and rate limits. The $0.10 vs $0.20 vs $0.15 targets are inconsistent, and the estimates are shaky."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Prompt+RAG vs fine-tune | R2 ... Hosted API vs self-host | R3",
+      "rationale": "It has an explicit reversibility table with revisit triggers and a provider abstraction. The chunk/metadata schema and the tenancy/visibility model are only lightly treated."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Single model: one LLM endpoint; no routing logic overhead",
+      "rationale": "It starts with a simple single-model, stateless design and defers routing and fine-tuning. It is somewhat ceremonious (R-levels, principle labels), and it under-builds escalation and access control."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Exit check: V2 (retrieval hit rate ≥ 0.80) passes; injection suite runs with zero exfiltration",
+      "rationale": "The phases are ordered by dependency, with concrete gates and measurable exits. Some details are left open, such as the vendor choice and the structure-aware chunking."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 1,
+      "evidence": "CI/CD: on doc update, rebuild index (< 5 min), deploy to staging, run V2 eval suite before prod."
+    },
+    {
+      "id": "P1-02",
+      "status": 1,
+      "evidence": "Chunking: 500-token fixed-size chunks, 50-token overlap, preserve source metadata."
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "Gate: any prompt or model change re-runs eval suite (V3) before prod deployment."
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "Answer using only the provided documentation. If unsure, say so and offer human support contact."
+    },
+    {
+      "id": "P1-05",
+      "status": 1,
+      "evidence": "if confidence < 0.6, append \"I'm not fully confident in this answer. Please contact support.\""
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "Separate system prompt (trusted, hardcoded) from user query and retrieved passages (untrusted data)."
+    },
+    {
+      "id": "P1-07",
+      "status": 1,
+      "evidence": "Data contract: access control metadata on docs (future enforcement)."
+    },
+    {
+      "id": "P1-08",
+      "status": 1,
+      "evidence": "Hash PII in queries before logging."
+    },
+    {
+      "id": "P1-09",
+      "status": 1,
+      "evidence": "Phase 0–4 is read-only (retrieval + answer only)."
+    },
+    {
+      "id": "P1-10",
+      "status": 1,
+      "evidence": "Weekly: review low-rated answers (thumbs-down > 30%); hand-curate a few into new few-shot examples."
+    },
+    {
+      "id": "P1-11",
+      "status": 2,
+      "evidence": "Rate-limit per user (e.g., max 10 queries/min) to prevent abuse."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Answer using only the provided documentation. If unsure, say so"
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "access control metadata on docs (future enforcement)"
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Prompt+RAG: system prompt + retrieval with few-shot examples in context window"
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Gate: any prompt or model change re-runs eval suite (V3) before prod deployment."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "Single-turn pass-through: retrieve, call LLM, return answer. No loops, no multi-step tasks."
+    }
+  ],
+  "note": "A competent, well-gated RAG rollout plan with early retrieval/injection/cost validation, but it misses human handoff, retrieval-time access control, deletion handling, PII/retention terms and account-question boundaries. It also relies on self-reported LLM confidence.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2448,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 860,
+    "cache_creation_input_tokens": 19943
+  },
+  "cost_usd": 0.0745175,
+  "latency_s": 41.074,
+  "raw_file": "raw/judge-3713cbf3aa6a.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

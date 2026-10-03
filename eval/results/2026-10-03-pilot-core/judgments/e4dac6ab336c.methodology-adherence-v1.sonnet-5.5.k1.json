@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e4dac6ab336c.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "e4dac6ab336c",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 152,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Order: T1–T3 on day 1. T4, then T5 and T6, then T7–T11 ... then T12.",
+      "rationale": "Substrate (infra, DB, queue, gateways, policy) precedes triage, and resolution is gated on Spikes A/B/C before M2."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "triage running end to end in shadow mode on the real pilot repos, recording decisions but not posting them, deployed through the real pipeline.",
+      "rationale": "M1 is a real end-to-end slice through the production pipeline before resolution features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Key Decisions table with columns: Options considered, Reversibility, Revisit if (e.g. D3, D9, D12), plus assumptions with defaults.",
+      "rationale": "Irreversible choices are listed with defaults and explicit flip conditions, and assumptions have impact-if-wrong and validation."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "T4, then T5 and T6, then T7–T11 ... then T12; Policy Engine and gateways built before triage handler",
+      "rationale": "Widest-impact items (infra, schema, queue, gateways, policy, kill switch) come before leaf features, and spikes on riskiest assumptions run early."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "T5: sandbox security group with no egress rules; T7 HMAC verification; T11 kill switch, comment sanitiser; Spike C in M1",
+      "rationale": "Security has concrete treatment from M1 onward (HMAC, scoped tokens, policy engine, no-egress subnet) and in M2/M3."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Observability (M1 logs and cost, M2 dashboards and alerts).",
+      "rationale": "Logs, traces and admin trace exist in M1, but dashboards and alerts are deferred to M2 and it's mostly a standalone section."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Terraform the staging environment ... Migrations apply and roll back cleanly; pinned model versions in config; datasets in git",
+      "rationale": "IaC, migrations, pinned models and versioned eval data are present, but reproducibility isn't explicitly addressed per phase (e.g. lockfile drift noted as a gap)."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "T8: 2 workers never claim same job, expired lease re-claimed, 4th failure lands in dead; Flows 3 and 4 shown by fault-injection tests in staging",
+      "rationale": "Idempotency, retries, dead-letter, reconciler and circuit breaker appear from M1, with fault injection in M2 and recovery tests in M3."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Evaluation comes first ... Triage is one structured model call with no tools ... hard step, time, and spend limits",
+      "rationale": "Defenses, budgets, HITL and evals precede capabilities; the gateway comes before orchestration. Retrieval is minimal by design (no vector index) and memory is N/A, so the order is sound."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Auto-attempt resolution for good_candidate issues (R2) | Merge rate ≥ 50% for 4 weeks on R1",
+      "rationale": "Deferred items are listed with concrete pull-forward triggers, plus deliberate shortcuts and non-goals."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A very strong plan with thin-slice shadow-mode M1, explicit decisions with flip conditions and deferred triggers. Its weaker points are observability (alerts and dashboards wait until M2) and reproducibility, which is not treated per phase.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1321,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 26752
+  },
+  "cost_usd": 0.080211,
+  "latency_s": 29.511,
+  "raw_file": "raw/judge-e4dac6ab336c.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

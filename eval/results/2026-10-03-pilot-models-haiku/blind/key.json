@@ -1,0 +1,489 @@
+{
+  "schema": "dfa-eval/blind-key@1",
+  "salt": "e509289e1ae55c76",
+  "neutralize_terms_for": [
+    "engineering-quality-v1"
+  ],
+  "entries": [
+    {
+      "blind_id": "01f393b894c0",
+      "gen_id": "P5.dfa.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "5791ff70d0b6c4552d042fdb93995243cfceb9cd2b6c7c1760895315314f2f22",
+      "replacements": 12,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "05e858b23a36",
+      "gen_id": "P2.baseline.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "e6e468bb175716c5e7ecbef3acb43016cd3f00a44b58896c47e06f568ec0e71f",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "17e9347ef8b2",
+      "gen_id": "P3.dfa.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "c16ee236e1c534f3cb2a154a105adf6a8590611822bc335eba219b92d3940d67",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "1c3eb83934dd",
+      "gen_id": "P3.baseline.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "4b36306bcc25e5101bf6d0544cfe087950c6697e32f4951be2e34e399da1d493",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "26c266f6cb11",
+      "gen_id": "P5.dfa.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "62a4aae13d0e6d0928ecd5c9f923e2ef9b94488fea456ce6a8c81dc21d814b11",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "28b549d19a0b",
+      "gen_id": "P1.baseline.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "f7133d8330bbaf99f8d2abad39eb5268ccb7f941921e618fd15d40fed6a170e3",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "2ba1425e4777",
+      "gen_id": "P5.baseline.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "82d69f33a2c909b42853eddc35a9ce7c081beb3a9d8c8d68baa9317ad0140d29",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "2d9ea8f02a42",
+      "gen_id": "P5.baseline.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "1091d3cf90992bec1844c93ad5a43cae92e21e8c7b14708e1c6c4499a9394942",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "2e013eb0f38f",
+      "gen_id": "P5.baseline.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "1091d3cf90992bec1844c93ad5a43cae92e21e8c7b14708e1c6c4499a9394942",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "320d1a9b390e",
+      "gen_id": "P4.baseline.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "21bc345b17da05ba5441d5598120cd62c9a157caa6afa26fa74f0e876cff47b7",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3713cbf3aa6a",
+      "gen_id": "P1.dfa.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "a1afabe18cb6f1a6f0d34a74e733d0fdff63eb114c916e4d2613ff7b2906d43b",
+      "replacements": 14,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "37f44c29a530",
+      "gen_id": "P4.dfa.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "d0d193441a7ace20f9fb5b90aabf1d425eb0bd186a5df1d180ed1771c8e0e301",
+      "replacements": 13,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "40ea22ee07cf",
+      "gen_id": "P1.baseline.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "e488fb3f56cb6de7189e254bfa1cba9edff2616431c1cfaeb0c588f762e39f1c",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "4c556c48b911",
+      "gen_id": "P4.baseline.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "0a3d6b5366a03a0637e6dbe3eca7232b48a970579943936df04b348d16182125",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "4d065f7b200f",
+      "gen_id": "P3.baseline.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "b5d0acbb55c6246bcb3ef56a39aee514f91d6c2d4d681a5a3ffcf606fed97f46",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5a53adcc8b11",
+      "gen_id": "P2.baseline.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "6b8ab72c176315b857ffdb412346facc2de162308e754053be8dbfd449057667",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5da8bfdd2ee8",
+      "gen_id": "P1.baseline.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "e488fb3f56cb6de7189e254bfa1cba9edff2616431c1cfaeb0c588f762e39f1c",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "628e1965740a",
+      "gen_id": "P1.dfa.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "0c715c5bc82ce6e98647259a57604da0b7bde935cb1735e27c5561524a65fee8",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "6355c31c870d",
+      "gen_id": "P5.baseline.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "12d14272848a91b55934a085baf2abb3d03ea9ef80c24f65893f1a60063fc04a",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "635a282733b8",
+      "gen_id": "P2.dfa.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "21f1ec83c399eaaea0b824113305dadb070a55fd0cfe6dcd91aaa4cac17f490f",
+      "replacements": 10,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "653e6f7eb84c",
+      "gen_id": "P4.dfa.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "ddbcb8a1dd7c8bf150c5c0b4eaedce378d1c2b6ecdd2aca810c5c4020c6f5c1d",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "67e4d711e42e",
+      "gen_id": "P1.baseline.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "f7133d8330bbaf99f8d2abad39eb5268ccb7f941921e618fd15d40fed6a170e3",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "6bc69d03a0b5",
+      "gen_id": "P4.dfa.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "377f2aac3b9e3dc648fe21f484e5e5695b6483b600c15d5b1a1cc430b7e8223b",
+      "replacements": 11,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "6eb736e7cc20",
+      "gen_id": "P2.baseline.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "eb80bcaa7caae632e4c2adf115aacd1330b700d81435388dcc83fd817e2f77a8",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "70ced1ad398e",
+      "gen_id": "P5.baseline.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "12d14272848a91b55934a085baf2abb3d03ea9ef80c24f65893f1a60063fc04a",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "71747b91dd56",
+      "gen_id": "P5.baseline.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "82d69f33a2c909b42853eddc35a9ce7c081beb3a9d8c8d68baa9317ad0140d29",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "71eaca292c9a",
+      "gen_id": "P3.dfa.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "9980bf97ecf9263f285dbb9f43f44353efc45ec1df20a12aa9d0b04496543c32",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "766c092efb86",
+      "gen_id": "P5.dfa.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "707771f948f03df16f106999a47a445fdc5e4628984e21296480df742e6719b1",
+      "replacements": 12,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "7d37bd432b12",
+      "gen_id": "P2.baseline.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "eb80bcaa7caae632e4c2adf115aacd1330b700d81435388dcc83fd817e2f77a8",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8f1695fa9ef2",
+      "gen_id": "P2.baseline.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "6b8ab72c176315b857ffdb412346facc2de162308e754053be8dbfd449057667",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "90c7bbe70d99",
+      "gen_id": "P4.dfa.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "3142ce6b075a5ab4432130096b474411869c5bc40dde6b70fdee14fb4c16c943",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "984ba6a287fd",
+      "gen_id": "P4.baseline.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "9900f7bf9cc9fc28b6099ad58bfcd72c8cdacff2908c5ccc4e34fe6e7aec9f93",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9ce3a12ce902",
+      "gen_id": "P3.dfa.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "4215f3a27aab63c7483e2b25fadb80e058a1a6ec5d5fa45c2115c21ee71107bc",
+      "replacements": 14,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "a2b20c58bf1a",
+      "gen_id": "P2.baseline.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "e6e468bb175716c5e7ecbef3acb43016cd3f00a44b58896c47e06f568ec0e71f",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a3ea5880a995",
+      "gen_id": "P4.baseline.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "21bc345b17da05ba5441d5598120cd62c9a157caa6afa26fa74f0e876cff47b7",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a6ef04d31216",
+      "gen_id": "P2.dfa.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "2ac6954f16d15eee05a97a8f8203780360596821eeaf8bb3c11634409edaee77",
+      "replacements": 10,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "a9b5a2db8899",
+      "gen_id": "P4.baseline.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "0a3d6b5366a03a0637e6dbe3eca7232b48a970579943936df04b348d16182125",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "aafeeb75a795",
+      "gen_id": "P3.baseline.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "b5d0acbb55c6246bcb3ef56a39aee514f91d6c2d4d681a5a3ffcf606fed97f46",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ba8b5c90c4ec",
+      "gen_id": "P4.dfa.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "636262867535d74257b6eced95b9e9a7415b107410aff3ccb07183cd67a501d3",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "bc088b473ada",
+      "gen_id": "P5.dfa.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "d713896ed145231e84ef5e9e8bfa5962e6104579c803a870ba0253c7b904c68e",
+      "replacements": 12,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "c34cc293eddd",
+      "gen_id": "P1.dfa.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "8f3507deab4056767aa7ec9f10af89d07139126eb8db2800cb8c16fdfab41853",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "c70333bc14b7",
+      "gen_id": "P3.baseline.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "4b36306bcc25e5101bf6d0544cfe087950c6697e32f4951be2e34e399da1d493",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "c9001048d04f",
+      "gen_id": "P5.dfa.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "60c3d1932e9f9815c935441f7cd6753357fbd13c81b1540b521b96439dfc0dd0",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "ca0d951878de",
+      "gen_id": "P3.dfa.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "aa959d7c33a9956375d17727a47811c70ed35f6f6b7c43fb9e9c16645e7c0f07",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "cb6d189b179a",
+      "gen_id": "P4.baseline.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "9900f7bf9cc9fc28b6099ad58bfcd72c8cdacff2908c5ccc4e34fe6e7aec9f93",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "cbb1dcc626b8",
+      "gen_id": "P3.baseline.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "8fd2a3824cb497f3e83e69a86f9149dc20f8634581941e8e78d6ead08d8b57cc",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "cd3a5215c49e",
+      "gen_id": "P5.dfa.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "74919984d589488c7bf078acd18978e0961caae0a5febcd67c84cc48b7321a7f",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "da0937713016",
+      "gen_id": "P2.dfa.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "eae7821aef18e036464fd0bd6d8c2ab2ddae422bd5f66b9b822d01a35b3f0b55",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "de0b034e6d57",
+      "gen_id": "P4.dfa.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "ce4d74c612e75b2fc84c16069b3e57742cbccaec69879eec9a898380cbca8e29",
+      "replacements": 11,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "df1ac6c94f04",
+      "gen_id": "P2.dfa.haiku-4.5.r03",
+      "variant": "plain",
+      "sha256": "86a2a0c3e40e6cc676da1cec7826383ce1f12de0b3dc46162edb231e000c4921",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "df255070b54d",
+      "gen_id": "P1.dfa.haiku-4.5.r03",
+      "variant": "neutralized",
+      "sha256": "645313a410c5edaf9a27aafe1d605eb6199829dd858e6f5c25e2f8b4a54ae685",
+      "replacements": 11,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "e2d76ae054ab",
+      "gen_id": "P2.dfa.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "9e7612005986868bfa6ad97b514e00c885275f32690c30a7c00718c410551877",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "e4189c175f51",
+      "gen_id": "P3.baseline.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "8fd2a3824cb497f3e83e69a86f9149dc20f8634581941e8e78d6ead08d8b57cc",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "e75ffc751963",
+      "gen_id": "P2.dfa.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "c540b851c325ee4c4a34b67809865cff9aa0d640af3ca582f1edd6a9aae87627",
+      "replacements": 10,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "e8500402cef1",
+      "gen_id": "P3.dfa.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "ea821d55bcc5dea6b2ce3bb61c912e32050f741d21174fcb413459244dd3e2fc",
+      "replacements": 13,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "ea635cebae7f",
+      "gen_id": "P1.dfa.haiku-4.5.r02",
+      "variant": "neutralized",
+      "sha256": "89786daf99b3dc2c3172a8e47d909a70b9f772a2f89f82acd29a3b99d50fdbde",
+      "replacements": 12,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "edf30cc7c391",
+      "gen_id": "P1.baseline.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "404fd46c835db088c144e2805870ccbebdaed42101f5bf2475270495de38d950",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f6d650fdc9df",
+      "gen_id": "P3.dfa.haiku-4.5.r01",
+      "variant": "neutralized",
+      "sha256": "79ad3cf550eafb1bae39e8da6c713f302b207fc9285f028eabe5617d4972c78f",
+      "replacements": 18,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f987ef47ab80",
+      "gen_id": "P1.baseline.haiku-4.5.r01",
+      "variant": "plain",
+      "sha256": "404fd46c835db088c144e2805870ccbebdaed42101f5bf2475270495de38d950",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "fa5b7dcc31e3",
+      "gen_id": "P1.dfa.haiku-4.5.r02",
+      "variant": "plain",
+      "sha256": "51a2e6624f6db3cb7362fe6684c36db686463f1823886175cf489bf1a6f7774c",
+      "replacements": 0,
+      "self_score_removed": true
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "f13fb4575532.probe.sonnet-5.5",
+  "blind_id": "f13fb4575532",
+  "blind_sha256": "305dcbb50382c3267323491d347df2eb032e9de641445a4dc40797016eba62e6",
+  "judge": "sonnet-5.5",
+  "order_index": 150,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens by stating interpretation of the request and offers to rewrite if misread (ambiguity-handling habit)",
+    "Each phase has an explicit 'Done when:' checkpoint, which suggests a structured method, though it's also common in default output",
+    "Ends with 'Key points' critical path and offers of follow-up deliverables, typical of a default helpful assistant",
+    "Numbered steps run continuously across phases with no explicit methodology artifacts (no risks, assumptions or verification sections)",
+    "Content is thorough but reads as standard domain knowledge rather than a prescribed template"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 268,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2418
+  },
+  "cost_usd": 0.008733000000000001,
+  "latency_s": 28.138,
+  "raw_file": "raw/probe-f13fb4575532.probe.sonnet-5.5.txt"
+}

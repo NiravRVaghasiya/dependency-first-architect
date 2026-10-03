@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "005271a6740e.engineering-quality-v1.fable-5.k1",
+  "blind_id": "005271a6740e",
+  "blind_sha256": "30b3930e8d07d185b0486cf3e0b0095ebd5551c0fa511e00c18f905ed0b80d5e",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 407,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "On a timeout, query the PSP for the payment's state before any retry; never retry blindly.",
+      "rationale": "Technical claims about PCI SAQ-A scope, outbox semantics, at-least-once delivery with consumer dedupe, RLS enforcement, and SERIALIZABLE ledger postings are all accurate, including the subtle areas."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "If you only mean billing for *one* SaaS product's subscribers, the build-vs-buy gate flips.",
+      "rationale": "Explicitly resolves the key ambiguity, covers catalog, subscriptions, usage, invoicing, payments, dunning, tax and reconciliation, and defers scope with stated triggers."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Strong consistency (CP) for money... Availability first (AP) for usage ingestion: accept events, dedupe later.",
+      "rationale": "Consistency choices, module boundaries, data ownership and the outbox-based flows are applied uniformly across every phase with no contradictions found."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Fault injection (PSP timeout after the charge succeeded, duplicate webhooks, reversed webhook order) causes zero double charges in 10k runs.",
+      "rationale": "Each phase has checkable exit criteria tied to the specific risks (property-tested balancing, cross-tenant suite, golden invoices, live $1 charge), and reconciliation plus invariant metrics continue in production."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Interpretation (stated, not assumed): This is a billing platform where each tenant is a business with its own catalog, customers and invoices",
+      "rationale": "Assumptions are explicit, numeric thresholds are framed as revisit triggers rather than facts, and the plan states exactly which assumptions would flip the design."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Tax provider down → invoice stays draft and is retried behind a circuit breaker; tax is never guessed.",
+      "rationale": "Covers the hard domain failures — double charges, duplicate/out-of-order webhooks, late usage events, cross-tenant leaks, noisy tenants, insider adjustments — each with concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Dashboard of reconciliation differences that pages on any unexplained difference.",
+      "rationale": "Deployment, migrations (expand-then-contract), domain-meaningful metrics, alerts and drills are concrete, but rollback procedure and incident ownership/on-call structure are only implicit."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Buy: payment processing and card tokenization (Stripe or Adyen, which keeps us in PCI SAQ-A scope)",
+      "rationale": "Build-vs-buy trade-offs and PSP-fee triggers are reasoned well, but there are no build/run cost estimates, no people-cost sizing, and no discussion of how infrastructure cost grows with usage."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Money representation (irreversible)... None. This cannot be changed later without restating history.",
+      "rationale": "Irreversible decisions (money format, ledger model, API contract) are flagged and validated early, while reversible ones get explicit revisit triggers and isolation (payments interface, cell migration path)."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Modular monolith with enforced module boundaries... Pull usage ingestion out into its own service when it needs different scaling",
+      "rationale": "Starts with the simplest workable design, defers microservices, multi-currency, second PSP and rev-rec behind concrete triggers, and omits no essential billing capability."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "An internal \"house\" tenant calls POST /v1/invoices with its API key and an Idempotency-Key.",
+      "rationale": "Phases are ordered by stated dependencies, the first slice is fully concrete down to the request/response, and every phase has measurable exit checks a team could execute immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Store amounts as integer minor units (bigint) with an ISO 4217 currency code on every amount... Rounding is half-even at the line-item level"
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Double-entry, append-only and immutable. Corrections are reversing entries and credit notes, never UPDATEs."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "Inbound webhook processor: signature verified, deduped, and tolerant of out-of-order delivery because the state machine guards every update."
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "PSP-hosted card fields keep us in PCI SAQ-A scope... Webhook signatures checked with a replay window... Refunds and disputes as ledger postings."
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "RLS on every table, app role without BYPASSRLS... tenant A's key cannot read or write tenant B's data through any endpoint"
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "tenant-supplied event ID, dedupe window, timestamp rules, late-arrival policy... Replaying the raw S3 events reproduces the aggregates byte-for-byte."
+    },
+    {
+      "id": "P2-07",
+      "status": 2,
+      "evidence": "Products and immutable price versions. A price is frozen once any invoice uses it... Proration rules for upgrades, downgrades and mid-cycle changes."
+    },
+    {
+      "id": "P2-08",
+      "status": 2,
+      "evidence": "Gapless invoice numbering per tenant, for compliance... Tax-provider integration. The response is snapshotted onto the invoice."
+    },
+    {
+      "id": "P2-09",
+      "status": 2,
+      "evidence": "Dunning: versioned retry schedules, then past_due and cancel... Hosted customer portal: update payment method"
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "Daily reconciliation of the ledger against PSP balance and payout reports, with a queue of differences."
+    },
+    {
+      "id": "P2-11",
+      "status": 1,
+      "evidence": "Entitlements and feature-gating service. Pull forward when more than 3 tenants ask to check access through our API instead of webhooks."
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Buy: payment processing and card tokenization... tax calculation... Build: ledger, rating, subscriptions and invoicing. That is the product."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Store amounts as integer minor units (bigint) with an ISO 4217 currency code on every amount."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Finalized invoices are immutable (DB trigger)... Credit notes. These are the only way to correct a finalized invoice"
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "The idempotency key is invoice_id:attempt_n... signature verified, deduped, and tolerant of out-of-order delivery"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "Payment methods stored only as PSP tokens... keeps us in PCI SAQ-A scope because no card numbers touch us"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "RLS on every table, app role without BYPASSRLS... A cross-tenant suite shows tenant A's key cannot read or write tenant B's data"
+    }
+  ],
+  "note": "An exemplary billing-platform plan: correct on the hard money/idempotency/isolation problems with trigger-based deferrals; only cost quantification, explicit rollback/incident ownership, and entitlement availability fall short.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7740,
+    "thinking_tokens": 4945,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 14740
+  },
+  "cost_usd": 0.57214,
+  "latency_s": 134.08,
+  "raw_file": "raw/judge-005271a6740e.engineering-quality-v1.fable-5.k1.txt"
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "561d45930d45.engineering-quality-v1.fable-5.k1",
+  "blind_id": "561d45930d45",
+  "blind_sha256": "522f618ba121853778cb70f190f54c6022049b9c0a7ead8eb34c67556d74d785",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 479,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Agent PRs trigger CI through `pull_request`, never `pull_request_target`.",
+      "rationale": "Technical claims are precise, including subtle ones (webhook 10s timeout, HMAC, SKIP LOCKED, pull_request_target), but the Phase 1 'Contents read' scope is insufficient for Phase 5 branch pushes, contradicting the plan's own re-approval rationale."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "triages new issues (labels, duplicates, owner, missing-info requests) and, when a maintainer opts in, attempts a fix that it opens as a draft PR",
+      "rationale": "Covers triage and resolution exactly as asked, resolves ambiguities with sensible opt-in defaults, and every exclusion is explicit with a pull-forward trigger."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The orchestrator, which is outside the sandbox, is the only thing holding write credentials.",
+      "rationale": "Responsibilities, data ownership and trust boundaries are consistent everywhere, with cross-cutting concerns (identity, idempotency, auditing) applied uniformly per phase without contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "agreement on the top label is at least 85% on the held-out set (a starting target, recalibrated after measuring how often maintainers agree",
+      "rationale": "Every phase has a checkable exit criterion tied to a specific risk (red-team suite, escape suite, shadow mode, hidden-test replay), targets are labeled provisional, and validation continues post-launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Revisit trigger | We need a multi-region deployment (more than one region writing at once) for an SLA.",
+      "rationale": "Key decisions are stated as defaults with explicit conditions that would change them, numbers are framed as budgets or starting targets, and no unsupported certainty is asserted."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Someone puts a prompt injection in an issue body and the agent leaks secrets or lands malicious code, for example by editing a CI workflow",
+      "rationale": "The hardest domain failures — injection, CI-workflow exfiltration, webhook duplicates, poison events, sandbox escape, runaway loops, feedback poisoning, crash recovery — each get concrete detection and containment."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Alerts fire on job failure rate above 5% or queue age above 5 min.",
+      "rationale": "Day-zero deployment, tracing, meaningful alerts, kill switch and prompt rollback are concrete and team-sized, but incident ownership and code-deploy rollback are not explicitly addressed."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Triage: at most 8k input tokens, $0.05 and 60 s. Resolution: at most $3, 20 min and 40 tool calls.",
+      "rationale": "The dominant inference cost is capped per task, repo and globally with routing to cheap models and a cost-based self-host trigger, but overall run-cost estimates and engineering-time costs are absent."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Changing this later means asking every installation to re-approve, so it goes first.",
+      "rationale": "Hard-to-reverse choices (App permissions, event schema versioning, provider abstraction) get early scrutiny and isolation, while reversible choices (Postgres queue, no broker) are made quickly with explicit revisit triggers."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Modular monolith (webhook ingest, orchestrator and worker in one deployable) plus one forced boundary: the sandbox runner",
+      "rationale": "Starts with the simplest workable design, justifies the one extra boundary on security grounds, and defers multi-agent, brokers and dashboards behind concrete triggers without omitting essentials."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: a real issue on the sandbox repo gets a real comment in production, and its end-to-end trace plus the token and cost metric",
+      "rationale": "A team could start immediately: Phase 0 is a concrete slice, ordering is justified by dependencies, each phase has verifiable exit checks, and adaptation triggers are specified."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Runs without approval: reading, retrieval, sandbox runs... Requires approval: starting a resolution, opening a PR... Never allowed: merging, pushing to the default branch, editing workflows."
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "Grant least privilege: Issues read/write, Contents read, Pull requests write, Metadata read. Do not grant Workflows or Administration."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Issue text, comments, repo files, tool output and test logs are all treated as untrusted data."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "Each job gets a new gVisor or Firecracker microVM, destroyed after the job. There's no GitHub token and no cloud credentials inside it."
+    },
+    {
+      "id": "P4-05",
+      "status": 1,
+      "evidence": "on a replay set of 50 or more past closed issues (held out, with the real fix's tests as hidden tests)"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Build 200 or more historical issues per pilot repo, with labels set by maintainers, as a frozen, versioned held-out set."
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Record PR merged, merged after edits, or closed, plus label corrections by maintainers and 👍/👎 reactions on agent comments"
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "A global kill switch (a config flag checked before every external write) exists from the start."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Hard caps on tokens, cost, wall-clock time and tool calls for each job, plus a daily cap per repo and a global circuit breaker."
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "The `action_log` table is append-only and records who, what, why, the model version, the prompt hash and the approval reference."
+    },
+    {
+      "id": "P4-11",
+      "status": 2,
+      "evidence": "For code, use search inside the sandbox (ripgrep plus a symbol index) instead of embedding the whole repo."
+    },
+    {
+      "id": "P4-12",
+      "status": 2,
+      "evidence": "give every outbound write an idempotency key, and re-read issue state before writing (skip if the issue is closed, locked or already labeled by a human)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent never merges and never pushes to the default branch. Resolution ends at a draft PR on `agent/issue-<n>`."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "There's no GitHub token and no cloud credentials inside it."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Issue bodies, comments, repo files and test logs are all treated as data and placed in the user turn inside delimiters"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "at least 30% produce PRs that pass the hidden tests, with zero diff-policy violations"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "a synthetic loop is cut off at 40 calls and emits `budget_exceeded{repo,class}`."
+    }
+  ],
+  "note": "An exceptionally strong plan that avoids every trap and concretely covers nearly the whole domain checklist; the only notable gaps are the Contents-read permission inconsistency, no explicit reproduce-before-fix step, and thin incident-ownership and total-cost estimates.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8406,
+    "thinking_tokens": 5603,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 15919
+  },
+  "cost_usd": 0.6201775,
+  "latency_s": 142.918,
+  "raw_file": "raw/judge-561d45930d45.engineering-quality-v1.fable-5.k1.txt"
+}

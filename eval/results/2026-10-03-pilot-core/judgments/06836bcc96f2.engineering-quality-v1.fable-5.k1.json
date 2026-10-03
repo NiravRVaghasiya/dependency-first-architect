@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "06836bcc96f2.engineering-quality-v1.fable-5.k1",
+  "blind_id": "06836bcc96f2",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 10,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "write access to contents only on `agent/*` branches, no admin",
+      "rationale": "GitHub mechanics (webhook signatures, duplicate deliveries, workflow approval, SWE-bench-style eval) are accurate; the per-branch App content permission is a minor imprecision (needs branch protection/rulesets, which the plan does invoke elsewhere) with no design consequence."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Resolve issues that are well-scoped and low-risk by opening a tested pull request (PR) that a human reviews.",
+      "rationale": "Covers triage and resolution exactly as asked, explicitly excludes merging/closing with reasons, resolves ambiguities via stated defaults and targeted open questions, and is clearly buildable."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Orchestrator | Runs the issue state machine. Picks which agent to run and enforces budgets",
+      "rationale": "Components have single clear responsibilities, data ownership is explicit (Postgres state store, audit log), the state machine ties flows together, and safety/policy decisions are honored consistently across sections."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Replay historical closed issues. Check triage labels against the labels maintainers actually applied.",
+      "rationale": "Offline replay plus SWE-bench-style resolution eval test the riskiest assumptions before any action, a shadow phase validates in situ, and online metrics (relabel rate, revert rate) continue validation after launch with gated promotion criteria."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "At most K attempts (for example 3), each starting from a fresh sandbox.",
+      "rationale": "Numbers are consistently flagged as examples/provisional and design-sensitive unknowns are surfaced as open questions, but scale and team assumptions remain implicit and sensitivity analysis is limited."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Flaky tests mislead the agent | Baseline run plus re-running failing tests to detect flakiness",
+      "rationale": "Covers the hard domain failures — prompt injection, flaky tests, hard-coded test cheating (critic pass), plausible-but-wrong fixes, spam, duplicate webhook deliveries, security disclosures — each with concrete detection and mitigation."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "a global kill switch (a `agent:paused` label on the repo or a config flag)",
+      "rationale": "Kill switch, rate limits, ops metrics (cost, latency, failure rates) and label-mirrored state are concrete, but deployment/rollback of the agent service itself and incident ownership are not addressed."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Per-issue and per-repo budgets, with cheaper models for classification and stronger ones for resolution.",
+      "rationale": "Identifies inference as the dominant driver with concrete controls (budgets, tiering, early exit on non-repro) and tracks cost per issue, but gives no order-of-magnitude estimates or build-cost reasoning."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Should it run as a hosted GitHub App or inside GitHub Actions? The App is more flexible; Actions is simpler to run.",
+      "rationale": "Phased rollout, opt-in defaults, draft PRs and deferred model/hosting choices keep commitments reversible, though hard-to-reverse decisions (data model, vendor coupling) are not explicitly singled out for extra scrutiny."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Out of scope (at first): Merging PRs, releases, or deploys.",
+      "rationale": "Every component (queue, sandbox, vector index, policy engine) earns its place for this domain, the plan starts in shadow mode with the simplest safe behavior, and grows capability only as evidence accrues."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Shadow (2–4 wks): Triage runs silently and decisions are only logged. Compare them against what humans did.",
+      "rationale": "Step-by-step pipelines, concrete tool definitions, risk-ordered phases with checkable gates (merge rate target, revert threshold) let a team start immediately; only schemas and prompts are deferred, explicitly."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Resolution runs only on issues labeled `agent:fix` and opens draft PRs... once the merge rate passes a target"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "Least-privilege identity: write access to issues and PRs... no admin. Short-lived tokens; branch protection prevents the agent from pushing to protected branches."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Treat issue and comment text as untrusted data, never as instructions... only through fixed keywords (`/agent fix`, `/agent stop`)."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "Throwaway container per attempt... Network access only to an allowlist, no secrets... CPU/memory/time limits, destroyed after each run."
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "Write a failing test (or script) that captures the bug. If it can't reproduce the bug, stop."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Replay historical closed issues. Check triage labels against the labels maintainers actually applied."
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Every comment and PR is clearly marked as from the agent... revert or regression rate within 30 days"
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "Caps on comments and PRs per repo per day, and a global kill switch... At most K attempts (for example 3)"
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "enforces budgets (steps, tokens, wall-clock time, $ per issue)... Cost per issue, latency, failure and timeout rates"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "Each transition is logged with the inputs, the model output, the confidence score, and the action taken."
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "Use stack traces, symbol search, embedding search, and `git blame`/history to collect candidate files."
+    },
+    {
+      "id": "P4-12",
+      "status": 2,
+      "evidence": "Checks webhook signatures and drops duplicate deliveries... Labels mirror the state so humans can see it."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "Open a draft PR... No merge, no deleting branches other than its own."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "Sandbox isolation: No credentials, egress limited to package registries"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Treat issue and comment text as untrusted data, never as instructions."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "PR merge rate, reviewer rounds per PR, revert or regression rate within 30 days"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "enforces budgets (steps, tokens, wall-clock time, $ per issue)... a global kill switch"
+    }
+  ],
+  "note": "An exemplary, security-conscious, well-staged plan that avoids every trap and concretely addresses nearly the full checklist; remaining gaps are vector-index freshness, service deployment/incident ownership, and cost estimates.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 10311,
+    "thinking_tokens": 4919,
+    "cache_read_input_tokens": 12044,
+    "cache_creation_input_tokens": 19700
+  },
+  "cost_usd": 0.773884,
+  "latency_s": 742.986,
+  "raw_file": "raw/judge-06836bcc96f2.engineering-quality-v1.fable-5.k1.txt"
+}

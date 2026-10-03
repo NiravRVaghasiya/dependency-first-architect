@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0567f8385683.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "0567f8385683",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 176,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Top 20 by pgvector cosine similarity (HNSW index) and top 20 by Postgres full-text `ts_rank` on `tsv`, merged with reciprocal rank fusion.",
+      "rationale": "Mechanisms (hybrid RRF, SSE sentinel buffering, idempotent upserts, retry only before streaming) are correct; minor issues such as a fused RRF score compared to a threshold τ and the \"100% of citations point to a retrieved source\" claim being only an ID-mapping check."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Non-goals (v1): Account-specific answers... Languages other than English. [A4] ... Content sources other than the help center",
+      "rationale": "Covers ingestion, grounded answers, decline, handoff, feedback and gap reports, with explicit justified exclusions, a build-vs-buy check and a realistic team and timeline."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "each table has one writer",
+      "rationale": "Components have clear responsibilities and data ownership, and the public-only decision, fixed pipeline, versioned index and idempotency are applied consistently throughout."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "The judge is calibrated against 50 SME labels and must agree ≥85% before we trust it.",
+      "rationale": "Validation is tied to specific risks (eval set from tickets, leakage CI check, red-team, spikes early, load test, A/B pilot, production sampling and nightly evals), though thresholds are labelled provisional."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "| A5 | About 20k conversations/month, about 3 turns each, peak about 2 turns/s | Cost cap and capacity change; architecture doesn't up to roughly 50× this |",
+      "rationale": "Assumptions are IDed with impact-if-wrong and validation timing, targets are labelled assumptions, and open questions have defaults; the only invented specifics are flagged as estimates."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "If the client disconnects mid-stream, the partial answer is persisted with `outcome=aborted`.",
+      "rationale": "Covers provider outage, degraded mode, deletion-signal gaps, double-submit, injection, abuse, XSS, PII and stale sync, each with detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "The kill switch (`assistant_enabled=false`) means an outage never requires waking someone at 3 a.m.",
+      "rationale": "Alerts with runbooks, flag/image/config/index rollback, migrations, ownership, weekly review and business-hours on-call are sized to a 2-person team."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Total is about **$1–2k/month**. ... These ranges are rough; re-estimate after spike S2 with real token counts.",
+      "rationale": "Gives ranged per-turn and monthly estimates with a stated basis, scaling and controls (spend breaker, caps, build-vs-buy), though the ~$0.05 per conversation versus the $0.01-0.02/turn figures is slightly inconsistent and caching is deferred."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "| D9 | Anonymous signed sessions; bot sees only public content | ... | **Hard-ish** (identity model) |",
+      "rationale": "The decision table rates reversibility and revisit triggers, isolates the LLM behind a gateway and retrieval behind a module, versions the index, and flags identity and language as the hard choices to settle early."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "There are no agents, no tool-calling and no microservices.",
+      "rationale": "Simplest workable design: one service, Postgres, optional reranker only if a spike justifies it, with sensible deferrals; the essentials are not cut."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "**Changes the plan if** the best recall@5 is below 0.75: then the content is the bottleneck, and we start a content-cleanup workstream",
+      "rationale": "Ordered tasks with locations, done-when criteria, dependencies, critical path and explicit adapt-if-results-disappoint triggers make it immediately startable."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "`sync` (every 15 minutes) ... `reconcile` (nightly): lists all public article IDs and marks any missing ones `removed`."
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "split on H2/H3 sections, 200–800 tokens ... Each chunk is prefixed with `Title > Section > Subsection`."
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "about 200 answerable questions from real tickets in the last 90 days, anonymised, each with gold article IDs and a reference answer"
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "the first line must be `ANSWER` or `NO_ANSWER`"
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "If any cited article carries a configured label (`billing`, `refund`, `security`, `legal`, `account-deletion`), the `done` event sets `show_handoff=true`."
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "No side-effect tools; retrieved text wrapped as untrusted data; prompt rules against commitments; ... red-team suite"
+    },
+    {
+      "id": "P1-07",
+      "status": 1,
+      "evidence": "Index only articles visible to anonymous users, with a second visibility filter at query time."
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "redacted before storage and logging (regex for email, phone, card-like and ID-like numbers, plus a named-entity pass)"
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Non-goals (v1): Account-specific answers (order status, billing details, account changes)."
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "Support ops owns the content and the weekly review: 30 minutes on thumbs-downs, `ungrounded` answers, and a content-gap report"
+    },
+    {
+      "id": "P1-11",
+      "status": 2,
+      "evidence": "Controls: daily spend cap and circuit breaker, per-session limits, and cost tags on all resources."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "answer only from the sources; cite `[S#]` for each claim"
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "`visibility='public'` filter at query time; CI eval check that no restricted fixture article can be retrieved"
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "`sync` (every 15 minutes): incremental export of articles changed since the last successful cursor."
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "a correctness drop of more than 2 points against `main` even if still above target."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "A fixed RAG pipeline, not an agent."
+    }
+  ],
+  "note": "Exceptionally thorough, proportionate RAG plan with strong eval, visibility, grounding and ops coverage; minor cost and correctness nits only.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2481,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 919,
+    "cache_creation_input_tokens": 27658
+  },
+  "cost_usd": 0.0941468,
+  "latency_s": 42.961,
+  "raw_file": "raw/judge-0567f8385683.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

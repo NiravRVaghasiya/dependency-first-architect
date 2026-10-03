@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "2f03d6b92dc3.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "2f03d6b92dc3",
+  "blind_sha256": "9c5ab20e161f404076d2512d2d68c2d2372ac0d9032c9c769b679707f1c7cc83",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 418,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "M1 shadow slice + spikes → M2 inline rules → M3 ML (Depends on: Spike B data. M1 `libs/features`. M2 labels.) → M4 alerts",
+      "rationale": "Substrate (infra, features, contract, lake) precedes enforcement, which precedes the model, with explicit dependencies and spikes proving unknowns first."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "The Decision Service receives 100% of production authorisations in shadow mode, with no effect on cardholders.",
+      "rationale": "M1 is a real end-to-end production slice (service, Redis, Kafka, lake, pipeline deploy) before enforcement or the model."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D2 Fail open ... Revisit if: Losses during outages become material. Then: fail closed only for high-risk merchant categories.",
+      "rationale": "Decisions D0–D11 and A1–A14 list options, reversibility, defaults and explicit flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "T1–T3 on day 1–2 (long-lead requests, contract, Spike C), then infra/CI/features before rules and leaf items; M2 'Guardrail' before enforcement",
+      "rationale": "Widest-impact items (contract, infra, shared feature lib, guardrails, rollback) are ordered before leaf work such as alerts and UI."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Threats tagged (M1), (M1–M2), (M2): mTLS, Secrets Manager rotation (M1), Trivy in CI, no-PAN contract, Luhn scrubber",
+      "rationale": "Security is concrete from M1 (mTLS, IAM, secrets, scanning, PAN controls) and continues through M2 to M4 (Lake Formation, allow-window approvals)."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Observability (M1, extended each milestone) ... T14 OTel metrics and traces ... 'Decision health' dashboard",
+      "rationale": "Metrics, traces, dashboards are built in M1 and extended in each later milestone with paging, fraud performance and drift monitoring."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform ... No manual console changes; immutable rulesets/<git-sha>.json with SHA-256; replay through same feature code; signed images",
+      "rationale": "Reproducibility is threaded via IaC, signed images, immutable versioned configs/models, manifests, and replay parity across milestones."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "With Kafka down, `Score` still answers and the drop metric increments; Redis failover under load; Redis rebuild < 30 min tested",
+      "rationale": "Failure handling (timeouts, degraded modes, fail-open, rebuild, DLQ, chaos drills) appears from M1 and in each subsequent phase."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Evaluation first: a versioned evaluation set exists in M1 ... Guardrails: fire-rate cap with auto-revert ... Shadow before enforcement",
+      "rationale": "For a classical ML system, guardrails, shadow, human-approved promotion and fallback precede the model; retrieval/memory/orchestration layers are N/A and feedback (labels, retrain) comes last, though AI concerns sit partly in a cross-cutting section."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Stream processor (Flink) ... Trigger to build it: A specific feature with proven lift ... or Redis CPU > 60%",
+      "rationale": "A deferred-work table gives each item an explicit pull-forward trigger, plus non-goals and deliberate shortcuts."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan with a shadow-mode production slice first, explicit decision flips, and threaded security, observability and resilience; only minor weakness is AI-layer discipline being described in a cross-cutting section.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1406,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 29249
+  },
+  "cost_usd": 0.0871905,
+  "latency_s": 20.829,
+  "raw_file": "raw/judge-2f03d6b92dc3.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "6bb394b615fa.engineering-quality-v1.fable-5.k1",
+  "blind_id": "6bb394b615fa",
+  "blind_sha256": "b5abe64aedf964ea66434bc9831fe20467a4ce64160648705877ea20b8217a09",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 235,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "The PAN never leaves the CDE. The auth platform swaps the PAN for a deterministic keyed token from the existing vault or HSM",
+      "rationale": "Claims about tokenization, Flink checkpointing, out-of-time evaluation, PSI drift, label maturity and circuit-breaker behavior are accurate and precise, with real limits (e.g., QSA may still scope the scorer) stated."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "It starts by watching only, then advises analysts, then decides for a small cohort, then widens.",
+      "rationale": "Solves exactly the inline real-time scoring problem, resolves role/latency/jurisdiction ambiguities with explicit assumptions and missing-input lists, and all exclusions (3DS, multi-region, graph detection) are deferred with stated triggers."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The auth platform is the system of record for outcomes. The existing rules stay the decision-maker and the fallback.",
+      "rationale": "Data ownership, identity (token keys all history), fallback semantics and the phase gates are honored consistently across every section with no contradictions found."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "V1 shows the in-house model is worth building",
+      "rationale": "V0–V7 tie checkable thresholds to the specific risks, the riskiest assumptions (model value, latency slice, fail-safe) are tested before commitment, thresholds are labeled provisional, and validation continues in production via drift, canaries and champion/challenger."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "ASSUMPTION: a typical inline fraud slice for an issuer-processor. The auth platform owner confirms the real slice in Phase 0.",
+      "rationale": "Every number carries an ASSUMPTION/BASELINE/UNKNOWN label with a confirmation path, and revisit triggers state exactly what changes if each assumption is wrong."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Production fault injection on test cards: pod kill, 500 ms latency, malformed response, store outage, a stub that declines everything.",
+      "rationale": "Mass false declines, scoring outages, PAN leakage, card-testing bursts, label poisoning and probing are concretely handled, but duplicate, out-of-order and reversal/refund events in the stream are not explicitly addressed."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "One rollback is rehearsed: redeploy the previous version, then switch the flag off.",
+      "rationale": "Deployment, rehearsed rollback, kill switch, meaningful signals (fallback rate, breaker state, feature freshness), DR and rebuild drills, and an on-call model sized to one owning team are all concrete."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Projected avoided loss exceeds run cost (finance input from Phase 1).",
+      "rationale": "The dominant trade-off (fraud loss vs false declines vs run cost) gates build-vs-buy and widening, and inference is noted as cheap in-process CPU, but cost scaling with volume and order-of-magnitude infra estimates are thin."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: a trust boundary, and the token keys all history",
+      "rationale": "Decisions are explicitly classified R2/R3, the irreversible ones (token scheme, event contract, consistency model, cutover) get the earliest validation and exit paths, and reversible choices are made quickly as minor defaults."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Decommissioning the existing rules: not in this plan; they are the fallback.",
+      "rationale": "One service, one stream job, one store; multi-region, deep learning, segment models and graph detection are deferred with concrete pull-forward triggers, so every element earns its place."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "V2 fails after optimization: move scoring to post-auth (alerts and card blocks) and feed a precomputed risk value to the existing rules inline",
+      "rationale": "A concrete Phase 0 first slice, dependency-justified phase order, checkable exit criteria per phase, and explicit contingency actions when each validation fails mean a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "p99 ≤ 50 ms; hard timeout 75 ms, then fall back to the existing rules"
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "If the store is down, score with default values or fall back (availability wins)."
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "Single feature definitions that compile to both the Flink job and the offline batch."
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "out-of-time test on 3 months of matured labels; compared with the existing rules' actual decisions"
+    },
+    {
+      "id": "P8-05",
+      "status": 2,
+      "evidence": "the maximum decline-rate increase over control and the minimum value of fraud caught per legitimate decline"
+    },
+    {
+      "id": "P8-06",
+      "status": 2,
+      "evidence": "hard rules the model cannot override... Send high scores to the case-management queue; analysts decide."
+    },
+    {
+      "id": "P8-07",
+      "status": 2,
+      "evidence": "Matured labels from claims and chargebacks, plus analyst outcomes, all reviewed"
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "Tokenization hardened at the hook, plus PAN scanners on every topic, log and store (V4 continues)."
+    },
+    {
+      "id": "P8-09",
+      "status": 1,
+      "evidence": "State partitioned by card token with a single writer... Flink checkpoints; store rebuild drill"
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "Champion/challenger: the challenger runs in shadow before promotion... Drift alerts on feature distributions (PSI)."
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "The decision log records model, feature and threshold versions"
+    },
+    {
+      "id": "P8-12",
+      "status": 2,
+      "evidence": "Replay tokenized traffic at 2× BASELINE peak for 2 h in a production-like environment, killing a store node during the run"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "Inline synchronous call with a hard timeout that falls back to the existing rules."
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "hard timeout falling back to the existing rules; kill switch; circuit breaker on decline rate"
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "out-of-time test on 3 months of matured labels... At least 1,000 confirmed fraud cases in the test window"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "Train a gradient-boosted model using only features that can be computed online within the latency slice"
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "The PAN never leaves the CDE... The scorer and everything downstream see tokens only."
+    }
+  ],
+  "note": "An exceptionally rigorous, staged plan that avoids all five traps; its only notable gaps are stream-level duplicate/reversal handling and thin cost-scaling estimates.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6441,
+    "thinking_tokens": 3839,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 16807
+  },
+  "cost_usd": 0.5330275,
+  "latency_s": 117.15,
+  "raw_file": "raw/judge-6bb394b615fa.engineering-quality-v1.fable-5.k1.txt"
+}

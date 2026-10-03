@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9dbce0c4ce87.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "9dbce0c4ce87",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 35,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1: \"Depends on: V0. Finance sign-off on the chart of accounts.\" Phase 3: \"Depends on: Phase 2, V2, V3, a signed merchant agreement.\"",
+      "rationale": "Phases run ledger → rating → payments → portal, and each phase names its dependencies and the validation gates that must pass before it starts."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Phase 0 request: \"records one usage event, then closes the billing period. The response is an invoice, a payment confirmation and an email.\"",
+      "rationale": "Phase 0 is a thin end-to-end slice deployed to production through every tier, with a V0 exit check, using processor test mode."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"V1 fails at the required write rate → shard the ledger by tenant\"",
+      "rationale": "The tradeoff table gives each irreversible decision a reversibility rating, a default, an assumption, a validation gate and a flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1 tasks: \"Double-entry schema and invariants. RLS on every table. Money and ULID types.\" Phase 4 rollout: \"5% → 25% → 100%\"",
+      "rationale": "Within phases, the widest-impact items (ledger schema, RLS, money types) come before leaf items. Rollout is staged by wave, and Phase 3 goes to the internal tenant before a design partner."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "\"Secrets in a secrets manager. Processor test keys only. Tenant authentication at the gateway\" (Phase 0 security)",
+      "rationale": "The cross-cutting table gives concrete security controls in every phase from 0 to 4, and the gates V3 and V4 are tied to specific phases."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"Structured logs and OpenTelemetry traces carry `tenant_id` and `invoice_id`, never PII. Alerts on webhook failures and on a ledger that doesn't balance.\"",
+      "rationale": "Observability is in place in Phase 0 and each later phase adds specific metrics and alerts."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"Infrastructure as code (IaC) and pinned builds\" (Phase 0); \"Invoice regeneration is byte-identical\" (Phase 4)",
+      "rationale": "Each phase has a concrete reproducibility item: pinned builds, versioned migrations, deterministic rating replay, idempotent outbox replay and byte-identical invoices."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"Ingest backpressure and dead-letter queue (DLQ)\"; \"Circuit breaker on the processor. Retries with jitter\"; \"Blue/green rollback\" (Phase 0)",
+      "rationale": "Failure handling appears in every phase, from rollback in Phase 0 to restore drills, DLQs, circuit breakers and failover drills, and V2 adds fault injection."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"N/A — no AI component.\"",
+      "rationale": "The plan states that no AI layer applies, and it adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Revenue-recognition engine (ASC 606): pull forward when finance needs automated deferred-revenue schedules.\"",
+      "rationale": "Six deferred items are listed, and each has a specific pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is strong on every dimension. It has a production walking skeleton, up-front tradeoff gates with flip conditions, security, observability, reproducibility and resilience set out for every phase, and an explicit deferred list.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1328,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 6247
+  },
+  "cost_usd": 0.0290185,
+  "latency_s": 26.156,
+  "raw_file": "raw/judge-9dbce0c4ce87.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

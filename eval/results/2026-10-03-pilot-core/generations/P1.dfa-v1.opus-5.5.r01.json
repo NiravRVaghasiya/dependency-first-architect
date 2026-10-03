@@ -1,0 +1,120 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P1.dfa-v1.opus-5.5.r01",
+  "prompt_id": "P1",
+  "condition": "dfa-v1",
+  "generator": "opus-5.5",
+  "run_index": 1,
+  "seed": 2738867427,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Plan a customer-support RAG chatbot over our help-center docs.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P1.dfa-v1.opus-5.5.r01.md",
+  "output_sha256": "0245e17075963213007348066a6f16509a3b7d9a9817d803fb1e5083ae57c7b2",
+  "metrics": {
+    "words": 3343,
+    "chars": 21132,
+    "visible_tokens_est": 5283
+  },
+  "turns": 4,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p1f4bc0e3/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p1f4bc0e3/skills/dependency-first-architect/reference/ai-systems.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p1f4bc0e3/skills/dependency-first-architect/reference/evals.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "dependency-first-architect:dependency-first-architect",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "eval/conditions/dfa-v1.0.0/reference/ai-systems.md",
+      "sha256": "d9019167e05dac3611774515a2bf5e7fa8d84d95e999c4080eaa7d130b7cb986",
+      "words": 475
+    },
+    {
+      "path": "eval/conditions/dfa-v1.0.0/reference/evals.md",
+      "sha256": "0963dcac6ec329c02bb18cf61be28bef74fd706baf296a8726575d3bcc286b07",
+      "words": 399
+    },
+    {
+      "path": "eval/conditions/dfa-v1.0.0/reference/plan-template.md",
+      "sha256": "7ee2689530ddeb6e7687d0b4fb047e05fa76399fa898b7b64cea9dd27e06d55f",
+      "words": 439
+    }
+  ],
+  "started_at": "2026-10-02T23:25:05+00:00",
+  "finished_at": "2026-10-02T23:28:28+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [
+    "claude-opus-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 13346,
+    "thinking_tokens": 4976,
+    "cache_read_input_tokens": 3280,
+    "cache_creation_input_tokens": 6116
+  },
+  "cost_usd": 0.29818,
+  "latency_s": 202.678,
+  "raw_file": "raw/gen-P1.dfa-v1.opus-5.5.r01.txt"
+}

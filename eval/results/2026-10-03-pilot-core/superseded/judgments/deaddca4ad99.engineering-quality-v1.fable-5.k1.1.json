@@ -1,0 +1,33 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "deaddca4ad99.engineering-quality-v1.fable-5.k1",
+  "blind_id": "deaddca4ad99",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 104,
+  "status": "error",
+  "error": "model mismatch: requested 'claude-fable-5', but the provider reported ['global.anthropic.claude-opus-5[1m]']; not counted",
+  "validation_errors": [],
+  "scores": [],
+  "checklist": null,
+  "traps": null,
+  "note": null,
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "global.anthropic.claude-opus-5[1m]"
+  ],
+  "model_mismatch": true,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8405,
+    "thinking_tokens": 5745,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10464
+  },
+  "cost_usd": 0.275535,
+  "latency_s": 215.481,
+  "raw_file": "superseded/raw/judge-deaddca4ad99.engineering-quality-v1.fable-5.k1.1.txt"
+}

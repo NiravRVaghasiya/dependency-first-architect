@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "bbbf4f81cc07.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "bbbf4f81cc07",
+  "blind_sha256": "e317e46b97cc7304c04845b15cdfd2ff642d0856522a6997858f84cc672a7c1e",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 391,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Retrieved passages go in a delimited data block and are treated as data, never as instructions.",
+      "rationale": "Technically sound on sync, pgvector, citation validation, and redaction; minor issues like 'by design, 0 cases' claims and Presidio limits on names/free-text PII not acknowledged."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "in v1 the bot only answers questions from public help-center articles and hands off to a human through your existing ticketing system.",
+      "rationale": "Resolves the main ambiguity sensibly, covers the core needs, and lists explicit deferrals with pull-forward triggers."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Hosted API behind a `ModelClient` interface, with a fallback model",
+      "rationale": "Consistent design with clear system-of-record ownership; small loose ends, such as the hit-rate metric versus the rewrite step and cost-cap definitions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Hit rate@5 ≥ 0.85 (ASSUMPTION: curated corpus with hybrid search; about ±5 points of sampling error at n=200)",
+      "rationale": "Each validation targets a specific risk, thresholds are labeled provisional, risky items are checked early, and the canary and production review continue afterward."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Missing inputs (most plan-changing first): 1. Account-aware answers or actions in v1? I assumed no",
+      "rationale": "Assumptions are explicit, labeled, ranked, with revisit triggers and the changes they would cause."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Injection suite in CI covering user turns and a planted test article in a staging index.",
+      "rationale": "Covers hallucinated policy, leakage, injection, PII, runaway spend, abuse, provider outage, feedback poisoning, each with detection and fallback."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Rollback means redeploying the previous image digest, with the flag off as the kill switch.",
+      "rationale": "Deployment, rollback, SLO alerts, and ownership are concrete; the incident on-call process is thin and the team is assumed small."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "daily spend cap on the API key set at 2× the measured Phase 0 daily spend",
+      "rationale": "Cost drivers, caps, and the break-even test against human ticket cost are covered, but no per-conversation cost estimate is given, only an UNKNOWN."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: personal data sent to a vendor, or trained on, cannot be recalled",
+      "rationale": "Decisions are classified by reversibility, validated early, isolated behind seams, and given explicit exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "One service (API + ingestion worker), one managed Postgres with pgvector, one hosted LLM API; no self-hosted model or vector cluster",
+      "rationale": "Simple architecture with reranker and routing deferred; the heavy phase and gate ceremony, plus a 5-stage rollout, add some overhead."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: V1 and V2 pass. A synthetic runaway session is cut off at the cap and emits a cost metric.",
+      "rationale": "Phased order justified by dependencies, with a concrete first slice, checkable exits per phase, and fallback actions on failure."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "webhook-driven incremental sync, a nightly full reconcile, and unpublish handled as a priority delete"
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Chunk schema: article section with heading path, plus metadata (article ID, locale, product, updated_at, visibility)."
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "Labeled eval set of at least 200 PII-scrubbed real questions with their source passages, plus at least 100 questions the docs don't answer."
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "Answer only from retrieved passages, with validated citations. Abstain and offer handoff when the docs don't cover the question."
+    },
+    {
+      "id": "P1-05",
+      "status": 1,
+      "evidence": "Sensitive topics (refund or credit commitments, legal, security incidents, account-specific questions) get a fixed template plus handoff"
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "Retrieved passages go in a delimited data block and are treated as data, never as instructions."
+    },
+    {
+      "id": "P1-07",
+      "status": 1,
+      "evidence": "Index only published, publicly visible articles, filtered at ingestion (not at query time)"
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "Presidio redacts card numbers, government IDs, and similar before the LLM call and before logging."
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "It does not look up accounts or orders, and it does not issue refunds or change anything."
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "Weekly human review feeds corrections into the eval set and doc fixes."
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "≤ 6k input + 600 output tokens per turn; ≤ 15 turns per session; daily spend cap on the API key"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Answer only from retrieved passages, with validated citations. Abstain and offer handoff when the docs don't cover the question."
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Index only published, publicly visible articles, filtered at ingestion (not at query time)"
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Prompt+RAG ... fine-tuning can't track edits"
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Eval report per prompt + model + index version; run per index version in CI"
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "with a reranker only if V4 needs it"
+    }
+  ],
+  "note": "Strong, well-scoped plan that avoids all traps. Remaining gaps are a stated per-conversation cost estimate, richer escalation triggers (user request and repeated failure), and retrieval-time entitlement filtering, which is deferred by design.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2214,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 17015
+  },
+  "cost_usd": 0.0646855,
+  "latency_s": 35.325,
+  "raw_file": "raw/judge-bbbf4f81cc07.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

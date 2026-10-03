@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ba8b5c90c4ec.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "ba8b5c90c4ec",
+  "blind_sha256": "636262867535d74257b6eced95b9e9a7415b107410aff3ccb07183cd67a501d3",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 33,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1 \"Build prompt-injection and guardrail defense\" ... \"Design and build retrieval index\"; Phase 0 skeleton already calls retrieval and model before guardrails",
+      "rationale": "Mostly substrate-upward with an explicit dependency map, but Phase 0 uses retrieval/model before the Phase 1 defenses and index are built, and V1/V2 gating is muddled across phases."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A GitHub webhook fires on a new issue in an internal test repo... Posts a comment... Logs the full trace and inference cost.",
+      "rationale": "Phase 0 is a real end-to-end deployed slice with rollback and exit check, though the E1 spike exception muddies it slightly."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"V1 fails, or cost per issue stays > $0.10 despite optimization\" → reconsider fine-tune or cheaper model",
+      "rationale": "A tradeoff table lists irreversible decisions with reversibility, default, and explicit flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Phase 1 ordering: guardrails, cost budget, retrieval index, HITL gating, then observability",
+      "rationale": "Broad-impact items like guardrails come early within Phase 1, but observability is placed last and there's no explicit blast-radius ordering."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"tool allow-list (comment only); no auto-write execution tested\"; each phase has a Security cell",
+      "rationale": "Security has concrete treatment in every phase from Phase 0 through 4."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: \"Structured logging (JSON): issue ID, suggestion, confidence, retrieval latency, model latency, token usage, cost; trace ID per issue\"",
+      "rationale": "Observability is concrete from Phase 0 and extended in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Phase 0: \"Log all model inputs (issue + retrieval results); store in versioned config; dry-run mode available\"",
+      "rationale": "Reproducibility appears per phase, but it's thin on environment and infra (no IaC, lockfiles) and the claim that replay gives the same suggestions is weak."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: \"Model API retry (3 attempts, exponential backoff); degraded response if budget exhausted; rollback: kill webhook\"",
+      "rationale": "Resilience and rollback are specified concretely in each phase."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "\"Prompt-injection / guardrail defense\" Phase 1; \"Model access\" Phase 0 (skeleton)",
+      "rationale": "The layers are enumerated in order, but the skeleton has model access and retrieval before defenses, budgets and HITL are built, which breaks the required order."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Auto-PR creation: Phase 4 gate (V4 cost + quality)... Trigger: V4 passes, V3 quality ≥ 75%, org approves.\"",
+      "rationale": "A deferred list gives each item a concrete pull-forward trigger."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is strong on skeleton, tradeoff gates, and threaded security, observability and resilience. It is weakened by the Phase 0 ordering, where retrieval and model run before the defenses exist, and by some inconsistencies such as the E1 exception and phase/V-gate muddling.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1293,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 14138
+  },
+  "cost_usd": 0.048283,
+  "latency_s": 33.159,
+  "raw_file": "raw/judge-ba8b5c90c4ec.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

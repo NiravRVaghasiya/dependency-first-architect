@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "1b823e8478d6.engineering-quality-v1.fable-5.k1",
+  "blind_id": "1b823e8478d6",
+  "blind_sha256": "69d1b8565c94d85883f620392864ab70abd05c40910be2e21933eb37a8254173",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 402,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Applying a Yjs update twice changes nothing, so duplicates only cost storage, and compaction removes them.",
+      "rationale": "Claims about CRDT idempotence, OT's central-ordering requirement, debounce durability gaps, y-prosemirror schema-deletion risk and NOTIFY transactional semantics are all accurate, and uncertain behaviors are flagged for verification rather than asserted."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Non-goals for beta: spreadsheets and slides, native mobile apps, full offline-first use... suggestion or track-changes mode",
+      "rationale": "Delivers exactly the requested build order for a real-time co-editor, resolves unspecified scale/team/offline ambiguities with labeled assumptions, and is credibly buildable by 5 engineers on an OSS stack with justified exclusions."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "`api` owns everything that isn't document content... `collab` ... Does not: store metadata or comments, or make its own permission decisions",
+      "rationale": "Clear ownership per table and component, decisions honored everywhere (D4's idempotent log makes D6's any-instance model safe), identity via one collab-token mechanism, with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Fuzz: 1,000 runs, 0 divergence... the e2e test kills the `collab` task during typing, and all text is present after reconnect",
+      "rationale": "Week-1 spikes test the riskiest decisions before commitment, convergence fuzzing and crash injection block release, targets are labeled assumptions, and a production synthetic probe continues validation after launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "A1–A10... Impact if wrong... How and when validated",
+      "rationale": "Every design-bearing assumption is explicit with sensitivity (e.g. E2E encryption 'changes the design at the root') and a confirmation owner and date; estimates are consistently marked '(Assumption)'."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "The remaining exposure: Alice closes the tab *and* IndexedDB isn't available (private browsing)... We accept this risk.",
+      "rationale": "Covers divergence, crash-during-typing, DB outage, duplicates, missed revocation notifications with a backstop, reconnect storms, malformed/oversized input and malicious modified clients, each with concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Alerts, each linked to a runbook in `docs/runbooks/`: `unpersisted_age_seconds` over 10 s",
+      "rationale": "Domain-meaningful signals (unpersisted age, synthetic probe), ECS rollback under 10 minutes, expand-then-contract migrations, named runbooks and business-hours on-call sized to a 5-person team."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Roughly $600–1,000/month for prod plus staging at beta... Main drivers are RDS size and IOPS from `doc_updates`.",
+      "rationale": "Identifies dominant drivers, gives ranged estimates with controls (budgets, compaction threshold, S3 trigger) and quantifies the build-vs-buy trade-off (4–6 weeks vs per-connection vendor cost)."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Reversibility | ... D1 ... **Hard** (stored format) | S1 finds divergence or performance problems we can't fix",
+      "rationale": "Hard-to-reverse choices (stored CRDT format, editor schema) are explicitly flagged, validated in week-1 spikes, with stated exit paths and a named 'point of no return' for schema writes."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Deferred: Doc-affinity routing, multi-region | Hot documents or latency data beyond A2",
+      "rationale": "Single region, one Postgres, Redis deferred to M3, and a long deferred list with triggers; every component is justified and essentials are not cut."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "*Changes the plan if:* the hooks can't send acks after commit... Then we drop Hocuspocus and write a server on y-protocols (+2–3 weeks",
+      "rationale": "Day-1 tasks with 'Done when' criteria, dependency-justified ordering with a marked critical path, checkable milestone exits, and explicit adaptation paths if spikes disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "Edits are merged with a **CRDT (Yjs)**, not operational transformation... OT needs a single ordering server per document and makes offline harder."
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "One definition of allowed document nodes and marks, plus `SCHEMA_VERSION`"
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "runs N Yjs clients... random inserts, deletes and formatting, random disconnects and a server restart. It asserts that every client... are byte-identical."
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "append-only log of updates plus a compacted snapshot in Postgres... The server tells each client which of its edits are committed to the database."
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "The provider reconnects with 0.5–2 s jittered backoff through the ALB to `collab-2`... Redis relays updates and presence across instances (M3)."
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "\"Offline\" means surviving minutes to hours of disconnect in an open tab, plus tab close via IndexedDB"
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "Every `collab` instance listening on that channel finds Bob's connections, re-reads his role from the DB, and switches them to read-only"
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Restore doesn't rewrite history, so it's safe for live collaborators."
+    },
+    {
+      "id": "P5-09",
+      "status": 2,
+      "evidence": "The Yjs sync and awareness binary protocol... Redis... Relays updates and awareness between `collab` instances. Not a store."
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "M1: First end-to-end slice + spikes... Out: comments, versions, sharing UI."
+    },
+    {
+      "id": "P5-11",
+      "status": 2,
+      "evidence": "documents up to 10 MB, after which they turn read-only and raise an alert; 100 connections per document; at most 50 updates per second per connection"
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "Readers ship one release before writers... the `collab` auth hook rejects older clients with `reload-required`."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "Edits are merged with a **CRDT (Yjs)**, not operational transformation."
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Time to market... Rules out building merge algorithms from scratch."
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "M1... Shows the full path (browser → `collab` → Postgres → other browser) through the real pipeline."
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "\"Saved\" is a real guarantee. The server tells each client which of its edits are committed to the database."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "y-prosemirror can **delete** content it can't map to an older client's schema *(to verify in S1)*"
+    }
+  ],
+  "note": "An exceptionally strong plan: correct CRDT/durability reasoning, risk-first spikes and build order, and explicit assumptions; the only soft spots are unspecified rich-text merge semantics (delegated to y-prosemirror) and collaborative undo behavior.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 10330,
+    "thinking_tokens": 7475,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 25068
+  },
+  "cost_usd": 0.8307400000000001,
+  "latency_s": 150.046,
+  "raw_file": "raw/judge-1b823e8478d6.engineering-quality-v1.fable-5.k1.txt"
+}

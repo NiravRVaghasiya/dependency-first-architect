@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "96a965c9ca64.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "96a965c9ca64",
+  "blind_sha256": "2f5124ce8f232052c163daf4cdb69889254dedeb4df3bb61dfa41d0861088729",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 467,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Point systems at DNS names or the interface engine, not IP addresses. This makes the switchover a configuration change.",
+      "rationale": "Broadly ordered discovery → foundation → data → connections → test → cutover, but phases overlap, migration approach is chosen after discovery starts, and nothing is 'proven' before dependents are specified."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 0: Discovery and governance (weeks 1–4)",
+      "rationale": "Phase 0 is discovery; no thin end-to-end production path exists until the Phase 6 cutover."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Recommendation for most hospitals: lift and shift, or move to a managed database, with continuous data copying. Modernize after the move is stable.",
+      "rationale": "Some decisions have defaults (approach, second region open), but there are no explicit flip conditions or a consolidated irreversible-decision list."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Every connection to other systems. This is usually where moves fail",
+      "rationale": "Some widest-impact-first thinking (network, identity, security in foundation; interface engine as main switch), but no explicit blast-radius ordering within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Security: encryption at rest and in transit, customer-managed keys, private endpoints, no public database access, network segmentation.",
+      "rationale": "Security is strong in governance, foundation, and testing, but absent in the data copy and connections phases and is mostly a foundation block plus a late pen test."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Dashboards: response time, error rates, HL7 queue depth and acknowledgment failures, reminder delivery rates, booking volume",
+      "rationale": "Logging is set up in Phase 2 and dashboards appear in Phase 7, but Phase 0 has no observability, and data checks in Phase 3 are only partial coverage."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Infrastructure as code (Terraform, Bicep), so environments can be rebuilt the same way and audited.",
+      "rationale": "IaC and matching app version appear in Phases 2–3, but reproducibility is not threaded through later phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Have a way back at every step. Before going forward, you should be able to return to the old system within minutes without losing data.",
+      "rationale": "Resilience appears from foundation (multi-AZ, backups), through reverse copy, queueing, failover tests, and rollback, but not with concrete treatment in every phase, e.g. Phase 0–1."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so there is no explicit N/A declaration."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Later improvements: cost tuning, managed services, a FHIR scheduling API, autoscaling.",
+      "rationale": "Deferred items are listed, along with 'modernize after the move is stable', but there are no pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A competent, domain-aware migration runbook with strong cutover and rollback design, but it has no walking skeleton, no explicit flip-condition gates, and no AI-N/A declaration, and it threads security, observability, and reproducibility only partially.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1184,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 5407
+  },
+  "cost_usd": 0.0253655,
+  "latency_s": 25.782,
+  "raw_file": "raw/judge-96a965c9ca64.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

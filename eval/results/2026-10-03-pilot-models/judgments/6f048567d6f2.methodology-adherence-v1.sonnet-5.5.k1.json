@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "6f048567d6f2.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "6f048567d6f2",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 11,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Build this before realtime so the sync layer can enforce it from the start.",
+      "rationale": "Mostly substrate-upward (model, auth, sync, UX, scale), but nothing is proven before dependents are specified and observability/security are placed last."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 1: Single-user editor (no networking)",
+      "rationale": "No thin end-to-end production path first; the first milestone is a local solo editor and live collaboration only arrives in Phase 4."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "For most new projects, use **Yjs** unless you have a specific reason not to.",
+      "rationale": "Irreversible decisions are listed up front with a default for CRDT, but flip conditions are vague and other choices lack defaults or revisit triggers."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Build this before realtime so the sync layer can enforce it from the start.",
+      "rationale": "Some ordering by impact (data model and auth before sync), but later phases, such as features and hardening, are not ordered by blast radius."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Do a security review: WebSocket auth, authorization on every update, XSS in content, and input validation.",
+      "rationale": "Auth and permissions appear in Phases 3–4, but the security review and most of the checks are deferred to Phase 9."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "Add observability: metrics for sync latency, connection counts, and document size. Add error tracking too.",
+      "rationale": "Observability is only in the Phase 9 hardening step, not from day zero."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There is no mention of reproducible builds, environments, CI, or infrastructure as code."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Handle reconnection with exponential backoff and resync.",
+      "rationale": "Resilience appears in Phases 4, 6, 7, and 9 (reconnect, offline, rate limits, backups), but not in the early phases."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so it does not declare the AI layer N/A."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "Phase 8: Features on top",
+      "rationale": "Later features are sequenced, but there is no explicit list of deferred work with pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A sensible feature-ordered plan, but it has no production walking skeleton. Observability, security, and reproducibility are deferred or absent, and it has no deferral triggers and no AI-N/A statement.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 964,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 2545
+  },
+  "cost_usd": 0.0161235,
+  "latency_s": 25.54,
+  "raw_file": "raw/judge-6f048567d6f2.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

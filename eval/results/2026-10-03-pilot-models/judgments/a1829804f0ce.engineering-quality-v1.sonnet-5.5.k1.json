@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a1829804f0ce.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "a1829804f0ce",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 101,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Eventual convergence (AP) using a CRDT. Edits apply locally and merge later, so editing survives disconnects.",
+      "rationale": "Yjs, state-vector resync, server-side ack-after-commit, and E2EE conflict are stated accurately; minor imprecision (consistent-hash 'single writer', 'should be 0' RPO vs 5s, no tombstone/GC detail) remains."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Adopt open-source Yjs, self-hosted. Do not write a CRDT.",
+      "rationale": "Covers core capabilities with explicit deferrals (comments, version history UI, offline mobile), but rich-text merge semantics and version history are deferred or thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "One codebase, two runtime processes: a stateless API (auth, metadata, sharing) and a stateful sync gateway (WebSocket).",
+      "rationale": "Responsibilities and data ownership are clear; minor loose ends: the '≤3 deployables (web, API, sync)' versus two processes, and async snapshot workers not counted."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "0 lost acknowledged edits over 1,000 kill trials; restored state byte-identical; revoked user is disconnected within 5 s (ASSUMPTION)",
+      "rationale": "Validation is tied to specific risks, done early (V1 spike before commitment), with checkable labeled thresholds and post-launch SLO-gated staged exposure."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Missing inputs: Data classification and compliance regimes... Needed before V2; they could change the tenancy and residency rows.",
+      "rationale": "Assumptions are labeled, missing inputs are named with owners and deadlines, and revisit triggers say what would change."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Paste and import sanitization (XSS); Fails closed; connection and size caps",
+      "rationale": "Covers crash/durability, revocation, cross-tenant, abuse limits and chaos, but malicious Yjs update validation, tombstone bloat and poison-update handling are not explicit."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "deploys to production behind a feature flag, with a one-command rollback to the previous image.",
+      "rationale": "Deploy, rollback, dashboards, SLO alerts and runbooks are present; incident ownership and rolling-deploy protocol compatibility are thinner."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Infrastructure cost | Cost per active doc-hour | UNKNOWN (missing input: budget ceiling",
+      "rationale": "Cost is measured and gated and build vs buy is noted, but there is no analysis of cost drivers (memory per hot doc, websocket connections, log storage) or growth."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3 (data gravity: every stored doc is in the library's format)",
+      "rationale": "Reversibility classes are assigned to each decision, R3 decisions are validated first by V1 and frozen, and flip triggers and compaction point of no return are explicit."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "≤ 3 deployables (web, API, sync) plus Postgres and one object store",
+      "rationale": "Mostly proportionate with a monolith and a single Postgres; some ceremony (penetration test, Kubernetes/ECS, dense validation IDs) is heavy but justified by confidentiality."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Run the V1 spike: convergence, encoding, schema versioning, and size. Freeze the document schema, ID scheme, update-log format",
+      "rationale": "Build order is justified by dependencies and risk, with concrete tasks, exit checks, evidence locations and failure fallbacks."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "Adopt open-source Yjs, self-hosted. Do not write a CRDT."
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Freeze the document schema, ID scheme, update-log format, and sync protocol with version fields."
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "5 simulated clients, 10k random edits with network partitions and reordering"
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "The server acknowledges an edit only after it is committed to the log (group commit, 50 ms batches)."
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "Consistent-hash routing so every editor of a doc hits the same sync node (single writer per doc)."
+    },
+    {
+      "id": "P5-06",
+      "status": 1,
+      "evidence": "Client offline buffering and reconnect"
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "Re-check permissions on role changes and revocation, by disconnecting live sessions."
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Add undo/redo scoped per user."
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "Add presence and cursors (ephemeral, never persisted)."
+    },
+    {
+      "id": "P5-10",
+      "status": 1,
+      "evidence": "Phase 0 two users type; Phase 1 V1 spike; Phase 2 durability; Phase 4 features"
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "500k characters, 2 MB encoded state; Load test with 50 editors on a doc"
+    },
+    {
+      "id": "P5-12",
+      "status": 1,
+      "evidence": "Protocol version negotiation"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "Eventual convergence (AP) using a CRDT."
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Do not write a CRDT."
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Phase 0: Two allow-listed internal users open the same document... User B sees it."
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "The server acknowledges an edit only after it is committed to the log"
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "End-to-end encryption... would conflict with server-side merging"
+    }
+  ],
+  "note": "Strong, risk-ordered plan that adopts Yjs and validates it early with durability and authz gates; weaker on rich-text merge semantics, undo and version history detail, large-doc memory and cost drivers.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2236,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 13741
+  },
+  "cost_usd": 0.056905500000000005,
+  "latency_s": 45.519,
+  "raw_file": "raw/judge-a1829804f0ce.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

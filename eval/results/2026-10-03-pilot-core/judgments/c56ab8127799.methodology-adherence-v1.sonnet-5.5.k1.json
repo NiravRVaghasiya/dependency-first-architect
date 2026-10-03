@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "c56ab8127799.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "c56ab8127799",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 212,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Depends on column: M2 \"M1, S1\"; M3 \"M2\"; M4 \"M3; a full calendar billing cycle in shadow\"; tasks ordered T6 → T7 → T8 → T10",
+      "rationale": "Substrate (CI, Terraform, RLS, money, ledger) precedes features, and spikes are run before the work that depends on them, with explicit dependencies per milestone and task."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "M1: Thin slice + spikes... Billing run → finalise → ledger → Stripe test charge → `invoice.paid` webhook. CI/CD to staging.",
+      "rationale": "M1 is a real end-to-end slice through the production pipeline with a nightly E2E test, before breadth features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D2 ... Hard | Residency contract, a tenant over 20% of load, or a contractual demand for a dedicated DB → deploy a cell",
+      "rationale": "The decision table gives options, a reversibility rating and a revisit trigger for each, and assumptions carry validation plans; ADRs for the hard ones come in week 1."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Order: T0, T1, T3, T6, T9, T13... start in week 1. T2/T4/T7/T11/T12 follow... T10/T14/T15/T16 in weeks 3–5.",
+      "rationale": "Wide-impact items (accounts, Terraform, RLS, tenancy, money, engine) come before leaf features, and the isolation harness is built before the endpoints."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Isolation suite green (M1); staff RBAC in M2; tax/pen test/break-glass in M4; supply chain \"Critical CVEs block release (M1)\"",
+      "rationale": "Security has concrete treatment in each milestone: M1 RLS, keys and CVE gating; M2 RBAC/Auth0; M3 audit hash chain; M4 pen test and break-glass."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "T20: Add observability baseline: OTel SDK in all 3 apps, Datadog exporter, the M1 alerts... Observability (baseline in M1, complete in M3)",
+      "rationale": "Baseline observability with fault-injected alerts ships in M1 and is extended in later milestones, though T20 is sequenced late within M1."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform for all infrastructure... migrations up/down against a Postgres 16 service container; engine_version and inputs_hash stored on each invoice",
+      "rationale": "IaC, CI migrations, synthetic seed data, versioned engine with reproducible snapshots, and local/staging/prod parity are present from M1 onward."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Kill switches (M1); `unknown` payment state + reconciler; deployment circuit breaker with auto-rollback; restore drill in M4",
+      "rationale": "Failure handling runs through every phase: M1 idempotency, kill switches and rollback; M2 dunning; M3 reconciliation and fault injection; M4 restore drill."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "AI-specific concerns: Not applicable. The plan has no AI or model components.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Deferred | Trigger to build: EU cell... First signed tenant requiring residency; Second PSP adapter | Q2 / over 30% of pipeline",
+      "rationale": "The deferred table lists non-goals with pull-forward triggers, plus stubs per milestone and deliberate debt with repayment conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "An exceptionally thorough plan that meets every rubric dimension with concrete content; the only small weakness is that observability (T20) is sequenced late within M1.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1400,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 28517
+  },
+  "cost_usd": 0.0854135,
+  "latency_s": 27.462,
+  "raw_file": "raw/judge-c56ab8127799.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

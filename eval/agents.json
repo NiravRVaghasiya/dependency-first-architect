@@ -1,0 +1,20 @@
+[
+  {
+    "agent": "Claude Code",
+    "artifact": "SKILL.md + reference/",
+    "install": "git clone --depth 1 https://github.com/NiravRVaghasiya/dependency-first-architect ~/.claude/skills/dependency-first-architect",
+    "notes": "The full skill: SKILL.md plus the reference files it loads on demand (plan template, validation examples, AI layer). Invoke with /dependency-first-architect or let the description trigger it."
+  },
+  {
+    "agent": "Cursor",
+    "artifact": "adapters/cursor-dependency-first-architect.mdc",
+    "install": "mkdir -p .cursor/rules && curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/dependency-first-architect/main/adapters/cursor-dependency-first-architect.mdc -o .cursor/rules/dependency-first-architect.mdc",
+    "notes": "Generated from SKILL.md by build.py (alwaysApply: false). The reference/ files are not bundled, so plans do not get the exact output template."
+  },
+  {
+    "agent": "Codex",
+    "artifact": "adapters/AGENTS.md",
+    "install": "{ printf '\\n'; curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/dependency-first-architect/main/adapters/AGENTS.md; } >> AGENTS.md",
+    "notes": "Generated from SKILL.md by build.py and read in every session (about 16 KB). The reference/ files are not bundled, so plans do not get the exact output template. Alternative lazy install (adapters/codex/, see README): a ~1 KB AGENTS.md block that tells Codex to read the whole skill, reference files included, from .codex/dependency-first-architect.md only when a request matches; not yet tested in Codex."
+  }
+]

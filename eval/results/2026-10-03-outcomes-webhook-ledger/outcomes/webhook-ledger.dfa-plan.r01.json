@@ -1,0 +1,621 @@
+{
+  "schema": "dfa-eval/outcome-attempt@1",
+  "attempt_id": "webhook-ledger.dfa-plan.r01",
+  "task": "webhook-ledger",
+  "arm": "dfa-plan",
+  "run_index": 1,
+  "plan_gen_id": "webhook-ledger.dfa.opus-5.5.r01",
+  "plan_sha256": "a678e428acf2e3ddbced48e9f93c38bb3d147e74e5f164605907d3f23387a90a",
+  "rounds": [
+    {
+      "round": 1,
+      "status": "ok",
+      "error": null,
+      "implementer": {
+        "provider": "claude-cli",
+        "model_requested": "claude-sonnet-5-5",
+        "models_used": [
+          "claude-sonnet-5-5"
+        ],
+        "model_mismatch": false,
+        "usage": {
+          "input_tokens": 16,
+          "output_tokens": 13809,
+          "thinking_tokens": 4955,
+          "cache_read_input_tokens": 83517,
+          "cache_creation_input_tokens": 27453
+        },
+        "cost_usd": 0.22345790000000001,
+        "latency_s": 133.794,
+        "raw_file": "raw/impl-webhook-ledger.dfa-plan.r01-r1.txt",
+        "turns": 12
+      },
+      "code_sha256": "4cfc1097ce2da9d69c4eaeefc8f6a6a55578afac3874780ff44ce5d094630184",
+      "files": [
+        {
+          "path": "ledger/__init__.py",
+          "sha256": "0a251d4a25ce528df994604f4529fa4afce09de746f4d8c928da4f69fb8b30fe",
+          "lines": 1
+        },
+        {
+          "path": "ledger/service.py",
+          "sha256": "ce7d01632df327e9593a520126ae4e35d6432660a77e9c19aa7a0dfa01ce1b25",
+          "lines": 314
+        }
+      ],
+      "tests": {
+        "status": "ok",
+        "error": null,
+        "by_category": {
+          "failure-injection": {
+            "passed": 2,
+            "total": 2
+          },
+          "functional": {
+            "passed": 9,
+            "total": 9
+          },
+          "idempotency": {
+            "passed": 6,
+            "total": 6
+          },
+          "money": {
+            "passed": 5,
+            "total": 5
+          },
+          "ordering": {
+            "passed": 3,
+            "total": 3
+          },
+          "security": {
+            "passed": 10,
+            "total": 10
+          }
+        },
+        "tests": [
+          {
+            "id": "test_atomicity.FailureInjection.test_failed_write_during_a_payment",
+            "category": "failure-injection",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_atomicity.FailureInjection.test_failed_write_during_a_refund",
+            "category": "failure-injection",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_accounts_are_independent",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_full_refund_takes_the_money_back",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_header_name_in_any_case",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_malformed_json_is_rejected",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_missing_field_is_rejected",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_payment_credits_the_account",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_payments_accumulate_in_order",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_unhandled_event_type_is_acknowledged_and_ignored",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_unknown_account",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_idempotency.Idempotency.test_five_deliveries_count_once",
+            "category": "idempotency",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_idempotency.Idempotency.test_redelivered_payment_counts_once",
+            "category": "idempotency",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_idempotency.Idempotency.test_redelivered_refund_counts_once",
+            "category": "idempotency",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_idempotency.Idempotency.test_redelivered_unhandled_event_is_harmless",
+            "category": "idempotency",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_idempotency.Idempotency.test_redelivery_after_a_restart_counts_once",
+            "category": "idempotency",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_idempotency.Idempotency.test_redelivery_after_other_events",
+            "category": "idempotency",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_money.Money.test_balance_is_an_integer",
+            "category": "money",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_money.Money.test_fractional_amount_is_rejected",
+            "category": "money",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_money.Money.test_large_amounts_stay_exact",
+            "category": "money",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_money.Money.test_payment_in_another_currency_does_not_change_the_account",
+            "category": "money",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_money.Money.test_string_amount_is_rejected",
+            "category": "money",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_ordering.Ordering.test_early_refund_for_one_payment_does_not_touch_another",
+            "category": "ordering",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_ordering.Ordering.test_payments_delivered_out_of_order_both_count",
+            "category": "ordering",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_ordering.Ordering.test_refund_before_its_payment_is_not_lost_or_doubled",
+            "category": "ordering",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_deliveries_inside_the_window_are_accepted",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_future_dated_delivery_is_rejected",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_malformed_signature_header_is_rejected",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_missing_signature_is_rejected",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_same_id_with_a_different_body_is_rejected",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_signature_covers_the_exact_bytes",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_stale_delivery_is_rejected",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_tampered_body_is_rejected",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_the_window_uses_the_signature_time_not_the_event_time",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_wrong_signature_is_rejected",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          }
+        ]
+      },
+      "diff_from_previous": null
+    },
+    {
+      "round": 2,
+      "status": "ok",
+      "error": null,
+      "implementer": {
+        "provider": "claude-cli",
+        "model_requested": "claude-sonnet-5-5",
+        "models_used": [
+          "claude-sonnet-5-5"
+        ],
+        "model_mismatch": false,
+        "usage": {
+          "input_tokens": 16,
+          "output_tokens": 9998,
+          "thinking_tokens": 3297,
+          "cache_read_input_tokens": 92160,
+          "cache_creation_input_tokens": 30891
+        },
+        "cost_usd": 0.1956715,
+        "latency_s": 87.512,
+        "raw_file": "raw/impl-webhook-ledger.dfa-plan.r01-r2.txt",
+        "turns": 16
+      },
+      "code_sha256": "192694637a832b0806c72e9cd941033e139fc2fe0816a4acc37d7c906a1ac8a6",
+      "files": [
+        {
+          "path": "ledger/__init__.py",
+          "sha256": "0a251d4a25ce528df994604f4529fa4afce09de746f4d8c928da4f69fb8b30fe",
+          "lines": 1
+        },
+        {
+          "path": "ledger/service.py",
+          "sha256": "1e0897db711437bffdd957350ac5c227c6c36ba86509b7beebc91a72ede165a4",
+          "lines": 359
+        }
+      ],
+      "tests": {
+        "status": "ok",
+        "error": null,
+        "by_category": {
+          "change-request": {
+            "passed": 7,
+            "total": 7
+          },
+          "failure-injection": {
+            "passed": 2,
+            "total": 2
+          },
+          "functional": {
+            "passed": 9,
+            "total": 9
+          },
+          "idempotency": {
+            "passed": 6,
+            "total": 6
+          },
+          "money": {
+            "passed": 5,
+            "total": 5
+          },
+          "ordering": {
+            "passed": 3,
+            "total": 3
+          },
+          "security": {
+            "passed": 10,
+            "total": 10
+          }
+        },
+        "tests": [
+          {
+            "id": "test_atomicity.FailureInjection.test_failed_write_during_a_payment",
+            "category": "failure-injection",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_atomicity.FailureInjection.test_failed_write_during_a_refund",
+            "category": "failure-injection",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_change_request.ChangeRequest.test_early_partial_refund_is_not_lost_or_doubled",
+            "category": "change-request",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_change_request.ChangeRequest.test_full_refund_still_works",
+            "category": "change-request",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_change_request.ChangeRequest.test_over_refund_is_rejected_with_422",
+            "category": "change-request",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_change_request.ChangeRequest.test_partial_refunds_accumulate",
+            "category": "change-request",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_change_request.ChangeRequest.test_redelivered_partial_refund_counts_once",
+            "category": "change-request",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_change_request.ChangeRequest.test_refunding_the_remainder_is_allowed",
+            "category": "change-request",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_change_request.ChangeRequest.test_single_refund_larger_than_the_payment_is_rejected_with_422",
+            "category": "change-request",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_accounts_are_independent",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_full_refund_takes_the_money_back",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_header_name_in_any_case",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_malformed_json_is_rejected",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_missing_field_is_rejected",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_payment_credits_the_account",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_payments_accumulate_in_order",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_unhandled_event_type_is_acknowledged_and_ignored",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_functional.Functional.test_unknown_account",
+            "category": "functional",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_idempotency.Idempotency.test_five_deliveries_count_once",
+            "category": "idempotency",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_idempotency.Idempotency.test_redelivered_payment_counts_once",
+            "category": "idempotency",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_idempotency.Idempotency.test_redelivered_refund_counts_once",
+            "category": "idempotency",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_idempotency.Idempotency.test_redelivered_unhandled_event_is_harmless",
+            "category": "idempotency",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_idempotency.Idempotency.test_redelivery_after_a_restart_counts_once",
+            "category": "idempotency",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_idempotency.Idempotency.test_redelivery_after_other_events",
+            "category": "idempotency",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_money.Money.test_balance_is_an_integer",
+            "category": "money",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_money.Money.test_fractional_amount_is_rejected",
+            "category": "money",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_money.Money.test_large_amounts_stay_exact",
+            "category": "money",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_money.Money.test_payment_in_another_currency_does_not_change_the_account",
+            "category": "money",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_money.Money.test_string_amount_is_rejected",
+            "category": "money",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_ordering.Ordering.test_early_refund_for_one_payment_does_not_touch_another",
+            "category": "ordering",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_ordering.Ordering.test_payments_delivered_out_of_order_both_count",
+            "category": "ordering",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_ordering.Ordering.test_refund_before_its_payment_is_not_lost_or_doubled",
+            "category": "ordering",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_deliveries_inside_the_window_are_accepted",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_future_dated_delivery_is_rejected",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_malformed_signature_header_is_rejected",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_missing_signature_is_rejected",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_same_id_with_a_different_body_is_rejected",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_signature_covers_the_exact_bytes",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_stale_delivery_is_rejected",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_tampered_body_is_rejected",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_the_window_uses_the_signature_time_not_the_event_time",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          },
+          {
+            "id": "test_security.Security.test_wrong_signature_is_rejected",
+            "category": "security",
+            "outcome": "pass",
+            "message": null
+          }
+        ]
+      },
+      "diff_from_previous": {
+        "files_changed": 1,
+        "lines_added": 65,
+        "lines_removed": 20
+      }
+    }
+  ]
+}

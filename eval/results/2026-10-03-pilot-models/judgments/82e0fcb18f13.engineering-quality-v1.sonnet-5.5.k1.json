@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "82e0fcb18f13.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "82e0fcb18f13",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 44,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Deploy secrets vault (HashiCorp Vault, sealed Kubernetes secrets)",
+      "rationale": "Mostly generic and plausible, but some oddities (ArgoCD listed as CI platform, sealed secrets equated with a vault, GitOps deferred to phase 7 after deployment strategies), and no hard-part claims."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Batch 1: Pilot Services (3-5 services) - Low-risk, well-understood services",
+      "rationale": "Covers the broad build sequence and includes an inventory and migration batches, but leaves tool selection open, has no exclusions, and builds the full Kubernetes infrastructure before any pilot."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Select CI/CD platform (Jenkins, GitLab CI, GitHub Actions, ArgoCD)",
+      "rationale": "The phases are recognizable, but the design is a list of options with no data flow or ownership of artifacts. Sequencing is inconsistent, with monitoring and GitOps coming after migration begins."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Don't move to Batch 2 until Batch 1 is stable",
+      "rationale": "The only validation is a vague pilot-stability gate, plus a few testing and DR items. There are no measurable criteria and no risk-targeted checks."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Estimated Total Timeline: 24-28 weeks (6-7 months)",
+      "rationale": "The plan states no assumptions about team size, existing stack or compliance. It gives a timeline with no basis and lists PCI/HIPAA/SOC2 generically."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Deployment rollback alerts",
+      "rationale": "Failure modes are barely named (DR testing, rollback alerts). The plan has no specific handling for CI outages, poisoned builds, secret leaks or bad migrations."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Runbook creation and maintenance - On-call procedures - Incident response processes",
+      "rationale": "Monitoring, on-call and runbooks are listed, but they come late and are generic, and there is no rollback or migration detail."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Cost Optimization - Resource utilization analysis - Infrastructure cost reduction - License optimization",
+      "rationale": "Cost is deferred to a hardening phase as a generic item, with no drivers, estimates or runner cost planning."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Select CI/CD platform (Jenkins, GitLab CI, GitHub Actions, ArgoCD)",
+      "rationale": "The plan makes no distinction between one-way and reversible decisions and gives no exit paths. Platform choice is left as a list."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Service mesh consideration (Istio, Linkerd)",
+      "rationale": "The plan is mostly proportionate, but it includes speculative items (service mesh, tracing, a UI, dependency visualization, Kubernetes cluster buildout, 24+ week scope) while omitting specifics."
+    },
+    {
+      "dim": 11,
+      "score": 2,
+      "evidence": "Create reusable pipeline templates/shared libraries",
+      "rationale": "The phases are ordered, but items are mostly option lists. Checkable outputs are missing and the plan has no adaptation path."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "Current state inventory of 50 microservices - Create reusable pipeline templates/shared libraries"
+    },
+    {
+      "id": "P3-02",
+      "status": 1,
+      "evidence": "Don't move to Batch 2 until Batch 1 is stable"
+    },
+    {
+      "id": "P3-03",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "Deploy secrets vault (HashiCorp Vault, sealed Kubernetes secrets)"
+    },
+    {
+      "id": "P3-05",
+      "status": 1,
+      "evidence": "Dependency scanning (OWASP, Black Duck)"
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Blue-green deployment setup - Canary deployment capabilities"
+    },
+    {
+      "id": "P3-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Integration testing automation"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Build caching optimization"
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Define infrastructure (self-hosted vs. cloud SaaS)"
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "DORA metrics tracking"
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "Audit logging for deployments - Change tracking and approval workflows"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Batch 1: Pilot Services (3-5 services)"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "none"
+    }
+  ],
+  "note": "A generic phased checklist with a sensible pilot-then-batches migration, but it is thin on security, immutable artifacts, validation criteria, costs and assumptions, and it leaves the major decisions open.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1935,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 10198
+  },
+  "cost_usd": 0.045038,
+  "latency_s": 45.613,
+  "raw_file": "raw/judge-82e0fcb18f13.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

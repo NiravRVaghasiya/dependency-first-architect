@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "39d9bbbf807d.probe.sonnet-5.5",
+  "blind_id": "39d9bbbf807d",
+  "judge": "sonnet-5.5",
+  "order_index": 55,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Rigid, templated structure: Classification and constraints, Dependencies, Key decisions, first end-to-end slice (Phase 0), Phases, Validation checks V0–V5, Cross-cutting concerns, AI layer, Exceptions, Deferred",
+    "Explicit labels on every number: ASSUMPTION / UNKNOWN / BASELINE, each with an owner and a deadline, and 'Missing inputs' that say what changes if the assumption is false",
+    "Reversibility ratings (R2/R3) on key decisions, with revisit triggers and 'validated by' V-IDs",
+    "Phase 0 is a walking skeleton deployed to production behind a flag, with rollback exercised and a V0 exit check, and it has a 'Day-zero guards' section",
+    "Fixed 9-sublayer 'AI layer' table (with Orchestration and Routing marked 'Not needed'), a per-phase cross-cutting matrix, and an 'Exceptions: None' section. These look like checklist items from a prescribed methodology."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 422,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7773
+  },
+  "cost_usd": 0.0236605,
+  "latency_s": 21.185,
+  "raw_file": "raw/probe-39d9bbbf807d.probe.sonnet-5.5.txt"
+}

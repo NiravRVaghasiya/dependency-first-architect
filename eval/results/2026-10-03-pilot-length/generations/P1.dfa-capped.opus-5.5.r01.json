@@ -1,0 +1,110 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P1.dfa-capped.opus-5.5.r01",
+  "prompt_id": "P1",
+  "condition": "dfa-capped",
+  "generator": "opus-5.5",
+  "run_index": 1,
+  "seed": 3334649150,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Plan a customer-support RAG chatbot over our help-center docs.\n\nLength limit: your entire answer must be at most 1500 words.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P1.dfa-capped.opus-5.5.r01.md",
+  "output_sha256": "25a313550005831283f901f3ab978a649d82149859eb37f51983878ecc3764db",
+  "metrics": {
+    "words": 1991,
+    "chars": 11380,
+    "visible_tokens_est": 2845
+  },
+  "turns": 3,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/ai-systems.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "dependency-first-architect:dependency-first-architect",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "reference/ai-systems.md",
+      "sha256": "623e02a2b37bbf9bd637a2689d1510179b4a3a65cada3e2f162c1ed11444d579",
+      "words": 855
+    },
+    {
+      "path": "reference/plan-template.md",
+      "sha256": "95ccaec942bf8a640ff4d830daada167a340b6b652242e2ed41aec6d24605c2a",
+      "words": 1257
+    }
+  ],
+  "started_at": "2026-10-02T23:53:23+00:00",
+  "finished_at": "2026-10-02T23:55:19+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [
+    "claude-opus-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 7813,
+    "thinking_tokens": 3049,
+    "cache_read_input_tokens": 7114,
+    "cache_creation_input_tokens": 11149
+  },
+  "cost_usd": 0.2134518,
+  "latency_s": 115.377,
+  "raw_file": "raw/gen-P1.dfa-capped.opus-5.5.r01.txt"
+}

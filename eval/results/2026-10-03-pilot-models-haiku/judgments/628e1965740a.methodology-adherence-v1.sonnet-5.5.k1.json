@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "628e1965740a.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "628e1965740a",
+  "blind_sha256": "0c715c5bc82ce6e98647259a57604da0b7bde935cb1735e27c5561524a65fee8",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 53,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Depends on: Phase 0 (V0 passing)\"; Phase 2 \"Depends on: Phase 1 (V1 retrieval gate passing)\"",
+      "rationale": "Phases build substrate upward with explicit dependencies and validation gates before each next phase; minor wrinkle that defenses land in Phase 2 after retrieval."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"One real support query (typed by an agent, not synthetic) succeeds... Deploy via CI/CD and rollback via flag toggle succeed within 2 minutes each.\"",
+      "rationale": "Phase 0 is a real end-to-end path through all tiers with deploy, logging, monitoring and rollback, though limited to internal users."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"Fine-tune if V1 retrieval hit-rate < 0.85 or if customer feedback after 3 months shows systematic gaps in RAG answers\"",
+      "rationale": "Table lists irreversible decisions with reversibility, default, assumption, and flip condition, plus labeled assumptions and unknowns."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "\"Choose and freeze embedding model\" is task 2 after chunking in Phase 1",
+      "rationale": "Some ordering reflects blast radius (rollout, feedback deferred), but within phases it is not explicit; e.g., embedding model freeze follows chunking and Phase 2 puts prompt tuning before safety filters."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"Jailbreak injection test in hand; ... feature flag gates access\"; Phase 1: \"PII scan on doc chunks before upsert\"",
+      "rationale": "Concrete security measures appear in every phase from Phase 0 onward."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"Structured JSON logs (request ID, query hash, doc count, latency, cost); Prometheus metrics... one dashboard\"",
+      "rationale": "Observability is concrete in Phase 0 and in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"Docker image versioned + pushed to registry; Helm chart pinned to image digest; vector store index versioned; embedding model version frozen\"",
+      "rationale": "Reproducibility measures are concrete in every phase via the cross-cutting table and tasks."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"if LLM timeout > 10 s, respond 'Please escalate to support'; if vector store down, respond 'Chatbot temporarily unavailable'\"",
+      "rationale": "Failure handling is specified in Phase 0 and every later phase."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "\"Phase 2 (built into prompt; 'if unsure, escalate')\" for human-in-the-loop; injection defense \"Phase 2\" while retrieval is Phase 1",
+      "rationale": "Layers are covered, but guardrails and HITL are built in Phase 2, after retrieval in Phase 1, violating defenses-first ordering; memory is odd in Phase 3; budget caps start Phase 0, which is good."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Multi-language support: Condition: > 20% of support queries in a non-English language.\"",
+      "rationale": "Deferred items are listed with explicit pull-forward conditions and reasons."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, well-gated plan with real skeleton and threaded concerns; main weakness is that AI defenses and human-in-the-loop come after retrieval (Phase 2), and intra-phase blast-radius ordering isn't explicit.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1326,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 12934
+  },
+  "cost_usd": 0.04560299999999999,
+  "latency_s": 40.024,
+  "raw_file": "raw/judge-628e1965740a.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

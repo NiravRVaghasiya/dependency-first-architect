@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "c5b5db86cf79.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "c5b5db86cf79",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 25,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "immutable images tagged by commit SHA, with SBOM generation.",
+      "rationale": "Technical claims are accurate (short-lived creds, Cosign+admission policy, canary via Argo Rollouts), with no material errors, though shallow on hard parts."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Choose one simple service, one typical service, and one awkward one. Build the whole path thinly",
+      "rationale": "Covers core capabilities and a realistic sequence, but exclusions are not explicit and it leaves the stack open."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Decisions → IaC/registry/secrets/runners → Pilot skeleton → Templates → Security/quality gates → Progressive delivery",
+      "rationale": "Consistent and clear dependency chain; minor loose end, as rollback is in Phase 2 and again in Phase 4, and progressive delivery comes after migration starts."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "The exit criterion is that a merge reaches production with no manual steps apart from the approval.",
+      "rationale": "There are exit criteria and go/no-go checks, but no measurable targets or specific risk-targeted validation, and no continued production validation beyond dashboards."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Most services usually fall into 3–5 (for example Java/Gradle API, Node service, Python worker, or frontend).",
+      "rationale": "Some assumptions are hedged, such as team size and archetypes, but the plan gives no sensitivity analysis and ends by asking for the stack."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Start in report-only mode, then move to enforcing.",
+      "rationale": "Covers adoption failures, rollback and gate rollout, but has little on secrets exposure from untrusted PRs, platform outage, flaky tests or DB migrations."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Set platform SLOs and an on-call rotation.",
+      "rationale": "Covers ownership, SLOs, on-call, template versioning and rollback, but with little concrete detail on signals or incident procedures, and it treats migrations thinly."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Add cost controls and FinOps for runners and registries.",
+      "rationale": "Cost is mentioned once with no estimates, no build volume reasoning and no hosted-versus-self-hosted trade-off, though team size is given."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Version the templates, so you can roll out changes to them safely.",
+      "rationale": "Decisions are made early (Phase 0) and highest-risk services go last, but the plan doesn't flag one-way decisions or exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Add these after the pipeline is stable. Start in report-only mode, then move to enforcing.",
+      "rationale": "Thin slice first, existing tools used, and complexity added incrementally. Backstage and feature flags are perhaps optional."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Services should consume them with about 10 lines of config.",
+      "rationale": "Ordered phases with weeks, exit criteria and waves make it actionable, but tool choices are open and intermediate checks are thin."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Inventory the 50 services. Record language, build tool, runtime, data stores, deploy target, owner, and criticality. ... templates per archetype"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Run the old and new pipelines in parallel for each service until it has had several successful production deploys."
+    },
+    {
+      "id": "P3-03",
+      "status": 1,
+      "evidence": "immutable images tagged by commit SHA, with SBOM generation."
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "Secrets management and workload identity. Use short-lived credentials, not static keys."
+    },
+    {
+      "id": "P3-05",
+      "status": 1,
+      "evidence": "Image signing and admission policy (Cosign and Kyverno/OPA)."
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Canary or blue-green deployments (Argo Rollouts or Flagger) with metric-based analysis."
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Integration and contract tests (Pact or similar), which matter a lot with 50 services."
+    },
+    {
+      "id": "P3-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Build only what changed in monorepos (path filters or affected-graph builds)."
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Runner/agent infrastructure that is autoscaled and has cache support."
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Set platform SLOs and an on-call rotation."
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "with an approval gate for prod only."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Migrating the most critical services first, or all services at once."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "immutable images tagged by commit SHA"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "Use short-lived credentials, not static keys."
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Each wave has a go/no-go check and gives feedback for the templates."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "CI engine, such as GitHub Actions, GitLab CI, or Jenkins."
+    }
+  ],
+  "note": "A sound, well-sequenced plan that pilots first and migrates in waves, but it is light on security specifics, test environments and flaky tests, database migrations, compute cost and measurable validation.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2023,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 9244
+  },
+  "cost_usd": 0.043533,
+  "latency_s": 47.352,
+  "raw_file": "raw/judge-c5b5db86cf79.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

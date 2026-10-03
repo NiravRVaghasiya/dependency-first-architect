@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "5129f7d23391.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "5129f7d23391",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 69,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1: Foundation ... Phase 2: Intelligence ... Phase 3: Automation (Weeks 5-6)",
+      "rationale": "Foundation→intelligence→automation is roughly substrate-upward, but safety/HITL comes late and nothing is proven before dependents."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 1: Foundation (Weeks 1-2) - GitHub webhook infrastructure, Event queue setup, Basic issue classifier (rule-based)",
+      "rationale": "Phase 1 is infrastructure components, not a thin end-to-end production slice; deployment is Phase 5."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "Language Model: Claude API / OpenAI GPT-4; Vector DB: Pinecone / Weaviate / Milvus",
+      "rationale": "Only option lists; no defaults, flip conditions, or irreversible decisions identified."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No ordering by blast radius within phases; auto-close and PR generation are just bulleted."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Never auto-close if: Created by core team members",
+      "rationale": "Safety is a standalone section, not threaded per phase; no authentication, webhook signature validation, secrets or prompt-injection treatment."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Phase 4: Optimization ... Dashboard & monitoring",
+      "rationale": "Monitoring and metrics exist in a standalone section and appear in Phase 4, not from Phase 0/1."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No reproducibility of builds, environments, data, or model versions; only a staging mention."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Phase 4: Error handling & fallbacks",
+      "rationale": "Circuit breaker, rollback and fallbacks exist but mostly in a standalone section and late phase."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Confidence Thresholds: > 95%: Execute action immediately ... < 60%: Queue for manual review",
+      "rationale": "HITL thresholds and LLM cost metric exist but are late; LLM and vector DB arrive together in Phase 2, auto-actions have no defenses or budgets up front, and the order is otherwise wrong."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No explicit deferred list or pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Generic feature-centric plan with a late-phase safety section, no walking skeleton, no decision gates and no deferral list; it scores low overall.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 985,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 6155
+  },
+  "cost_usd": 0.0253585,
+  "latency_s": 44.219,
+  "raw_file": "raw/judge-5129f7d23391.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "c916efee92ef.probe.sonnet-5.5",
+  "blind_id": "c916efee92ef",
+  "blind_sha256": "7fa1a1bb45419251d01a93e4cab3efb7e5ebaadcdf9d295a4a863d2a18dcdf8b",
+  "judge": "sonnet-5.5",
+  "order_index": 154,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.6,
+  "cues": [
+    "Rigidly numbered sections with fixed arc: Goal/scope, Technology, CLI, Pipeline, Error handling, Testing, Milestones, Open questions",
+    "Explicit 'Not in v1' scope exclusions and a closing 'Open questions' section asking the user for clarification, typical of a prescribed template",
+    "Opening 'Check first' callout suggesting an existing tool (ExifTool one-liner) before building, which looks like a deliberate methodology step",
+    "Explicit pipeline with validate/preview/apply stages, two-pass temp renames, and property tests for undo and idempotence, showing systematic risk and verification thinking",
+    "Milestone table with estimates and a technology choice table with 'Why' column; polished but could also be a strong default output"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 330,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3750
+  },
+  "cost_usd": 0.012683,
+  "latency_s": 23.351,
+  "raw_file": "raw/probe-c916efee92ef.probe.sonnet-5.5.txt"
+}

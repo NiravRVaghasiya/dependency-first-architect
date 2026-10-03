@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e5cac5b47deb.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "e5cac5b47deb",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 8,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 5 \"Depends on: the Phase 4 sandbox, the Phase 3 retrieval and model access, and Phase 2 HITL and budgets.\"",
+      "rationale": "Each phase lists explicit dependencies and the sandbox is proven before resolution is specified; the order runs substrate upward."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"a real issue on the sandbox repo gets a real comment in production, and its end-to-end trace plus the token and cost metric show up on the dashboard.\"",
+      "rationale": "Phase 0 is a real thin end-to-end slice (webhook→queue→LLM→GitHub comment) deployed to production before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"Autonomy ceiling | The agent never merges... | Per repo and per issue class only: more than 90% of 50+ PRs merged unedited with zero policy violations.\"",
+      "rationale": "A table of irreversible decisions gives defaults and concrete flip conditions, including the AI-specific ones."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "\"Diff policy gate (widest: it governs every PR).\" and Phase 1 permission model \"so it goes first\"",
+      "rationale": "Within phases, widest-impact items such as permissions, schema, policy gate and isolation come first, and the plan says so."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Cross-cutting table Phase 0 Security: \"HMAC webhook verification. App key in a secrets manager. Issue body delimited as untrusted. Label output allow-listed.\"",
+      "rationale": "Concrete security measures appear in every phase from Phase 0 through 7."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"One OpenTelemetry trace covers the full path: webhook, queue, LLM call, GitHub API.\"",
+      "rationale": "Observability is built in Phase 0 and each later phase has specific traces, metrics and alerts."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"GitHub Actions builds a container pinned by digest... Infra as code (Terraform). Migrations versioned. Prompt stored in the repo and hashed.\"",
+      "rationale": "Reproducibility is covered from Phase 0 (pinned images, IaC, migrations) and in every later phase (frozen eval set, pinned SHAs, versioned fixtures)."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0 Resilience: \"Idempotency on delivery ID. Fast 202 then async. Kill switch. Queue retries with backoff.\"",
+      "rationale": "Failure handling has concrete content in every phase, such as dead-letter queue, circuit breakers, fallback model and crash resume."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"Phase 2: Guardrails, budgets and HITL (AI defenses, before any new capability)\" then retrieval, model access, memory, orchestration, routing, feedback in Phases 3–6",
+      "rationale": "Defenses, budgets and HITL come before capabilities, and the layers follow the required order, with exit checks for each. Only a minor wrinkle: the memory/orchestration split happens inside Phase 5."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Multi-agent orchestration... Pulled forward if the single-loop success rate stops improving and traces show planning failures\"",
+      "rationale": "The deferred list is explicit and every item has a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "An unusually complete plan: it has a real production walking skeleton, explicit gates and flip conditions, security, observability, reproducibility and resilience threaded through every phase, and the AI layers in the right order. I found no significant weaknesses.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1350,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10248
+  },
+  "cost_usd": 0.039128,
+  "latency_s": 31.682,
+  "raw_file": "raw/judge-e5cac5b47deb.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

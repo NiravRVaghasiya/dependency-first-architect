@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "df1ac6c94f04.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "df1ac6c94f04",
+  "blind_sha256": "86a2a0c3e40e6cc676da1cec7826383ce1f12de0b3dc46162edb231e000c4921",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 11,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Depends on: V0 (skeleton runs), V1\"; Phase 3 depends on \"V3 (PCI compliance review...)\" before first live payment",
+      "rationale": "Phases run metering → invoicing → payments → launch with explicit gates; minor wobble (V4 placed before Phase 2 and tax in Phase 1 before inputs) doesn't break ordering."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"POST /internal/billing/events ... HTTP 201; event is persisted ... deploy succeeds through CI/CD ... rollback removes the pod\"",
+      "rationale": "Phase 0 is a real thin slice through gateway, service, Postgres, observability, CI/CD and rollback, though gated off in prod by flag."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"Single database vs multi-db per tenant | R3 ... Default: Single database, tenant ID on every row ... Flip: If V2 finds an isolation bypass, move to per-tenant DBs\"",
+      "rationale": "A table of nine irreversible decisions each has default, assumption, validator and flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "\"Tasks (in dependency order)\" ... Phase 1: \"Tenant isolation validation\" listed as task 4 after ingestion and aggregation",
+      "rationale": "Tasks are dependency-ordered, but widest-blast-radius work like tenant isolation isn't explicitly put first and no blast-radius ordering is stated."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"API token auth + VPN allow-list; rate limiting enabled; feature flag\"; Phase 1: \"static code analysis rule enforces WHERE tenant_id\"",
+      "rationale": "The cross-cutting table gives concrete security controls for every phase starting at Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: \"Structured logs (JSON) with request ID, tenant ID, latency; metric: billing_events_received\"; alert on injected failure in V0",
+      "rationale": "Observability is concrete in Phase 0 and each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"deploy is GitOps (exact revision tied to artifact)\"; \"revenue rules live in version-controlled YAML\"",
+      "rationale": "Each phase has specific reproducibility measures such as versioned schemas, deterministic jobs, and checked-in tests."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: \"Idempotency cache (24h TTL) ... events journaled before ack\"; Phase 1: \"DLQ for events that fail schema validation\"",
+      "rationale": "Concrete failure handling appears in every phase, including rollbacks and idempotency."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"N/A — no AI component. The revenue recognition rules are deterministic ... no agent or model involved.\"",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Chargeback management system ... Pulled forward if chargeback volume exceeds 1% of transactions. Condition: Phase 4 monitoring shows chargeback rate > 1%\"",
+      "rationale": "Five deferred items each come with a pull-forward condition, though a few are vague (X%)."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is strong across nearly all dimensions; its main weakness is that it doesn't explicitly order work within phases by blast radius. It also has a few loose ends, such as V4 placed before its phase and some unknown thresholds.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1320,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 13832
+  },
+  "cost_usd": 0.047788,
+  "latency_s": 29.037,
+  "raw_file": "raw/judge-df1ac6c94f04.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

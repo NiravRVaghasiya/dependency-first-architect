@@ -1,0 +1,172 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "2e78761e52da.engineering-quality-v1.fable-5.k1",
+  "blind_id": "2e78761e52da",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 60,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "POSIX `rename()` overwrites silently. Windows `os.rename` fails if the target exists. Case-only renames (`a.JPG` → `A.JPG`) behave differently",
+      "rationale": "Technical claims are accurate and precise throughout, including subtle areas (rename semantics per OS, EXIF timezone absence, QuickTime UTC, ExifTool CVE floor, exFAT hard-link limits, renameat2/renamex_np primitives)."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Non-goals (v1): Moving files into date folders. Editing or writing EXIF. Deduplication. A GUI.",
+      "rationale": "Solves exactly the stated problem, resolves ambiguities with stated defaults and open questions, excludes scope explicitly with reasons, and is clearly buildable by one developer in days."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Everything up to and including `planner` is read-only and deterministic. Only `executor` touches the filesystem",
+      "rationale": "Clear component responsibilities and data ownership, interfaces connect, and decisions (preview default, journal-first, skip-companions until grouping exists) are honored consistently with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Fault injection (monkeypatched `os.rename` raising, or the process killed, at every step N for a 20-file plan with a cycle",
+      "rationale": "Validation targets the specific risks (overwrite, wrong date, filesystem semantics) with early spikes before commitment, checkable criteria, 'plan changes if' triggers, and per-run post-apply verification."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Every assumption is marked **[A]** and listed in Section 5.",
+      "rationale": "Assumptions are explicit, reasonable, tabulated with impact-if-wrong and a validation step, and provisional figures (60 s target, 99% agreement) are labeled rather than asserted."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Hard crash or power loss: the next run finds a journal without `phase2_done` and refuses to continue.",
+      "rationale": "Covers partial failures, crash recovery, cycles, case-only renames, malicious files attacking the parser, concurrent-writer races, bogus dates and sidecar drift, each with concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "the author owns it. The README covers the undo procedure, exit codes and the no-concurrent-writers rule. There is no on-call.",
+      "rationale": "Exit codes, --json, verbose logging, journal-as-audit-trail, versioned journal format and pipx rollback give an operations story correctly sized to a single-maintainer CLI."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Milestone 1 (about 4–7 developer-days)",
+      "rationale": "Engineering time (the dominant cost) is estimated in labeled ranges and run cost is correctly zero, but build-versus-buy against existing tools (e.g., exiftool's own rename capability) is not weighed."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "`format_version` is hard to change, because `undo` must be able to read old journals. New fields are additive only",
+      "rationale": "The decision table rates reversibility with revisit triggers; the genuinely hard commitments (language, journal format) get extra care while reversible choices are made quickly."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "One Python package with a pipeline of pure, testable steps: scan → read metadata → choose date → plan → apply.",
+      "rationale": "Simplest design that fully meets the need; the journal/two-phase machinery is the one added complexity and it is directly justified by the data-safety requirement."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Day 1: T1, S1, S2 and S3 in parallel. Then T3, T2 and T4 (after S2), and T5, in parallel. T6 → T7 → T8 → T9",
+      "rationale": "Dependency-justified ordering, concrete tasks with checkable 'done when' criteria, and explicit 'plan changes if' adaptations mean a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "Precedence is `DateTimeOriginal`, then `CreateDate`, then none. `ModifyDate` is never used, because editing software changes it."
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "Rejects zero dates, unparseable dates, dates before 1990, and dates more than 1 day in the future."
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "Files that map to the same target get `_01`, `_02` and so on. Order is sub-second value, then original filename"
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "Preview by default. Nothing is renamed without `--apply`."
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "Phase one renames to unique temporary names, phase two to the final names. This handles name swaps, case-only renames and crashes"
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "The journal records the full plan, including tool version, run ID, directory, and for each entry the source, temporary name"
+    },
+    {
+      "id": "P7-07",
+      "status": 2,
+      "evidence": "EXIF stores no timezone unless `OffsetTimeOriginal` is present. QuickTime dates are stored in UTC."
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "Companion grouping (RAW+JPEG, `.xmp`, `.aae`, Live Photo `.mov`)"
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "Colons are not used because Windows forbids them in filenames."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "**Never overwrite.** Name collisions get deterministic suffixes (`_01`, `_02`)."
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "0 files renamed from `ModifyDate` or filesystem time unless the user opts in."
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "One Python package with a pipeline of pure, testable steps"
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "the only change is the rename. Contents and modification times are never touched."
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "Each target is `strftime(\"%Y-%m-%d_%H-%M-%S\")` plus the original extension."
+    }
+  ],
+  "note": "An exemplary plan: technically precise on rename/EXIF subtleties, safety-first (preview, two-phase journal, undo), risk-targeted validation, and proportionate scope; only build-vs-buy cost reasoning is thin.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7027,
+    "thinking_tokens": 4558,
+    "cache_read_input_tokens": 911,
+    "cache_creation_input_tokens": 19840
+  },
+  "cost_usd": 0.6002810000000001,
+  "latency_s": 834.119,
+  "raw_file": "raw/judge-2e78761e52da.engineering-quality-v1.fable-5.k1.txt"
+}

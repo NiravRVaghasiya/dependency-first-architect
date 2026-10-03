@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "12f70a8139a5.probe.sonnet-5.5",
+  "blind_id": "12f70a8139a5",
+  "blind_sha256": "282671732f5567e34371e635ee695b6c9ca965e3f0fed65c8a5bf2ec065a6428",
+  "judge": "sonnet-5.5",
+  "order_index": 128,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Fixed, numbered section skeleton (Summary, Context/Goals, Drivers, Current State, Assumptions and Open Questions, Architecture, Components, Data Design, Key Flows, Key Decisions, Cross-Cutting, Build Sequence, Testing, Rollout, Risks, Deferred Work, Next Steps) that looks like a prescribed template",
+    "Opens with a context note on the empty working directory. It says everything is an assumption and points to a dedicated assumptions section, with impact-if-wrong and validation columns, plus open questions that have owner, default and needed-by",
+    "Ranked quality attributes with measurable targets, and explicit tie-break statements such as 'tier-1 approval (1 beats 3)'",
+    "Decisions table with options considered, reversibility and 'revisit if' triggers. Risk-cleared milestones with exit criteria. Spikes that state 'Changes the plan if:'",
+    "Rigid per-component 'Does not / Failure mode / Recovery' entries, a 'Hard parts' list, named failure-path flows, a deferred-work table and a 'AI-specific concerns: not applicable' line. These read as checklist-driven, not free-form"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 475,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 18021
+  },
+  "cost_usd": 0.049810499999999994,
+  "latency_s": 28.334,
+  "raw_file": "raw/probe-12f70a8139a5.probe.sonnet-5.5.txt"
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "aafeeb75a795.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "aafeeb75a795",
+  "blind_sha256": "b5d0acbb55c6246bcb3ef56a39aee514f91d6c2d4d681a5a3ffcf606fed97f46",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 6,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1: Foundation & Architecture ... Phase 2: Core CI/CD Pipeline ... Phase 3: Deployment & Release",
+      "rationale": "Broad substrate-to-upward ordering exists (infra, pipeline, deploy), but nothing is gated on proof and observability/security come after dependents."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Deploy initial 5-10 pilot microservices",
+      "rationale": "No thin end-to-end production path in Phase 0; the first 10 weeks are architecture and setup, and the pilot comes only after templates are built."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "CI/CD orchestrator (Jenkins, GitLab CI, GitHub Actions, ArgoCD)",
+      "rationale": "Options are listed without defaults or flip conditions; irreversible decisions are not flagged."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Validate pipeline with low-risk services",
+      "rationale": "Pilot on low-risk services and batched rollout show some risk ordering, but no widest-impact-first ordering within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Code quality/security scanning (SonarQube, SAST tools)",
+      "rationale": "Security appears in Phase 1–3 (scanning, secrets) but hardening is deferred to the end and it is not treated concretely in every phase."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "Phase 4: Observability & Control (Weeks 17-22)",
+      "rationale": "Observability is deferred to week 17, long after the first builds and deployments, so it is not present from day zero."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Configuration management (Helm, Kustomize)",
+      "rationale": "Versioning, templates and config management are mentioned, but reproducibility is not threaded through all phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Blue-green or canary deployment patterns; Rollback procedures",
+      "rationale": "Rollback appears in Phase 3 and DR in Phase 7, but resilience is not present in the earliest phases."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so it does not declare N/A."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "Phase 6: Advanced Features (Weeks 29-36)",
+      "rationale": "Later phases are scheduled, but nothing is explicitly deferred with a pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Generic waterfall-style phase list with no walking skeleton, no decision gates, and observability deferred to week 17; only loose dependency ordering and partial security and resilience coverage.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 983,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3337
+  },
+  "cost_usd": 0.0181805,
+  "latency_s": 28.646,
+  "raw_file": "raw/judge-aafeeb75a795.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

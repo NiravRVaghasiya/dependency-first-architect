@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "f7c6e069a59c.probe.sonnet-5.5",
+  "blind_id": "f7c6e069a59c",
+  "blind_sha256": "06e7d90ebbd465001621eb0a2015664af6d00dee9ba63d27a5fb5fee8d2013b8",
+  "judge": "sonnet-5.5",
+  "order_index": 62,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Numbered assumptions A1–A5 with explicit \"if A-n is false\" consequences, plus a Missing inputs list and UNKNOWN/ASSUMPTION labels on budgets",
+    "Decisions table with reversibility classes (R2/R3), default, assumption, validated-by and revisit-trigger columns",
+    "Dependency table covering typed kinds (decision, risk/security, organizational, runtime, economic) with the line \"Every kind has an instance\"",
+    "Phase 0 thin end-to-end slice across all tiers with V0 exit check, followed by numbered validation gates V0–V5 that have hypothesis, method, threshold, evidence and failure flips",
+    "Fixed template sections (AI layer N/A, Exceptions, Deferred with pull-forward triggers), per-phase cross-cutting matrix, and rollback or point-of-no-return notes for each phase"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 374,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9372
+  },
+  "cost_usd": 0.027178,
+  "latency_s": 29.149,
+  "raw_file": "raw/probe-f7c6e069a59c.probe.sonnet-5.5.txt"
+}

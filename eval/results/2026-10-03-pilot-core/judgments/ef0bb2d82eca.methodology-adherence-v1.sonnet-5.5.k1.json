@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ef0bb2d82eca.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "ef0bb2d82eca",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 132,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Critical path: T1 (data approval) and T2 (App install) → S2 (sandbox feasibility) → T16/T17 (fix path) → M1 go/no-go → M3.",
+      "rationale": "Milestones and dependencies are explicit, but M1 builds everything in parallel, and the policy, gateway and eval work is not strictly substrate-first inside M1 (T11 triage and S1 start before T9/T10 gateways)."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Milestone 1 ... One thin path through every part of the system ... issue opened → labels applied, and `agent:fix` label → draft PR.",
+      "rationale": "M1 is a real end-to-end slice deployed to staging and prod, built before features; it runs on a sandbox repo plus shadow triage on the pilot repo."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D2 ... Revisit if: S2 shows builds need private networks; public repositories get enrolled; or security requires enforced egress control",
+      "rationale": "The plan has a decision table with options, defaults, reversibility and revisit triggers, plus assumptions with impact and validation."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Track A order: T3 CI, T4 infra, T5 schema, T6 ingest, T7 orchestrator, T8 policy, T9 gateway, T10 model gateway",
+      "rationale": "Some ordering follows widest impact (schema, policy and kill switch before leaf work), but the GitHub gateway and model gateway come after triage and ingest. Blast radius isn't stated as an ordering principle."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "T13: Write 20+ adversarial cases ...; T18: ruleset ... App not able to bypass; autonomy levels gated per repo in M2–M4",
+      "rationale": "Security is concrete in M1 (no workflows permission, gateway allowlist, OIDC checks, HMAC, adversarial suite) and in later milestones (level gates, release blocking, validator bypass criteria)."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "T19: Add JSON logging with correlation IDs, the metrics in §11, and alerts for job age, spend at 80%, and validator/Gateway denial.",
+      "rationale": "Observability is in M1 (logs, metrics, alerts, audit, explain CLI) and is extended in M2 (dashboard) and M3 (cost dashboards), though T19 is late in the M1 order."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Terraform (remote state with locking) ... Alembic upgrade/downgrade ... `uv sync --frozen` ... pinned model IDs",
+      "rationale": "Reproducibility pieces exist (IaC, lockfiles, versioned prompts, config SHA, eval sets), but they are not treated as a per-phase concern in M2–M4."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Reconciler ... `FAILED(dispatch_lost)` ... kill switch ... T7: a test that kills a worker mid-step shows the task resumes",
+      "rationale": "Idempotency, retries, backstops, budgets, restore test (M2) and rollback appear in M1 and in later phases."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Levels: Shadow → Label → Engage → Fix on request → Auto-fix; closed schema, Model Gateway budgets, adversarial suite, human trigger and merge",
+      "rationale": "Defenses (gateway, validator, caps, kill switch, human approval) and evals come before capability, with model access, then orchestration, then feedback. Retrieval and memory are minimal and routing appears only as a model split. The order is mostly correct."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Deferred: Auto-closing confirmed duplicates | Duplicate precision ≥ 0.9 over 3 months",
+      "rationale": "A deferred table lists items each with a trigger, plus non-goals, deliberate shortcuts and out-of-scope lists per milestone."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "This is a strong, concrete plan with a real walking skeleton, explicit decision gates and threaded security. Its weaknesses are the within-M1 ordering and uneven reproducibility treatment in later phases.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1506,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 24097
+  },
+  "cost_usd": 0.0754235,
+  "latency_s": 48.114,
+  "raw_file": "raw/judge-ef0bb2d82eca.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "1658539e18c6.engineering-quality-v1.fable-5.k1",
+  "blind_id": "1658539e18c6",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 11,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Server-level objects don't replicate through MI link. Logins, SQL Agent jobs, linked servers, credentials and Database Mail must be scripted",
+      "rationale": "Claims about MI link bidirectionality (SQL 2022 + update policy), synchronous-commit planned switch, port requirements, log-truncation risk, PITR limits and MLLP's lack of encryption are all accurate and precisely bounded."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Bookings pause once, for 5 minutes at most (target 2), while a banner says so",
+      "rationale": "Resolves the 'no downtime' ambiguity explicitly (viewing always, one short booking pause), flags it for clinical sign-off, covers the implied needs, and non-goals are explicit with reasons."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "at any moment, exactly one database is primary (guaranteed by the AG role) and exactly one pool has `jobs_enabled` on",
+      "rationale": "One-writer rule, job lease, read-only mode, LB switch point and both post-cutover on-prem configurations are applied consistently across flows, decisions and runbooks with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Thin slice passes twice (book in the cloud, SIU reaches the test engine, switch back to on-prem with matching data)",
+      "rationale": "Riskiest assumptions (switch-back timing, hidden dependencies, Kerberos, duplicate SIU) are spiked in M1 before commitment, with measurable go/no-go criteria, two timed rehearsals, and validation continuing via reconciliation and 30-day success measures."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "If it's an EHR module (e.g. Epic Cadence), this plan doesn't apply and migration is vendor-led",
+      "rationale": "Every load-bearing assumption is tabulated with impact-if-wrong and a validation owner/date; all figures are marked as estimates or assumed, and plan-changing sensitivities (A1–A9) are explicit."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "the sender crashes after the ACK but before marking the row sent. On restart the row is resent",
+      "rationale": "Covers the hard domain failures: duplicate/lost HL7 messages, dual-write prevention, link outage with a read-only continuity mode and paper downtime procedures, ransomware, data divergence detection, and defined points of no return."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Separate admin identities, PIM just-in-time roles for Azure admins, no standing Owner role.",
+      "rationale": "Named runbooks per alert, symptom-based thresholds, single pipeline to both pools, hypercare ownership by existing on-call, and operational burden explicitly sized to the stated small team."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "rough list prices, to be validated with the Azure pricing calculator in M1",
+      "rationale": "Dominant drivers (MI tier, ExpressRoute, VMs, dual-running overlap) are given as labeled ranges with a basis, with controls (budget alerts, tags, RI only after 30 days stable) and tier trade-offs stated."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "The point of no return is any of these: the on-prem replica is decommissioned, the link is broken past resync",
+      "rationale": "Each decision has a reversibility rating; the one-way steps (MI commitment, update policy, replica retirement) get early validation and CAB gating, while reversible choices (D4, D6, D10) are made quickly."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "This is a **rehost**, not a rewrite.",
+      "rationale": "Simplest design that meets the need: same build, existing LB/AD/engine reused, modernisation explicitly deferred with triggers; every added element (lease, read-only mode, dual paths) is justified by a migration-specific risk."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "the DBA runs `SELECT @@VERSION, SERVERPROPERTY('Edition'), SERVERPROPERTY('IsHadrEnabled');` and records the results",
+      "rationale": "Day-one actions, T1–T18 tasks each with 'done when' criteria and explicit 'changes the plan if' conditions, and a dependency-justified critical path mean a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "Business Associate Agreement (BAA, the HIPAA contract with the cloud provider) covering every service used"
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "Every connection has a port, owner and migration treatment, reviewed by the app lead and network"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "row counts plus hash aggregates per key table (appointments by date, slots, outbox), primary vs replica"
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "at any moment, exactly one database is primary (guaranteed by the AG role) and exactly one pool has `jobs_enabled` on"
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "Two consecutive rehearsals with a pause of 5 min or less and a clean rollback"
+    },
+    {
+      "id": "P6-06",
+      "status": 2,
+      "evidence": "an ExpressRoute circuit (Azure's dedicated private line) as primary, with an IPsec VPN as backup"
+    },
+    {
+      "id": "P6-07",
+      "status": 2,
+      "evidence": "zone-redundant high availability inside the region, automated backups with point-in-time restore (35 days)"
+    },
+    {
+      "id": "P6-08",
+      "status": 1,
+      "evidence": "Staff sign-on stays on AD/Kerberos... PIM just-in-time roles for Azure admins"
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "load test with k6 or JMeter scripts for the top-5 workflows at 1.5× the measured peak"
+    },
+    {
+      "id": "P6-10",
+      "status": 2,
+      "evidence": "Hypercare war room for the cutover night and 2 weeks of business-hours coverage afterwards"
+    },
+    {
+      "id": "P6-11",
+      "status": 2,
+      "evidence": "CAB decision to retire the on-prem replica (point of no return); decommission and certified data destruction"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "The on-premises system stays live as a replica you can switch back to."
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "I reject that because it risks double-booking (Decision D9)."
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "Non-prod uses de-identified data at production size unless the privacy officer accredits non-prod"
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "The interface engine is pointed at the cloud listener and bookings resume."
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "This is a **rehost**, not a rewrite."
+    }
+  ],
+  "note": "Exemplary rehost plan: technically precise MI-link design, strict single-writer discipline, early risk spikes, rehearsed reversible cutover and full interface/HIPAA coverage; the only notable gap is audited break-glass access and MFA detail.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 10533,
+    "thinking_tokens": 7905,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 27865
+  },
+  "cost_usd": 0.8749825000000001,
+  "latency_s": 154.143,
+  "raw_file": "raw/judge-1658539e18c6.engineering-quality-v1.fable-5.k1.txt"
+}

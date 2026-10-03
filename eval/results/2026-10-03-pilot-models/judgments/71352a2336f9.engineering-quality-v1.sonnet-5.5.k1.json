@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "71352a2336f9.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "71352a2336f9",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 79,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Retrieved and user text go in delimited data sections, never in the system instructions.",
+      "rationale": "Mechanisms are accurate (alias swap, hybrid search, allow-list indexing), but the plan leans on delimiting as injection defense and does not say it is only partial. Deletion handling is also unstated."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Assumed no: anonymous visitors, public docs only, no account data, no actions, English only.",
+      "rationale": "It covers the core RAG needs with explicit scope and deferrals, but it does not specify the index update window or how deletions are handled."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Allow-list indexing: only articles with an explicit public flag. No per-user ACL because there is no user data.",
+      "rationale": "The design is consistent, with clear responsibilities and uniform use of the alias and flag. There are minor loose ends, such as the 'iteration caps' wording for a no-tools bot and Redis session state against the 'no persistent PII' claim."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "0 violations ... across ≥ 200 cases; ... hit@5 ≥ 90% ... 0 canary docs retrieved; ... ≥ 95% of sampled answers fully supported",
+      "rationale": "Validation is tied to specific risks, with a canary doc, injection suite, SME review and a V0 spike early. Thresholds are labeled as assumptions, and the eval runs in CI and in canary. Post-launch regression monitoring is lighter."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Missing inputs (none changes the phase order, but each changes a threshold or scope)",
+      "rationale": "Figures are labeled ASSUMPTION or UNKNOWN with owners and dates, and the plan says what re-plans if an assumption is wrong."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "a failed sync leaves the previous index serving.",
+      "rationale": "It covers injection, leaks, runaway cost, vendor outage, bad sync and wrong high-risk answers with concrete handling. Staleness and deletion detection, and partial failures, are thinner."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Feature flag off (kill switch), redeploy the previous image, or swap the index alias back.",
+      "rationale": "It covers rollback, OTel tracing, alerts, SLO and on-call ownership sized to the existing team. Incident response and review cadence are only lightly specified."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "AI inference cost, per session | ≤ 20k tokens, ≤ 6 model calls",
+      "rationale": "Caps and controls are concrete, but there is no cost estimate per conversation, cost per resolution is UNKNOWN, and build and people costs are not covered."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Build vs buy | R2: a vendor switch means weeks of re-integration and re-eval",
+      "rationale": "Each decision carries a reversibility class, a validation and a revisit trigger. The plan isolates vendor coupling behind a provider interface, pins the embedding model and versions the index."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Orchestration | Not needed: a single retrieve-then-answer call",
+      "rationale": "It is a minimal design with multi-agent, routing and fine-tuning explicitly deferred. The process tables are slightly heavy but justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check (V0): A real question succeeds with one trace across every tier. A deploy and a rollback succeed",
+      "rationale": "Walking-skeleton-first ordering is justified by dependencies, with checkable exit checks per phase and explicit fail actions."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 1,
+      "evidence": "Re-index on doc publish (webhook plus nightly full sync)."
+    },
+    {
+      "id": "P1-02",
+      "status": 1,
+      "evidence": "Chunking: by article heading, with hybrid BM25 plus embedding search."
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "≥ 150 real queries sampled from past tickets and search logs."
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "answer only from retrieved passages, always cite, and abstain or hand off when retrieval confidence is low"
+    },
+    {
+      "id": "P1-05",
+      "status": 1,
+      "evidence": "a \"talk to a person\" path that creates a ticket with the transcript."
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "The chat service has no tools and no outbound calls."
+    },
+    {
+      "id": "P1-07",
+      "status": 2,
+      "evidence": "Allow-list indexing: only articles with an explicit public flag."
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "Redact PII before logging and before the model call. Vendor on no-training, zero or minimal retention. Chat logs kept 30 days"
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Assumed no: anonymous visitors, public docs only, no account data, no actions"
+    },
+    {
+      "id": "P1-10",
+      "status": 1,
+      "evidence": "Add thumbs up/down, a \"did this solve it?\" prompt, and an unanswered-question report to the docs team."
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "≤ 20k tokens, ≤ 6 model calls"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "answer only from retrieved passages, always cite, and abstain or hand off"
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Allow-list indexing: only articles with an explicit public flag."
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Prompt+RAG with citations and abstention"
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Run the retrieval eval in CI."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "Not needed: a single retrieve-then-answer call"
+    }
+  ],
+  "note": "This is a strong, well-scoped and well-validated plan. Its gaps are the deletion and staleness window, the lack of a per-conversation cost estimate, and the escalation triggers and context handoff being only partly specified.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2178,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 919,
+    "cache_creation_input_tokens": 14798
+  },
+  "cost_usd": 0.0589668,
+  "latency_s": 34.486,
+  "raw_file": "raw/judge-71352a2336f9.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

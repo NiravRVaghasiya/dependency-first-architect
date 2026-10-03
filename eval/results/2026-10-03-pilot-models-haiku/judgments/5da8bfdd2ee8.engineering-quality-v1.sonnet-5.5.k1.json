@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "5da8bfdd2ee8.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "5da8bfdd2ee8",
+  "blind_sha256": "e488fb3f56cb6de7189e254bfa1cba9edff2616431c1cfaeb0c588f762e39f1c",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 8,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "BLEU/ROUGE scores",
+      "rationale": "Several questionable claims: BLEU/ROUGE as generation quality, 'scheduled retraining' to keep embeddings fresh, and 'Fine-tuned embeddings' as a mitigation, with no reach into hard parts."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Only use provided context\", \"If unsure, escalate\"",
+      "rationale": "Covers the basic RAG flow and escalation but has no update/deletion handling, no visibility handling, and no decisions on scope."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Query Preprocessing - Tokenization - Intent Detection",
+      "rationale": "A linear pipeline is recognizable, but it lists options rather than choosing, and intent and escalation ownership are unclear."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Precision@K, Recall@K",
+      "rationale": "Metrics are listed, but there is no eval set from real tickets, no targets apart from an arbitrary latency figure, and no regression gating."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Response time (<2 seconds)",
+      "rationale": "Scale, team, compliance and stack are not stated; the latency figure is unsupported; the plan ends by asking to see the docs."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Hallucinations | Confidence thresholds + retrieval validation",
+      "rationale": "A generic failure table with no detection details; injection, stale content and leaks are absent."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Production (gradual rollout) Monitoring & Analytics",
+      "rationale": "Only a generic deployment flow; no rollback, ownership or alerting."
+    },
+    {
+      "dim": 8,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Only 'Cost savings vs. human support' appears as a metric; inference costs and controls are not covered beyond caching."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Pinecone (managed) Weaviate (self-hosted) Milvus (scalable) FAISS (lightweight)",
+      "rationale": "Lists options for every choice with no commitment and no discussion of lock-in or migration."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Fine-tuned embeddings + custom prompts",
+      "rationale": "The basic design is mostly proportionate, but the plan has speculative items such as fine-tuned embeddings, distributed vector DB and intent classification, and lacks essentials."
+    },
+    {
+      "dim": 11,
+      "score": 1,
+      "evidence": "Week 1: Data pipeline setup, document ingestion",
+      "rationale": "A generic five-week timeline, option menus, no decisions and no checkable milestones."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 0,
+      "evidence": "Outdated docs | Version control + update schedule"
+    },
+    {
+      "id": "P1-02",
+      "status": 1,
+      "evidence": "Metadata Storage: Document source, URL, section, timestamp"
+    },
+    {
+      "id": "P1-03",
+      "status": 1,
+      "evidence": "Precision@K, Recall@K"
+    },
+    {
+      "id": "P1-04",
+      "status": 1,
+      "evidence": "Constraints: \"Only use provided context\", \"If unsure, escalate\""
+    },
+    {
+      "id": "P1-05",
+      "status": 1,
+      "evidence": "Escalation handling (route to human agents)"
+    },
+    {
+      "id": "P1-06",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P1-07",
+      "status": 0,
+      "evidence": "Filtering: Category/tag-based filtering"
+    },
+    {
+      "id": "P1-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P1-09",
+      "status": 0,
+      "evidence": "Account management"
+    },
+    {
+      "id": "P1-10",
+      "status": 1,
+      "evidence": "Analytics dashboard (track usage, gaps)"
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "Slow retrieval | Caching + pre-computed embeddings"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Source attribution (cite where answers come from)"
+    },
+    {
+      "id": "P1-T2",
+      "present": true,
+      "evidence": "Filtering: Category/tag-based filtering"
+    },
+    {
+      "id": "P1-T3",
+      "present": true,
+      "evidence": "Scheduled retraining (keep embeddings fresh)"
+    },
+    {
+      "id": "P1-T4",
+      "present": true,
+      "evidence": "Staging (beta testing with sample queries)"
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "Fine-tuned embeddings + custom prompts"
+    }
+  ],
+  "note": "A generic RAG template that offers menus of options; it omits access control, deletion handling, injection defenses, privacy, cost estimates and a real evaluation set.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1667,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10884
+  },
+  "cost_usd": 0.043887999999999996,
+  "latency_s": 27.01,
+  "raw_file": "raw/judge-5da8bfdd2ee8.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "29f4bc37c2ba.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "29f4bc37c2ba",
+  "blind_sha256": "336e5da8c17f8a2e4495711aae5b2e28be68e3a34f1a7afe35d5bc439cf5919a",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 248,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: V1, V2\"; Phase 3 \"Depends on: V3, V4 (two rehearsals plus signed go/no-go), V5\"; \"V2 must pass before the replica is seeded.\"",
+      "rationale": "Phases run substrate (trust boundary, replication) → app tier → DB cutover → decommission, with explicit validation gates proving each dependency first."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "in production, an IT scheduling analyst books and then cancels an appointment for the designated test patient... SIU message reaches the EHR",
+      "rationale": "Phase 0 is a real production end-to-end slice across all tiers with deploy, rollback and alerting."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Exactly one writable primary database at all times... Flip condition: V4 fails the pause budget → renegotiate the pause... Do not go active-active",
+      "rationale": "Irreversible decisions are tabulated with reversibility, default, assumption, validation and flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks, widest rework first: 1. Identity federated with AD and least-privilege roles; network segmentation... run V2.",
+      "rationale": "Within phases, trust boundary and widest-impact items precede leaf tasks, and rollout is smallest-exposure first with the deviation justified in E1."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 3 | Elevated access during the cutover only, with time limits; access reviewed afterwards",
+      "rationale": "Security has concrete entries for every phase from 0 through 5."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "One correlation ID from load balancer → app → database → interface engine; baseline APM on both paths; SIEM; synthetic checks",
+      "rationale": "Observability is concrete in Phase 0 and each subsequent phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Landing zone and node built with Terraform; app image pinned to the on-premises version",
+      "rationale": "Reproducibility is addressed in each phase via IaC, config as code, versioned runbooks and DR rebuild from code."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Automatic fallback to the on-premises app tier on link loss",
+      "rationale": "Resilience and rollback are specified per phase, from Phase 0 fallback to Phase 5 restore-tested backup."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "## 8. AI layer N/A: no AI component.",
+      "rationale": "Plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Re-architecture... Pulled forward when Phase 5 is done, the system has been stable for 90 days and a modernization case is approved.",
+      "rationale": "Deferred items are listed, each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan meeting every rubric dimension with concrete content; only minor nitpicks possible.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1095,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10773
+  },
+  "cost_usd": 0.0378905,
+  "latency_s": 17.829,
+  "raw_file": "raw/judge-29f4bc37c2ba.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

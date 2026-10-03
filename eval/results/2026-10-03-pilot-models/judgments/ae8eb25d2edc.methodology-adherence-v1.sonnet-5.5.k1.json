@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ae8eb25d2edc.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "ae8eb25d2edc",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 29,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Defenses and budgets\" → Phase 2 retrieval/model/triage → Phase 3 sandbox → Phase 4 PRs; \"Depends on\" listed per phase with V-gates.",
+      "rationale": "Phases run substrate → defenses → capabilities, with explicit dependency map and validation gates before dependent work."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A real issue is opened in a dedicated test repo... The agent posts a comment proposing labels... Through CI/CD with infrastructure as code, from the first commit.",
+      "rationale": "Phase 0 is a real, deployed, end-to-end thin slice across all tiers with rollback and exit check."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Data-privacy boundary... Default: Hosted API under zero-retention... Flip condition: V1 fails, or policy forbids external code egress.",
+      "rationale": "Irreversible decisions have reversibility class, default, assumption, validation, and flip condition; R1 defaults listed too."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks, widest blast radius first: 1. Tool executor as a policy layer...",
+      "rationale": "Explicit blast-radius ordering within phases (executor policy first; smallest exposure first in Phase 2 shadow→suggest→auto)."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: HMAC-verified webhook. Least-privilege App. Secrets in a secret manager. Allow-listed repo and authors.",
+      "rationale": "Concrete security controls in every phase 0–5 in the cross-cutting table and phase tasks."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "One OpenTelemetry trace keyed by the webhook delivery ID spans every tier... Alerts cover worker errors, model API failures",
+      "rationale": "Observability built in Phase 0 and extended concretely in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "IaC. Digest-pinned images. Prompts in version control.",
+      "rationale": "Reproducibility treated per phase: pinned models, index SHA, sandbox image, versioned eval sets and configs."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Idempotent on delivery ID. Kill switch. Tested rollback.",
+      "rationale": "Resilience appears concretely in every phase (caps, reconciliation poll, teardown, cleanup scripts, per-repo kill)."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Skeleton basics in Phase 0, full in Phase 1 ... Retrieval Phase 2 ... Memory Phase 2 ... Orchestration Phase 3 ... Routing Phase 5 ... Feedback Phase 5",
+      "rationale": "Defenses, budgets, and HITL precede retrieval → model access → memory → orchestration → routing → feedback in correct order."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Autonomous merge or auto-close of issues: pulled forward only by a new gate with a named approver, after sustained V5-level acceptance",
+      "rationale": "Explicit deferred list with concrete pull-forward conditions for each item."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan meeting all rubric dimensions with concrete content; only minor quibbles (e.g., Phase 1 defenses after a Phase 0 skeleton that already calls a model, mitigated by basics and allow-listing).",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1253,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 9410
+  },
+  "cost_usd": 0.036176,
+  "latency_s": 52.619,
+  "raw_file": "raw/judge-ae8eb25d2edc.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "77a0236df4e7.probe.sonnet-5.5",
+  "blind_id": "77a0236df4e7",
+  "blind_sha256": "4434de887c3e67615b171d1d510ec49213f3dfeea2283d4372ea53524b3ffe19",
+  "judge": "sonnet-5.5",
+  "order_index": 9,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.9,
+  "cues": [
+    "Rigid 18-section template (Summary, Context, Drivers, Current State, Assumptions, Architecture, Data Design, Key Flows, Key Decisions, Cross-cutting, Build Sequence, etc.), which looks like a prescribed planning methodology",
+    "Explicit [A] assumption marking, with a dedicated assumptions table listing impact-if-wrong and how/when each is validated, plus open questions with owner → default → deadline",
+    "Ranked quality attributes with measurable targets, and decisions tied back to those numbered drivers in a decision table with reversibility and 'revisit if' columns",
+    "Milestones with exit criteria, critical path, spikes that state 'changes plan if…', and stubs allowed in M1 that are removed in M2",
+    "Templated boilerplate such as 'AI-specific concerns: not applicable', a deferred-work table, and a 'shortcuts taken on purpose' list; also notes that the workspace was empty so no existing system could be inspected"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 405,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 16772
+  },
+  "cost_usd": 0.045987999999999994,
+  "latency_s": 16.372,
+  "raw_file": "raw/probe-77a0236df4e7.probe.sonnet-5.5.txt"
+}

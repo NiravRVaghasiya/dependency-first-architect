@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "5a271cb8f559.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "5a271cb8f559",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 52,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 2: Core Infrastructure Setup (Weeks 3-5)",
+      "rationale": "Broadly substrate-upward (infra → pipelines → deploy → migration), but observability comes after migration and deployment infra follows pipelines, so dependencies are not proven before use."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Pilot Services (3-5 services) in Phase 5, Weeks 12-20",
+      "rationale": "No thin end-to-end prod slice first; the first pilot is after 11 weeks of horizontal layers."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "Select CI/CD platform (Jenkins, GitLab CI, GitHub Actions, ArgoCD)",
+      "rationale": "Options are listed without defaults or flip conditions; irreversible choices are not flagged."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Batch 1: Pilot Services... Low-risk, well-understood services",
+      "rationale": "Migration batches ordered from low-risk pilots to complex ones, and platform before services, but no explicit widest-impact-first ordering within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Secrets Management - Deploy secrets vault",
+      "rationale": "Secrets and scanning appear in Phases 2-3, but security hardening and compliance are trailing in Phases 7 and 9, and not in every phase."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "Phase 6: Observability & Monitoring (Weeks 14-16, parallel)",
+      "rationale": "Observability is scheduled mid-plan after migration begins, not from day zero, despite a passing 'DORA metrics from the start' remark."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Infrastructure-as-Code (Terraform, CloudFormation, Helm)",
+      "rationale": "IaC, Dockerfile standards and environment parity appear but late and not threaded through every phase."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Automated rollbacks; Disaster recovery testing; Failover mechanisms",
+      "rationale": "Rollbacks and HA appear in Phases 4, 7 and 9, mostly late, not threaded from the start."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Plan never addresses whether an AI layer applies, so there is no N/A declaration."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "Service mesh consideration (Istio, Linkerd)",
+      "rationale": "No explicit list of deferred work with pull-forward conditions; only a vague 'Pilot Success' gate between batches."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A conventional horizontal-layer waterfall plan. It has no walking skeleton, no decision gates and no early observability, and it never addresses the AI question.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1023,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 4004
+  },
+  "cost_usd": 0.020360999999999997,
+  "latency_s": 40.535,
+  "raw_file": "raw/judge-5a271cb8f559.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

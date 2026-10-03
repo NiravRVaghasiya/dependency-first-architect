@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "4f4413d6f4f2.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "4f4413d6f4f2",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 97,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Load = snapshot + updates; T12 \"After T8, T10, T11\"; M1 → M2 → M3 → M4 with spikes S1–S3 proving persistence before building on it",
+      "rationale": "Substrate (infra, schema, DB, persistence, convergence harness) precedes sharing, scale, then comments/history, with explicit dependencies and spikes gating."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "In staging, 2 users on 2 machines co-edit; Playwright shows propagation in under 1 s; `kill -9` of Collab loses no acknowledged edit",
+      "rationale": "M1 is a real end-to-end slice deployed to staging with CI/CD before features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D1 Yjs ... Reversibility: Hard ... Revisit if: Fine-grained authorship or suggestion mode needs something Yjs can't model",
+      "rationale": "Decision table lists options, reversibility, rationale and flip conditions, with assumptions tabled and validated."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Critical path: identity-provider and cloud access (day 1) → S1 persistence → Collab persistence → compaction → multiple instances",
+      "rationale": "Riskiest/widest work (persistence spike, schema, contracts) is early, but intra-phase blast-radius ordering is implicit rather than explicitly reasoned."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Security (M1 outline, M2 complete)",
+      "rationale": "M1 has token checks, authz and a log-content test, but much security (read-only enforcement, revocation, audit, sanitization) lands in M2–M3 and is handled in a standalone section."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "T15 Emit pino logs (IDs only...) and metrics (connections, loaded documents, flush latency/failures)... staging dashboard",
+      "rationale": "Observability in M1, canary and alerts in M2, load-test metrics in M3, and telemetry thereafter."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Provision staging with Terraform... remote state with locking; CD builds images, runs migrations; migration runs up and down on clean database in CI",
+      "rationale": "IaC, CI/CD, migrations, seeded convergence tests and generated test data are reproducible from M1 onward."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "`kill -9` of Collab loses no acknowledged edit; restore drill in M2; graceful drain and rolling deploys in M3",
+      "rationale": "Failure handling is tested in M1 (kill, reconnect, convergence), M2 (restore, degraded mode) and M3 (drain, load) with concrete treatment."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "AI-specific concerns: not applicable; there are no AI components in scope.",
+      "rationale": "Plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Full-text search | Document count per workspace over about 200; Native mobile | More than 15% of sessions from mobile",
+      "rationale": "Deferred table gives explicit items with triggers, plus intentional debt and milestone exclusions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, concrete plan with a real staging walking skeleton, decision gates and deferred triggers; security is partly back-loaded and blast-radius ordering is implicit.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1239,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 14436
+  },
+  "cost_usd": 0.048601,
+  "latency_s": 28.053,
+  "raw_file": "raw/judge-4f4413d6f4f2.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

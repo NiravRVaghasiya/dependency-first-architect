@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "fec361d053b8.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "fec361d053b8",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 78,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Pull: Argo CD in each cluster syncs from an environment repo. CI only pushes signed images and opens PRs. No prod credentials in CI.",
+      "rationale": "Mechanisms (OIDC, cosign, SLSA, Argo pull, digest promotion, admission policy) are accurate; minor gaps like no explicit DB-migration or fork-PR nuance."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "A shared build, test, sign and deploy path (golden path) that 50 existing services move onto in waves.",
+      "rationale": "Covers core needs with explicit deferrals, but flaky tests, caching and build-only-changed strategy, and DB migration compatibility are thin."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Exactly one pipeline is active per service. The old pipeline is frozen, not deleted. The system of record ... is the old pipeline until cutover, then the environment repo",
+      "rationale": "Trust boundary, data ownership, rollback and fallback choices are applied consistently across the sections."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Red-team test of 5 attacks: fork PR deploy; CI token writing to the prod cluster ... all 5 denied and logged",
+      "rationale": "Validation is tied to specific risks, placed before commitments, with labeled assumptions and post-cutover checks; could only add flake/caching validation."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Assumptions this plan rests on. If any is wrong, the phase order changes, so please confirm:",
+      "rationale": "Assumptions, UNKNOWNs and BASELINEs are explicitly labeled with consequences and confirmation steps."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Game days for CI, Git and registry outages.",
+      "rationale": "Covers compromise, template bugs, outages, secret leaks, and old-CI dependents with detection and recovery, but DB migration failures and flaky tests are not covered."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Alerts fire on failed sync, degraded health or a failed pipeline, and page the platform on-call.",
+      "rationale": "Monitoring, rollback, DR and on-call are concrete and sized to ~4 people, but ownership of the templates and incident response beyond the platform on-call is light."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "CI compute + storage cost | — | UNKNOWN: monthly CI budget from engineering finance.",
+      "rationale": "Hosted vs self-hosted trade-off and V3 cost projection exist, but there are no estimates, no scaling drivers and few concrete cost controls."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: once exposed, a compromise can't be undone",
+      "rationale": "Decisions are graded by reversibility, the irreversible ones are validated early, each has a revisit trigger, and the old CI is powered off before deletion."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Self-run components ≤ 3 (Argo CD, policy controller, External Secrets); everything else managed",
+      "rationale": "Managed services, no custom orchestrator, and deferrals with pull-forward triggers; the process is a bit heavy but justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Depends on: V1, V2; V3 before wave 2; V4 before wave 3.",
+      "rationale": "Phases are ordered by dependency and risk, with concrete tasks, exit checks and fallbacks."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "Define the template interface (`service.yaml`: owner, tier, profile, test commands) and language profiles that cover ≥ 80% of the inventory."
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "new pipeline run in shadow next to the old one for 1 week with matching test results"
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "pushed to the registry by digest ... the same digest is promoted by an environment-repo PR"
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "OIDC from CI to the cloud; remove every long-lived credential. ... Fork PRs get no secrets."
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Keyless cosign signing plus SLSA provenance. Admission policy enforced in prod"
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Rolling deploy with automatic health checks for all. Argo Rollouts canary with automated analysis for tier-1"
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Compatibility between services is checked with consumer-driven contract tests (Pact), not lockstep releases"
+    },
+    {
+      "id": "P3-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "PR check feedback time | p90 < 15 min"
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "GitHub Actions on GitHub-hosted runners ... If it fails: ARC self-hosted runners"
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Per-service lead time, deploy frequency, failure rate and restore-time dashboards."
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "CODEOWNERS and required reviews on workflow files, templates and environment-repo paths."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "wave 1 = 5 low-criticality services; wave 2 = about 20; wave 3 = the rest, tier-1 last."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "build once, promote the same digest"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "remove every long-lived credential"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "not lockstep releases in a shared environment"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Build only the templates and policy"
+    }
+  ],
+  "note": "Very strong, security- and migration-focused plan with explicit assumptions and validation. Weak spots: cost estimation, caching and build-only-changed strategy, flaky tests, and DB migration compatibility.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2172,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 15748
+  },
+  "cost_usd": 0.061098,
+  "latency_s": 33.454,
+  "raw_file": "raw/judge-fec361d053b8.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

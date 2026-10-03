@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "824d3fd2b37e.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "824d3fd2b37e",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 154,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: Stable event contract and replayable log (Phase 1).\"",
+      "rationale": "Each phase declares its dependency and exit checks prove substrate (contracts, replay, features) before rules, ML, feedback, scale."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "a live production authorization, in **shadow-inline mode**. The switch really calls the decision service and gets a real answer back.",
+      "rationale": "Phase 0 is a real end-to-end production path across switch, Redis, Kafka, Flink, Iceberg and case queue with a concrete exit check."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "| Consistency vs availability | **Availability for the decision path.** ... | Measured fraud loss caused by stale counters ... exceeds an agreed basis-point threshold.",
+      "rationale": "A table of irreversible decisions each has a default and a concrete flip condition, including PCI tokenization and region topology."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1 task 1: \"This is the widest blast radius: every feature, label join and model depends on it.\"",
+      "rationale": "Within phases, widest items are placed first and explicitly flagged (event contract, fallback matrix, training-set construction)."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"Tokenize PAN at ingress (HSM/KMS key). mTLS switch↔service. Secrets in Vault.\"",
+      "rationale": "Security has concrete per-phase entries from Phase 0 through Phase 6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: \"OTel trace across all tiers. Latency, timeout and decision-mix dashboard. Timeout and p99 alerts.\"",
+      "rationale": "Concrete observability appears in Phase 0 and every later phase with phase-specific metrics."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Phase 0: \"Terraform for all infra. Images pinned by digest and signed. Argo CD GitOps.\"",
+      "rationale": "Reproducibility is concrete in every phase, from IaC through deterministic replay, feature-as-code and pinned retraining."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: \"Hard 50 ms timeout with fail-open. Circuit breaker in the switch client. Shadow mode means no customer impact.\"",
+      "rationale": "Failure handling is specified in every phase, from the first, not just in the final scale phase."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "The ordering rule still does: **defenses and budgets come before the model**.",
+      "rationale": "The plan is a predictive ML system with no LLM. It maps the AI layers sensibly, but the mapping is after-the-fact. Retrieval/features (Phase 2) and model access (Phase 4) follow defenses, yet memory, orchestration and routing sit in earlier or later phases out of the stated order, and the defenses are not tied to a phase."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "**Automatic model promotion and online learning.** Pull forward if drift moves faster than monthly retraining and 6+ human-gated releases have passed cleanly.",
+      "rationale": "The plan lists deferred items, each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan with a true production shadow skeleton, explicit gates and threaded concerns. The AI layer mapping is reasonable but loosely sequenced, which costs a point on dimension 9.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1262,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 8462
+  },
+  "cost_usd": 0.033896,
+  "latency_s": 24.428,
+  "raw_file": "raw/judge-824d3fd2b37e.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "80be327a02ea.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "80be327a02ea",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 33,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "check proposed actions against a deterministic policy layer *outside* the LLM. Running in the sandbox limits the damage even if the agent is manipulated.",
+      "rationale": "Mostly correct (App, delivery-ID idempotency, fail-on-base check), with minor imprecision such as delimiters as injection defense, but nothing design-breaking."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Mark the issue `agent-eligible` only if all of these hold: it is a bug or docs issue with clear reproduction steps",
+      "rationale": "Covers triage and resolution with sensible eligibility gating, explicit non-goals and buildable phasing; retrieval and claim/yield details are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "an explicit state machine for each issue: `NEW → TRIAGED → (NEEDS_INFO | ROUTED_HUMAN | ELIGIBLE) → REPRODUCING → FIXING → VERIFYING → PR_OPEN → DONE/ABANDONED`",
+      "rationale": "Consistent design with clear stage responsibilities and a permissions matrix; only minor loose ends."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "replay historical issues against the commit just before the real fix... Run this on every prompt or model change.",
+      "rationale": "Offline benchmark, shadow mode, phase gates and online metrics target the main risks, but thresholds are asserted without justification and per-action precision thresholds are not defined."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Pick 1–2 pilot repos with good test coverage and willing maintainers.",
+      "rationale": "Some assumptions implicit, and numbers like ~200 LOC, 90%, 50% are given without labeling as provisional or sensitivity analysis."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Flaky tests misleading the agent: rerun failures, keep a known-flaky test list, and require the reproduction to fail deterministically.",
+      "rationale": "Covers injection, spam, flaky tests, wrong fixes, security disclosure, circuit breaker and escalation, but bot loops, mid-work edits and partial-failure recovery are thin."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Dashboard: shows the issue pipeline, costs, acceptance rates, and items waiting on humans.",
+      "rationale": "Dashboard, kill switch, audit log and rollout gates exist, but deployment, rollback, incident ownership, alerting and index migration are missing."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "set token, time, and compute caps per issue, per day, and per repo... cheaper models first for triage",
+      "rationale": "Budgets and model tiering are identified but with '$X' placeholders, no cost estimate or scaling analysis, and multi-candidate fix cost goes unremarked."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Each phase needs its metric thresholds met and maintainer sign-off before the next one starts.",
+      "rationale": "Phase gating and a human merge gate limit irreversibility, but there is no discussion of vendor, model or embedding lock-in, or data model and audit format choices."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "narrow agents, one per stage, each with its own prompt and its own tool allowlist. This is safer and easier to evaluate",
+      "rationale": "Mostly proportionate with staged rollout; multi-candidate generation and four agents plus a vector index are somewhat heavy but justified."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Build the offline replay benchmark from about 200 historical issues.",
+      "rationale": "Ordered phases with durations and concrete stage steps, but technology choices (queue, store, index) and exit-criteria numbers are left open."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 1,
+      "evidence": "Merge/close/delete | ❌ | ❌ | ❌ | ❌"
+    },
+    {
+      "id": "P4-02",
+      "status": 1,
+      "evidence": "The GitHub App gets least-privilege scopes, and branch protection requires human approval."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "check proposed actions against a deterministic policy layer *outside* the LLM."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "Network access is limited to package registries, and there are no production credentials."
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "Confirm the new test fails on the base branch and passes with the fix."
+    },
+    {
+      "id": "P4-06",
+      "status": 1,
+      "evidence": "Compare the agent's labels with the actual labels... Run this on every prompt or model change."
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Log every outcome: merged, edited then merged, closed, or reverted."
+    },
+    {
+      "id": "P4-08",
+      "status": 1,
+      "evidence": "a repo-level config flag and a `/agent stop` command pause the agent immediately."
+    },
+    {
+      "id": "P4-09",
+      "status": 1,
+      "evidence": "set token, time, and compute caps per issue, per day, and per repo."
+    },
+    {
+      "id": "P4-10",
+      "status": 1,
+      "evidence": "Every action is written to an append-only audit log."
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "embeddings of the codebase... refreshed on each push to the default branch."
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "Events are idempotent and keyed by delivery ID."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "Merging PRs without human approval."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "Secrets never enter the sandbox or the LLM context."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "treat issue text, comments, and repository content as untrusted data."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "PR acceptance rate of 50% or more for agent-authored PRs. Track the revert rate too."
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "capped by a budget, for example 8 iterations, 30 minutes, and $X of tokens."
+    }
+  ],
+  "note": "Solid, well-gated design with strong safety posture and a human merge gate; weaker on operations, cost grounding, retrieval/index specifics and assumption labeling.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 4731,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 13444,
+    "cache_creation_input_tokens": 14521
+  },
+  "cost_usd": 0.08631330000000001,
+  "latency_s": 62.461,
+  "raw_file": "raw/judge-80be327a02ea.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

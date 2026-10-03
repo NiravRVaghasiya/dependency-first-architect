@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "30166ea2b207.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "30166ea2b207",
+  "blind_sha256": "d05407dacc006aa7a90d0bcd3a06a7d2f98ad429625a853fa262d3a31da3f8a5",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 289,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Flink job definition runs both live and in backfill mode. Every scored feature vector is also logged (log-and-wait) for future training",
+      "rationale": "Mostly accurate (tokenization, SAD dropped, out-of-time splits, label delay, acks=all), with minor imprecision like 'Flink backfill reproduces live values' and the 'Kafka acks=all plus local disk buffer' that have no design consequence."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "I've assumed we are an issuer or issuer-processor scoring inline in authorization, so a decline is possible.",
+      "rationale": "Resolves the ambiguity explicitly with consequences if wrong, covers core needs, and defers step-up, multi-region and others with reasons and pull-forward triggers."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "The auth host stays system of record for the auth decision. The existing rules stay as champion and fallback; the new scorer is the challenger.",
+      "rationale": "Consistent ownership and data flow; minor loose ends such as a step-up action in the policy mention versus deferral and analyst-managed rule hot-deploy not detailed."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "In 100% of ≥ 1,000 injections per fault type, the auth host returns the champion decision inside its timeout.",
+      "rationale": "Validation checks V0–V8 are tied to specific risks, run early (skeleton, fault injection, parity), have labeled provisional thresholds, and continue in production via holdout, drift and canary."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Missing inputs (most plan-changing first): 1. Where we sit in the flow, and inline vs post-auth.",
+      "rationale": "Assumptions are labeled ASSUMPTION/BASELINE/UNKNOWN, ranked by plan impact, with explicit consequences and how they are confirmed."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Label review against poisoning: \"friendly fraud\" (cardholders disputing purchases they made), insider label edits.",
+      "rationale": "Covers fail-closed mass declines, breaker, queue overflow, card-testing bursts, attacker-controlled inputs, poisoning, feature store outage and Kafka outage with detection and recovery; duplicates/reversals are thinner."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Deployed by CI/CD (signed image, Helm canary) into the CDE segment... Rollback is `helm rollback`, or the auth-host flag off",
+      "rationale": "Deployment, rollback, alerts, on-call, two-person config approval and runbook drills are concrete; incident ownership details and team sizing are light."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Storage cost / retention | UNKNOWN. Missing input: how long decision and feature logs must be kept.",
+      "rationale": "Build-vs-buy is considered and CPU in-process serving is chosen, but there is no cost estimate, no scaling cost analysis for Flink/Redis/storage, and no concrete cost controls."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "| Sync vs async | R2: the auth integration contract needs coordinated work across teams |",
+      "rationale": "Each decision carries reversibility class, validator and revisit trigger; identifier schema is validated before hardening; rules engine kept, decommissioning flagged as the point of no return; vendor seam behind same API."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "one decision-service deployable (features, model and policy in one process, with no extra network hops on the hot path)",
+      "rationale": "Mostly proportionate with simplest hot path and deferrals, but there is heavy process ceremony (V0–V8, seven phases, dependency tables) and an irrelevant 'AI layer' sublayer table."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check (V0): a real test-BIN authorization succeeds with one trace across every tier. A deploy and a rollback succeed through the pipeline.",
+      "rationale": "Thin end-to-end slice first, dependency-justified phase order, checkable exit criteria per phase, and fallback plans when checks fail."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "p99 ≤ 50 ms; the auth host gives up at 80 ms and falls back"
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "Fall back to the current decision (existing rules plus auth host). Never decline because the scorer timed out or errored"
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "One Flink job definition runs both live and in backfill mode."
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "Out-of-time backtest on the latest 3 matured months (labels ≥ 90 days old)"
+    },
+    {
+      "id": "P8-05",
+      "status": 1,
+      "evidence": "At equal decline rate, ≥ 10% more fraud value caught than champion BASELINE; false-positive ratio ≤ BASELINE"
+    },
+    {
+      "id": "P8-06",
+      "status": 1,
+      "evidence": "Policy layer combining rules and model thresholds into an action from the allowed list: APPROVE, APPROVE+CASE, or DECLINE+CASE."
+    },
+    {
+      "id": "P8-07",
+      "status": 1,
+      "evidence": "Case queue in case management. If the queue overflows, transactions are approved with an alert, never declined."
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "The pipeline sees only a PAN token plus BIN. Sensitive authentication data (CVV, track data, PIN data) is dropped at ingress"
+    },
+    {
+      "id": "P8-09",
+      "status": 1,
+      "evidence": "online state rebuilt from Kafka replay within the RTO"
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "Drift monitors: PSI (population stability index) per feature and on the score. Monthly retrain producing a challenger that goes through shadow"
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "every decision records model and policy version"
+    },
+    {
+      "id": "P8-12",
+      "status": 1,
+      "evidence": "3× peak authorizations per second, sustained for 1 h"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "A synchronous gRPC score call inside authorization with an 80 ms hard timeout."
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "Never decline because the scorer timed out or errored"
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "Out-of-time backtest on the latest 3 matured months (labels ≥ 90 days old)"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "V4 | Backfilled features equal the features served live"
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "zero PAN or sensitive-auth-data matches in either scan"
+    }
+  ],
+  "note": "Exceptionally rigorous, risk-driven plan with inline latency budget, safe fallback, staged shadow/canary rollout and reversibility analysis. Weaknesses are missing cost analysis, thin stream event-correctness detail, and deferred step-up and multi-region.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2495,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 17978
+  },
+  "cost_usd": 0.0700762,
+  "latency_s": 28.823,
+  "raw_file": "raw/judge-30166ea2b207.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

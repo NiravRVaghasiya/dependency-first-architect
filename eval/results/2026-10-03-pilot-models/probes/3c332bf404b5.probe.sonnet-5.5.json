@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "3c332bf404b5.probe.sonnet-5.5",
+  "blind_id": "3c332bf404b5",
+  "judge": "sonnet-5.5",
+  "order_index": 40,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Opens with \"I'll proceed with the plan using the standard format\", which implies a prescribed template.",
+    "Uses methodology-specific vocabulary: reversibility tiers R1/R2/R3, gates V0–V4, \"Flip\" conditions, and \"Revisit trigger\" columns.",
+    "Each gate has a fixed structure (hypothesis, method, acceptance threshold, evidence, consumer). Thresholds are labeled REQUIREMENT/ASSUMPTION.",
+    "Has fixed sections: Classification and Constraints, Dependencies with typed blockers, Exceptions, Deferred with pull-forward conditions, and a closing Self-Check checklist.",
+    "The Self-Check cites \"per principle 7 order\" and \"canonical order\", and checks for things like \"no gate without consumer\". These point to an external written rule set.",
+    "A \"Missing inputs — ask first\" list sits alongside an explicit planning assumption. The first end-to-end slice is \"Phase 0\" and is shown as not hardened."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 428,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 13346
+  },
+  "cost_usd": 0.037653,
+  "latency_s": 19.152,
+  "raw_file": "raw/probe-3c332bf404b5.probe.sonnet-5.5.txt"
+}

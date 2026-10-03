@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "0f0fb9edd1c0.probe.sonnet-5.5",
+  "blind_id": "0f0fb9edd1c0",
+  "blind_sha256": "ef2f81a232c3906e20b9ef629efbab8e119382cdb81a5faeac0d18b6126a4a15",
+  "judge": "sonnet-5.5",
+  "order_index": 27,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Rigid, template-like structure: 'Classification and constraints', 'Missing inputs', 'Dependencies', 'Key decisions (resolved up front)', 'First end-to-end slice (Phase 0)', 'Cross-cutting concerns', 'AI layer', 'Exceptions', 'Deferred'",
+    "Budgets table with explicit 'ASSUMPTION (basis: ...)' labels and a 'Checked by' column linking each budget to a validation ID",
+    "Decision table with Reversibility ratings (R2/R3), 'Validated by', and 'Revisit trigger' columns, plus explicit 'N/A' lines for irrelevant decision axes",
+    "Phase 0 walking skeleton with deploy, rollback, and logging/monitoring adapted for a CLI, and Phases that each list 'Unlocks', 'Depends on', 'Rollback', and 'Exit check'",
+    "Validation checks table (V0–V2) with hypothesis, method, numeric acceptance threshold, evidence, and 'Unlocks (and if it fails)'; boilerplate sections such as 'AI layer: N/A' and 'Exceptions: None' show a mandated checklist"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 477,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 5832
+  },
+  "cost_usd": 0.019358,
+  "latency_s": 26.867,
+  "raw_file": "raw/probe-0f0fb9edd1c0.probe.sonnet-5.5.txt"
+}

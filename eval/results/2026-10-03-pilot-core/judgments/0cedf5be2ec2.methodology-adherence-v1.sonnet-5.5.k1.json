@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0cedf5be2ec2.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "0cedf5be2ec2",
+  "blind_sha256": "d5bfb8f2319d066954e57cf434c9b18a341ea6f549b8e8e4dc6ae7aaba932b99",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 282,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Depends on: Phase 2 retrieval proven, because grounding quality can't be judged until the right context arrives.",
+      "rationale": "Each phase names its dependency and gates on an exit check (harness before retrieval, retrieval before model, single-turn before memory)."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Deployed: Through CI (GitHub Actions or similar) to the real prod environment via Terraform. Internal-only route, secrets in a secrets manager.",
+      "rationale": "Phase 0 is a real end-to-end cited answer in prod with tracing and metrics, before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Hosted API... | A contract requires data residency the provider can't meet, or monthly LLM spend passes the cost of self-hosting",
+      "rationale": "A table of irreversible decisions each with a default and a concrete flip condition, plus up-front assumptions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Answer contract... The UI, evals, logging and handoff all read this, so it's the most expensive thing to change later.",
+      "rationale": "Tasks are labeled widest first in every phase, with reasons: contract, then data contract, then provider abstraction, then rollout controls."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0 | Staff-only behind SSO. Secrets in a manager. System prompt kept separate from user and doc text. Public articles only.",
+      "rationale": "The per-phase table gives concrete security measures in every phase 0–6, starting from the skeleton."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "An OpenTelemetry trace per request, with `retrieve` and `llm` spans. Metrics for latency, input and output tokens, cost per request and error rate.",
+      "rationale": "Phase 0 has traces, metrics, a dashboard and an alert, and every later phase adds specific observability."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Idempotent ingestion. Full rebuild from source gives the same chunk IDs. Embedding model pinned.",
+      "rationale": "Reproducibility is concrete in every phase: Terraform and pinned images, versioned golden sets, pinned model snapshots, config-held flags and thresholds."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "20 s timeout. If the LLM fails, show related article links and \"contact support\". Health check.",
+      "rationale": "Each phase has concrete failure handling, from the timeout and fallback in Phase 0 through DLQ, circuit breaker, Redis-loss fallback, kill switch and router default."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Depends on: the Phase 1 eval harness, because recall can't be proven without it.",
+      "rationale": "Defenses, budgets and human handoff come in Phase 1, then retrieval, model access, memory and orchestration, then routing and feedback, exactly in the required order."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Account actions and tools (order lookup, refunds). *Pull forward when* the top unresolved request types are actions and human approval for writes is proven.",
+      "rationale": "A dedicated deferred section lists each item with its own pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally complete plan: every dimension is backed by concrete content, and the AI layers are in the correct order.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1189,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8114
+  },
+  "cost_usd": 0.032182999999999996,
+  "latency_s": 17.298,
+  "raw_file": "raw/judge-0cedf5be2ec2.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

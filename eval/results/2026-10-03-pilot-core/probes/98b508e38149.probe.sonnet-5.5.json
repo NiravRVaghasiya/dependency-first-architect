@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "98b508e38149.probe.sonnet-5.5",
+  "blind_id": "98b508e38149",
+  "blind_sha256": "a400be6c6f677ed2d6a605e65987482b159be919d99ab5b75b42bf15db2e4208",
+  "judge": "sonnet-5.5",
+  "order_index": 45,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Section 1 'Classification' states type, dominant constraint and worst failure before any design, which reads like a mandated planning step",
+    "Key decisions table has 'Default (chosen now)' and 'Revisit trigger' columns, with a trigger for every decision",
+    "Phase 0 is a 'first end-to-end slice' that crosses every tier, with monitoring, a kill switch and an exit check from day zero",
+    "Each phase has fixed Unlocks / Depends on / Tasks / Exit check fields, and phases are 'ordered by dependency; within a phase, widest impact first'",
+    "A per-phase cross-cutting matrix (security, observability, reproducibility, resilience), an AI-layer section with '(AI)' tagged decisions, and a Deferred section with pull-forward triggers all look like checklist-driven output"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 349,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8950
+  },
+  "cost_usd": 0.025873,
+  "latency_s": 27.769,
+  "raw_file": "raw/probe-98b508e38149.probe.sonnet-5.5.txt"
+}

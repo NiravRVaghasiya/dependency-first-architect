@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "01f393b894c0.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "01f393b894c0",
+  "blind_sha256": "5791ff70d0b6c4552d042fdb93995243cfceb9cd2b6c7c1760895315314f2f22",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 7,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Async: write to memory buffer, broadcast to clients, persist to log within 100 ms (not after client ACK)",
+      "rationale": "Acknowledging before durability contradicts the RPO=0 claim, and the plan treats CRDT merge as sometimes ambiguous and shows a position-based JSON edit instead of CRDT updates."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Phase 0–3 support plain text only.",
+      "rationale": "It is buildable and separates scope, but it defers rich text (implied by a document editor) to Phase 4 and omits presence, undo and history."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "writes are synchronous for V0, async-batched later",
+      "rationale": "Sections contradict each other: RPO=0 versus async persistence versus persist on close, offline out of scope yet offline typing in Phase 0, and token-only sharing versus per-edit auth."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Synthetic test: generate 1000 concurrent edits on the same character position from 100 simulated clients",
+      "rationale": "It has an early CRDT spike, measurable canary thresholds and a durability/failover test, but no randomized tests with reordered or duplicated delivery and the thresholds are invented."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "ASSUMPTION: typical for collaborative editing; acceptable to users",
+      "rationale": "It labels assumptions, unknowns and the offline-editing sensitivity, though the figures are unjustified and sensitivity analysis is partial."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "crash between ACK and persistence is rare and recoverable from client memory",
+      "rationale": "Failure handling is mostly generic (DB down, failover, rate limits). It accepts data loss on a crash and misses revocation, malicious updates, corruption and tombstone growth."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Rollback: Kill the service, restart the old container image.",
+      "rationale": "It covers deploy, rollback, canary, SLIs, alerts, on-call and expand/contract migrations, sized for a small team; the schema rollback story is vague."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "if storage grows > $X/month, compress old entries or archive to cold storage",
+      "rationale": "Cost is barely addressed: storage cost is listed as UNKNOWN, there are no estimates or scaling analysis, and the only control is a placeholder."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "R3: data model and recovery code depend on it; switching after real documents exist breaks history",
+      "rationale": "It classifies decisions by reversibility and runs a pre-build CRDT spike, but the plain-text model and the later move to rich text are not treated as a one-way risk."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Geographic replication (if users are spread across regions, add a secondary database in another region",
+      "rationale": "Mostly lean (single node, managed services), but it includes a heavy phase/canary ceremony and speculative items while under-building rich text, presence and undo."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Server restarts; user reopens the same token; server loads the CRDT from the database and reconstructs the same text.",
+      "rationale": "There is a concrete end-to-end first slice, dependency-ordered phases with exit checks and fallbacks, though the internal contradictions would need resolving before starting."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 1,
+      "evidence": "CRDT (Yjs or Automerge); simpler to reason about, no central authority needed for merge"
+    },
+    {
+      "id": "P5-02",
+      "status": 0,
+      "evidence": "Phase 0–3 support plain text only."
+    },
+    {
+      "id": "P5-03",
+      "status": 1,
+      "evidence": "100 runs all produce the same final text; merge time p99 < 100 ms"
+    },
+    {
+      "id": "P5-04",
+      "status": 1,
+      "evidence": "RPO = 0 (every edit is durable immediately)"
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "client auto-retries with exponential backoff (max 30 s)"
+    },
+    {
+      "id": "P5-06",
+      "status": 1,
+      "evidence": "Offline editing ... assumed NOT in scope (always-connected model)"
+    },
+    {
+      "id": "P5-07",
+      "status": 1,
+      "evidence": "document access control validated on every edit (is this user_id in the collaborators list?)"
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "enables \"undo this user's changes\" and audit trails"
+    },
+    {
+      "id": "P5-09",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Phase 1 — Core collaborative editing layer ... Depends on: V0 passes"
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "Assume documents stay < 1 MB and < 10k operations in Phase 0–1"
+    },
+    {
+      "id": "P5-12",
+      "status": 1,
+      "evidence": "backward-compatibility is tested (old clients can still connect after server update)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "if both fail, re-scope to turn-taking locking"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "switch to an OT library (e.g., OT.js) or custom OT logic, re-test"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Server receives, applies to CRDT, broadcasts to all clients"
+    },
+    {
+      "id": "P5-T4",
+      "present": true,
+      "evidence": "crash between ACK and persistence is rare and recoverable from client memory"
+    },
+    {
+      "id": "P5-T5",
+      "present": true,
+      "evidence": "Conflict resolution UI (show both versions if merge ambiguous)"
+    }
+  ],
+  "note": "The plan is well organised and has a good early sync slice. However, it acknowledges edits before they are durable, contradicts itself on persistence, offline support and authorization, and defers rich text, presence and undo, so the core collaborative-editing substance is thin.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4016,
+    "thinking_tokens": 1886,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 19034
+  },
+  "cost_usd": 0.087753,
+  "latency_s": 48.666,
+  "raw_file": "raw/judge-01f393b894c0.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

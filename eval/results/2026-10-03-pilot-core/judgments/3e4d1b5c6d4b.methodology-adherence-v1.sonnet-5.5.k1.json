@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "3e4d1b5c6d4b.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "3e4d1b5c6d4b",
+  "blind_sha256": "25e2a6f00428bfa98c28a596236a69fa33c0c8845ac327b235eeaede71c0db97",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 452,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Depends on: V0, the inventory, the security reviewer\"; Phase 4 \"Depends on: Phase 3, V3, V5\"",
+      "rationale": "Phases run substrate→trust boundary→golden path→waves→stateful/tier-1→SLOs→decommission, with explicit dependency map and gates proving each prior step."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"that service's `/version` endpoint in production returns the new commit SHA, and the deploy status is posted back on the commit.\"",
+      "rationale": "Phase 0 is a real end-to-end production path through nine tiers, with rollback and validated by V0."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"V1 fails, or the inventory shows >20% non-Kubernetes targets → push deploys from an isolated deploy-runner pool\"",
+      "rationale": "Nine irreversible decisions have reversibility class, default, assumption, validator and flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "\"Tasks, widest rework first: 1. Pipeline contract v0\"; \"Wave A: about 10 internal, low-tier services\"",
+      "rationale": "Widest-impact items come first within phases and waves run smallest exposure first, with tier-1 one service first."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"OIDC to the registry; no cluster credentials in CI; protected environment repo\"",
+      "rationale": "Security has concrete content in every phase 0–6 in the cross-cutting table and phase tasks."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"pipeline events are correlated end to end by commit SHA through an OpenTelemetry CI exporter. Alerts fire on pipeline failure\"",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"Terraform plus app-of-apps in Git; pinned runner image and action SHAs\"",
+      "rationale": "Reproducibility is concrete in each phase, from pinned builds to digest promotion, shadow builds and restore-tested exports."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"Revert-the-digest rollback; legacy job as fallback\"",
+      "rationale": "Failure handling appears in each phase: rollback, fail-closed admission, HA, autoscaling, drills, canary abort, read-only period."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"N/A — no AI component.\"",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Internal developer portal (Backstage): when onboarding goes over 1 engineer-day, or the service count passes about 100.\"",
+      "rationale": "Deferred items each have a concrete pull-forward trigger."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally complete plan: walking skeleton, gated decisions, phase-threaded concerns and explicit deferrals all substantive; no real weaknesses found.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1129,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9861
+  },
+  "cost_usd": 0.035950499999999996,
+  "latency_s": 32.503,
+  "raw_file": "raw/judge-3e4d1b5c6d4b.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

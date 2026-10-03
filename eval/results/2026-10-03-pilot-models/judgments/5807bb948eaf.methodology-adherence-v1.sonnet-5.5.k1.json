@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "5807bb948eaf.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "5807bb948eaf",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 99,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Any schema, API, or ingest contract | Tenancy/isolation model and ledger model (§3) | decision | specified",
+      "rationale": "Dependency map and phases go tenancy/ledger → metering → rating → payments → live charging, with each gate proven before dependents are specified."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "An internal service sends one real usage event to `POST /v1/usage` for an internal \"house\" tenant... draft invoice... PSP test mode and its webhook comes back and posts a ledger entry.",
+      "rationale": "Phase 0 is a real thin end-to-end slice deployed through the pipeline with rollback, tracing, and alerts, before features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Tenancy and isolation | R3 ... Default (chosen now) ... Flip condition: V2 fails, or a contract or residency rule requires dedicated storage",
+      "rationale": "Irreversible decisions are tabulated with reversibility, default, assumption, validation gate and flip condition; unknowns are labeled."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1 — Tenancy, identity, ledger, and data contracts (the widest rework blast radius)",
+      "rationale": "Widest-impact items (tenancy, ledger) come first, and within Phase 5 the rollout widens house→friendly→5%→all; the ordering is explicit."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: Allow-list and auth on the skeleton; secrets in a vault; PSP in test mode; PII-free logs",
+      "rationale": "Concrete security content appears in every phase from 0 through 6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: Trace, logs, dashboards, injected-failure alert",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase, with phase-specific metrics."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "IaC and a container pipeline from the first commit",
+      "rationale": "Reproducibility is addressed in every phase: IaC, migrations, deterministic replay, versioned catalog, PSP config as code, scripted restore drill."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: One-command rollback; alert on failed webhooks",
+      "rationale": "Resilience is concrete in every phase (idempotency, DLQ, resumable finalization, kill switch, restore drill)."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "## 8. AI layer N/A — no AI component.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Multi-currency and FX: Pull forward when the first tenant is contracted in a non-base currency.",
+      "rationale": "A deferred list with specific pull-forward conditions for each item."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan meeting all rubric dimensions with concrete content; minor nit is that the phase ordering places tenancy after the skeleton but that is appropriate.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1104,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 8732
+  },
+  "cost_usd": 0.032991,
+  "latency_s": 38.868,
+  "raw_file": "raw/judge-5807bb948eaf.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

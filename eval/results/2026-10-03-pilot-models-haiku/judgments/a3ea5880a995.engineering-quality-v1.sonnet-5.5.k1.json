@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a3ea5880a995.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "a3ea5880a995",
+  "blind_sha256": "21bc345b17da05ba5441d5598120cd62c9a157caa6afa26fa74f0e876cff47b7",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 25,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "\"permissions\": [\"read:issues\", \"write:issues\", \"read:pull_requests\", \"write:pull_requests\", \"read:code\", \"actions:read\"]",
+      "rationale": "Permission names are not real GitHub App permissions (which are e.g. issues: write, contents: write), and PR creation needs contents write, which is missing. The plan also says tests run locally and on Actions without explaining how, and it implies a confidence score can be trusted at 80%."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"Create PRs for low-risk fixes\" ... \"Close with explanation\"",
+      "rationale": "The plan covers the basic triage and fix pipeline and is buildable, but it skips reproduction, codebase retrieval and the security model, and it leaves out explicit exclusions."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"only_types\": [\"documentation\", \"typo\", \"config\"]",
+      "rationale": "The modules are recognizable and flow in sequence, but the decision matrix lets bugs and features be auto-fixed while the config limits auto-resolve to docs, typos and config. Also, the duplicate flow says \"offer close\" while the triage tree and the config auto-close issues."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "\"categorization_accuracy\": \"percentage\"",
+      "rationale": "Metrics and success targets are listed, but there is no offline evaluation on historical issues, no early testing of risky assumptions, and the targets are invented."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "\"70%+ of issues triaged automatically\"",
+      "rationale": "The plan never states assumptions about team size, scale or repositories, and it presents unsupported targets and a confidence threshold as fact."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "\"Security implications unclear\"",
+      "rationale": "Only a few blocking conditions are listed. The plan has no treatment of prompt injection, duplicate webhooks, loops, concurrent edits or sandbox escapes."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "\"Provide easy rollback\"",
+      "rationale": "Metrics and a schedule are mentioned, but there is no deployment, incident response, ownership or rollback mechanism beyond that line."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "\"cost_per_resolution\": \"dollars\"",
+      "rationale": "It names three model tiers and tracks cost per resolution, but it has no budgets, no estimates and no cost controls."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "\"type\": \"weaviate/pinecone/milvus\"",
+      "rationale": "It leaves the vector DB choice open and has no awareness of one-way decisions or exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Sentiment analysis\"",
+      "rationale": "The core components are mostly justified, but it adds speculative items like sentiment analysis, A/B testing and a vector DB, while omitting essentials such as a sandbox and a security policy."
+    },
+    {
+      "dim": 11,
+      "score": 2,
+      "evidence": "\"Phase 1: Foundation (Week 1-2)\"",
+      "rationale": "It gives a phased roadmap with a sensible order, but the checkpoints cannot be checked, there are no exit criteria, and key decisions are left to the team."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 1,
+      "evidence": "\"Auto-Fix Blocked When: Requires architectural changes\"; \"Please review and merge!\""
+    },
+    {
+      "id": "P4-02",
+      "status": 1,
+      "evidence": "\"authentication\": \"github_app_with_permissions\""
+    },
+    {
+      "id": "P4-03",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P4-04",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P4-05",
+      "status": 1,
+      "evidence": "\"Create local test\"; \"Validate fix locally\"; \"Unit tests pass\""
+    },
+    {
+      "id": "P4-06",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P4-07",
+      "status": 1,
+      "evidence": "\"pr_merge_rate\": \"percentage\"; \"reopened_issues\": \"count\""
+    },
+    {
+      "id": "P4-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P4-09",
+      "status": 1,
+      "evidence": "\"cost_per_resolution\": \"dollars\""
+    },
+    {
+      "id": "P4-10",
+      "status": 1,
+      "evidence": "\"Log all auto-actions with reasoning\""
+    },
+    {
+      "id": "P4-11",
+      "status": 0,
+      "evidence": "\"tools\": [\"ast\", \"tree-sitter\", \"pylint\"]"
+    },
+    {
+      "id": "P4-12",
+      "status": 0,
+      "evidence": "\"trigger\": webhook"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "\"Request review\"; \"Please review and merge!\""
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P4-T3",
+      "present": true,
+      "evidence": "\"Extract & Parse Content\" with no injection handling or policy layer"
+    },
+    {
+      "id": "P4-T4",
+      "present": true,
+      "evidence": "\"40%+ of issues resolved without human intervention\"; \"Close with explanation\""
+    },
+    {
+      "id": "P4-T5",
+      "present": true,
+      "evidence": "\"Average triage time <2 minutes\"; no iteration or spend limits and no kill switch"
+    }
+  ],
+  "note": "A generic, template-style plan with no security model (injection, sandbox, least privilege), no offline evaluation or budgets, and self-congratulatory claims; it does keep PRs human-reviewed.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1999,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 13029
+  },
+  "cost_usd": 0.052570500000000006,
+  "latency_s": 30.786,
+  "raw_file": "raw/judge-a3ea5880a995.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

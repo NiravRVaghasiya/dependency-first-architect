@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "766c092efb86.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "766c092efb86",
+  "blind_sha256": "707771f948f03df16f106999a47a445fdc5e4628984e21296480df742e6719b1",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 17,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 0 op format `{ op: \"insert\", pos: 0, text: \"Hello\", id: \"user1\", clock: 1 }` while also claiming Yjs CRDT; \"Yjs performs automatic CRDR merge\"",
+      "rationale": "Positional ops contradict CRDT, Yjs described as 'server state machine', 'single-writer' claimed necessary for CRDT, Redis Pub/Sub plus 'optimistic locking' are muddled, and the DB schema stores position/text ops rather than Yjs updates."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A multi-user real-time document editor where changes propagate instantly across all clients, including concurrent edits, presence indicators, and version history.",
+      "rationale": "It targets real collaboration with CRDT, persistence, offline and scaling, but the document is plain text with no rich-text model, and auth and permissions are deferred, so core needs are missing."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Phase 0 \"in-memory operation log (no database yet)\" yet the persistence decision says the Phase 1 \"WAL file\"; Phase 3 exit check runs V3 while V3 is listed as phase 2",
+      "rationale": "The design is recognizable, but there are inconsistencies: positional ops vs Yjs, Redis Pub/Sub vs a single writer, V-labels and phases mismatched, and DB-down 'writes queue locally' conflicts with ACK-after-durable."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Load test: 50 concurrent clients, 10 edits/sec per client, 10 sec duration, all edits at same position (high contention)",
+      "rationale": "It has concrete tests, crash recovery and chaos tests with early spike validation, but no randomized or property-based convergence testing, several invented thresholds, and the load test is a latency test rather than a convergence test."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "UNKNOWN: depends on product scale; supplied by product owner before Phase 4",
+      "rationale": "Assumptions and unknowns are labeled and many numbers are marked ASSUMPTION, though some thresholds like '<1 GB per 10 users' and the 'REQUIREMENT' label on 500 ms are unsupported."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Chaos test: \"Randomly kill backend instances, fail database, lose messages in broker. Verify: client reconnects within 10 s, no edit is lost\"",
+      "rationale": "It covers crash, DB failure, CAS compaction races, offline duplicates and rate limiting, but misses malicious edit input, authorization failures, and corruption from clients, and the chaos test is late."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Grafana with Prometheus scrape (backend exports `edits_received`, `clients_connected`, `broadcast_latency_ms`); alert if `clients_connected == 0`",
+      "rationale": "Metrics, SLO/alerts, feature flags and rollback are covered, but incident ownership, protocol-version rollout and a rolling-deploy story are absent, and some rollbacks are hand-wavy."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Storage cost | N/A — persisted edits grow with doc history | UNKNOWN: retention policy",
+      "rationale": "Cost is barely treated: storage is left unknown, with no compute, broker or people costs and no cost controls beyond quotas."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Conflict-free algorithm: OT vs CRDT | R3 (months rework; integration, undo, compaction differ...) | Default CRDT (Yjs or Automerge)",
+      "rationale": "A reversibility rating per decision with early spikes and revisit triggers is strong, though it misses lock-in on persisted op format and schema, and rates some choices oddly."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Multi-doc sharding with \"service discovery (etcd, Consul, or Kubernetes DNS)\"; \"helm chart stub\"; OT spike implemented alongside Yjs",
+      "rationale": "Mostly phased, but it builds a parallel OT implementation, sharding and a conflict-visualization UX, while omitting essentials like auth and a rich-text model."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Exit check: V1 passes (CRDT latency < 200 ms, undo reliable). V2 checkpoint test passes: 10k ops written, snapshot + tail consistent",
+      "rationale": "It has a concrete phase order with evidence and exit checks and a thin-slice first, though the model inconsistencies and mislabeled validations would need rework."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "Default (chosen now) | CRDT (Yjs or Automerge) ... OT easier to understand but undo/redo and offline-first are simpler with CRDT"
+    },
+    {
+      "id": "P5-02",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-03",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "Operations are durably written to the database before ACK to client (satisfies RPO < 1 op)"
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "use consistent hashing (or Redis cluster) to shard rooms by document ID"
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "local edits are applied to local CRDT copy and stored in IndexedDB. When back online, Yjs performs automatic CRDR merge"
+    },
+    {
+      "id": "P5-07",
+      "status": 0,
+      "evidence": "Currently, all users on a document can read and edit."
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Client-side undo affects only local CRDT; redo restores it."
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "Separate ephemeral channel (WebSocket message, not logged)"
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Phase 1 — Merge algorithm validation & persistence design"
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "Measure join latency for doc with 100k ops; target < 2 s"
+    },
+    {
+      "id": "P5-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Default CRDT (Yjs or Automerge)"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Phase 1 — Merge algorithm validation & persistence design"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "Operations are durably written to the database before ACK to client"
+    },
+    {
+      "id": "P5-T5",
+      "present": true,
+      "evidence": "When back online, Yjs performs automatic CRDR merge ... CRDT merge is conflict-free (no choice needed)"
+    }
+  ],
+  "note": "The plan has a sound build order (sync, persistence and spikes first) and a good decision-reversibility table, but it's technically muddled on CRDT vs positional ops. It also has no rich-text model, no authorization, no convergence fuzzing and weak cost analysis.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2529,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 20859
+  },
+  "cost_usd": 0.0776187,
+  "latency_s": 39.61,
+  "raw_file": "raw/judge-766c092efb86.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

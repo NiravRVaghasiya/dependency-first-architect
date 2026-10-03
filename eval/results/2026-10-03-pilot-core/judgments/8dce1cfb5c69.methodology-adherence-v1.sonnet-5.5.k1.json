@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "8dce1cfb5c69.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "8dce1cfb5c69",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 129,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "scan → read metadata → resolve date → render name → plan (resolve collisions) → preview | execute → log",
+      "rationale": "The data flow and milestones go roughly foundation-upward (MVP, formats, options), but nothing is proven before later work and the undo log and collision logic sit in the MVP without explicit dependency gating."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "MVP: JPEG only, dry-run and apply, default template, collision suffixes, undo log.",
+      "rationale": "The MVP is a thin end-to-end slice, but it isn't labelled Phase 0, has no production deployment path, and bundles several features."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "These decisions would change the design: Videos... Undo log location: Keep it in the photo folder, or in a central app-data directory?",
+      "rationale": "Open questions and a technology choice with a recommendation are listed, but most have no default and no flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "This happens in the planner, before any file is touched",
+      "rationale": "Safety-critical, wide-impact work (collisions, two-phase rename, undo) is early in the MVP, but no explicit widest-first ordering appears within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "The tool only previews unless `--apply` is passed.",
+      "rationale": "Safety defaults, no silent overwrites, and name sanitization are present, but they are not tied to each milestone and there is no real security treatment such as path traversal, symlinks, or supply chain."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "Record which source was used, so it can appear in the verbose and dry-run output.",
+      "rationale": "Only verbose and dry-run output exists; there is no logging or observability plan in the phases. The undo log serves recovery, not observability."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Cross-platform CI: Run on Windows, macOS, and Linux",
+      "rationale": "CI and fixture tests are mentioned, but there is no pinned dependency, lockfile, or reproducible build plan, and nothing is tied to phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Write `.exifrename-log-<timestamp>.jsonl` *before* each step and flush it each time.",
+      "rationale": "Crash-safe logging, two-phase rename, and exit codes are strong, but they are described in a standalone section, not threaded through later milestones."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never states whether an AI layer applies, and the rubric requires an explicit N/A declaration for a non-AI system."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Version 1 leaves out: Moving files into date-based folders, editing EXIF data, and a GUI. These could come later.",
+      "rationale": "Deferred items are named, but there is no pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, concrete tool design with good safety mechanics, but it lacks observability, reproducibility, an explicit AI N/A declaration, and decision gates with flip conditions.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1101,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 3966
+  },
+  "cost_usd": 0.021046,
+  "latency_s": 31.845,
+  "raw_file": "raw/judge-8dce1cfb5c69.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

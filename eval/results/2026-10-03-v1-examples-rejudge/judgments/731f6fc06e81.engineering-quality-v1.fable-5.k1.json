@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "731f6fc06e81.engineering-quality-v1.fable-5.k1",
+  "blind_id": "731f6fc06e81",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 12,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Yjs garbage collection stays on; history comes from stored snapshots, not from GC-disabled docs that grow forever",
+      "rationale": "Technical claims are precise even in subtle areas (confirm-after-durable ordering, fencing epochs, Yjs state-vector blind spot on deletions, relative positions for anchors) with no material errors."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Many users edit one document at the same time, see each other's changes live, and keep every confirmed edit, with history",
+      "rationale": "Delivers exactly the requested product with realistic phasing, and every exclusion (offline, E2EE, multi-region) is explicit with a bring-forward trigger."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Each open document has exactly one owner server: it holds the doc in memory and is the only one writing it to storage",
+      "rationale": "Single-owner model, CRDT-for-content vs Postgres-for-permissions split, and data ownership are stated once and honored consistently across every phase and the cross-cutting table."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "random but reproducible network faults (delays, reordering, duplicates, drops, partitions, server restarts). It asserts that every copy and the stored data end up identical",
+      "rationale": "The riskiest assumption (convergence/durability) is tested first via a deterministic simulation harness, crash tests, chaos tests, and a production canary plus divergence detector, with measurable exit checks per phase."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "CRDT overhead blows the budgets after compaction (95th-percentile snapshot > 10 MB, or 95th-percentile load > 2 s on real docs)",
+      "rationale": "Every default decision carries an explicit revisit trigger stating what would invalidate it and what changes, and numeric targets are framed as chosen budgets rather than facts."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "divergence detector in prod: idle clients send what they have plus a content hash. On a mismatch, the server forces a full resync",
+      "rationale": "Covers the hardest domain failures—silent divergence, lost confirmed edits, stale-owner writes, poison updates, DB outage honesty, duplicates, stored XSS, malware uploads—each with concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "SLOs and error budgets; any lost confirmed edit is a top-severity incident; a runbook for every alert",
+      "rationale": "Deploy/rollback rehearsed in Phase 0, safe drains, monthly restore drills, canary paging, and per-phase observability are sized to a small team."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Use 3 servers, not 30, and keep autoscaling simple until the data says otherwise",
+      "rationale": "Build-vs-buy trade-offs, storage-growth triggers (>50 GB to S3) and infra restraint control cost concretely, but engineering/run cost drivers are never quantified or given even order-of-magnitude estimates."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Documents stay in Yjs format, so switching either way stays cheap",
+      "rationale": "Hard-to-reverse choices (storage format, schema, wire protocol, tenancy) are marked 'lock it down' and validated early, while reversible ones (queue, search) are deliberately kept simple with stated exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Build only a thin collaboration server (auth hook, confirm-after-save storage, document ownership, metrics)... Never build our own CRDT or editor core",
+      "rationale": "Starts as one process on one server with Postgres doing queue and search duty, deferring brokers, read replicas and multi-region behind measured triggers—simplest workable design with a growth path."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "get one keystroke working end-to-end in prod → freeze and test the document format → access control → storage lifecycle",
+      "rationale": "Dependency-justified ordering, named libraries and tables, concrete first slice, checkable exit criteria per phase, and revisit triggers that say how the plan adapts if results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "CRDT: Yjs, pinned to an exact version, same build on client and server (Node/TS), with the y-prosemirror editor binding"
+    },
+    {
+      "id": "P5-02",
+      "status": 2,
+      "evidence": "ProseMirror schema v1 with a minimal set of node types, and a schema_version per doc. Changes only add things, never remove or rename"
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "random but reproducible network faults (delays, reordering, duplicates, drops, partitions, server restarts). It asserts that every copy and the stored data end up identical"
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "Confirm only after saving. New order: apply → send to others → batched write → confirm"
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "Envoy routes each document ID to a fixed server (ring hash)... Disconnect clients that fall more than 4 MB behind (they resync)"
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Keep a copy in the browser's IndexedDB so a crashed tab keeps unconfirmed edits... Full offline mode... Bring forward when over 5% of editing sessions include a disconnect"
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "The server owning the document re-checks open connections and closes or downgrades them within 5 s"
+    },
+    {
+      "id": "P5-08",
+      "status": 2,
+      "evidence": "Undo only reverts your own edits, never a collaborator's... Restore is a new edit... can be undone, and never rewrites the log"
+    },
+    {
+      "id": "P5-09",
+      "status": 2,
+      "evidence": "the flashiest part, so last: nothing is stored and nothing depends on it... Each message is capped at 1 KB and limited to 10 per second"
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Unlocks: every content feature (they all store into this format), multiple servers (needs proven convergence and safe retries)"
+    },
+    {
+      "id": "P5-11",
+      "status": 2,
+      "evidence": "A document over 25 MB becomes read-only with a banner and an alert, instead of crashing the server... Connection caps per document"
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "the protocol version is sent on connect, and the current and previous versions are both supported... migrate docs one at a time offline, with editing frozen"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "Edits merge in any order, so reconnect, multiple servers and offline stay possible without a rewrite"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Never build our own CRDT or editor core"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Signed-in user A types \"hello\" into document D. Signed-in user B, on another machine... sees it appear"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "\"Saved\" only appears after the edit is committed in Postgres"
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "you can't check permissions edit by edit inside a CRDT"
+    }
+  ],
+  "note": "An exemplary plan: correct CRDT-based design with durability-before-ack, convergence proven early via deterministic simulation, explicit lock-down vs revisit-trigger decisions, and thorough domain failure coverage; only cost quantification is comparatively thin.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6823,
+    "thinking_tokens": 4081,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 18593
+  },
+  "cost_usd": 0.5735825,
+  "latency_s": 130.308,
+  "raw_file": "raw/judge-731f6fc06e81.engineering-quality-v1.fable-5.k1.txt"
+}

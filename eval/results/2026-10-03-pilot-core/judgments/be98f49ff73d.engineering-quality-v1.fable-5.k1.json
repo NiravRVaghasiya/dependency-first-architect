@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "be98f49ff73d.engineering-quality-v1.fable-5.k1",
+  "blind_id": "be98f49ff73d",
+  "blind_sha256": "974a1c5481440e1e4b7c027afca4c9886c10c829923f9fab2abb4e42e107725f",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 268,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "agent PRs run under `pull_request`, not `pull_request_target`, so CI jobs don't get repo secrets",
+      "rationale": "Technical claims (webhook events, CI secret semantics, CODEOWNERS, SWE-bench-style eval) are accurate; the only imprecision is 'Contents R/W limited to branches the agent creates', which GitHub App permissions can't express directly, though gateway policy and branch protection achieve the same effect."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Fix the subset of issues that can be fixed safely. For well-scoped bugs, docs fixes and small chores",
+      "rationale": "Covers both triage and resolution as asked, resolves the autonomy ambiguity sensibly with human-in-the-loop PRs, explicitly excludes risky scope with reasons, and is clearly buildable."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "every GitHub write goes through a single layer. That layer enforces policy (allowed actions, rate limits, a dry-run flag)",
+      "rationale": "Components have clear responsibilities, state ownership is explicit (DB mirrored to labels), and cross-cutting concerns like policy enforcement and auditing are routed through one gateway consistently with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "replay 500 or more historical issues and compare the agent's results against the maintainers' final labels, duplicates and assignees",
+      "rationale": "Offline eval against historical outcomes with precision prioritized, a repo-specific resolution benchmark, a shadow phase before any action, measurable exit criteria per rollout phase, and continuing online metrics (revert rate as the key safety signal)."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Scale: is this for one repo or an org? Roughly how many issues per week?",
+      "rationale": "Key unknowns are explicitly surfaced, numbers are hedged ('about 40 tool calls', 'suggested defaults'), though the plan doesn't fully say how the design would change if assumptions prove wrong."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "ignore the agent's own comments (to prevent loops), and only accept `/agent` commands from collaborators",
+      "rationale": "Covers injection, bot loops, flaky tests, confident wrong fixes, abuse and cost blowups with concrete handling, but misses webhook delivery loss/reconciliation, sandbox crash mid-attempt, and retrieval-index staleness or corruption."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "a global flag, a per-repo flag, and the `agent:stop` label per issue. Dry-run mode logs intended actions",
+      "rationale": "Kill switches, dry-run, tracing and a metrics dashboard are concrete and sized for a small team, but deployment/rollback of the service itself, incident ownership and alerting are not addressed."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "about 40 tool calls, 30 minutes of wall-clock time, and a hard token and dollar limit",
+      "rationale": "The dominant cost driver (inference) has per-attempt and daily budgets, model tiering and cost-per-issue tracking, but no order-of-magnitude estimates or build-cost reasoning, deferred to the scale question."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Tech choices (suggested defaults)",
+      "rationale": "The costliest-to-undo commitment (agent autonomy and public actions) is deferred via phased rollout and dry-run, and the gateway isolates GitHub coupling, but hard-to-reverse choices like persisted state schemas and vendor coupling are not explicitly examined."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Out of scope for v1: large features, architecture changes, security vulnerabilities (route these to a private process)",
+      "rationale": "Every component (queue, sandbox, gateway, index) is justified by a real need of this domain, scope is tightly bounded for v1, and nothing speculative is added."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "0. Shadow | Runs on all issues and logs decisions only | Triage precision ≥ 90% on top labels",
+      "rationale": "Pipelines, eligibility rules, tool lists, budgets and phase gates are specific enough to act on with checkable results, but the engineering build order, schemas and prompts are explicitly deferred to a later spec."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "The agent never merges, never pushes to protected branches, and hands off to a person whenever it's unsure."
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "Issues R/W, Pull requests R/W, Contents R/W limited to branches the agent creates, Metadata R. It does not get Workflows, Administration or Secrets"
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "issue bodies, comments and repo files are untrusted data... Enforce the action allowlist at the gateway, not in the prompt."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "an ephemeral container per resolution attempt. It has a repo clone, the toolchain, no secrets, and network egress limited to package registries."
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "Write a failing test, or a minimal repro script, that captures the bug... the existing suite (or the affected subset) must pass"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "replay 500 or more historical issues and compare the agent's results against the maintainers' final labels, duplicates and assignees"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "PR acceptance rate, time to merge, number of review rounds, and the rate of reverts or follow-up fixes within 30 days"
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "a global flag, a per-repo flag, and the `agent:stop` label per issue... ignore the agent's own comments (to prevent loops)"
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "about 40 tool calls, 30 minutes of wall-clock time, and a hard token and dollar limit... cost per issue"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "every LLM call, tool call and GitHub write is traced and tied to the issue ID."
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "embeddings of existing issues, PRs, docs and code (file-level summaries plus symbols)"
+    },
+    {
+      "id": "P4-12",
+      "status": 2,
+      "evidence": "Events are processed idempotently, keyed on event ID, and work is serialized per issue."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent never merges, never pushes to protected branches"
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "Keep secrets and privileged tokens out of the sandbox entirely, since the strongest defense is having nothing to steal."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "issue bodies, comments and repo files are untrusted data"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "The revert rate is the key safety metric."
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Each issue gets at most 2 attempts before escalation."
+    }
+  ],
+  "note": "A strong, well-proportioned plan that avoids every trap and concretely addresses nearly the full checklist; main gaps are index freshness, webhook-loss recovery, service deployment/ownership, and cost magnitude estimates.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6927,
+    "thinking_tokens": 4184,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 11287
+  },
+  "cost_usd": 0.4883275,
+  "latency_s": 217.895,
+  "raw_file": "raw/judge-be98f49ff73d.engineering-quality-v1.fable-5.k1.txt"
+}

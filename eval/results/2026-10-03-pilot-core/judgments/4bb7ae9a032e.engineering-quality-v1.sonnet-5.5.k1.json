@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "4bb7ae9a032e.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "4bb7ae9a032e",
+  "blind_sha256": "ee1eb1e6026d1b9789baae359b3711246e5a701a7042c87a9a54d30351205700",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 431,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Keyword search matters for error codes, SKUs and feature names.",
+      "rationale": "Hybrid RRF, cross-encoder rerank, citation ID checks and retrieval-time visibility filtering are accurate; minor slips (prompt as part of injection defense, 'prefer newest updated_at') have little design consequence."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Account-specific actions like refunds, order lookups or password resets. Those need authenticated tool calls and belong in phase 2.",
+      "rationale": "Covers core RAG support needs with explicit exclusions, but handoff payload includes 'account context' despite no auth in v1, and there are no regional or privacy constraints."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Filter on `visibility=public` always.",
+      "rationale": "Components and flows are consistent; minor loose ends include handoff with account context while v1 is unauthenticated, and 'two failed answers' versus 'negative feedback' triggers."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Run evals in CI on any change to prompts, chunking or models.",
+      "rationale": "A golden set from real tickets, retrieval and faithfulness metrics, an adversarial set, CI regression and an A/B test are all present; the 85% recall threshold is unjustified and the post-launch regression monitoring is thin."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "I don't know your stack, doc platform, or traffic yet, so this plan uses common defaults and marks the choices that depend on your answers.",
+      "rationale": "Assumptions and open questions are stated clearly, but sensitivity (what changes if they're wrong) is not analyzed and numbers like 4s p95 are unjustified."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Hallucinated policies (refunds, pricing) | Strict grounding, citation checks, confidence gate, escalation for policy topics",
+      "rationale": "Covers hallucination, staleness, injection, PII and frustration, but there's little on sync failure or partial failures, LLM or vendor outages, abuse or rate limiting, and the injection defense is thin."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Weekly review dashboard:",
+      "rationale": "Logging, a weekly review and phased rollout exist, but there is no rollback, alerting, ownership, incident response or index re-embedding migration plan."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Cache frequent Q&A, use a smaller model by default, cap context size",
+      "rationale": "Controls are named and token cost is logged, but there is no per-conversation estimate, no scaling analysis and no build-cost discussion; extra LLM calls for rewrite, judge and synthetic questions go uncosted."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "record the model version on each chunk so you can re-embed later.",
+      "rationale": "Embedding versioning and 'pick whatever you already run' show some awareness, but there is no abstraction, exit path or discussion of the vendor and index lock-in."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Generate 3–5 synthetic questions per article and index them as extra retrieval keys.",
+      "rationale": "Query rewrite, reranker, synthetic questions, LLM judge and model routing are all included from the start without a baseline-first gating, though each is modest."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Prototype | 2 weeks | Ingestion, hybrid retrieval, basic chat, first eval set; offline retrieval recall@5 of at least 85%",
+      "rationale": "The phased build has concrete chunking and retrieval parameters and checkable gates, but stack choices are left open and there is no adaptation plan if results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 1,
+      "evidence": "Run incremental syncs on article update/delete, plus a nightly full reconcile."
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Split along the heading structure (H2/H3 sections), about 300–800 tokens per chunk"
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "200–500 real questions pulled from past tickets and chat logs."
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "Answer only from the provided context. If the context doesn't contain the answer, say so and offer a human."
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "low retrieval confidence, the user asks for a human, sensitive intent, two failed answers in a row, or negative feedback."
+    },
+    {
+      "id": "P1-06",
+      "status": 1,
+      "evidence": "Keep strict system-prompt boundaries and give the bot no tool access in v1."
+    },
+    {
+      "id": "P1-07",
+      "status": 2,
+      "evidence": "enforce visibility filters at retrieval time, not in the prompt."
+    },
+    {
+      "id": "P1-08",
+      "status": 1,
+      "evidence": "detect and redact card numbers, SSNs and passwords in user input before logging."
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Account-specific actions like refunds, order lookups or password resets. Those need authenticated tool calls and belong in phase 2."
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "top unanswered and low-confidence questions. These are content gaps to send to the docs team"
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "Cache frequent Q&A, use a smaller model by default, cap context size"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Cites the help article(s) behind every answer"
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Filter on `visibility=public` always."
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Run incremental syncs on article update/delete, plus a nightly full reconcile."
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Run evals in CI on any change to prompts, chunking or models."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "Query rewriting: turn the latest user message plus chat history into a standalone search query."
+    }
+  ],
+  "note": "A solid, grounded, eval-driven RAG plan with explicit scope and good retrieval and handoff design. Weak on privacy and retention, cost quantification, operations and rollback, and it builds a fairly rich pipeline from the start.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2219,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 860,
+    "cache_creation_input_tokens": 10921
+  },
+  "cost_usd": 0.0496725,
+  "latency_s": 25.978,
+  "raw_file": "raw/judge-4bb7ae9a032e.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

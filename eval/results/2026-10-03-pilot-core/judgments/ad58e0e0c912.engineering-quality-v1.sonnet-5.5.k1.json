@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ad58e0e0c912.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "ad58e0e0c912",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 43,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Yjs converges for our schema; its leftover deleted-content markers (\"tombstones\") stay within the storage and load budgets",
+      "rationale": "Yjs/ProseMirror, ack-after-durable-commit, server-side permission checks and relative-position anchors are used correctly; small gaps remain, such as reversing a CRDT client's updates under async checking and rich-text intent not being examined."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "A browser-based rich-text editor where several people edit the same document at once.",
+      "rationale": "It covers the core sync, persistence, permissions and version history and defers things explicitly with reasons, but collaborative undo and rich-text merge semantics are missing."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "One owning server per open doc (consistent hash on doc_id). The owner saves edits and sends them to every editor",
+      "rationale": "Ownership of data, routing, trust boundary and tenancy are consistent across sections, with only minor loose ends (for example presence is built last although awareness is part of the sync stack)."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Property-based fuzz testing: 3–10 simulated clients with random reorder, duplication, delay and partition, 1M generated edit sequences.",
+      "rationale": "Early V1 and V3 checks target the main risks, and production divergence checksums and canary scans continue after launch. However, nothing tests preservation of user intent on rich text, undo or history restore, and some numbers are provisional."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "If E2EE is required, the trust boundary changes completely and the plan restarts from Step 1.",
+      "rationale": "Figures are labeled ASSUMPTION or UNKNOWN with the person who supplies them, and the plan says what changes if each assumption is wrong."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Chaos tests under load: kill the owning server mid-edit, rolling deploy, dropped connections, Postgres failover.",
+      "rationale": "Domain failures are covered with detection and recovery: crash, divergence, revocation, malicious or oversized updates, paste sanitization and leaks. Poisoned-CRDT-state recovery and the handling of a corrupt snapshot are thin."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Alerts on WebSocket error rate, ack latency, and failed saves.",
+      "rationale": "It gives deploy, rollback, drain, expand/contract migrations, SLOs, an on-call budget sized to a team of 6 or fewer, and restore drills, but incident ownership and runbooks are only lightly specified."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Cost per open document-hour, measured in V4",
+      "rationale": "It identifies drivers (open-doc servers, Postgres writes, raw-history storage, build vs buy) and controls such as quotas, idle unload and archiving, but it gives no cost magnitudes or people-cost estimate, and growth is only to be measured later."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: it fixes the stored format and the client protocol; real docs cannot be safely re-encoded",
+      "rationale": "Every decision is labeled by reversibility with a revisit trigger and exit path. The one-way format decision is validated first, with disposable docs and a stated point of no return."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Two deployables, managed Postgres, Redis only if V4 flips; ≤ 2 pages/week",
+      "rationale": "It starts simple (proven Yjs/Hocuspocus, one Postgres, no Redis) and defers extras, though six phases, formal sign-offs and a gated wave rollout add some ceremony."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: V1 passes. A divergence alert fires when a mismatch is injected on purpose.",
+      "rationale": "Each phase has tasks, dependencies, checkable exits and a fallback (switch to OT, flag off, group commits), so a team could begin immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "Yjs CRDT bound to ProseMirror ... need for a single server-ordered edit history (audit) → OT (prosemirror-collab, server-assigned versions)"
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Minimal Tiptap schema (paragraphs, headings, lists, marks, links, images by reference), versioned, with migrate-on-load"
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "random reorder, duplication, delay and partition, 1M generated edit sequences ... 0 divergent copies; 100% schema-valid"
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "The server acks only after a durable Postgres commit ... Postgres append-only edit log plus snapshots"
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "One owning server per open doc (consistent hash on doc_id) ... Add backpressure and per-tenant connection quotas."
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Keep unacked updates in the browser (IndexedDB) and resend them after a reload. Resync on reconnect."
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "Close live sessions within 5 s when access is revoked."
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Version history and restore, built on snapshots."
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "presence (live cursors) via Yjs awareness, which is temporary and not saved"
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Phase 4: Collaboration features (leaf work)"
+    },
+    {
+      "id": "P5-11",
+      "status": 2,
+      "evidence": "p95 < 1.5 s for a 100-page doc with 30 days of heavy edit history ... ≤ 50 concurrent editors ... Unload idle docs"
+    },
+    {
+      "id": "P5-12",
+      "status": 1,
+      "evidence": "`schema_version` on every row ... Drain a server cleanly during deploys."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Yjs CRDT bound to ProseMirror (Tiptap + y-prosemirror)"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Phase 1: Merge core and data model (biggest rework if wrong)"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "The server acks only after a durable Postgres commit; the UI shows \"unsaved\" until then"
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "its leftover deleted-content markers (\"tombstones\") stay within the storage and load budgets"
+    }
+  ],
+  "note": "A strong, risk-ordered plan with the sync core proven first, durable acks, server-side authorization and explicit reversibility. Its main gaps are collaborative undo, rich-text merge semantics, client protocol versioning and concrete cost figures.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4389,
+    "thinking_tokens": 1895,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 15481
+  },
+  "cost_usd": 0.0827855,
+  "latency_s": 54.014,
+  "raw_file": "raw/judge-ad58e0e0c912.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

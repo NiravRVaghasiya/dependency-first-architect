@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "6eb736e7cc20.probe.sonnet-5.5",
+  "blind_id": "6eb736e7cc20",
+  "blind_sha256": "eb80bcaa7caae632e4c2adf115aacd1330b700d81435388dcc83fd817e2f77a8",
+  "judge": "sonnet-5.5",
+  "order_index": 0,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.1,
+  "cues": [
+    "Opens with a generic 'I'll provide a comprehensive architecture' preamble, typical of unstructured default output",
+    "Ends with an emoji checkmark summary and an offer 'Would you like me to dive deeper...', a conversational default-assistant pattern",
+    "No explicit assumptions, open questions, risks, trade-offs, or alternatives sections that a planning methodology would require",
+    "Jumps to a full tech-stack dump (schemas, code, ASCII diagrams) without first clarifying requirements or scope",
+    "Contains unreflective flaws (UNIQUE(tenant_id, plan_id), RLS on current_user_id, floats for money, Kafka partitions 'per tenant_id mod 3') that show no verification step"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 321,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 13470
+  },
+  "cost_usd": 0.036892999999999995,
+  "latency_s": 15.233,
+  "raw_file": "raw/probe-6eb736e7cc20.probe.sonnet-5.5.txt"
+}

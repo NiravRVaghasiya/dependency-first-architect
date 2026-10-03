@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f3a6092c7da3.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "f3a6092c7da3",
+  "blind_sha256": "a4cdf42e279bd8f9ff054c7b1e903fa84c2459d185674776a35ebc3372e63099",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 471,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Citation check: cited articles must be in the retrieved set, otherwise the bot declines.",
+      "rationale": "Mechanisms (hybrid search, citation check, renderer link allow-list, EU AI Act Art. 50 disclosure, Moffatt case) are accurate; minor imprecision such as a citation-in-retrieved-set check not proving faithfulness is covered by expert V3."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Answer-only. The only write is a ticket the user starts, which the server builds",
+      "rationale": "Precisely fits the request, resolves scope ambiguity explicitly, defers account actions and internal articles with reasons, and is buildable by 2–4 engineers."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Chunk schema carries article ID, version, locale, URL, visibility and updated-at from day one",
+      "rationale": "Consistent responsibilities and data ownership across phases; minor loose ends like the phase 3 'rewrite' step versus 'single retrieve-then-generate chain' and two model calls cap."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "hit@5 ≥ 0.90 (ASSUMPTION; ±4 points of noise at n=200)",
+      "rationale": "Risk-specific gates V0–V5 run before exposure, with thresholds labeled as assumptions, build-vs-buy check early, and continued production validation via canary and ramp."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "ASSUMPTION: a team of 2–4 engineers; confirm",
+      "rationale": "Assumptions and unknowns are labeled, with explicit 'if that's wrong' consequences and confirmation owners; no unsupported certainty."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Output renderer that allows only help-center links and no images or other URLs, so nothing can be leaked through a link.",
+      "rationale": "Covers hallucinated policy, stale content, injection incl. planted documents, PII leakage, runaway cost, vendor outage, feedback poisoning, with detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Rollback means turning the flag off and redeploying the previous image, and it is rehearsed once.",
+      "rationale": "Deploy, rollback per phase, SLIs, burn-rate alerts, on-call, kill switch, index version switching and ownership are all designed in and sized for a small team."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Per-turn cost: first value from V0. Cost per resolved conversation: —",
+      "rationale": "Cost controls (token caps, spend cap, rate limits, model tiering) and build vs buy are good, but no cost estimate or order of magnitude is given, deferring to measurement."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: personal data sent to a vendor can't be recalled",
+      "rationale": "Decisions are explicitly rated by reversibility, with versioned indexes, model interface isolation, revisit triggers, and the chunk schema flagged as structural from day one."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "A single retrieve-then-generate chain, nothing more.",
+      "rationale": "Simple stack (one service, pgvector, hosted API) with no overbuilding, though six phases, shadow mode, 150-case injection suite and heavy process are somewhat heavy for a 2–4 person team."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Tasks, in order: 1. Trace and log store with redaction at write time, restricted access and a provisional 30-day retention",
+      "rationale": "Thin first slice, ordered phases with dependency reasoning, concrete tasks, checkable exit criteria and failure responses per check."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "An edit is live in answers ≤ 1 h after publishing; an unpublished or deleted article stops being retrievable ≤ 15 min"
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "CMS API → clean HTML → chunks split at headings."
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "≥ 200 real questions from search logs and past tickets (redacted), with expert-labeled source passages, per index version"
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "every claim must cite an article the system actually retrieved; otherwise decline and hand off."
+    },
+    {
+      "id": "P1-05",
+      "status": 1,
+      "evidence": "High-risk topic detector that routes the question to a human."
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "Injected instructions can't break the guardrails or leak data, even when the model is fooled"
+    },
+    {
+      "id": "P1-07",
+      "status": 1,
+      "evidence": "Only published, public articles; visibility is also filtered at query time."
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "Hosted model under no-retention, no-training terms in a matching region. Emails, phones, card numbers, addresses and order IDs are redacted"
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Answer-only. The only write is a ticket the user starts, which the server builds"
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "thumbs-down answers and handoffs go to support review. Reviewed cases join the question set (versioned), and doc gaps go to the content team."
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "≤ 6k input / 600 output tokens per turn; ≤ 2 model calls per turn; ≤ 20 turns per session; daily spend cap"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Answer only from retrieved articles; every claim must cite an article the system actually retrieved; otherwise decline and hand off."
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "If internal-only or plan-specific articles are included: access control at retrieval time becomes a security dependency before exposure"
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Webhook updates plus a nightly full reconcile"
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Eval harness in CI. An LLM judge is calibrated to expert labels for catching regressions"
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "A single retrieve-then-generate chain, nothing more."
+    }
+  ],
+  "note": "Exceptionally thorough, well-reasoned plan with explicit assumptions, risk-driven validation and reversibility; weakest on cost quantification and somewhat heavy process for a small team.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2288,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 860,
+    "cache_creation_input_tokens": 16306
+  },
+  "cost_usd": 0.063825,
+  "latency_s": 29.696,
+  "raw_file": "raw/judge-f3a6092c7da3.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

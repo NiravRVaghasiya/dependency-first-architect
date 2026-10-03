@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "8db7694c7af0.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "8db7694c7af0",
+  "blind_sha256": "3e098c1af1e92502e36b51b3a960c220eb3c3167155f2836c77a81ff05a63a88",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 358,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Templates are extracted from pipelines that already run; \"Signature enforcement is impossible until everything is signed.\"",
+      "rationale": "Phases run from contracts to templates to enforcement to migration to optimization to progressive delivery, and each phase names what it depends on and is gated by an exit check."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "a real code change to one real, stateless, low-criticality service ... is merged to `main` and reaches prod.",
+      "rationale": "Phase 0 is a real end-to-end prod path that includes signing, staging, promotion, observability and a rollback proof."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Flip condition: \"More than 20% of services need template overrides → split templates by archetype.\"",
+      "rationale": "The gates table lists irreversible decisions, each with a default and a concrete flip condition, and it states assumptions such as polyrepo and Kubernetes openly."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks (widest → narrowest) ... \"This affects every workload in the cluster, so it goes first.\"",
+      "rationale": "Every phase orders its tasks from widest to narrowest and gives the blast-radius reason, for example the scaffolder first and the artifact contract first."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "OIDC to the registry with no static keys. Branch protection on `main` and the env repo. ... CI has no cluster credentials.",
+      "rationale": "The cross-cutting table gives concrete security measures for every phase from Phase 0 through Phase 6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Prometheus scrapes Argo CD. One OTel trace covers commit → prod. Lead-time metric and deploy markers. Alert on sync failure.",
+      "rationale": "Phase 0 has concrete observability, and each later phase adds specific telemetry."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Base image pinned by digest, GitHub Actions pinned by commit SHA, lockfiles committed, deploys by image digest only.",
+      "rationale": "Reproducibility measures appear in every phase, from pinning and rebuild checks through cache equivalence spot checks to preview environments generated from the GitOps templates."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "`git revert` rollback proven in under 10 minutes. The old pipeline stays as a fallback for the pilot service.",
+      "rationale": "Each phase has specific failure handling, including rollback, runner HA, retry rules, auto-rollback, reversible waves and TTL reapers."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "**N/A.** This is an infrastructure platform with no model, retrieval or agent parts.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Hermetic builds (Bazel/Nix, SLSA Build L3+). Pulled forward if a compliance regime requires them",
+      "rationale": "The plan lists ten deferred items, and each has a concrete pull-forward trigger."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is strong on all ten dimensions: it starts with a real skeleton, orders work by dependency and blast radius, threads the four cross-cutting concerns through every phase, and explicitly defers work with triggers.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1190,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8453
+  },
+  "cost_usd": 0.0330405,
+  "latency_s": 17.507,
+  "raw_file": "raw/judge-8db7694c7af0.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "b448cd84d421.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "b448cd84d421",
+  "blind_sha256": "d0e2b4a9a6dcecf01e31d960522a56fd9c234f1dba6bd3935114a852bbe35ac1",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 415,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Applying the same Yjs update twice changes nothing, so duplicate delivery does no harm.",
+      "rationale": "Yjs/Hocuspocus behaviours, including the CRDT's inability to validate semantics and the limits of client-held edits, are stated accurately; the gap is thin treatment of rich-text merge semantics and tombstone compaction."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Non-goals for the beta: native mobile apps, track changes or suggestion mode, permissions on parts of a document, end-to-end encryption",
+      "rationale": "The plan solves the real-time collaboration problem with offline, presence, sharing and versions. It has explicit exclusions with reasons and a realistic 12–14 week scope."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "The Sync Service owns document content... is the only writer of document state and versions. When the API Service needs to change content... it asks the Sync Service",
+      "rationale": "Ownership, data flows and interfaces are clear and applied consistently. There are minor loose ends, such as the 99.9% target against a single instance in M1 and version-restore mechanics."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "S1 fuzz: 100 runs × 10k ops, zero divergence between clients and saved state.",
+      "rationale": "Risk-specific spikes run early with go/no-go triggers, chaos and deploy-under-load tests, load tests and a production canary; thresholds are marked as assumptions."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Assumption | Impact if wrong | How / when validated",
+      "rationale": "Assumptions are marked [A] with impact-if-wrong and a validation point for each, and the open questions name what would change the design."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Saves fail. Sync keeps documents in memory, retries with backoff, emits `store_failures_total`, and an alert fires after 2 minutes.",
+      "rationale": "The major failures are covered with detection and recovery: crash, DB outage, revocation, hostile editor, schema skew, proxies. Poisoned or corrupt CRDT state and backpressure get less concrete handling."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Each alert linked to a runbook and fired once in staging.",
+      "rationale": "The plan covers deploy, rollback, drain, metrics, canary, runbooks and on-call. Business-hours on-call against a 99.9% target is a mild gap."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "RDS about $300, Fargate (2–3 sync, 2 api) about $250, ElastiCache about $80, ALB about $40, so under $1k/month.",
+      "rationale": "The cost drivers are identified, labelled as rough, and controlled with a budget alert and a build-versus-buy rationale. Scaling behaviour and people cost are thin."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Reversibility | Revisit if",
+      "rationale": "Every decision is rated for reversibility with revisit triggers. The hard ones (schema, CRDT format, permissions model) are spiked early, and the storage interface isolates D4."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Redis is added in Milestone 2, only to relay messages between Sync Service instances.",
+      "rationale": "The plan starts with one instance and defers Redis, routing, comments, images and multi-region. The components are justified, and the pentest is reasonable for confidential documents."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Changes plan if: any divergence is traced to Yjs or y-prosemirror rather than our code: pause M2 and evaluate ProseMirror's central-authority collab",
+      "rationale": "The plan gives a dependency-ordered task table with locations, done-when criteria, parallel tracks, a critical path and explicit pivot triggers."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "Yjs; ShareDB (OT); ProseMirror's central-authority collab; build our own"
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Formatting conflicts follow the CRDT's deterministic rules."
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "10 headless clients doing random insert/delete/format, random disconnects, and server kills."
+    },
+    {
+      "id": "P5-04",
+      "status": 1,
+      "evidence": "Saves with a debounce: 2 s after the last change, and at least every 10 s"
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "exponential backoff and jitter, capped at 30 s... Hocuspocus Redis extension"
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Edits apply locally and are written to IndexedDB."
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "Every Sync instance closes that user's connections to the document with code 4403."
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Undo affects only the user's own changes (the Yjs undo manager does this, and spike S2 verifies it)."
+    },
+    {
+      "id": "P5-09",
+      "status": 2,
+      "evidence": "Presence travels through the Yjs awareness channel and is never saved."
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "M1: First end-to-end slice + core risks... Out: sharing UI, presence, offline cache, multiple instances."
+    },
+    {
+      "id": "P5-11",
+      "status": 2,
+      "evidence": "50 simulated editors at 2 ops/s on one 1 MB doc... 1 MB per message, 10 MB per document"
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "Raise `MIN_CLIENT_SCHEMA_VERSION` in Sync config, then enable creating the node."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "Co-editing with no conflict dialogs... Resolve concurrent edits with Yjs (CRDT)"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "We do not write our own OT."
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "In: login, create/open doc, co-edit, save to Postgres, CI/CD to staging"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "Each client sends the updates the server is missing... refusing to unload a document with unsaved changes."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "a CRDT can't check edits for meaning on the server side"
+    }
+  ],
+  "note": "An unusually strong, well-sequenced Yjs-based plan with early risk spikes and explicit reversibility; its weak spots are the persistence design (debounced full-state saves, no append-only log or compaction) and shallow rich-text merge semantics.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4372,
+    "thinking_tokens": 1993,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 21423
+  },
+  "cost_usd": 0.09745870000000001,
+  "latency_s": 43.53,
+  "raw_file": "raw/judge-b448cd84d421.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

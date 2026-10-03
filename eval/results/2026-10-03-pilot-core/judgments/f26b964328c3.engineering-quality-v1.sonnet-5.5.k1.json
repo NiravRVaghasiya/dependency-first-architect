@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f26b964328c3.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "f26b964328c3",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 164,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Every key for a card shares the Redis hash tag `{card_token}`, so a single Lua script can touch them all atomically in one cluster slot",
+      "rationale": "Mostly correct on Redis Lua atomicity, ONNX, LightGBM missing values and time-split labels. Minor imprecision remains, such as fail-open on stand-in and the concurrent-duplicate ZADD claim, but none affects the design."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Non-goals (v1) - Anti-money-laundering transaction monitoring... 3-D Secure risk-based authentication for e-commerce step-up.",
+      "rationale": "Solves inline issuer fraud scoring with explicit exclusions and reasons, resolves ambiguity with defaults, and is buildable by a 5-person team. Deferring 3DS step-up is a minor gap."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "`libs/features` holds the feature registry (names, order, version) and `velocity.lua`. The Decision Service, the Velocity Updater and the Replay Harness all use it.",
+      "rationale": "Data ownership, sole writers and consistency are explicit, and choices are applied consistently across sections. Only tiny loose ends remain."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Guardrail drill in prod | Driver #1 actually works | M2 exit: a test rule with a 0% cap must auto-demote",
+      "rationale": "Validation is tied to specific risks. Spikes come early, parity and time-split evaluation are included, and production checks continue. Some thresholds are labeled as assumptions."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "| A4 | The Authorization Service can give us a **100 ms** timeout... | If < 50 ms: embed the decision logic as a library | **Spike C** (M1, week 1–2) |",
+      "rationale": "The assumptions table gives impact and validation for each item, and the open questions carry defaults. Numbers are marked as assumptions."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "The member string is derived deterministically from the request, so a `ZADD` for a retried `auth_id` changes nothing",
+      "rationale": "Covers Redis loss, duplicates, Kafka outage, bad rules, selection bias, insider tampering, probing and card-testing floods, each with detection and recovery. Few gaps."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "**P1:** overall decline rate > 3× the trailing same-hour 7-day baseline and > 0.5 percentage points absolute, for 5 minutes.",
+      "rationale": "Covers domain-meaningful alerts, blue/green deployment, rollback times, named ownership, runbooks and migrations, sized to the team. A 24/7 on-call for 4 engineers is a slight stretch."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Total | ≈ $2–4.5k/month, plus staging at about 40% of that",
+      "rationale": "Run costs are itemized with controls and a budget alert. People cost and build-versus-buy economics are thin, and the figures have no stated basis. The summary says $3–6k while the table says $2–4.5k."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "| D1 | Score **inline**... | Hard (auth-path contract) |",
+      "rationale": "Each decision carries a reversibility rating and a revisit trigger. The hard choices (contract, PAN, language) are validated early by spikes, and the vendor cancellation is flagged as the only point of no return."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "There is no stream processor in v1.",
+      "rationale": "Starts simple with Redis Lua and in-process ONNX, defers Flink, a UI and multi-region, and gives triggers for each. The components are all justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T6 ... Benchmark: Lua p99 < 1 ms on a card with 1,000 entries.",
+      "rationale": "The task breakdown has lanes, dependencies and done criteria. It includes 'changes the plan if' conditions and a critical path, so a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "p99 ≤ 50 ms server-side at 1,000 TPS... One Redis `EVALSHA` ... ≤ 20 ms"
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "**Fail open** on timeout, deferring to the processor stand-in... fail closed only for high-risk merchant categories"
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "The Decision Service, the Velocity Updater and the Replay Harness all use it."
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "The most recent 90 days are excluded from training because their labels haven't matured."
+    },
+    {
+      "id": "P8-05",
+      "status": 1,
+      "evidence": "Value detection rate at the target false-positive ratio... Choosing the operating point... business trade-off between losses, false declines and analyst capacity"
+    },
+    {
+      "id": "P8-06",
+      "status": 1,
+      "evidence": "`action` (`APPROVE | DECLINE | APPROVE_ALERT | DECLINE_ALERT`)"
+    },
+    {
+      "id": "P8-07",
+      "status": 2,
+      "evidence": "A reply of NO writes a fraud label and opens a case asking an analyst to block the card."
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "PAN: **never present**. The request contract has no PAN field, and a CI check plus a log scrubber reject 13–19-digit strings"
+    },
+    {
+      "id": "P8-09",
+      "status": 1,
+      "evidence": "The consumer is idempotent because of the member encoding... Kafka key `card_token`; Redis rebuilt from Kafka"
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "daily population stability index on the top 20 features and on the score... `champion` slot and an optional `challenger` slot"
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "DecisionEvent contains the full request, every feature value used, the outcome of every rule... the versions"
+    },
+    {
+      "id": "P8-12",
+      "status": 2,
+      "evidence": "At least 3 instances across 3 AZs... designed to 1,000 sustained and 2,000 burst"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "Only inline scoring prevents loss (#3). Asynchronous-only catches fraud after the money is gone."
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "after 20 ms, skip it... the Authorization Service times out at 100 ms and fails open to its own checks plus processor rules"
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "Trains LightGBM with a time-based split. The most recent 90 days are excluded"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "Train it on features made by replaying history through the same feature code the live service uses."
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "Use card tokens only, never the PAN (full card number), to keep PCI scope small."
+    }
+  ],
+  "note": "An exceptionally thorough, well-reasoned plan with explicit assumptions, spikes and reversibility. Weaknesses are limited step-up actions, a thin 3DS/OTP path, ungrounded costs, and a hard p99 budget for a very low-latency Lua call.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2569,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 34813
+  },
+  "cost_usd": 0.11291549999999999,
+  "latency_s": 44.124,
+  "raw_file": "raw/judge-f26b964328c3.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "99dea7834757.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "99dea7834757",
+  "blind_sha256": "305dcbb50382c3267323491d347df2eb032e9de641445a4dc40797016eba62e6",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 372,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Each phase below depends on the ones before it, so you always have something working end to end.",
+      "rationale": "Mostly substrate-upward (editor→CRDT→sync→persistence→auth), but auth comes after sync/persistence and scaling/security/monitoring come late, and 'proven' gates are thin."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 0: Decisions to make first ... Phase 1: Single-user editor",
+      "rationale": "Phase 0 is decisions only and no deployed end-to-end production slice exists; first real multi-user path is Phase 3 and local-only."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Use a CRDT (Yjs or Automerge) rather than Operational Transformation (OT). CRDTs work offline, can sync peer-to-peer",
+      "rationale": "Irreversible decisions are listed up front with defaults and reasons, but no flip conditions or revisit triggers."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Critical path: 1 → 8 → 10–11 → 13 → 16–17.",
+      "rationale": "Some foundation-first ordering within phases (sync handshake before reconnect), but no explicit blast-radius reasoning, and widest-impact concerns like auth and limits come late."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "Phase 10: Security review: validate updates on the server, prevent cross-site scripting (XSS) in pasted content, add audit logs.",
+      "rationale": "Security is mostly a trailing step; only auth/permissions in Phase 5 appear earlier and nothing in Phases 0–4."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "Phase 10: Monitoring: sync latency, connection counts, update sizes, error rates.",
+      "rationale": "Observability appears only in the final phase."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No mention of reproducible builds, environments, CI, or data across phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Reconnect automatically with backoff, and queue edits made while disconnected.",
+      "rationale": "Resilience appears in Phase 3, 8, 9, 10 but is absent from many phases and concentrated late."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so it does not declare N/A."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Suggestions or tracked changes (optional, and complex).",
+      "rationale": "Some items are marked optional, but there's no explicit deferred list with pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A sensible feature-ordered build sequence, but it lacks a production walking skeleton and treats security, observability and reproducibility as late or missing, with no deferral triggers and no AI N/A statement.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1034,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3355
+  },
+  "cost_usd": 0.0187355,
+  "latency_s": 20.838,
+  "raw_file": "raw/judge-99dea7834757.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

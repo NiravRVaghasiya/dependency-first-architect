@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "242b280aa42e.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "242b280aa42e",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 57,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Integer minor units plus ISO currency. Banker's rounding at invoice line level.",
+      "rationale": "Correct on ledger, RLS, SAQ A, outbox, idempotency; minor imprecision such as banker's rounding being asserted without jurisdiction considerations and 'Stripe Connect' aside, and ledger 'strongly consistent' on one primary is fine."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "It handles the plan catalog, subscriptions, usage metering, rating, invoices, payments, dunning and finance exports",
+      "rationale": "Covers core billing needs with explicit assumptions and deferrals, but tax ID/reverse-charge, entitlements and invoice numbering are thin or missing."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Modular monolith (catalog, subscriptions, rating, ledger, invoicing) plus a separate usage-ingest service",
+      "rationale": "Consistent design with clear ownership; small loose ends (notification service vs ≤3 deployables, SQS vs outbox not fully traced)."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "10,000 scenarios, 0 duplicate or missing charges (REQUIREMENT: worst failure)",
+      "rationale": "Validations V0–V7 tied to specific risks, run early, with evidence and unlock gates; thresholds are labeled assumptions; post-launch reconciliation and SLO holds."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Usage ingest throughput | UNKNOWN: product supplies the peak events/sec and tenant count",
+      "rationale": "Assumptions, unknowns and requirements are labeled, with missing inputs and what changes if wrong (merchant billing, cells, SAQ A-EP)."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Fault injection: duplicate webhooks, crashes after the processor call, retries",
+      "rationale": "Covers double charge, leakage, imbalance, late events, DLQ, processor outage, reconciliation; out-of-order webhooks, disputes and dunning-failure detail are lightly covered."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Alerts on webhook failures and on a ledger that doesn't balance.",
+      "rationale": "Blue/green deploy, rollback flags, restore drill, alerts, on-call rotation; incident ownership and runbooks are thin."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Ingest cost | UNKNOWN: finance supplies the cost ceiling per million events",
+      "rationale": "Identifies ingest cost as a driver and acknowledges unknown ceiling, but gives no estimate of processor fees, tax fees, or people costs, and the build-vs-buy cost comparison is thin."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: wrong money is unrecoverable harm",
+      "rationale": "Decisions are classified by reversibility, hard ones (tenancy, money format, IDs, vendor) validated early with explicit revisit triggers and exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Modular monolith (catalog, subscriptions, rating, ledger, invoicing) plus a separate usage-ingest service",
+      "rationale": "Proportionate, with deferrals of rev-rec, second processor and cells; some ceremony (two approvers, QSA, penetration test, failover drill) is heavy but defensible."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: V0.",
+      "rationale": "Phased order with dependencies, concrete first slice, checkable exit gates and fallback actions for each failed validation."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Integer minor units plus ISO currency. Banker's rounding at invoice line level."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Issued invoices are corrected only by credit notes, never edited."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "Idempotency keys on every money operation. Processor webhooks deduplicated"
+    },
+    {
+      "id": "P2-04",
+      "status": 1,
+      "evidence": "Hosted payment fields keep us at SAQ A"
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "Shared Postgres with `tenant_id` and row-level security (RLS) on every table"
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "Deterministic rating replay from raw events"
+    },
+    {
+      "id": "P2-07",
+      "status": 1,
+      "evidence": "Subscription lifecycle, including proration."
+    },
+    {
+      "id": "P2-08",
+      "status": 1,
+      "evidence": "Tax-engine integration in sandbox."
+    },
+    {
+      "id": "P2-09",
+      "status": 1,
+      "evidence": "Retry and dunning schedules."
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "Daily reconciliation of the ledger against processor payouts."
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Buy payments (Stripe or Adyen) and tax (Stripe Tax or Avalara). Build the ledger and rating"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Integer minor units plus ISO currency."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Ledger strongly consistent: Postgres, ACID, append-only double-entry."
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "Webhook signatures verified."
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "No card numbers (PAN) stored, processed or logged"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "RLS tests plus cross-tenant fuzzing of every endpoint."
+    }
+  ],
+  "note": "Strong, well-gated and reversibility-aware billing plan; weaker on tax/invoice numbering, entitlements and concrete cost modeling.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2096,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 12440
+  },
+  "cost_usd": 0.05225300000000001,
+  "latency_s": 50.787,
+  "raw_file": "raw/judge-242b280aa42e.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

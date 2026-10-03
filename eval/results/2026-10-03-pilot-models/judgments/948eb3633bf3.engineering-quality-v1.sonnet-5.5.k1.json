@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "948eb3633bf3.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "948eb3633bf3",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 15,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Set up ArgoCD or Flux for declarative deployments; Rollback via git commits",
+      "rationale": "Generic statements are mostly correct, but it lists oddities like DAST and database connection pooling under CI/CD scaling and never reaches hard technical areas."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Onboard 5-8 critical services",
+      "rationale": "It is a generic platform-build checklist that defers all service onboarding to weeks 34-52 and never surveys the 50 services' stacks or targets."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Select CI/CD stack (Jenkins, GitLab CI, GitHub Actions, ArgoCD, etc.)",
+      "rationale": "The phases are recognizable, but no single design is chosen, and GitOps is recommended alongside pipeline deploy stages without reconciling the two."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Validate platform under load",
+      "rationale": "Validation is generic. Nothing tests risky assumptions early, since the first real service is onboarded at week 34, and the success-metric targets are unjustified."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Gather team expertise inventory",
+      "rationale": "Assumptions about team size, cloud, stack and compliance are never stated. Discovery is listed as a task, yet the 52-week timeline is stated as fact."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Incident automation (auto-remediation)",
+      "rationale": "Failure modes are mostly absent. It has only generic rollback and monitoring items and nothing on credential leaks, flaky builds or CI outages."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "On-call rotation setup",
+      "rationale": "It covers monitoring, on-call, runbooks and rollback automation at a list level, with no named owner for the platform and nothing on changing templates safely."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Spot instance usage (cloud)",
+      "rationale": "It mentions spot instances, artifact cleanup and cost per deployment, but it comes late (weeks 27-30), with no volume estimates or runner-cost basis."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Version control strategy (monorepo vs. multi-repo)",
+      "rationale": "It lists choices but does not distinguish one-way decisions from reversible ones, and it commits to a full stack before any pilot."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Service mesh integration (optional)",
+      "rationale": "It builds the full platform, including tracing, DAST, service mesh and distributed caching, for a year before any service uses it, which is speculative, and the per-service observability scope is irrelevant."
+    },
+    {
+      "dim": 11,
+      "score": 2,
+      "evidence": "Create reusable pipeline templates for microservices",
+      "rationale": "The ordering is broadly sensible and phased, but the items are bullet-level with no decisions, no checkable intermediate results and no criteria for moving on."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "Create reusable pipeline templates for microservices"
+    },
+    {
+      "id": "P3-02",
+      "status": 1,
+      "evidence": "Onboard 5-8 critical services"
+    },
+    {
+      "id": "P3-03",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "Implement secrets vault (HashiCorp Vault, AWS Secrets Manager, etc.)"
+    },
+    {
+      "id": "P3-05",
+      "status": 1,
+      "evidence": "Signed artifacts and image signing"
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Blue-green or canary deployment setup"
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Contract testing for microservice interactions"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Flaky test detection and management"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Configure build caching strategies"
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Spot instance usage (cloud)"
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "Deployment Frequency: Target 1+ deployments/day per service"
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "Production deployment approval workflows"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Onboard 5-8 critical services"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "CI/CD credential rotation"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "none"
+    }
+  ],
+  "note": "This is a generic waterfall checklist that builds the whole platform for about 8 months and only then onboards services. It has no pilot, no inventory, no immutable-artifact promotion and no concrete supply-chain or credential design.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1759,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11214
+  },
+  "cost_usd": 0.045633,
+  "latency_s": 25.88,
+  "raw_file": "raw/judge-948eb3633bf3.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

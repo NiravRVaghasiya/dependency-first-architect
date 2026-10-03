@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "ee240b24da51.probe.sonnet-5.5",
+  "blind_id": "ee240b24da51",
+  "blind_sha256": "74dada6cb6b780dcaacb641ada6faa6e802d7baeecc7e8b24f3394bd53c471b8",
+  "judge": "sonnet-5.5",
+  "order_index": 69,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.88,
+  "cues": [
+    "Explicit numbered assumption register (A1–A15) with 'impact if wrong' and 'how/when validated' columns, plus open questions with defaults and 'needed by' dates",
+    "Ranked quality attributes with measurable targets and a 'hard parts' section that is tied to milestones and spikes",
+    "Decision table (D1–D8) with options considered, rationale against drivers, reversibility, and 'revisit if' triggers",
+    "Time-boxed spikes (S1–S3) each stating 'Changes the plan if:' conditions, plus a critical-path analysis and milestone exit criteria",
+    "Dedicated sections for Current State (inspected vs assumed), deferred work with triggers, shortcuts taken on purpose, and a testing table mapping risk to test type and whether it blocks release"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 340,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 22339
+  },
+  "cost_usd": 0.0592555,
+  "latency_s": 30.368,
+  "raw_file": "raw/probe-ee240b24da51.probe.sonnet-5.5.txt"
+}

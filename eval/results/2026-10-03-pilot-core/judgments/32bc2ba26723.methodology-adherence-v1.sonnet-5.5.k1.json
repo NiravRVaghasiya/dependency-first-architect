@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "32bc2ba26723.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "32bc2ba26723",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 73,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Critical path: access/IAM → M1 slice → template v1 stable (M2) → wave capacity (M3–M5) → legacy CI off",
+      "rationale": "Substrate (IAM/OIDC/ECR, Argo, chart) is built and proven with exit criteria before templates v1, waves, and enforcement; task dependencies are explicit."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Pilot deployed to prod through the platform at least 5 times. Rollback timed under 10 minutes in staging and once in prod.",
+      "rationale": "M1 is a real thin slice to production on one real service before features like canary, Kyverno enforcement, or dashboards."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D2 ... Reversibility: **Hard.** ... Revisit if: Services aren't on Kubernetes (A2), or there are more than about 10 clusters",
+      "rationale": "Decision table lists options, defaults, reversibility and revisit triggers, plus assumptions and open questions with defaults."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Hardening: Argo CD HA, Kyverno audit mode ... Tier-1 migrations gated on the parity checklist; Wave 1: tier-3 and tier-2 ... Wave 2 tier-1",
+      "rationale": "Shared substrate (OIDC, ECR, Argo, chart) and the inventory precede migrations; within M1 tasks and template work are ordered by fan-out, and tier-1 leaf work is deferred until platform is hardened."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Built in M1: GitHub OIDC to AWS with a push-only role ... M3: Kyverno verifyImages in audit mode ... M5: Kyverno switched to enforce mode",
+      "rationale": "Security has concrete content in M1 and every subsequent milestone (signing, audit, enforce, break-glass), not trailing."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Built in M1: pipeline run duration and outcome per workflow and stage, exported to the existing metrics stack (T11). Argo CD Prometheus metrics.",
+      "rationale": "Metrics are in M1, dashboards/alerts in M3, canary analysis in M4, and enforcement-block monitoring in M5."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Build once, promote the digest; Terraform state split by env; immutable tags; pinned semver templates; fixture harness",
+      "rationale": "Reproducibility (Terraform IaC, immutable digests, pinned templates, GitOps desired state) is present from M1 through later milestones."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "promote.yml waits for Argo health with a 15-minute timeout, then fails and alerts. It never retries a deploy blindly.",
+      "rationale": "Failure handling appears in M1 (rollback drill, idempotent promote, health gate), M3 (HA, break-glass, load test), M4 (canary abort), and M5 (legacy fallback)."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "AI-specific concerns: not applicable. There are no model-driven components.",
+      "rationale": "Plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Per-PR preview environments | Repeated staging contention or teams asking for them after M4",
+      "rationale": "Deferred table lists items with pull-forward triggers, plus deliberate shortcuts and M1 stubs with payback milestones."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, well-sequenced plan; a real prod thin slice first, with security, observability, reproducibility and resilience in each milestone, explicit decision flip conditions, and deferred items with triggers. Only minor quibbles.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1354,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 20023
+  },
+  "cost_usd": 0.0637185,
+  "latency_s": 21.753,
+  "raw_file": "raw/judge-32bc2ba26723.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

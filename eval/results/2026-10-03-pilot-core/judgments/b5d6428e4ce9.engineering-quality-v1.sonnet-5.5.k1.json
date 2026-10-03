@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "b5d6428e4ce9.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "b5d6428e4ce9",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 58,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Combine keyword search (BM25, good for error codes, feature names and SKUs) with vector embeddings, and merge the results with reciprocal rank fusion.",
+      "rationale": "Hybrid retrieval, RRF, cross-encoder reranking and the LLM-judge calibration are all described accurately; the only weaknesses are minor, such as calling 'clean up ingested content' a prompt-injection defense."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Out of scope for v1 (these need a human or a later phase): Looking up or changing account data (billing, refunds, order status)",
+      "rationale": "It covers the core support-chatbot needs with explicit exclusions and a buildable phased rollout, but it leaves the anonymous versus logged-in question open."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Index internal-only articles in a separate place. Never mix them into the customer-facing index.",
+      "rationale": "Components and data flows are consistent and responsibilities are clear; small loose ends remain, such as the optional post-check versus the 95% faithfulness target."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Re-run the test set whenever the prompt, model, chunking or index changes, and block releases that make scores worse.",
+      "rationale": "The plan gives a real eval set, retrieval and answer metrics, a judge checked against humans, CI regression and a red-team set; the targets are labeled 'to start with', but there is no early de-risking spike or post-launch sampling audit."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "I don't know your stack, doc platform or ticket volume yet, so this plan uses common defaults and marks the choices that depend on your answers.",
+      "rationale": "It states its assumptions, marks durations as estimates and ends with targeted questions, but it gives little explicit analysis of how the design changes if an assumption is wrong."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Confident wrong answers | Answers grounded in docs, confidence threshold, faithfulness check, easy handoff",
+      "rationale": "It covers the main domain failures (stale content, wrong plan, injection, hallucination, bot wall) with mitigations, but the detection and recovery detail is thin, and partial-sync failures, index corruption and wrong-doc contradictions get little attention."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Dashboards for the metrics in §1, plus alerts on spikes in handoffs or errors.",
+      "rationale": "It has logging, dashboards, alerts and a staged rollout, but no rollback or index-versioning plan, no incident ownership, no sync-failure monitoring and no access administration."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Caching for common questions, smaller models once tests exist, token budgets",
+      "rationale": "It names the cost drivers and controls, but it gives no cost-per-conversation estimate or basis, and the cost target is just 'Set a budget'."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Starting stack options (pick based on your infrastructure)",
+      "rationale": "Stack choices are kept open and the model is swapped only after evals, but the plan does not discuss reversibility, such as re-embedding on an embedding change, chunk ID schemes or vendor lock-in."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Post-check (optional at first): a cheap second step that verifies each claim is supported by the cited chunks.",
+      "rationale": "It is mostly proportionate, with agent-assist first and optional post-check, but query rewrite, reranking and guardrails are in the diagram from the start without a baseline-first gate."
+    },
+    {
+      "dim": 11,
+      "score": 2,
+      "evidence": "Once you answer these, I can turn this into concrete tech choices and a ticket-level breakdown.",
+      "rationale": "The phases have an order and deliverables, but the stack is undecided, the exit criteria between phases are missing and there is no adaptation plan if results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 1,
+      "evidence": "Use webhooks or a nightly incremental sync. Remove deleted or unpublished articles from the index right away"
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Split on headings (H2/H3)... Never split a numbered procedure in the middle. Prefix each chunk with the article title and its heading path"
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "200–500 real questions taken from past tickets and chats. For each, record the expected source article(s) and a reference answer."
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "If the best re-ranked score is below a tuned threshold, don't generate an answer. Ask a clarifying question or hand off to a human."
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "triggered by the customer asking, low confidence, frustration, repeated failure, or an out-of-scope intent. Pass the transcript and the retrieved articles"
+    },
+    {
+      "id": "P1-06",
+      "status": 1,
+      "evidence": "Treat retrieved text as data, not instructions... give the bot no ability to act on accounts in v1."
+    },
+    {
+      "id": "P1-07",
+      "status": 1,
+      "evidence": "Index internal-only articles in a separate place. Never mix them into the customer-facing index."
+    },
+    {
+      "id": "P1-08",
+      "status": 1,
+      "evidence": "Redact emails, card numbers and similar from logs. Decide how long to keep data and get legal/privacy sign-off, including GDPR/CCPA"
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Out of scope for v1... Looking up or changing account data (billing, refunds, order status)"
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "Content-gap report for the docs team (weekly): questions with no good match, frequent handoff topics"
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "Caching for common questions, smaller models once tests exist, token budgets"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Answer only from the provided context. If the context doesn't contain the answer, say so and offer a human."
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Index internal-only articles in a separate place. Never mix them into the customer-facing index."
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Use webhooks or a nightly incremental sync. Remove deleted or unpublished articles from the index right away"
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Re-run the test set whenever the prompt, model, chunking or index changes, and block releases that make scores worse."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "Start with a strong general model for quality, then try a smaller, cheaper model once the evaluation tests are in place."
+    }
+  ],
+  "note": "This is a solid, well-grounded RAG plan with strong eval, grounding and scope boundaries. It is weaker on access control by user entitlement, cost quantification, rollback and reversibility, and go/no-go criteria between phases.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2437,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11852
+  },
+  "cost_usd": 0.054008,
+  "latency_s": 27.101,
+  "raw_file": "raw/judge-b5d6428e4ce9.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

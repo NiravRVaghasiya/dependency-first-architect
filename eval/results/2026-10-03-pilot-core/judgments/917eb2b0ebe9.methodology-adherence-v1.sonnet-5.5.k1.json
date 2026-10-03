@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "917eb2b0ebe9.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "917eb2b0ebe9",
+  "blind_sha256": "6a7e7c38038e8df72d0999d7818eb79f60faba81603d4faa00ba6c0c94646815",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 438,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: Phase 1. The cloud data must be trustworthy before you compare messages generated from it.\"",
+      "rationale": "Phases go substrate → integration → read cutover → rollback → write cutover, each with explicit dependencies and proof gates."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"a scheduler opens 'Today's appointments for Dr. X, Clinic Y.' The cloud stack serves it from replicated data\" to 3 pilot schedulers",
+      "rationale": "Phase 0 is a real production end-to-end slice through DNS, proxy, link, auth, app, and CDC replica with mirroring and diffing."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"Single writer, moved in a ≤ 2-minute freeze\" | \"Leadership requires literally zero write pause. Then build a write proxy...\"",
+      "rationale": "The gate table gives defaults with concrete flip conditions for each irreversible decision, and assumptions are stated up front."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "\"Tasks, widest first\" and \"Dependency inventory... This is the widest blast radius, because a consumer you miss breaks at cutover.\"",
+      "rationale": "Within-phase ordering is explicitly widest first, and the plan notes where procedure order overrides it (Phase 5)."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"BAA; HIPAA-eligible services only; private endpoints; SSO + MFA; keys you manage; PHI-scrubbed logs\"",
+      "rationale": "The cross-cutting table gives concrete security controls in every phase from Phase 0 through 6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: \"OTel traces through every tier; lag, diff, latency and error metrics; synthetic check; SIEM feed\"",
+      "rationale": "Observability is built in Phase 0 and each later phase extends it with concrete metrics."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"Terraform landing zone; app container built from the same pinned commit as on-prem; CI pipeline\"",
+      "rationale": "Reproducibility, including IaC, config in git, replayable corpus, and scripted runbooks, is concrete in every phase."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 3: \"Lag-gated automatic fallback to on-prem; canary in steps with automatic halt on target breach\"",
+      "rationale": "Failure handling appears in every phase, from redundant VPN in Phase 0 to rollback, game days, and DR."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"N/A. This isn't an AI or agentic system.\"",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Splitting the monolith into services. Do it when one function shows a scaling or release-speed bottleneck after Phase 6.\"",
+      "rationale": "The deferred list is explicit, with pull-forward conditions for each item."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is strong on all ten dimensions, with concrete per-phase treatment and explicit gates.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1165,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8079
+  },
+  "cost_usd": 0.0318555,
+  "latency_s": 17.826,
+  "raw_file": "raw/judge-917eb2b0ebe9.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "9680034ba3b8.probe.sonnet-5.5",
+  "blind_id": "9680034ba3b8",
+  "blind_sha256": "313acb240965dd8a23373c943fb403d0329632d23841140ce9d5426b0a3d5dbe",
+  "judge": "sonnet-5.5",
+  "order_index": 71,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.85,
+  "cues": [
+    "Rigidly numbered template sections (Summary, Context and Goals, Drivers, Current State, Assumptions and Open Questions, Architecture, Key Decisions, Cross-Cutting, Build Sequence, Deferred Work, Next Steps), which looks like a prescribed planning format",
+    "Opens with a note that the workspace was empty, then lists explicit assumptions (A1–A9) with 'impact if wrong' and 'how and when it's checked' columns",
+    "Ranked quality attributes with measurable targets and a stated tradeoff rule ('when they conflict, we slow the waves down')",
+    "Decisions table with options considered, rationale tied to driver numbers, reversibility, and 'revisit if' triggers",
+    "Milestone table with exit criteria, dependencies, critical path, point of no return, and a first-milestone task breakdown with 'done when' criteria and time-boxed spikes",
+    "Boilerplate-like sections such as 'AI-specific concerns: not applicable' and 'Debt taken on purpose'"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 420,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 19578
+  },
+  "cost_usd": 0.053153000000000006,
+  "latency_s": 16.995,
+  "raw_file": "raw/probe-9680034ba3b8.probe.sonnet-5.5.txt"
+}

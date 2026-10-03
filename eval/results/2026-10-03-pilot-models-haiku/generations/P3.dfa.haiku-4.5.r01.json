@@ -1,0 +1,110 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P3.dfa.haiku-4.5.r01",
+  "prompt_id": "P3",
+  "condition": "dfa",
+  "generator": "haiku-4.5",
+  "run_index": 1,
+  "seed": 3434842590,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Sequence building a CI/CD platform for 50 microservices.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P3.dfa.haiku-4.5.r01.md",
+  "output_sha256": "aa959d7c33a9956375d17727a47811c70ed35f6f6b7c43fb9e9c16645e7c0f07",
+  "metrics": {
+    "words": 6933,
+    "chars": 45385,
+    "visible_tokens_est": 11347
+  },
+  "turns": 3,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/validation.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "dependency-first-architect:dependency-first-architect",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "reference/plan-template.md",
+      "sha256": "95ccaec942bf8a640ff4d830daada167a340b6b652242e2ed41aec6d24605c2a",
+      "words": 1257
+    },
+    {
+      "path": "reference/validation.md",
+      "sha256": "d5ddad548e7b7be656dc51d5946c3da45ceb21ce5234164440fa5c5829edd407",
+      "words": 1879
+    }
+  ],
+  "started_at": "2026-10-03T04:21:59+00:00",
+  "finished_at": "2026-10-03T04:24:24+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-haiku-4-5-20251001",
+  "models_used": [
+    "claude-haiku-4-5-20251001"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 17,
+    "output_tokens": 12133,
+    "thinking_tokens": 149,
+    "cache_read_input_tokens": 5078,
+    "cache_creation_input_tokens": 10743
+  },
+  "cost_usd": 0.07461854999999999,
+  "latency_s": 144.721,
+  "raw_file": "raw/gen-P3.dfa.haiku-4.5.r01.txt"
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e75ffc751963.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "e75ffc751963",
+  "blind_sha256": "c540b851c325ee4c4a34b67809865cff9aa0d640af3ca582f1edd6a9aae87627",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 21,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "tax = line_total × (1 + tax_rate); foreign exchange at invoice time (spot rate from API)",
+      "rationale": "Several material errors: QSA/\"PCI Level 1 under SAQ A\" misstatement, SERIALIZABLE 50ms over 500K events, unique (invoice_id, processor_id) is not idempotency, 3D Secure hosted fields conflated, RLS 'role per tenant' and 'Kafka' inconsistent, tax formula is a multiplier not an amount."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Pass-through for now: tenants provide tax rate and currency",
+      "rationale": "Covers metering, invoicing, payments, but omits dunning, entitlements, credit notes, proration/lifecycle, and scale assumptions (1M tenants vs 10K) are shaky."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Throughput | 1M events/min ingested; ≤ 10ms p99 per event",
+      "rationale": "Mostly recognizable design, but contradictions: 1M tenants vs 10K vs 100K, single Postgres primary for 1M events/min, 'Kafka' with Postgres log, daily aggregation vs SERIALIZABLE, tax deferred yet tax V6 in Phase 2, 3 services vs cache/Redis."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "V2: Replay 10K duplicate events in one batch; confirm count unchanged and no duplicate line items",
+      "rationale": "Specific risk-tied validations (RLS benchmark, dedup replay, mid-month pricing, webhook) with early placement, but no cross-tenant leak tests, invented thresholds, and no post-launch regression validation beyond dashboards."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "ASSUMPTION: current peak ~10K/min, expected growth 10× over 18 months",
+      "rationale": "Many assumptions labeled, with fallbacks, but inconsistent scales, invented '$500/month' and contract SLA presented as REQUIREMENT, and several unsupported figures."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Async reconciliation job (daily, midnight UTC): query Stripe for all charges > 7 days old, compare status with local DB, alert on mismatches.",
+      "rationale": "Covers duplicates events, webhook dedupe, DR drill, drafts; but misses dunning/failed payments, disputes deferred, late events, out-of-order webhooks, partial failures of charge call."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Rollback: previous Helm release (helm rollback), tested with a dry-run in CI.",
+      "rationale": "Deploy, rollback, Datadog alerts, PagerDuty, runbooks exist, but schema migration, ownership, and feasibility for two-person on-call with QSA/SOC2 are weak."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Storage cost | ≤ $500/month for events + invoices at 1M tenants (18 months forward)",
+      "rationale": "Cost of $500/month total is implausible, vendor fees and people cost ignored, build-vs-buy cost comparison thin; Stripe fees not addressed."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Tenancy model ... R3 (data model, isolation control, new-tenant onboarding; wrong choice blocks both speed and compliance)",
+      "rationale": "Explicit reversibility ratings, early validation of tenancy and fallback triggers, though some ratings questionable (build vs buy as R2, Stripe lock-in)."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Go service, Kubernetes cluster, Redis, Datadog, PagerDuty, SOC 2 Type II, QSA",
+      "rationale": "Kubernetes, Redis, QSA, SOC2 and 1M events/min scale are heavy for pilot, while essentials like dunning and credit notes are missing."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Exit check V0: A real pilot tenant sends 10 events over 5 minutes → all 10 stored and logged with trace IDs",
+      "rationale": "Phased with dependencies, thin first slice, specific tasks and checkable exits, though some details contradictory."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 1,
+      "evidence": "amount_cents ... ASSUMPTION: rounding acceptable at 2 decimal places"
+    },
+    {
+      "id": "P2-02",
+      "status": 1,
+      "evidence": "Pricing versioning immutable (rows insert-only, never update)"
+    },
+    {
+      "id": "P2-03",
+      "status": 1,
+      "evidence": "charges table has unique constraint on (invoice_id, processor_id) to prevent double-charges"
+    },
+    {
+      "id": "P2-04",
+      "status": 1,
+      "evidence": "validate signature (HMAC-SHA256), look up charge by processor_id, update status to \"paid\""
+    },
+    {
+      "id": "P2-05",
+      "status": 1,
+      "evidence": "Shared schema with tenant_id on every row + row-level security (RLS) in Postgres"
+    },
+    {
+      "id": "P2-06",
+      "status": 1,
+      "evidence": "Idempotent consumer: assume events carry a unique `event_id` and `timestamp`; dedupe window = 24h"
+    },
+    {
+      "id": "P2-07",
+      "status": 1,
+      "evidence": "Time-versioned pricing: each tenant.pricing_id + effective_date + expires_date"
+    },
+    {
+      "id": "P2-08",
+      "status": 0,
+      "evidence": "Pass-through for now: tenants provide tax rate and currency"
+    },
+    {
+      "id": "P2-09",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-10",
+      "status": 1,
+      "evidence": "Async reconciliation job (daily, midnight UTC): query Stripe for all charges > 7 days old"
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-12",
+      "status": 1,
+      "evidence": "Build: multi-tenant isolation is our competitive moat (we support custom fields and formulas Stripe does not yet)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "amount_cents"
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "mark invoices in \"draft\" state as \"cancelled,\" issue corrected draft invoices"
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "validate signature (HMAC-SHA256)"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "Card entry only in 3D Secure hosted fields; no PAN storage"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "RLS enforced via Postgres; code review gate on tenant_id presence"
+    }
+  ],
+  "note": "Well-structured, phase-driven plan with early validation, but it has material correctness and consistency flaws (scale, idempotency, PCI/QSA, tax) and omits dunning, credit notes, entitlements and real build-vs-buy analysis.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2442,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 18034
+  },
+  "cost_usd": 0.0696862,
+  "latency_s": 40.2,
+  "raw_file": "raw/judge-e75ffc751963.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

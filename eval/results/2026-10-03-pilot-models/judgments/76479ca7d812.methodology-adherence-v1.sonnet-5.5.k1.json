@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "76479ca7d812.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "76479ca7d812",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 18,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: Phase 1, and the labeled eval set.\" Phase 3 \"Depends on: V2.\"",
+      "rationale": "Each phase names its dependency and a validation gate that must pass before the next layer is specified, running substrate to exposure."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Phase 0: widget → API → retrieval over the full corpus → hosted LLM → streamed answer with citation links → transcript and trace store, behind a feature flag.",
+      "rationale": "Phase 0 is a real end-to-end slice deployed to the live help center, staff-only, with deploy and rollback exercised."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Tradeoff table with Reversibility, Default, Assumption, Validated by, and Flip condition columns, e.g. \"V4 fails... → self-host or a different vendor\"",
+      "rationale": "Irreversible decisions are listed with defaults and explicit flip conditions, and missing inputs are flagged."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Phase 4 \"Tasks, smallest exposure first\"; Phase 1 orders injection suite and output rendering before leaf items",
+      "rationale": "Ordering by blast radius is explicit in Phase 4 and loosely reasonable elsewhere, but it is not stated as a principle within every phase."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Cross-cutting table row 0: \"Staff-only via SSO/allow-list and flag; secrets in a vault; retrieved and user text treated as data; token and spend caps\"",
+      "rationale": "Concrete security content appears in every phase from Phase 0 through Phase 5."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: \"A trace ID runs from widget to model. Metrics cover latency, tokens and cost per turn, and error rate. An alert fires on error rate or spend.\"",
+      "rationale": "Observability is in Phase 0 and each later phase has specific metrics."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Row 0: \"Infra as code; pinned model and dependency versions; CI/CD\"; Row 2: \"Index versioned with the embedding-model pin; eval set versioned\"",
+      "rationale": "Reproducibility of builds, data, prompts, and evals is addressed concretely in every phase."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: \"if the LLM fails, the widget shows the 'contact support' fallback\"; exit check injects failure by revoking the LLM key.",
+      "rationale": "Failure handling, rollback, and fallbacks appear in each phase, starting with Phase 0."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Phase 1 \"Defenses and budgets\" (injection, caps, handoff click) precedes Phase 2 Retrieval, Phase 3 model access and memory; orchestration and routing marked not needed.",
+      "rationale": "The layer order follows defenses/budgets/HITL → retrieval → model access → memory → feedback, and orchestration and routing are explicitly deferred."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Account-aware actions... pulled forward when V3 passes in production for a full quarter, there is a decided tool allow-list, and a human-approval design exists.\"",
+      "rationale": "Each deferred item has a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A strong, well-ordered plan with a real Phase 0 skeleton, explicit gates, and AI layers in the right order. The weakest area is blast-radius ordering, which is only partly explicit.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1311,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 7811
+  },
+  "cost_usd": 0.032758499999999996,
+  "latency_s": 27.293,
+  "raw_file": "raw/judge-76479ca7d812.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "4e34418a8f43.probe.sonnet-5.5",
+  "blind_id": "4e34418a8f43",
+  "judge": "sonnet-5.5",
+  "order_index": 24,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.12,
+  "cues": [
+    "Opens with conversational filler \"Now let me create a comprehensive plan\", which suggests an unstructured, default-style response",
+    "Generic layout of architecture diagram, components, tech stack table and metrics table, with no explicit methodology sections such as assumptions, risks, open questions or verification steps",
+    "Ends with \"Would you like me to dive deeper into any specific component?\", a typical default chat closer",
+    "Heavy emoji checkmarks, bold headers and ASCII diagrams give it a stylized look, but it has no explicit phases of discovery or validation",
+    "Metric targets (>95% accuracy, 99.9% uptime) and tool choices (Pinecone, Celery) are asserted without justification or tradeoff analysis",
+    "The safety section and the \"start with read-only actions\" advice are reasonable, but they sit in generic lists and are not tied to a stated process"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 367,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4973
+  },
+  "cost_usd": 0.0161105,
+  "latency_s": 23.849,
+  "raw_file": "raw/probe-4e34418a8f43.probe.sonnet-5.5.txt"
+}

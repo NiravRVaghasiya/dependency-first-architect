@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "1ebdded148ab.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "1ebdded148ab",
+  "blind_sha256": "47f847ac6e90c864e2b928a77d47788aedd37bd12d920578e9254bd7e70c960f",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 356,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 0 governance, Phase 1 discovery, Phase 2 design, Phase 3 build and sync, Phase 4 testing, then shift and cutover.",
+      "rationale": "Logical ordering from discovery through build, test and cutover, but the phases overlap and nothing is 'proven' before dependent work (e.g., Phase 5 read traffic precedes proof in prod)."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 0: Governance and compliance (weeks 1–4)",
+      "rationale": "Phase 0 is paperwork; no thin end-to-end production slice exists before the big-bang cutover."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "True zero write-pause needs two-way replication with conflict handling. I don't recommend it for scheduling",
+      "rationale": "Some decisions (rehost first, write pause vs. two-way sync) have reasoning and assumptions are listed, but defaults with explicit flip conditions are not systematically given."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Send read-only traffic (reports, schedule viewing) to the cloud first.",
+      "rationale": "Shifts low-risk reads before writes and discovery maps integrations early, but within-phase ordering by blast radius is not explicit."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Security and privacy review: HIPAA risk assessment, encryption at rest and in transit, key management, audit logging",
+      "rationale": "Security appears in Phases 0, 2 and 7 but is thin in build, testing and cutover phases."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "dashboards for errors, response time, and HL7 queue depth",
+      "rationale": "Monitoring appears mainly in hypercare and cutover rollback triggers; absent from early phases."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Build the cloud environment with infrastructure-as-code (Terraform, Bicep, etc.).",
+      "rationale": "IaC and daily data reconciliation plus rehearsed staging cutovers help, but reproducibility is not threaded across all phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Failover tests: take down an availability zone, the database primary, and the private network link.",
+      "rationale": "Resilience covers HA design, failover tests, rollback via reverse replication and warm standby, but concentrated in mid-to-late phases."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so no N/A declaration."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Leave redesigning the application for after the move; don't change the code and the location at the same time.",
+      "rationale": "Defers redesign and optional pilot, but no explicit deferred list with pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Solid, practical big-bang-with-rollback migration plan, but lacks a Phase 0 production skeleton, systematic decision gates, threaded observability/security, and any AI N/A statement.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1082,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4557
+  },
+  "cost_usd": 0.022220499999999997,
+  "latency_s": 21.935,
+  "raw_file": "raw/judge-1ebdded148ab.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

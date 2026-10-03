@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "c34cc293eddd.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "c34cc293eddd",
+  "blind_sha256": "8f3507deab4056767aa7ec9f10af89d07139126eb8db2800cb8c16fdfab41853",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 13,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Depends on: Phase 1 (V2 passed, injection defense hardened)",
+      "rationale": "Explicit dependency map and phases flow skeleton → injection/retrieval → prompt → cost/load → rollout, with gates unlocking each phase; minor slips (cost cap in Phase 3 after prompt tuning) don't break the order."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Deploy to canary succeeds through CI/CD; traffic split observed in logs (1% rag, 99% fallback).",
+      "rationale": "Phase 0 is a real end-to-end production path (frontend→gateway→retrieval→LLM→DB) with deploy, logging and rollback before features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Hosted API vs self-host | R3 ... Default: Hosted API ... Flip condition: Inference cost exceeds budget after V4 canary",
+      "rationale": "A table lists irreversible decisions with defaults, assumptions, validators and flip conditions, plus flagged unknowns."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Depends on: Phase 0 (V0 passed)... Prompt-injection defense and guardrail design listed first in Phase 1",
+      "rationale": "Within Phase 1, injection defense and the data contract precede quality eval, but blast-radius ordering is not stated and the cost cap lands late in Phase 3."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: Hard-coded tool allow-list (empty); no tool calls. Structured JSON parsing. Session auth via API gateway.",
+      "rationale": "The per-phase cross-cutting table gives concrete security measures in every phase from 0 to 4."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Structured JSON logs (user query, retrieved passages, LLM prompt, answer, latency, token count, model ID, cost estimate)",
+      "rationale": "Observability is built in Phase 0 and extended with concrete items in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Git commit hash logged with every LLM call; prompt version in config (version-controlled).",
+      "rationale": "Reproducibility is covered in every phase through IaC, index versioning, eval dataset versioning, prompt versioning and reproducible load tests."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Feature flag for instant rollback. Timeout on all external calls (LLM, vector store) = 10 s. Graceful fallback to human support.",
+      "rationale": "Each phase has concrete resilience measures: rollback, load shedding, circuit breaker, timeouts and runbooks."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Cost + latency budget | Phase 3 (hardened in code)",
+      "rationale": "Injection defense is early and the layers are mostly in order, but hard cost budgets land in Phase 3 after retrieval and prompt tuning, and human-in-the-loop is thin (reads-only), so defenses and budgets do not fully precede capabilities."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Fine-tuning: Deferred to Phase 5+. Will be evaluated if (a) V2 retrieval hit rate remains < 0.80 ... or (b) feedback volume exceeds 100 corrected answers/month",
+      "rationale": "A deferred list covers memory, fine-tuning, routing, tool calls and multilingual support, with pull-forward triggers for most."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, well-structured plan with a real production skeleton and threaded cross-cutting concerns; weaker on explicit blast-radius ordering and on placing cost budgets and human gating before capabilities.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1321,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 14215
+  },
+  "cost_usd": 0.0487555,
+  "latency_s": 33.745,
+  "raw_file": "raw/judge-c34cc293eddd.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

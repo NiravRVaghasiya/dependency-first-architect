@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "276e34281372.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "276e34281372",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 112,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Artifact reproducibility validated (re-building same commit produces same digest for 100% of services).",
+      "rationale": "Canary, Harbor and Tekton are used sensibly, but there are several secondary errors: a 100% bit-identical rebuild claim, a cross-namespace deny-all policy that would break service-to-service calls, secrets 'picked up' by running services without a reload mechanism, and a 5-minute bake inside a 2-minute deploy budget."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Type: Infrastructure software, greenfield (new platform) or brownfield (modernizing legacy CI; assumed greenfield unless existing system stated).",
+      "rationale": "It builds a workable Kubernetes-native platform. It assumes away the existing CI and the migration of 50 existing services, and it never inventories the services' stacks or covers test environments and contract checks."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Run platform in Phase 3 for 30 consecutive days ... required before Phase 4 start (Phase 3 is Weeks 5–6)",
+      "rationale": "The overall design is recognizable, but it contradicts itself: a 30-day trial inside a 2-week phase, deploy latency under 2 minutes against a 5-minute canary, gate IDs that shift between phases, and Tekton push deploys mixed with Argo pull reconciliation."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Chaos-inject 20 bad deployments; automated canary health checks must catch ≥ 19.",
+      "rationale": "The gates are domain-appropriate and early (a Phase 0 slice, canary chaos, digest-match verification). Many thresholds are invented (95%, 10k cardinality, 500GB), and nothing tests contract compatibility, flaky tests or untrusted-PR isolation."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Assume Kubernetes deployment target, single organization, no regulated data in artifacts, and AWS/ECR or self-hosted registry. If any is false, Phase 1 scope widens.",
+      "rationale": "It lists missing inputs and labels REQUIREMENT, ASSUMPTION and UNKNOWN. It still asserts 99.9% as a 'REQUIREMENT' and uses an invented '$2–5 per service' baseline, and sensitivity analysis is uneven."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "If Harbor is down, canary deploy fails silently (no agent can pull image). Implement mirror registry",
+      "rationale": "It covers bad canaries, config drift, registry outage, secret rotation and node failure. It misses poisoned pipelines, fork-PR secret exposure, schema-migration rollback, flaky tests and duplicate or partial deploys."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Assign one team member per shift (3 shifts, ~5 people) to be on-call for pipeline incidents.",
+      "rationale": "It has runbooks, on-call, SLOs, DR drills and rollback. The operating burden (self-hosted Harbor, Vault, Tekton, Loki, Jaeger, Argo, Flagger) is heavy for an 8-week ramp, and migration handling is missing."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Cost: UNKNOWN — infrastructure & licensing cost per service per month. ... use industry baseline (e.g., $2–5 per service per month",
+      "rationale": "It does not estimate runner or compute cost from build volume and does not compare hosted with self-hosted runners. The one figure is unsupported, and the controls (image garbage collection, right-sizing) are thin."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Registry backend | R2 ... Revisit trigger | V1 fails ... Flip to ECR",
+      "rationale": "The decision table has reversibility tiers, defaults, validation and flip triggers, and it validates key choices early. Some tiering is odd, such as the claim that state consistency means re-architecting all 50 services."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Multi-registry failover ... mirror registry; Phase 6 Multiregion; 16 validation gates; Jaeger, Vault, Argo CD, Flagger, SBOM",
+      "rationale": "There is a lot of speculative machinery and ceremony (multiregion, mirror registries, 16 gates, a cardinality programme). Essentials such as inventory, legacy migration and contract tests are missing."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Exit check (V0): One commit → Tekton pipeline runs end-to-end (build, push, deploy).",
+      "rationale": "Phases, tasks, exit criteria and gates are concrete and ordered by dependency, starting with an end-to-end slice. The timelines are unrealistic (a one-day Phase 0, a 30-day trial in Phase 3), and some details are left to the team."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "Build Tekton Tasks for common patterns: `build-go`, `build-python`, `build-java`, `push-to-harbor`"
+    },
+    {
+      "id": "P3-02",
+      "status": 1,
+      "evidence": "Cohort 1 (15 services, Week 7): Onboard services 21–35."
+    },
+    {
+      "id": "P3-03",
+      "status": 1,
+      "evidence": "image digests immutable in Harbor"
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "Deploy HashiCorp Vault or AWS Secrets Manager ... rotate every 30 days."
+    },
+    {
+      "id": "P3-05",
+      "status": 1,
+      "evidence": "Enable admission controller on production cluster: allow only images with valid Harbor signatures."
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Canary runs for 5 min at 5% traffic; if checks pass, auto-promote."
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Each service gets a Tekton pipeline, canary deployment, and monitoring dashboard."
+    },
+    {
+      "id": "P3-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "analyze: parallel test execution, incremental builds, cache reuse."
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Hypothesis: horizontal scaling of build agents keeps queue time < 30 sec"
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Grafana dashboard: one panel per service showing deployment frequency, lead time, change failure rate, MTTR."
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "Require two-person approval for deploys to production clusters"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Cohort 1 (15 services, Week 7)"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "new image digest matches artifact store"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "Tekton ServiceAccount pulls secrets at deploy time."
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Each service gets a Tekton pipeline, canary deployment, and monitoring dashboard."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Tekton Pipelines (Kubernetes-native, CRDs, GitOps-friendly"
+    }
+  ],
+  "note": "A well-sequenced, gate-driven plan on off-the-shelf tools that avoids the listed traps. It is overbuilt on infrastructure and thin on the CI/CD specifics: service inventory, legacy migration, fork-PR and credential security, contract tests, flaky tests, runner cost and schema migrations. It also has timeline contradictions and invented thresholds.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 5610,
+    "thinking_tokens": 2878,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 28440
+  },
+  "cost_usd": 0.127393,
+  "latency_s": 56.198,
+  "raw_file": "raw/judge-276e34281372.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

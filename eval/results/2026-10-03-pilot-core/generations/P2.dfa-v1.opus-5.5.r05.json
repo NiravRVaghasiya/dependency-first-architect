@@ -1,0 +1,110 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P2.dfa-v1.opus-5.5.r05",
+  "prompt_id": "P2",
+  "condition": "dfa-v1",
+  "generator": "opus-5.5",
+  "run_index": 5,
+  "seed": 2823856931,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Architect a multi-tenant SaaS billing system.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P2.dfa-v1.opus-5.5.r05.md",
+  "output_sha256": "733944549f24e5efeeebb0e7245bdfd9ae5f9d0515c420a1d4a82f776317907b",
+  "metrics": {
+    "words": 3617,
+    "chars": 23331,
+    "visible_tokens_est": 5833
+  },
+  "turns": 3,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p1f4bc0e3/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p1f4bc0e3/skills/dependency-first-architect/reference/evals.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "dependency-first-architect:dependency-first-architect",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "eval/conditions/dfa-v1.0.0/reference/evals.md",
+      "sha256": "0963dcac6ec329c02bb18cf61be28bef74fd706baf296a8726575d3bcc286b07",
+      "words": 399
+    },
+    {
+      "path": "eval/conditions/dfa-v1.0.0/reference/plan-template.md",
+      "sha256": "7ee2689530ddeb6e7687d0b4fb047e05fa76399fa898b7b64cea9dd27e06d55f",
+      "words": 439
+    }
+  ],
+  "started_at": "2026-10-02T23:36:07+00:00",
+  "finished_at": "2026-10-02T23:39:42+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [
+    "claude-opus-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 15446,
+    "thinking_tokens": 6427,
+    "cache_read_input_tokens": 3272,
+    "cache_creation_input_tokens": 4769
+  },
+  "cost_usd": 0.3334434,
+  "latency_s": 215.407,
+  "raw_file": "raw/gen-P2.dfa-v1.opus-5.5.r05.txt"
+}

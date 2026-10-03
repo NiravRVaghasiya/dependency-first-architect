@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "965578b55167.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "965578b55167",
+  "blind_sha256": "4434de887c3e67615b171d1d510ec49213f3dfeea2283d4372ea53524b3ffe19",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 430,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Depends on: M2 \"M1\"; M3 \"M2 (stable chart v1, onboarding guide)\"; M4 \"M3\"; T8 prod Argo \"after T1's security review\"",
+      "rationale": "Phases build upward from IAM/ECR/OIDC and chart to Argo, pilots, waves, then enforcement, with explicit dependencies and spikes proving unknowns before waves."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Milestone 1: ... one real stateless service going from PR to **production** through the new pipeline. It ends with a timed rollback drill.",
+      "rationale": "M1 is a real thin end-to-end slice in prod before features like canary and enforcement."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Spike S1 shows the chart can't reproduce > 30% of live services",
+      "rationale": "Key decisions table lists options, reversibility, and revisit triggers, with assumptions tabulated with impact; defaults are given for open questions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Tier-1 (most critical) services go no earlier than Wave 2, so the path has run on 7+ services first.",
+      "rationale": "Ordering is mostly risk-based (pilots, spikes, prod Argo on critical path) but the widest-blast work (template changes) isn't explicitly ordered within phases; critical services are deliberately deferred."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "CI gets AWS access through GitHub OIDC. Each repo's IAM role may push only to its own ECR repository (M1).",
+      "rationale": "Security has concrete items in M1 (OIDC, signing, rulesets), M2 (report-only Kyverno), M3 (enforcement), M4 (cluster-wide, human write removed)."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Argo notifications go to each team's Slack channel (M1). Deploy markers appear in metrics (M1).",
+      "rationale": "Observability exists in M1 but is thin (notifications, markers, DORA baseline); alerts and dashboards arrive in M2, and M3/M4 coverage is less explicit."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Build each image once and promote that exact image through every environment.",
+      "rationale": "Digest promotion, GitOps, Terraform, pinned actions, versioned templates, and Argo rebuild test provide reproducibility from M1 onward."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Rollback drill ≤ 5 min; break-glass written M1, rehearsed M2; canary auto-abort M3; Flow 3 migration failure",
+      "rationale": "Failure handling appears in each phase: rollback drill, S2 failing migration, break-glass, Argo rebuild, canary abort, and cutover rollback."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "**AI-specific concerns:** not applicable. There are no AI components.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds none."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Consumer-driven contract tests (Pact) | ≥ 2 incidents in a quarter caused by cross-service API breaks",
+      "rationale": "Deferred table lists items with concrete pull-forward conditions, plus non-goals and deliberate shortcuts."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, concrete plan with a prod walking skeleton and threaded security, resilience, and reproducibility; observability is thinner in early phases and blast-radius ordering is implicit.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1276,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 17708
+  },
+  "cost_usd": 0.057038000000000005,
+  "latency_s": 18.112,
+  "raw_file": "raw/judge-965578b55167.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

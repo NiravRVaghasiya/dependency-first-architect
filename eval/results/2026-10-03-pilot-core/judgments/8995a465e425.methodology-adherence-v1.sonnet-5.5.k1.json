@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "8995a465e425.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "8995a465e425",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 112,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Depends on: The Phase 0 skeleton\"; Phase 4 \"Depends on: Crash recovery (Phase 2)... and authorization (Phase 3)\"",
+      "rationale": "Each phase names its dependencies and proves them with exit checks (fuzzer, chaos test) before building on them."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A signed-in user opens `/d/:id` and types \"hello\"... second browser shows \"hello\". Reloading either tab still shows \"hello\", served from Postgres.",
+      "rationale": "Phase 0 is a real end-to-end slice deployed to prod via CI and Terraform, before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Flip to OT with a server-ordered log if (a) compliance requires the server to check and order every edit",
+      "rationale": "Many irreversible decisions are listed with explicit defaults and concrete flip conditions, including E2E encryption and schema."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks (widest → narrowest): Versioned document schema... Presence and awareness... ephemeral and never stored, so their blast radius is lowest.",
+      "rationale": "Every phase orders tasks widest to narrowest with concrete justification."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: OIDC login; TLS/WSS only; short-lived WebSocket token checked on connect; secrets in a secrets manager; no content in logs",
+      "rationale": "The cross-cutting table gives concrete security measures in every phase starting from Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OpenTelemetry traces cover `ws.message → apply → persist → ack → broadcast`... One dashboard. One page-level alert",
+      "rationale": "Observability is built in Phase 0 and has concrete metrics in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform for all infra; lockfile pinned; image pinned by digest; DB migrations run in CI",
+      "rationale": "Reproducibility is covered concretely in every phase, including seeded fuzzers, golden fixtures and versioned load-test scripts."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Load balancer health checks; client auto-reconnect with jittered backoff; daily backups with point-in-time recovery enabled",
+      "rationale": "Each phase has concrete failure handling, from Phase 0 through feature kill switches in Phase 5."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A. The system has no AI or agentic parts.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Redis cross-node fan-out for hot documents. Pull forward when one document has more than ~200 simultaneous editors or saturates a node's CPU.",
+      "rationale": "The plan lists many deferred items, each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan: a real prod skeleton, dependency-proven phases, concrete flip and pull-forward triggers, and per-phase cross-cutting treatment. I found no clear weaknesses.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1155,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 7388
+  },
+  "cost_usd": 0.030141,
+  "latency_s": 20.103,
+  "raw_file": "raw/judge-8995a465e425.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

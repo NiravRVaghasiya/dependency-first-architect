@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "16612c2c500d.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "16612c2c500d",
+  "blind_sha256": "b14ced65090377c66542361483e4c299d1bcecd58ea29ace22d1bb87e387452a",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 413,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Depends on: Phase 0's working MI link and pipeline\"; Phase 2 \"Depends on: Phase 1's proven data\"",
+      "rationale": "Phases go network/landing zone → data proven → integrations → reads → rehearsal → cutover → DR/decommission, each gated by an exit check of the prior one."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"one real request through every cloud layer, on real production data\" with a 5-minute probe and 7-day exit check",
+      "rationale": "Phase 0 is a genuine thin end-to-end slice through network, gateway, app and DB on production data, deployed via pipeline, though read-only."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"If the compatibility check (Phase 1) finds features SQL MI can't run... use SQL Server on Azure virtual machines\"",
+      "rationale": "A table lists irreversible decisions each with a default and concrete flip condition, with assumptions flagged up front."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "\"Network-name layer for every endpoint... Everything else will point at these names, so this comes first.\"",
+      "rationale": "Each phase explicitly orders the highest-rework/widest-impact task first (time-zone checks, network names, dependency mapping)."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"BAA signed, private endpoints only, hospital-held encryption keys, Defender for Cloud, logs kept free of PHI\"",
+      "rationale": "Concrete security measures appear in every phase from 0 through 6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"Application Insights traces each request with an ID... dashboard shows copy delay, probe match rate and latency at each layer\"",
+      "rationale": "Observability is built in Phase 0 and specified concretely in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"Terraform or Bicep from git, through a pipeline. No manual changes in the Azure portal.\"",
+      "rationale": "IaC, versioned scripts, images, and rebuilt rehearsal environments are specified in every phase."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"ExpressRoute plus VPN backup; on-prem stays primary, so a cloud failure has no clinical effect\"",
+      "rationale": "Resilience is concrete in each phase: backups, restores, queues, retry tests, switch-back, DR."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"N/A. There are no AI or agent parts in this system, so the AI ordering doesn't apply.\"",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Splitting the app into smaller services... Bring forward if, after 90 days stable, one module (for example reminders) is blocking release speed.\"",
+      "rationale": "Deferred items are listed, each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan that meets every rubric dimension with concrete content; the only minor quibble is Phase 0 being read-only, which is reasonable.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1144,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7731
+  },
+  "cost_usd": 0.0307755,
+  "latency_s": 17.836,
+  "raw_file": "raw/judge-16612c2c500d.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

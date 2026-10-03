@@ -1,0 +1,160 @@
+{
+  "schema": "dfa-eval/manifest@1",
+  "run_id": "2026-10-03-v1-examples-rejudge",
+  "created": "2026-10-03",
+  "harness_version": "1.0.0",
+  "repo_commit": "7ec18f4+uncommitted",
+  "skill": {
+    "version": "1.0.0 (commit 3ba6b70)",
+    "files": {
+      "SKILL.md": "e7065359694646516fc22ef7c1d5dbcb2d887e12a80d5ed86f241583a3f0d1c5",
+      "reference/ai-systems.md": "d9019167e05dac3611774515a2bf5e7fa8d84d95e999c4080eaa7d130b7cb986",
+      "reference/evals.md": "0963dcac6ec329c02bb18cf61be28bef74fd706baf296a8726575d3bcc286b07",
+      "reference/layer-map.md": "ff4531a685bfdd0cb2940f2138f689193e0a93f7eee69524d2dbfdaeb7525169",
+      "reference/plan-template.md": "7ee2689530ddeb6e7687d0b4fb047e05fa76399fa898b7b64cea9dd27e06d55f"
+    }
+  },
+  "condition_files": {
+    "dfa-v1": {
+      "eval/conditions/dfa-v1.0.0/SKILL.md": "e7065359694646516fc22ef7c1d5dbcb2d887e12a80d5ed86f241583a3f0d1c5",
+      "eval/conditions/dfa-v1.0.0/reference/ai-systems.md": "d9019167e05dac3611774515a2bf5e7fa8d84d95e999c4080eaa7d130b7cb986",
+      "eval/conditions/dfa-v1.0.0/reference/evals.md": "0963dcac6ec329c02bb18cf61be28bef74fd706baf296a8726575d3bcc286b07",
+      "eval/conditions/dfa-v1.0.0/reference/layer-map.md": "ff4531a685bfdd0cb2940f2138f689193e0a93f7eee69524d2dbfdaeb7525169",
+      "eval/conditions/dfa-v1.0.0/reference/plan-template.md": "7ee2689530ddeb6e7687d0b4fb047e05fa76399fa898b7b64cea9dd27e06d55f"
+    }
+  },
+  "config_file": null,
+  "config_sha256": "8771777b502d2b0a3b594d1b082b43d949e20faa4e1568640cf801897e62eaea",
+  "config": {
+    "schema": "dfa-eval/config@1",
+    "name": "v1-examples-rejudge",
+    "description": "The ten v1.0.0 example plans (examples/, one run per arm, generated 2026-10-02 with claude-opus-5-5 at effort max in isolated claude --bare sessions), imported verbatim and judged again with the v2 harness.",
+    "seed": 20261006,
+    "prompts": [
+      {
+        "id": "P1",
+        "title": "RAG support chatbot",
+        "kind": "AI",
+        "request": "Plan a customer-support RAG chatbot over our help-center docs.",
+        "checklist": "eval/rubrics/checklists/P1.json",
+        "tags": []
+      },
+      {
+        "id": "P2",
+        "title": "Multi-tenant SaaS billing",
+        "kind": "non-AI",
+        "request": "Architect a multi-tenant SaaS billing system.",
+        "checklist": "eval/rubrics/checklists/P2.json",
+        "tags": []
+      },
+      {
+        "id": "P3",
+        "title": "CI/CD for 50 microservices",
+        "kind": "non-AI",
+        "request": "Sequence building a CI/CD platform for 50 microservices.",
+        "checklist": "eval/rubrics/checklists/P3.json",
+        "tags": []
+      },
+      {
+        "id": "P4",
+        "title": "GitHub issue agent",
+        "kind": "AI",
+        "request": "Plan an autonomous agent that triages and resolves GitHub issues.",
+        "checklist": "eval/rubrics/checklists/P4.json",
+        "tags": []
+      },
+      {
+        "id": "P5",
+        "title": "Collaborative doc editor",
+        "kind": "non-AI",
+        "request": "Order the build of a real-time collaborative document editor.",
+        "checklist": "eval/rubrics/checklists/P5.json",
+        "tags": []
+      }
+    ],
+    "conditions": {
+      "baseline": {
+        "kind": "plain",
+        "description": "v1.0.0 'without the skill' arm: the request alone.",
+        "length_cap_words": null
+      },
+      "dfa-v1": {
+        "kind": "skill",
+        "description": "v1.0.0 'with the skill' arm: Dependency-First Architect at commit 3ba6b70, invoked as /dependency-first-architect.",
+        "skill_dir": "eval/conditions/dfa-v1.0.0",
+        "skill_name": "dependency-first-architect",
+        "length_cap_words": null
+      }
+    },
+    "generators": [
+      {
+        "id": "opus-5.5-max",
+        "provider": "claude-cli",
+        "model": "claude-opus-5-5",
+        "effort": "max",
+        "options": {}
+      }
+    ],
+    "judges": [
+      {
+        "id": "sonnet-5.5",
+        "provider": "claude-cli",
+        "model": "claude-sonnet-5-5",
+        "effort": "high",
+        "options": {}
+      },
+      {
+        "id": "fable-5",
+        "provider": "claude-cli",
+        "model": "claude-fable-5",
+        "effort": "high",
+        "rubrics": [
+          "engineering-quality-v1"
+        ],
+        "options": {}
+      }
+    ],
+    "rubrics": [
+      "methodology-adherence-v1",
+      "engineering-quality-v1"
+    ],
+    "runs_per_cell": 1,
+    "judge_repeats": 1,
+    "contrasts": [
+      {
+        "treatment": "dfa-v1",
+        "control": "baseline"
+      }
+    ],
+    "blinding": {
+      "strip_self_score": true,
+      "neutralize_terms_for": [
+        "engineering-quality-v1"
+      ]
+    },
+    "probe": {
+      "enabled": true,
+      "judges": [
+        "sonnet-5.5"
+      ]
+    },
+    "workspace": {
+      "readme": null
+    },
+    "limits": {
+      "max_cost_usd": 40,
+      "jobs": 8,
+      "timeout_s": 3600
+    }
+  },
+  "seed": 20261006,
+  "platform": {
+    "python": "3.13.2",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26100-SP0"
+  },
+  "tools": {
+    "claude": "2.1.287.1066"
+  },
+  "notes": "Imported, not generated: the plans in examples/ as committed, verified against the SHA-256 recorded in examples/scoring/generation.json at generation time (2026-10-02, model claude-opus-5-5, effort max, skill commit 3ba6b70). Tokens, cost and latency were not recorded in v1."
+}

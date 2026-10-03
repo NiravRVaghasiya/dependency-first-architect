@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "3829c14ef5af.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "3829c14ef5af",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 56,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "CRDT (Yjs, Automerge, Loro). It works offline and peer-to-peer and the server can be simple, but documents carry metadata overhead.",
+      "rationale": "Generic claims are mostly right (OT needs central server, CRDT metadata), but the plan ignores hard rich-text merge semantics, and \"debounced snapshots\" risks durability, and it doesn't reach the hard parts."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Decide whether it is plain text, rich text, or structured blocks. Decide how many concurrent editors you expect, and whether you need offline support.",
+      "rationale": "Covers the main capabilities and is buildable, but defers scope decisions instead of resolving them and sets no explicit exclusions."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Store the document as a binary CRDT state plus incremental updates, not as rendered HTML.",
+      "rationale": "Recognizable consistent design, but Phase 1 single-user editor and REST save/load sit awkwardly with later sync, undo redone, and pub/sub added late; data ownership between REST and WebSocket paths is unclear."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Run fuzz and property-based tests for convergence. Run end-to-end tests with multiple browsers.",
+      "rationale": "Convergence fuzzing and load tests are named, but convergence testing is placed in the final phase, there are no measurable criteria, and post-launch validation is thin."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Tell me your team size and constraints and I'll tailor it.",
+      "rationale": "Avoids invented numbers and defers unknowns to Phase 0 decisions, but does not state assumptions or sensitivity to them."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Handle reconnection with exponential backoff and resync.",
+      "rationale": "Failures are touched only in passing (reconnect, rate limits, backups, security review); crash-durability, duplicates, poisoned updates and revocation are not handled concretely."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Add observability: metrics for sync latency, connection counts, and document size. Add error tracking too.",
+      "rationale": "Observability, backups and feature-flag rollout appear late and briefly; no incident ownership, rollback, deploy or migration plan."
+    },
+    {
+      "dim": 8,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Costs are not discussed at all."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Phase 0: Decisions that are expensive to reverse",
+      "rationale": "Explicitly front-loads CRDT/OT, editor and persisted format choices and says to store binary CRDT state, though exit paths and schema versioning are not covered."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "For most new projects, use **Yjs** unless you have a specific reason not to.",
+      "rationale": "Uses a proven library and a sensible stack; Redis and scaling are deferred to a later phase, and features are listed without over-engineering."
+    },
+    {
+      "dim": 11,
+      "score": 2,
+      "evidence": "Connect the editor to the sync layer, with a two-client local test.",
+      "rationale": "A sequenced, concrete step list, but many steps are terse, intermediate checks are sparse, and there is no adaptation criteria; the single-user-first order misplaces risk."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 1,
+      "evidence": "For most new projects, use **Yjs** unless you have a specific reason not to."
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Set up the editor with its schema: paragraphs, headings, lists, and marks."
+    },
+    {
+      "id": "P5-03",
+      "status": 1,
+      "evidence": "Run fuzz and property-based tests for convergence."
+    },
+    {
+      "id": "P5-04",
+      "status": 1,
+      "evidence": "debounced snapshots plus an update log, with periodic compaction."
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "Route clients for document affinity (sticky or consistent hashing)."
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Queue edits while offline and merge them on reconnect."
+    },
+    {
+      "id": "P5-07",
+      "status": 1,
+      "evidence": "authorization on every update"
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Make undo/redo per-user, so you don't undo other people's edits."
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "live cursors and selections with names and colors."
+    },
+    {
+      "id": "P5-10",
+      "status": 1,
+      "evidence": "Phase 1: Single-user editor (no networking)"
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "Load test with many clients on a single document and with many documents."
+    },
+    {
+      "id": "P5-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Choose Yjs, Automerge, Loro; use Yjs"
+    },
+    {
+      "id": "P5-T3",
+      "present": true,
+      "evidence": "Phase 1: Single-user editor (no networking)... You will redo this later to be per-user"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "Add server-side persistence: debounced snapshots plus an update log, with periodic compaction."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "It works offline and peer-to-peer and the server can be simple, but documents carry metadata overhead."
+    }
+  ],
+  "note": "A sensible, generic Yjs-based checklist. It is weak on failure modes, durability guarantees, cost and validation criteria, and it builds a single-user editor and sequences convergence testing late.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1999,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 8799
+  },
+  "cost_usd": 0.0421805,
+  "latency_s": 31.29,
+  "raw_file": "raw/judge-3829c14ef5af.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

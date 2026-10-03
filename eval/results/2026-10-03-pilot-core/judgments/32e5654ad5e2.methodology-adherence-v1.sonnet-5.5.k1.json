@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "32e5654ad5e2.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "32e5654ad5e2",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 20,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Milestone 2 \"Safety: two-step rename, undo log\" comes after MVP \"dry run and `--apply`\"",
+      "rationale": "Ordering is mostly sensible (planner, formats, polish), but the MVP applies renames before the safety substrate (undo, two-step) is proven."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "MVP: JPEG only, Pillow backend, dry run and `--apply`, default format, counter suffixes.",
+      "rationale": "A thin end-to-end slice exists as milestone 1, but it is not deployed to production and comes without the safety features its own requirements call for."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "I suggest local time, with a `--utc` option.",
+      "rationale": "Open questions give defaults for time zones and moving files, but there is no explicit flip condition, and other decisions such as the undo-log format and the rename strategy are silent."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Keep `planner.py` free of side effects: it takes a list of `(path, datetime)` pairs and returns a plan.",
+      "rationale": "The core planner is isolated as the central piece, but no within-phase ordering by blast radius is stated."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Never use a rename call that silently overwrites an existing file. Check that the target doesn't exist first.",
+      "rationale": "Data-safety and filename sanitization are covered, but security is not threaded per phase and there is no treatment of supply chain, ExifTool subprocess injection, or path traversal."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Only --verbose/--quiet and a dry-run summary exist, with no logging or observability plan in Phase 0 or later phases."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Sort the list so runs are repeatable.",
+      "rationale": "Deterministic runs, CI on three OSes and pyproject packaging are mentioned, but there are no pinned dependencies, lockfile, or reproducible build steps per phase."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "If anything fails partway, stop and roll back the completed renames using the log.",
+      "rationale": "Resilience is strong in the design (rollback, collisions, missing EXIF) but is concentrated in milestone 2 rather than threaded from the MVP."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so it does not declare N/A."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "I suggest leaving that out of scope at first and adding it later as `--organize`.",
+      "rationale": "Some deferrals are named (organize, --utc, video), but there are no pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is a solid tool design with good safety mechanics and testing, but it is weak on observability, explicit tradeoff gates, deferral triggers, and threaded security, and it never declares the AI layer N/A.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1083,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 3839
+  },
+  "cost_usd": 0.020548499999999997,
+  "latency_s": 16.357,
+  "raw_file": "raw/judge-32e5654ad5e2.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

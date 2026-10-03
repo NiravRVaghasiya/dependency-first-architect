@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "326ef4f16e2c.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "326ef4f16e2c",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 0,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan is a component catalogue with no phases or build order, so nothing shows substrate-first sequencing."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No Phase 0 or thin end-to-end production slice is defined; all components are specified at once."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Irreversible choices (Kafka, isolation model, providers, DB) are made silently with no defaults or flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There are no phases, so no ordering of wide-impact work before leaf work; reporting and tenancy sit in arbitrary order."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Row-Level Security: Use database policies for multi-tenancy",
+      "rationale": "A security section lists sensible controls, but it is a standalone list not tied to phases."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Alerts: - High payment failure rate (> 5%)",
+      "rationale": "A monitoring section exists, but it is standalone and not present from a first phase."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Nothing on reproducible builds, environments, IaC, or migrations."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "UNIQUE(idempotency_key)",
+      "rationale": "Idempotency key column and webhook logs exist, but the code uses a random UUID per call and the failure handling is not phased."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so it does not declare N/A."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No deferred work or pull-forward conditions; it ends by offering to go deeper."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "This is a component and schema catalogue, not a phased build plan. It has some security and monitoring content but no sequencing, decision gates, or deferrals.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 758,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10871
+  },
+  "cost_usd": 0.0347655,
+  "latency_s": 33.398,
+  "raw_file": "raw/judge-326ef4f16e2c.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

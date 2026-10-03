@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "1f7a60fd9495.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "1f7a60fd9495",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 38,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Pipelines can't run without infrastructure, identity and secrets.",
+      "rationale": "Phases go discovery → foundations → CI → CD → guardrails → migration with explicit exit criteria and stated dependencies (signed artifacts before CD)."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "A \"hello world\" service can build on platform runners, push to the registry and authenticate to the cloud with no static secrets.",
+      "rationale": "Phase 0 is discovery only; a thin build-push slice appears in Phase 1 but reaches prod only in Phase 3, so no true prod skeleton first."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Make the core tooling decisions and record each one in an Architecture Decision Record (ADR)",
+      "rationale": "Irreversible choices are listed up front with some recommended defaults, but flip conditions are missing."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Wave 1 ~5 Low criticality, common archetype, willing teams",
+      "rationale": "Waves go low-risk first and foundations precede leaf work, but it is the reverse of widest-impact-first and within-phase ordering is not explicit."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Use OIDC federation from CI to the cloud. No long-lived credentials in pipelines.",
+      "rationale": "Security appears in Foundations, CI (SAST/SCA/signing), CD-adjacent policy, enforcement, and SLSA; Phase 0 only via secrets ADR, but it is substantially threaded."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Phase 4: Observability and Guardrails (Weeks 12–16, overlaps Phase 3)",
+      "rationale": "Observability is mostly a mid-plan phase; only a DORA baseline exists in Phase 0 and none in Foundations or CI."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Promote the *same artifact* through every stage; never rebuild per environment.",
+      "rationale": "IaC environments, immutable tags, reproducible image builds, versioned templates and GitOps config are threaded across phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Rollback: a git revert of the config repo, documented and rehearsed.",
+      "rationale": "Resilience (rollback, PDBs, parallel runs, canary auto-rollback) appears in CD onward but not in early phases."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so N/A is not declared."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Wave 4 ~5 Legacy and outliers: Custom extensions or a documented exemption",
+      "rationale": "Later phases and 'remove manual gate later' are deferred, but there are no explicit not-yet-built lists with pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Solid, well-ordered conventional platform plan, but it has no prod walking skeleton, no flip conditions, observability arrives late, and it never declares the AI layer N/A.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1111,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 5001
+  },
+  "cost_usd": 0.023733499999999998,
+  "latency_s": 43.273,
+  "raw_file": "raw/judge-1f7a60fd9495.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

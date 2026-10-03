@@ -1,0 +1,172 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "03d78b37951f.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "03d78b37951f",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 46,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "os.rename on Windows (it fails if the target exists). Where hard links aren't supported (exFAT), check that the target doesn't exist, then rename.",
+      "rationale": "No-replace primitives, UTC-stored QuickTime dates and the ExifTool approach are correct; minor imprecision in calling link-then-unlink 'atomic' and the exFAT check-then-rename race, which the plan concedes."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Date from `DateTimeOriginal`, then `CreateDate`, otherwise skip and report the file. Camera-local time.",
+      "rationale": "Covers rename, dry run, undo, collisions and sidecars with explicit deferrals, but the format list and sidecar scope depend on user input and OffsetTimeOriginal is deferred."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Write each journal entry and flush it to disk before doing that rename.",
+      "rationale": "Planner, executor, journal, undo and resume fit together with consistent reader interface and schema versioning; only small loose ends like the 'atomic' wording."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Kill-injection tests send SIGKILL at random points during `apply`, then run `resume` or `undo`. Run on ext4, NTFS, APFS, and exFAT",
+      "rationale": "Validation is tied to the real risks (overwrite, interruption, filesystem semantics, date correctness) and runs before apply is exposed, but counts like 10,000 cases and 100 kill runs are unjustified and post-release checks are thin."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "ASSUMPTION (that users can install ExifTool; confirm with you)",
+      "rationale": "Requirements and assumptions are labelled with their basis, missing inputs have defaults, and each decision has a revisit trigger."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Detect collisions inside the plan and against files already in the folder, including names that differ only by letter case.",
+      "rationale": "Covers crashes, partial runs, case-insensitive clashes, cycles, symlinks, corrupt files and missing ExifTool with concrete handling, but not undo conflicts when files changed afterwards, concurrent writers (only assumed away) or hostile filenames."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Rollback: reinstall the previous version (`pipx install photorename==<prev>`) and yank the bad release. Rehearsed once",
+      "rationale": "Exit codes, run-ID logs, release rollback and journal-schema compatibility are concrete and fit a one-developer tool."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "There are no economic dependencies.",
+      "rationale": "Correctly notes no money flow and gives a labelled throughput basis, but engineering effort and the build-versus-reuse cost of ExifTool are not estimated."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R2: once users have renamed whole libraries, changing the scheme means renaming them all again",
+      "rationale": "Decisions are tagged by reversibility with early validation, a MetadataReader seam, a schema_version in the journal, explicit points of no return and revisit triggers."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Trusted publishing to PyPI; minimum ExifTool version enforced",
+      "rationale": "No databases or services, but a lot of ceremony for a small CLI: a staged release pipeline with rollback rehearsal, a three-OS CI matrix, a four-filesystem kill matrix, and N/A template rows."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Define the plan and journal format, with a `schema_version` field, a run ID, and the old path, new path, and status of each file.",
+      "rationale": "Ordered phases with dependencies, checkable exit criteria and a fail-then-do path, but formats, naming configuration and the journal/resume protocol are left partly to the team."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "Date from `DateTimeOriginal`, then `CreateDate`, otherwise skip and report the file. ... Default: JPEG and HEIC."
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "otherwise skip and report the file. ... Fallback to file modification time ... Pulled forward if V3 shows many skips"
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "Same-second collisions get `_01`, `_02`, … in `SubSecTimeOriginal` order, then by original name."
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "Default mode: dry run; real renames need `--apply` plus a confirmation prompt."
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "Rename each file atomically without ever overwriting ... A rename cycle aborts the run. ... Files already named correctly are left alone"
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "`undo <run-id>` restores every original name after a run that finished or was interrupted"
+    },
+    {
+      "id": "P7-07",
+      "status": 1,
+      "evidence": "Default: camera-local time with no time-zone conversion. ... Time-zone normalization (`OffsetTimeOriginal`, GPS time)."
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "Sidecars: rename `.xmp`, `.aae`, and Live Photo `.mov` files that share the photo's base name together with it"
+    },
+    {
+      "id": "P7-09",
+      "status": 1,
+      "evidence": "Name format `YYYY-MM-DD_HH-MM-SS.ext`: hyphens because Windows forbids colons, and the original extension is kept."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Rename each file atomically without ever overwriting: hard-link then unlink on POSIX"
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "Date from `DateTimeOriginal`, then `CreateDate`, otherwise skip and report the file."
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "No services to run; one pipx package plus ExifTool on the user's PATH"
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "no code path writes to the folder"
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "Name format `YYYY-MM-DD_HH-MM-SS.ext`: hyphens because Windows forbids colons"
+    }
+  ],
+  "note": "A strong, correctness-first design with journaled no-overwrite renames, undo and dry run, and good assumption and reversibility handling. It is held back by heavy process for a small CLI, almost no cost analysis, deferred timezone offset handling, and no stated configurable template.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4546,
+    "thinking_tokens": 2169,
+    "cache_read_input_tokens": 907,
+    "cache_creation_input_tokens": 12566
+  },
+  "cost_usd": 0.0770644,
+  "latency_s": 51.864,
+  "raw_file": "raw/judge-03d78b37951f.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

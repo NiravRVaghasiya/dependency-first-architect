@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "10645947c4d9.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "10645947c4d9",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 14,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Output filters that strip URLs, images, and @mentions from agent comments, which closes GitHub's image-render exfiltration path.",
+      "rationale": "Mechanisms (10 s webhook timeout, HMAC, delivery-ID idempotency, metadata service blocking, CODEOWNERS/branch protection) are accurate; minor doubts such as 'Contents write on agent/* only' (GitHub Apps can't scope by branch, enforced by executor instead) and reconciling the 15-min poll stop it reaching 4."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "triages each issue (labels, duplicates, owner suggestion), and for eligible issues produces a draft pull request that a human reviews and merges.",
+      "rationale": "Covers triage and resolution with explicit deferrals and reasons, but the first scope is narrowed to one internal repo and the issue-status handling (closing, asking for details) is thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "An out-of-model tool executor applies writes. A human merges every PR.",
+      "rationale": "Consistent design with clear executor, sandbox, orchestrator and Postgres roles and honored decisions; minor loose ends such as the kill switch described as emptying the allow-list versus per-repo switch."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "0 escapes across ≥150 cases (ASSUMPTION: 5 channels × 6 attack goals × ≥5 variants). Permission tests: 0 successes (by design, not by filtering).",
+      "rationale": "Validation gates are tied to specific risks, run early before commitments, and have labeled or baseline-measured thresholds, and later phases include monitoring and drift alerts."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "UNKNOWN: issues/day per repo. Owner: repo owners, or a GitHub API history export by us.",
+      "rationale": "Assumptions and unknowns are labeled with owners, what they affect, and fallback if wrong (self-host flip, suggest-only)."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "A crafted issue, comment, or linked file hijacks the agent. It then exfiltrates secrets or code, or lands malicious code in the repo.",
+      "rationale": "Major failure modes (injection, exfiltration, sandbox escape, runaway, missed webhooks, workflow PR) are covered with concrete handling, but issue edits during work, duplicate PRs and human collisions are not handled."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Redeploy the previous image, plus a kill-switch flag (empty the repo allow-list) that stops all agent activity within one minute.",
+      "rationale": "Deploy, rollback, metrics, alerts, kill switch and business-hours on-call are concrete; incident ownership and schema migration are thin."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Skeleton caps: $0.25/run, $20/day. Triage ≤ $0.10/issue. Resolution attempt ≤ $5 hard cap.",
+      "rationale": "Caps are concrete and labeled as placeholders, with per-accepted-PR cost tracked and routing and build-vs-buy noted; there is no cost estimate from volume and sandbox or people costs are barely mentioned."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Data-privacy boundary: hosted model vs self-host | R3 (source code and issue text sent out can't be recalled; contractual)",
+      "rationale": "Decisions are rated by reversibility, R3 ones are validated early with explicit exit paths, and the provider abstraction and deferrals are isolated."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Orchestration kept to a single agent loop, every step traced, failures surfaced rather than swallowed.",
+      "rationale": "Mostly proportionate with single-agent and deferred items, though the six-phase structure, nine AI sublayers and ceremony are somewhat heavy."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check (V0): A real issue yields a comment with one trace across every tier. A deploy and a rollback succeed through the pipeline",
+      "rationale": "Dependency-ordered phases with concrete tasks, checkable exits and fallbacks on failure, and the next step is specified."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 1,
+      "evidence": "Autonomous merge or auto-close of issues: pulled forward only by a new gate with a named approver"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "The GitHub App has minimal permissions... It has no workflows, admin, or merge permission. The agent cannot approve PRs. The model never holds a token."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "All issue text, comments, linked files, and tool output are tagged as untrusted data."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "Ephemeral microVM or gVisor container per run. Read-only repo snapshot... No credentials. Egress only via an allow-listed proxy"
+    },
+    {
+      "id": "P4-05",
+      "status": 1,
+      "evidence": "Executor pushes to agent/* and opens a draft PR... CI on agent branches runs with no secrets."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Run on ≥200 maintainer-labeled historic issues... Duplicate suggestions precision ≥ 90%"
+    },
+    {
+      "id": "P4-07",
+      "status": 1,
+      "evidence": "PR outcome and cost-per-PR metrics. Alerts on policy violations."
+    },
+    {
+      "id": "P4-08",
+      "status": 1,
+      "evidence": "Caps on tokens, iterations, per-run cost, per-repo daily spend, and timeouts... kill-switch flag (empty the repo allow-list)"
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Skeleton caps: $0.25/run, $20/day. Triage ≤ $0.10/issue. Resolution attempt ≤ $5 hard cap."
+    },
+    {
+      "id": "P4-10",
+      "status": 1,
+      "evidence": "Audit log of every write and approval."
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "ripgrep at a pinned commit SHA for code, plus an embedding index for duplicate issues"
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "at-least-once webhooks, idempotent on delivery ID, GitHub as system of record"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent cannot merge, so there is no irreversible step."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "Zero credentials inside. Egress proxy allow-list."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "issue text passed as delimited data, never as instructions"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "Accepted-PR share ≥ UNKNOWN (product owner sets it before Phase 4)."
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "A runaway loop is cut off at the cap and emits a cost metric."
+    }
+  ],
+  "note": "Strong, safety-first and validation-driven plan with well-labeled assumptions and reversibility analysis. Weaker on human-collision and claim handling, in-flight issue edits, and audit detail for model I/O.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2552,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 16498
+  },
+  "cost_usd": 0.066773,
+  "latency_s": 30.988,
+  "raw_file": "raw/judge-10645947c4d9.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

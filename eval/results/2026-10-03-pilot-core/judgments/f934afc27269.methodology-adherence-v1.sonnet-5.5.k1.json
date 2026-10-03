@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f934afc27269.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "f934afc27269",
+  "blind_sha256": "50e688a9719e694ad3c63a3d861bdc6bf808b43f67552eb5e644d7569af2e258",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 405,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "no rename code ships until V1 passes.",
+      "rationale": "Read-only dry-run substrate comes first, then safe writes gated on V1/V2, then release; a dependency map makes the ordering explicit."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "GitHub Actions builds the wheel and sdist on a tag and publishes to TestPyPI through trusted publishing. It's installed with `pipx`",
+      "rationale": "Phase 0 is a real end-to-end dry-run slice that is deployed, installed, rolled back and run on a real folder."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "V1 fails on any filesystem → the default becomes copy-into-a-new-folder",
+      "rationale": "Irreversible decisions are tabled with reversibility class, default, assumption, validation and a flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "the ones that would force the most rework if wrong come first",
+      "rationale": "Phase 1 tasks start with the name/journal schema and planner before the leaf harness and exposure, and exposure goes smallest first."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "No network code; ExifTool called with an argument list (no shell) and names passed via `-@`; read-only",
+      "rationale": "The cross-cutting table gives concrete security measures in each of phases 0, 1 and 2."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Summary line, exit codes, `--log-json`; GPS never logged",
+      "rationale": "Observability is concrete in Phase 0 and continues with the journal and the version reporting in later phases."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "`uv.lock`; CI builds from the tag; the ExifTool version recorded in the log",
+      "rationale": "Reproducibility is addressed in each phase: lockfile, pinned seeds and hashes, frozen schema."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Journal written before any rename; resume and undo after a kill; re-runs do nothing",
+      "rationale": "Failure handling appears from Phase 0 (skip corrupt files, missing ExifTool) through Phases 1 and 2."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: no AI component.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Video (MOV/MP4): pulled forward when users want videos named alongside photos.",
+      "rationale": "The deferred list is explicit, with a pull-forward trigger for each item."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan that meets every dimension with concrete content. It is tailored to a CLI, with a read-only walking skeleton and write safety gated behind V1.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 991,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7585
+  },
+  "cost_usd": 0.028880499999999996,
+  "latency_s": 21.803,
+  "raw_file": "raw/judge-f934afc27269.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

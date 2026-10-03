@@ -1,0 +1,32 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "d84a622c0251.engineering-quality-v1.fable-5.k1",
+  "blind_id": "d84a622c0251",
+  "blind_sha256": "c1cb29e871a3570ce45625168c2c1fd2670bc908f8eb5c2c0910ad361ccab5db",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 210,
+  "status": "error",
+  "error": "the CLI exited 1 (subtype=success, api_error=429): API Error: Request rejected (429) · Too many tokens, please wait before trying again.",
+  "validation_errors": [],
+  "scores": [],
+  "checklist": null,
+  "traps": null,
+  "note": null,
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "cost_usd": 0.0,
+  "latency_s": 193.382,
+  "raw_file": "superseded/raw/judge-d84a622c0251.engineering-quality-v1.fable-5.k1.1.txt"
+}

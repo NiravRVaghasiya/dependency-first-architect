@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a6ef04d31216.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "a6ef04d31216",
+  "blind_sha256": "2ac6954f16d15eee05a97a8f8203780360596821eeaf8bb3c11634409edaee77",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 16,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Rollback: Delete the event row, re-increment the cache TTL.",
+      "rationale": "Money representation is never stated, rollback deletes records, webhook dedupe is scoped by tenant_id, and an idempotency cache is used for dedupe, so there are several material errors."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Dunning and retry logic for failed payments: Pulled forward if product wants automatic retry of failed cards",
+      "rationale": "It covers metering, invoicing and payments but defers dunning, and omits subscription lifecycle, proration, tax IDs and entitlements, while adding revenue-recognition scope."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Tenancy model (outside this scope — assumed multi-tenant architecture is already chosen)",
+      "rationale": "The design is recognizable but contradictory: tenancy is marked N/A while a single-DB decision is made, rollbacks delete supposedly immutable records, and journal entries are 'not persisted' yet reconciled."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "100 raw events/s for 1 hour show zero data loss, zero duplication, and p99 latency < 50 ms.",
+      "rationale": "Checks target metering, webhook redelivery, PCI, to-the-cent revenue and canary rollout with measurable criteria, but several thresholds are invented and entitlement or provider-outage tests are missing."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "REQUIREMENT: stated for multi-tenant at product scale",
+      "rationale": "Missing inputs are listed, but invented figures such as 500 invoices/s and 99.95% availability are labeled REQUIREMENT though the request gives none."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "if same event arrives twice, second is silently ignored.",
+      "rationale": "It covers duplicate webhooks, DLQ, backup/restore and reconciliation, but misses out-of-order events, late usage, disputes, failed-payment handling and refund races."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Graduated rollout: Stage 1 (internal + 2 canary customers) for 1 week; Stage 2 (10% of revenue) for 2 weeks",
+      "rationale": "It has CI/CD rollback, SLIs with burn-rate alerts, runbooks, staged rollout and backup restore tests, though ownership is thin and the 2-person team is stretched by Kafka and the rest."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Storage cost | — | UNKNOWN: invoice retention policy and volume per tenant",
+      "rationale": "Cost is barely addressed: no vendor fees for Stripe, Kafka or Datadog, no build-versus-buy economics, and the only cost metric is support cost per ticket."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Reversibility | R3 ... If V2 finds an isolation bypass, move to per-tenant DBs (weeks of work)",
+      "rationale": "It explicitly rates reversibility per decision with revisit triggers and exit paths, but misses the identifier scheme, money format and invoice numbering, and some ratings are odd."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Kafka topic for events (dead-letter queue for failures), idempotent writer to event store, schema validation (Avro or Protobuf).",
+      "rationale": "Starting with a monolith is good, but Kafka at 100 events/s, revenue recognition and SOX scope are heavy, while dunning and subscription lifecycle essentials are left out."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Tasks (in dependency order): 1. Finalize metering schema and pricing model rules",
+      "rationale": "It has a clear phased order, a concrete walking skeleton, specific tables and endpoints, and checkable exit gates, but gaps remain on lifecycle, tax integration and provider details."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 1,
+      "evidence": "hand-rolled expected revenue matches system-generated revenue to the cent"
+    },
+    {
+      "id": "P2-02",
+      "status": 1,
+      "evidence": "After that, payment records are immutable; corrections only via refunds (tracked in audit log)."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "Store webhook event ID in `webhook_events` table with a unique constraint (tenant_id, external_event_id)"
+    },
+    {
+      "id": "P2-04",
+      "status": 1,
+      "evidence": "webhook signature verification (Stripe signs all webhooks); payment intent ID only"
+    },
+    {
+      "id": "P2-05",
+      "status": 1,
+      "evidence": "Single database, tenant ID on every row, row-level security (RLS) or app-enforced isolation"
+    },
+    {
+      "id": "P2-06",
+      "status": 1,
+      "evidence": "Kafka topic retention ≥ 1 week for replay"
+    },
+    {
+      "id": "P2-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-08",
+      "status": 1,
+      "evidence": "Tax rules loader: Read tax rules per jurisdiction from a config file (YAML) and cache"
+    },
+    {
+      "id": "P2-09",
+      "status": 0,
+      "evidence": "Deferred because it complicates payment state machine; address if failures are high."
+    },
+    {
+      "id": "P2-10",
+      "status": 1,
+      "evidence": "Daily job comparing our `payments` table to Stripe reconciliation API; alert if variance"
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-12",
+      "status": 1,
+      "evidence": "Use Stripe (or equivalent managed processor) with hosted card fields"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": true,
+      "evidence": "Total revenue variance ≤ $0.00 — the plan never states how money is represented."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "After that, payment records are immutable; corrections only via refunds (tracked in audit log)."
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "Store webhook event ID in `webhook_events` table with a unique constraint"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "Set up hosted card fields (Stripe Elements or Adyen Web) — card data never touches our systems."
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "static code analysis rule enforces `WHERE tenant_id = :id` in all queries"
+    }
+  ],
+  "note": "Well-structured phased plan with solid PCI and webhook handling, but it never states money representation, omits subscription lifecycle, proration and entitlements, defers dunning, and has weak tenant enforcement and cost analysis.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 10,
+    "output_tokens": 9357,
+    "thinking_tokens": 27,
+    "cache_read_input_tokens": 64632,
+    "cache_creation_input_tokens": 23903
+  },
+  "cost_usd": 0.16627390000000003,
+  "latency_s": 77.698,
+  "raw_file": "raw/judge-a6ef04d31216.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

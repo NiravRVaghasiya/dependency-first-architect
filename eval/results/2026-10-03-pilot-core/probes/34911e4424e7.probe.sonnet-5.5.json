@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "34911e4424e7.probe.sonnet-5.5",
+  "blind_id": "34911e4424e7",
+  "blind_sha256": "70150960202a1fab800f7d882eef8b6d9a1adf07793b7be93b176dcb03ea2803",
+  "judge": "sonnet-5.5",
+  "order_index": 106,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Fixed structural sections: '1. Classification' with What/Type/Dominant constraint/Worst failure, then 'Key decisions (resolved up front)' table with Default and Revisit trigger columns",
+    "Explicit AI-layer rows marked 'N/A' in the decision table plus a dedicated '§6 AI layer: N/A' with a pull-forward condition, which looks like a template checklist applied even when irrelevant",
+    "Phase 0 'first end-to-end slice' (walking skeleton) crossing all tiers, with day-zero monitoring and an exit check",
+    "Every phase has Unlocks / Depends on / Tasks / Exit check, and the ordering is justified by dependency ('widest impact first')",
+    "Cross-cutting concerns matrix (Security/Observability/Reproducibility/Resilience per phase) and a 'Deferred' section with pull-forward triggers; references to 'Gate 4', 'Gate 2' and similar methodology vocabulary"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 404,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8634
+  },
+  "cost_usd": 0.025633,
+  "latency_s": 31.775,
+  "raw_file": "raw/probe-34911e4424e7.probe.sonnet-5.5.txt"
+}

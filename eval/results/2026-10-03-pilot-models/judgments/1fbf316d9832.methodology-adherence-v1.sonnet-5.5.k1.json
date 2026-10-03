@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "1fbf316d9832.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "1fbf316d9832",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 63,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 2: \"Authentication and authorization blueprint\" ... Phase 3 \"Depends on: Phase 2 complete, V5 passes\"",
+      "rationale": "Mostly substrate-upward with gates, but Phase 1 spikes run after the skeleton already assumed Yjs, and auth is specified after the skeleton; the UI-before-permissions and TLS-hardening-late order are weaker."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"Deploy repeatable: Run full pipeline 3 times in a row\" ... \"Kill server process; alert fires in CloudWatch within 30 seconds.\"",
+      "rationale": "Phase 0 is a concrete end-to-end slice with CI/CD deploy, rollback, logging, and alerting, though it runs behind a flag with internal access only."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"V1 fails (p99 >1s or complexity >2 weeks) → switch to proven OT library (ShareDB)\"",
+      "rationale": "The table lists irreversible decisions with reversibility tier, default, assumptions, validation and flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "\"CRDT choice (V1) and self-hosted decision (V2) are evaluated first (Phase 1), before building implementation\"",
+      "rationale": "Widest decisions are validated early, but ordering within phases is not explicit, and the spikes run after the skeleton is already built on those choices."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "\"Internal-only skeleton, no real data, feature flag hides from users. No auth yet.\"",
+      "rationale": "Every phase has a security cell, but Phase 0 has no real controls and TLS hardening and the audit are deferred to Phases 7 and 8."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"Structured JSON logs: session lifecycle, updates (received/applied/persisted), errors. CloudWatch dashboard: latency histogram (p50/p99)\"",
+      "rationale": "Concrete observability appears in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"Docker Compose for local dev; seeded test data (seed.sql); all config in version control\" ... \"Docker image SHAs tagged; Kubernetes manifests in git\"",
+      "rationale": "Every phase carries concrete reproducibility items, including CI, fixtures, migrations and IaC."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"WebSocket heartbeat every 30s... Exponential backoff for reconnect\" ... \"Chaos test: kill CRDT process mid-merge, restart, verify recovery\"",
+      "rationale": "Every phase has a concrete resilience item, including Phase 0 heartbeat and backoff, and later chaos tests, backups and failover."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"N/A — no AI component. This system does not involve LLMs, RAG, agentic behavior, or guardrails.\"",
+      "rationale": "It explicitly declares the AI layer N/A. The deferred AI suggestions item is only deferred, not added."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"AI-powered suggestions... Deferred until Phase 8 + cost budget approved... pull forward if business case emerges\"",
+      "rationale": "There is an explicit list of ten deferred items, each with a pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A strong, gate-driven plan with a real Phase 0 skeleton and threaded observability, reproducibility and resilience. Weaknesses are security that arrives late and the ordering of auth and spikes after the skeleton.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1318,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 19455
+  },
+  "cost_usd": 0.0619385,
+  "latency_s": 50.179,
+  "raw_file": "raw/judge-1fbf316d9832.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

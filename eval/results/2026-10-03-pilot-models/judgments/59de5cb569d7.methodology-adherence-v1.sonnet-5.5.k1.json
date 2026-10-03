@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "59de5cb569d7.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "59de5cb569d7",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 82,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan is a component catalogue with no phases or build ordering, so no dependency sequencing exists."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No Phase 0 or thin end-to-end production slice is defined; the plan presents the full system at once."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Irreversible choices (Kafka, Postgres, Stripe, shared-schema tenancy) are asserted silently with no defaults or flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There is no ordering of work by blast radius; the plan has no phases or sequencing."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Tenant ID in all tables, RLS policies, JWT tenant context",
+      "rationale": "Security content exists (tenant middleware, secrets) but it is a standalone section, not threaded through phases, and has flaws such as a global app.locals tenant ID."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Prometheus metrics, distributed tracing, centralized logging",
+      "rationale": "Observability is only named in a summary table row with no concrete treatment and no phase-based rollout."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "image: billing-service:latest",
+      "rationale": "No reproducibility treatment; the plan uses a floating :latest tag and has no pinned builds, migrations or environment definitions."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "AND attempt_count < 3 AND next_retry_at <= NOW()",
+      "rationale": "Some failure handling exists (retries, idempotency keys, rollback) but it is scattered, partly unimplemented, and not threaded through phases."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never states whether an AI layer applies, so it does not declare N/A."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Nothing is explicitly deferred and no pull-forward conditions are given; the plan claims it is production-ready."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is a code and schema dump with no phasing, decision gates or deferral list, and it scores only partial credit for scattered security, observability and resilience content.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 848,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 13103
+  },
+  "cost_usd": 0.0413585,
+  "latency_s": 35.676,
+  "raw_file": "raw/judge-59de5cb569d7.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

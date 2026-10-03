@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "18ccfa886b47.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "18ccfa886b47",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 145,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Store the raw chunk text so re-embedding is just a batch job. Swap it with a blue/green index rebuild.",
+      "rationale": "Technically sound on RAG, pgvector, hybrid RRF, citation check; minor issues like LLM judge, 'no training terms' via cloud endpoint, recall@5 threshold stated without basis."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Version 1 answers questions only from **published, public** articles.",
+      "rationale": "Covers core needs with explicit deferrals and reasons; the 7-phase scope is somewhat large and account-specific questions are deferred, not routed in detail."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Fix the response format: `{answer, citations[{chunk_id,url}], answerable: bool, handoff: bool}`. The UI, evals, logging and handoff all read this",
+      "rationale": "Consistent contracts and ownership; minor loose end that the visibility field exists while only public content is indexed and the Phase 0 ~5-article slice precedes the eval harness."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "recall@5 ≥ 0.90 on the golden set. An unpublished article disappears from results within 15 min.",
+      "rationale": "Domain-appropriate golden set with unanswerable and injection cases, CI gating, staged launch and agent-assist; thresholds are presented without justification or provisional labels."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "I don't know your stack, so check these first... If any of these are wrong, the gates in §2 are the first thing to revisit.",
+      "rationale": "Assumptions and revisit triggers are explicit, though some numbers (80% approval, 0.95 faithfulness, 40% cheap path) are unlabeled and volume is not assumed."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Feedback treated as untrusted (it could be an attempt to poison answers). A human reviews it before it touches evals or prompts.",
+      "rationale": "Covers injection, hidden text, stale index, LLM outage, Redis loss, budget runaway, commitments, poisoning with concrete mitigations; some detection specifics like index-poisoning via edited docs are thinner."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Kill switch falls back to plain search plus \"contact us\". Percentage rollout. On-call runbook.",
+      "rationale": "Terraform, CI, dashboards, alerts, kill switch, blue/green index and rollout are covered; ownership and incident response details are thin for a small team."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "≤ 8k input and ≤ 1k output tokens per turn. ≤ $0.05 per conversation.",
+      "rationale": "Caps, routing, and cost per resolved conversation are present, but the $0.05 figure has no stated basis or volume estimate and build cost/people cost is not estimated."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "it's the most expensive thing to change later.",
+      "rationale": "Explicitly identifies the answer contract and chunk schema as costly, pins embedding with raw text stored, provider abstraction, build-vs-buy trial, and revisit triggers; little else to improve."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "A fixed four-step chain (rewrite → retrieve → answer → verify), the simplest shape that works.",
+      "rationale": "Starts from a monolith with pgvector and defers reranker, agents and fine-tuning; however the rewrite step, Redis, routing and circuit breakers add moderate scope."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Depends on: the Phase 1 eval harness, because recall can't be proven without it.",
+      "rationale": "Phases with dependency reasoning, concrete schemas, tasks ordered by impact, and checkable exit criteria from day one; adaptation on disappointing results is given via revisit triggers."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "Unpublishing or deleting an article removes its chunks... An unpublished article disappears from results within 15 min."
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "split by headings, ~300–500 tokens per chunk, with the article title and heading path prepended."
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "About 150 real questions taken from ticket and search logs, each mapped to the article(s) that should answer it."
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "answer only from the supplied chunks. Otherwise set `answerable=false` and hand off."
+    },
+    {
+      "id": "P1-05",
+      "status": 1,
+      "evidence": "The \"talk to a human\" handoff creates a ticket with the transcript, and only after the user confirms."
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "There are no tools in v1, so the allow-list is empty."
+    },
+    {
+      "id": "P1-07",
+      "status": 1,
+      "evidence": "Visibility filter enforced at query time. Deletes propagate."
+    },
+    {
+      "id": "P1-08",
+      "status": 1,
+      "evidence": "Chat text counts as PII: redact it before logging, keep it 30 days."
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Personalized answers (\"where's *my* order\") become a requirement. That needs logged-in sessions... so it's deferred (§7)."
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "Thumbs, handoff outcomes and agent edits flow into a review queue... a doc-gap report goes to the content team."
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "≤ $0.05 per conversation."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Every answer cites its source, and the bot hands off to a human when it can't answer."
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Visibility filter enforced at query time."
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Prompt + RAG. It's reversible, and docs change weekly, which fine-tuning can't keep up with."
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Golden eval set and harness in CI... Run on every pull request."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "Fixed chain: rewrite → retrieve → answer → verify. One pass only; no agent loop."
+    }
+  ],
+  "note": "Strong, well-sequenced, grounded RAG plan with eval harness, retrieval-level controls, and clear deferrals; weaker on cost basis, unjustified thresholds, and explicit retrieval-time entitlement design for restricted content.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2319,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 14701
+  },
+  "cost_usd": 0.059950500000000004,
+  "latency_s": 38.66,
+  "raw_file": "raw/judge-18ccfa886b47.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

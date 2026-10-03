@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "bf1b9cf5daf7.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "bf1b9cf5daf7",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 116,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "CRDTs are easier for offline support and peer-to-peer. The cost is metadata growth.",
+      "rationale": "Generally correct statements (idempotent updates, state vectors, relative-position anchoring, IME risk) but shallow and doesn't reach hard parts like rich-text merge semantics or durability-before-ack."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Rich text with blocks is the usual target.",
+      "rationale": "Covers the main capabilities and a buildable sequence, but defers the core choices and never fixes scope or states exclusions with reasons."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Route each document to one server instance, or use a pub/sub layer such as Redis so multiple servers can share a document.",
+      "rationale": "Recognizable phased design, but it is a menu of alternatives with no committed architecture and unclear data ownership; local persistence plus 'plain save endpoint' sits awkwardly with sync."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Write convergence tests. Run randomized concurrent edits against the model and check that all replicas end up identical.",
+      "rationale": "Convergence tests are early and domain-appropriate, and load/soak tests exist, but no measurable criteria, no duplicate/reorder specifics, and no production validation."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Set non-functional targets. These are the maximum concurrent editors per document, the latency budget (typically under 100 ms perceived)",
+      "rationale": "Identifies unspecified constraints as items to decide and ends by asking for stack, team and offline needs, but states no actual assumptions or sensitivity."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Security: rate limiting, input and update validation, payload size caps, and protection against malicious or malformed updates.",
+      "rationale": "Failures are mentioned as list items late in hardening (malicious updates, flaky networks, IME) with little detection or recovery, and crash or corruption handling is absent."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Observability: metrics for sync latency, connection counts, and update sizes, plus error tracking.",
+      "rationale": "Metrics and backups/DR drills are named, but there is no deployment, rollback, migration, alerting or ownership plan."
+    },
+    {
+      "dim": 8,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Costs are not discussed at all, including build-vs-buy, infrastructure or scaling cost."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Phase 0: Decisions that are expensive to change later",
+      "rationale": "Explicitly flags algorithm, document model and editor framework as costly early choices, but offers no isolation, migration or exit paths and no schema versioning."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Horizontal scaling, multi-region deployment, and backups and disaster recovery drills.",
+      "rationale": "Mostly proportionate with scale deferred to the end, but it includes a comment/suggestions, audit log, DOCX export and multi-region in one list without prioritization, and a single-user phase that is wasteful."
+    },
+    {
+      "dim": 11,
+      "score": 2,
+      "evidence": "Milestone: two browsers edit the same document and converge.",
+      "rationale": "Ordered phases with some milestones and a team split, but the technology choices are left open and the single-user-first ordering has a dependency problem."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 1,
+      "evidence": "Adopting an existing library is usually better than writing your own."
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Build the document schema: paragraphs, headings, lists, marks, and so on."
+    },
+    {
+      "id": "P5-03",
+      "status": 1,
+      "evidence": "Run randomized concurrent edits against the model and check that all replicas end up identical."
+    },
+    {
+      "id": "P5-04",
+      "status": 1,
+      "evidence": "Store updates durably: an append-only log plus periodic snapshots and compaction."
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "Route each document to one server instance, or use a pub/sub layer such as Redis"
+    },
+    {
+      "id": "P5-06",
+      "status": 1,
+      "evidence": "Offline editing with a local queue, and a clear \"syncing / offline / saved\" indicator."
+    },
+    {
+      "id": "P5-07",
+      "status": 1,
+      "evidence": "Enforce them on the WebSocket, not just in the UI."
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Undo/redo scoped to each user's own changes. This is a common bug source."
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "Presence: who is online, with colored cursors and selections (awareness protocol)."
+    },
+    {
+      "id": "P5-10",
+      "status": 1,
+      "evidence": "Write convergence tests... Do this before adding features."
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "Load and soak tests: many clients on one document, large documents, and flaky networks."
+    },
+    {
+      "id": "P5-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Adopting an existing library is usually better than writing your own."
+    },
+    {
+      "id": "P5-T3",
+      "present": true,
+      "evidence": "Phase 1: Single-user editor (no networking)... Phase 2: Core sync engine"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "Store updates durably: an append-only log plus periodic snapshots and compaction."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "CRDTs are easier for offline support and peer-to-peer. The cost is metadata growth."
+    }
+  ],
+  "note": "A generic, sensible-sounding phase list that defers nearly every real decision, is weak on durability, failure handling, versioning and cost, and builds a single-user editor before sync.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2047,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 8913
+  },
+  "cost_usd": 0.04294550000000001,
+  "latency_s": 25.694,
+  "raw_file": "raw/judge-bf1b9cf5daf7.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

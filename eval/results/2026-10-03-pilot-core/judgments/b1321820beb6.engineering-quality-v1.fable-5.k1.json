@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "b1321820beb6.engineering-quality-v1.fable-5.k1",
+  "blind_id": "b1321820beb6",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 148,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Signed with cosign using a cloud KMS key (not keyless, so repo names stay out of public transparency logs)",
+      "rationale": "Technical claims are accurate and precise throughout, including subtle areas (OIDC federation, Kyverno verifyImages fail-closed semantics, GitOps digest promotion, expand/contract migrations, keyless-signing transparency-log tradeoff)."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Replatform the pipelines, not the services.",
+      "rationale": "Directly answers the sequencing request with a buildable phased plan, but two implied core needs — inter-service contract/schema compatibility checks and flaky-test handling — are neither addressed nor explicitly deferred."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "CI never holds prod cluster credentials.",
+      "rationale": "The pull-based trust model, fail-closed admission, source-of-truth flag and break-glass sequencing are honored consistently across phases, dependencies and the cross-cutting table with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "red-team cases: (a) a fork PR requests OIDC tokens; (b) a non-protected branch pushes to the release registry path",
+      "rationale": "V0–V7 test the specific riskiest assumptions early with checkable thresholds explicitly labeled as assumptions, each gate blocks exposure, and validation continues in production via drift detection and quarterly drills."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Each is followed by what changes if the assumption is false:",
+      "rationale": "Every number is labeled ASSUMPTION, BASELINE or UNKNOWN with an owner and confirmation path, and missing inputs state exactly how the design changes if wrong."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Game day: CI vendor, Argo CD and Kyverno each made unavailable in turn → ship a hotfix via break-glass.",
+      "rationale": "Covers the hardest domain failures — supply-chain compromise, platform outage blocking hotfixes, bad releases, secret leaks, drift — each with concrete detection, containment and rehearsed recovery; only flaky-test erosion is absent."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Platform team runs ≤ 3 components itself (Argo CD, admission controller, Argo Rollouts); everything else is managed",
+      "rationale": "An explicit operational-complexity budget, toil checks at phase exits, SIEM audit, alerts on meaningful signals, runbooks and quarterly drills size the platform to a realistic 3–5 person team."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Meter cost per run by archetype during waves 1–2; project to 50 services at baseline run volume",
+      "rationale": "The dominant driver (runner compute) is baselined from current spend, metered and projected before scale-out, with concrete controls (caching, build avoidance, spot self-hosted) and a budget-owner gate before wave 3."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Point of no return: revoking a service's old credentials, guarded by V7.",
+      "rationale": "Decisions carry explicit R2/R3 reversibility ratings with revisit triggers, the only true one-way step is gated per service, and exit paths (push-model fallback, self-hosted runners, archetype redesign) are stated."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Assemble managed and OSS parts with thin glue. No custom platform services and no portal in v1.",
+      "rationale": "Buys the CI engine, runs only three components, and defers portal, preview environments and hermetic builds behind concrete pull-forward triggers — the simplest design that still covers the essentials."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "If it fails: self-hosted autoscaled runners for the heavy archetypes, then re-run",
+      "rationale": "Phases are ordered by dependency and risk with concrete tasks, named tools, checkable exit criteria, and an explicit adaptation path for every validation failure; a team could start on day one."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Inventory all 50 services: language, build tool, deploy target, database migrations, secrets, owner, criticality"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "a week on the internal `-next` deployment, cutover, then admission enforced on that namespace"
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "CI builds, signs and pushes an image to the registry by digest, then opens a PR that bumps the digest"
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "OIDC scoped by repo, branch and environment; no prod credentials in CI; secret scanning; log masking"
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "SLSA provenance and an SBOM (syft) attached to each image"
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "Add Argo Rollouts canaries with automated analysis on the service's SLO metrics (steps 5% → 25% → 100%)"
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Per service, a flag in the service catalog names the single path that is the source of truth."
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Tests use synthetic fixtures."
+    },
+    {
+      "id": "P3-09",
+      "status": 2,
+      "evidence": "Queue p95 ≤ 2 min and PR feedback p90 ≤ 15 min (ASSUMPTION, §1)"
+    },
+    {
+      "id": "P3-10",
+      "status": 2,
+      "evidence": "A 2-hour synthetic burst at 2× the BASELINE peak concurrency, using representative archetype pipelines, including cold-cache runs"
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Game day: CI vendor, Argo CD and Kyverno each made unavailable in turn → ship a hotfix via break-glass"
+    },
+    {
+      "id": "P3-12",
+      "status": 2,
+      "evidence": "Deploy and break-glass audit logs go to the SIEM; alerts on admission denials and break-glass use"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Old pipeline is the source of truth and the fallback; env-repo revert rehearsed"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Immutable OCI digests."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "Remove static credentials from the new path."
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Rollback: per service, flip the source-of-truth flag back, pause Argo CD auto-sync, switch the old deploy step back on."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Buy: use the CI built into the existing Git host"
+    }
+  ],
+  "note": "An exemplary, near-reference-quality plan — technically precise, risk-ordered, and fully validated — whose only real gaps are inter-service contract/schema compatibility checking and flaky-test detection/quarantine.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8064,
+    "thinking_tokens": 5511,
+    "cache_read_input_tokens": 929,
+    "cache_creation_input_tokens": 16816
+  },
+  "cost_usd": 0.614349,
+  "latency_s": 114.673,
+  "raw_file": "raw/judge-b1321820beb6.engineering-quality-v1.fable-5.k1.txt"
+}

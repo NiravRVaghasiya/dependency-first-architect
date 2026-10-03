@@ -1,0 +1,90 @@
+{
+  "schema": "dfa-eval/lint@1",
+  "gen_id": "P4.generic-control.opus-5.5.r05",
+  "template": "plan-template-v2",
+  "checks": [
+    {
+      "id": "sections.present",
+      "ok": false,
+      "detail": "missing: classification, dependency map, tradeoff gates, walking skeleton, phases, validation gates, ai layer, exceptions"
+    },
+    {
+      "id": "self_score.absent",
+      "ok": true,
+      "detail": "no self-score heading and no /20 total"
+    },
+    {
+      "id": "budgets.labeled",
+      "ok": false,
+      "detail": "section 1 (classification) not found"
+    },
+    {
+      "id": "budgets.unknown_has_no_number",
+      "ok": false,
+      "detail": "section 1 (classification) not found"
+    },
+    {
+      "id": "dependencies.typed",
+      "ok": false,
+      "detail": "section 2 (dependency map) not found"
+    },
+    {
+      "id": "gates.columns",
+      "ok": false,
+      "detail": "section 3 (tradeoff gates) not found"
+    },
+    {
+      "id": "gates.no_r1_rows",
+      "ok": false,
+      "detail": "section 3 (tradeoff gates) not found"
+    },
+    {
+      "id": "gates.r3_backed",
+      "ok": false,
+      "detail": "section 3 (tradeoff gates) not found"
+    },
+    {
+      "id": "validation.complete",
+      "ok": false,
+      "detail": "section 6 (validation gates) not found"
+    },
+    {
+      "id": "validation.v0",
+      "ok": false,
+      "detail": "section 6 (validation gates) not found"
+    },
+    {
+      "id": "validation.no_dangling",
+      "ok": false,
+      "detail": "section 6 (validation gates) not found"
+    },
+    {
+      "id": "validation.labeled",
+      "ok": false,
+      "detail": "section 6 (validation gates) not found"
+    },
+    {
+      "id": "crosscutting.complete",
+      "ok": false,
+      "detail": "no table with a Phase column in section 7 (cross-cutting)"
+    },
+    {
+      "id": "exceptions.complete",
+      "ok": false,
+      "detail": "section 9 (exceptions) not found"
+    },
+    {
+      "id": "deferred.present",
+      "ok": true,
+      "detail": "8 deferred items"
+    },
+    {
+      "id": "ai_layer.consistent",
+      "ok": false,
+      "detail": "section 8 (ai layer) not found"
+    }
+  ],
+  "passed": 2,
+  "total": 16,
+  "score": 0.125
+}

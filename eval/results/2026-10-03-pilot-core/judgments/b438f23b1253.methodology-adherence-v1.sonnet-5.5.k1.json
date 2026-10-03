@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "b438f23b1253.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "b438f23b1253",
+  "blind_sha256": "0ec5681c5ba60cc5322ae18225ba48afe04fbd99e820fc5ff4567c67419f11a7",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 377,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1: \"V1 must pass before the format is specified\"; Phase 4 \"Depends on: V2, V3 and V4\"",
+      "rationale": "Phases run from skeleton to contracts to durability to access control to beta to open, with explicit gates blocking dependents."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Typing in browser A shows up in browser B on the other replica; \"A reload in either browser still shows it.\" Deployed to production via pipeline.",
+      "rationale": "Phase 0 is a real end-to-end production slice through all tiers, with deploy and rollback, before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Row 1: default \"CRDT (Yjs + y-prosemirror)\"; flip: \"V1 fails → server decides edit order with operational transforms (ShareDB)\"",
+      "rationale": "Eleven decisions have reversibility, default, assumption, validation and flip condition, and the assumptions A1–A5 are stated."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1: \"the stored format, sync protocol and permission model have the widest rework if wrong\"",
+      "rationale": "The plan puts the widest-impact contracts first and gives similar reasoning for other phases, such as staged cohorts and the canary that reaches the fewest users first."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"TLS everywhere. Login token required on WebSocket connect. Secrets in a secret manager.\"",
+      "rationale": "The cross-cutting table gives concrete security work in every phase from 0 to 5."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: \"One OpenTelemetry trace from client send → store → fan-out → apply on the other client\"",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase, including the divergence detector and SLO dashboards."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Phase 0: \"Terraform, pinned lockfile, images by digest\"; Phase 1 \"fuzz seeds can be replayed\"",
+      "rationale": "Reproducibility has concrete entries in every phase, covering builds, environments, seeds, and scripts."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: \"2 replicas, client reconnect, pipeline rollback\"",
+      "rationale": "Failure handling appears in every phase, from replicas in Phase 0 to durability, Redis loss handling, canaries and load shedding."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"N/A: no AI component (A5).\"",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Long offline sessions (days): Pull forward if product confirms the need (A3).\"",
+      "rationale": "The deferred list names each item with a specific pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan that meets every rubric dimension with concrete content and no clear gaps.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1105,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10322
+  },
+  "cost_usd": 0.036863,
+  "latency_s": 17.956,
+  "raw_file": "raw/judge-b438f23b1253.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "19198bf772db.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "19198bf772db",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 92,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Containment and gating\" ... \"Depends on: V1 and V2\" (Phase 2); \"Resolve capability design | V3 (triage works...)\"",
+      "rationale": "Phases run substrate, defenses, retrieval/triage, resolve, widen, with explicit dependencies and gates proven before dependent work is specified."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A real issue is opened in a sandbox repo ... webhook ... queue ... worker ... model API ... applies the label and posts a comment",
+      "rationale": "Phase 0 is a real end-to-end deployed slice with deploy, rollback, and observability."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Hosted model under enterprise terms ... Flip condition: V1 denies: self-hosted or private-endpoint model",
+      "rationale": "Irreversible decisions are listed with reversibility, default, assumption, validator and flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks in order: 1. Freeze the action schema and the tool-executor contract ... 2. rulesets ... 3. Build the sandbox runner",
+      "rationale": "Within phases, the widest-impact items (executor contract, rulesets) precede leaf items like caps and test suites; Phase 4 widens one repo at a time."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "0: HMAC verification, least-privilege App, sandbox repo only ... 1: Executor allow-list, bound approvals ... 4: Per-repo install review",
+      "rationale": "Concrete security treatment appears in every phase starting with Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OpenTelemetry trace per issue across all tiers ... Alerts on dead-letter depth, error rate, and cost-cap hits.",
+      "rationale": "Observability is concrete in Phase 0 and each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Each run records image, model, prompt, and repo commit so it can be replayed",
+      "rationale": "Pinned images, IaC, pinned model, versioned prompts/index/eval sets, and run replay are threaded through all phases."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Kill switch, idempotent webhook handling, dead-letter queue, loop guard",
+      "rationale": "Resilience appears concretely in every phase, from the kill switch in Phase 0 to per-repo kill in Phase 4."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Phase 1: Containment and gating (defenses before capability) ... retrieval Phase 2, memory/orchestration Phase 3, routing/feedback Phase 4",
+      "rationale": "Defenses, budgets and human gating precede retrieval, model access, memory, orchestration, routing and feedback, in the right order."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Auto-merge or auto-approve: pulled forward only if a long record of accepted PRs on a low-risk class exists and security signs off.",
+      "rationale": "Deferred items are explicit, each with a pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan that meets every rubric dimension with concrete content; the only minor quibble is that memory is listed after orchestration-adjacent work in Phase 3.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1189,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 8405
+  },
+  "cost_usd": 0.0330235,
+  "latency_s": 33.418,
+  "raw_file": "raw/judge-19198bf772db.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "05e858b23a36.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "05e858b23a36",
+  "blind_sha256": "e6e468bb175716c5e7ecbef3acb43016cd3f00a44b58896c47e06f568ec0e71f",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 35,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan is an architecture catalog with no phases or build ordering, so dependency sequencing is absent."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There is no Phase 0 or thin end-to-end production slice; it describes the full system at once."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "Language: Node.js (TypeScript), Go, Python | Database: PostgreSQL (primary), MongoDB",
+      "rationale": "Options are listed without defaults or flip conditions; the tenancy patterns are presented with no decision or revisit trigger."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There are no phases, so no blast-radius ordering of work exists."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "Tenant Isolation - Security and data privacy",
+      "rationale": "Security appears only as isolation patterns and a principle, with no phase-based threading, and there is nothing on webhook signature verification or secrets."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "Monitoring - Comprehensive observability",
+      "rationale": "There is a standalone metrics section, but it is not tied to any phase or day-zero setup."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "image: billing-engine:latest",
+      "rationale": "There is no reproducibility treatment and the deployment uses a :latest tag, which works against it."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Circuit breaker for payment gateway ... Retry with exponential backoff",
+      "rationale": "Idempotency, sagas, retries and a circuit breaker are concrete, but they sit in a standalone section rather than phases."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never states that no AI layer applies, so the question is not addressed."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "Service Mesh: Istio (optional, for complex)",
+      "rationale": "There is no explicit deferred-work list or pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is a component and code catalog with no phases, walking skeleton, decision gates or deferral list, so it scores almost nothing on the rubric apart from partial resilience.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 819,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 16643
+  },
+  "cost_usd": 0.0498055,
+  "latency_s": 20.151,
+  "raw_file": "raw/judge-05e858b23a36.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

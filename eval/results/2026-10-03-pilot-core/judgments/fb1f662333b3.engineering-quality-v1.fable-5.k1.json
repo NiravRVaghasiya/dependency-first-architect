@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "fb1f662333b3.engineering-quality-v1.fable-5.k1",
+  "blind_id": "fb1f662333b3",
+  "blind_sha256": "34fc5264c36a3f79dac3423d94fc53e10bf190790febf6f528d7c1cb0bd353f8",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 363,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "a SQL Server distributed availability group, or the managed service's link feature... It keeps ID values and can run in reverse for failback",
+      "rationale": "Replication mechanics, drain-and-promote cutover, HL7 SIU/ADT roles, message control IDs for dedup, HIPAA citations and NIST 800-88 are all accurate, with uncertain capabilities honestly flagged as assumptions with fallbacks."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Pause on saving bookings at cutover | ≤ 60 s... If any pause counts as downtime, see the revisit trigger",
+      "rationale": "It solves exactly the stated problem, confronts the ambiguity of 'no downtime' head-on with a named decision owner, and is clearly buildable by a realistic hospital IT team with explicit deferrals."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "On-prem database is the system of record until Phase 5. Then the cloud database is, with reverse replication to on-prem",
+      "rationale": "Write ownership, data ownership and routing are defined at every phase, the single-writer decision is honored in every section, and cross-cutting concerns are handled uniformly per phase with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "V2... Database calls per transaction × measured round-trip time as a forecast, then a 10-business-day pilot clinic",
+      "rationale": "Eight validation gates each have a hypothesis, method, labeled threshold, evidence artifact and a stated failure branch; the riskiest assumptions (latency, replication fidelity, cutover pause) are tested before commitment and reconciliation continues post-cutover."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "ASSUMPTION: staff will accept one slow save. Confirm with the Director of Patient Access before Phase 4",
+      "rationale": "Every figure is labeled REQUIREMENT, ASSUMPTION, BASELINE or UNKNOWN with a named confirmer, missing inputs are ranked by how much they would change the plan, and each decision has a revisit trigger."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Appointments that are silently lost, duplicated or double-booked during coexistence or cutover... A silent data error is not caught by anything",
+      "rationale": "The hardest domain failures (silent appointment loss, double-booking, interface message loss/duplication, replication divergence, link and zone failure) each get concrete detection (hashes, control-ID counts, synthetic bookings) and rehearsed recovery with explicit rollback triggers."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Operational complexity | Same on-call team; managed database; no new cluster to run ourselves",
+      "rationale": "Terraform/CI deployment with exercised rollback, domain-meaningful signals (replication delay, queue depth, synthetic booking alerts), updated on-call runbooks and a stated staffing constraint make operations sized to a realistic team."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Compare run cost to budget, then commit reserved capacity",
+      "rationale": "Cost is gated before capacity commitment and no figures are invented, but the dominant drivers (dual-running, links, managed DB tier, engineering time) and their growth with usage are never enumerated or estimated."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Phase 6: Decommission (point of no return)... Rollback: none after reverse replication stops. V7 guards this",
+      "rationale": "Decisions are explicitly classified R1–R3, the irreversible ones (consistency model, PHI boundary, data gravity, decommission) get the most validation and guards, exit paths exist (open-format archive, reverse replication), and reversible choices are made quickly as defaults."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "App servers: rehost, same build and version on cloud VMs... No upgrades combined with the move",
+      "rationale": "Pure rehost with no concurrent re-architecture or upgrades, an explicit deferred list with trigger conditions for each, and every component justified by the zero-downtime, PHI-safety need."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Start long-lead items on day one: BAA, security risk analysis, vendor support statement, network link orders",
+      "rationale": "Phases are ordered by validated dependencies with concrete first steps, checkable exit criteria per phase, and explicit contingency branches (e.g. 'If V2 failed: step 5 is dropped') so a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "PHI only in services covered by the BAA, in US regions, on private endpoints. Logs that may hold PHI are classified as PHI"
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "Sources: interface engine routes, 30+ days of database connection logs covering a month-end, firewall flow logs, SQL Agent and other scheduled jobs, DNS lookups"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "At least 14 days of replication covering a month-end... Hourly reconciliation (row counts per table, hash per appointment ID)"
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "Only one writable database at any moment. No two-way, multi-writer replication. Cutover is a brief, drained save pause"
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "At least two full rehearsals of the exact runbook on a production-sized copy, each with a full rollback"
+    },
+    {
+      "id": "P6-06",
+      "status": 2,
+      "evidence": "Two redundant private links (ExpressRoute or Direct Connect type), with an IPsec VPN as a third path"
+    },
+    {
+      "id": "P6-07",
+      "status": 2,
+      "evidence": "replay 2 × the peak-hour workload; take a zone down, fail the database over, cut one network link, restore from backup"
+    },
+    {
+      "id": "P6-08",
+      "status": 2,
+      "evidence": "Admin access through Entra with MFA... Break-glass access audited; check the access review after cutover"
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "replay 2 × the peak-hour workload... then a 10-business-day pilot clinic"
+    },
+    {
+      "id": "P6-10",
+      "status": 2,
+      "evidence": "Put the change freeze in place... Pick the lowest-volume window from the baseline... communications plan for staff and help desk"
+    },
+    {
+      "id": "P6-11",
+      "status": 2,
+      "evidence": "Software vendor's written support for the target cloud and managed database... Wipe the media to NIST SP 800-88 and keep the certificates"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "Move app servers first (users routed in waves by the hospital reverse proxy, database still on-prem), then move the database in one gated cutover"
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "Only one writable database at any moment. No two-way, multi-writer replication"
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "No PHI goes to tools not covered by the BAA... Test each interface in a cloud test environment with test data only"
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "100% of inventory items pass a test signed by their owner. 0 messages lost or duplicated (counted by message control ID)"
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "Re-architecture (breaking the app into services...) Brought forward if V4 shows one database or the app design cannot meet 2 × peak"
+    }
+  ],
+  "note": "An exceptionally rigorous zero-downtime migration plan — single write authority, labeled assumptions, rehearsed rollback and gated validation throughout; its only material weakness is thin cost-driver analysis.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8973,
+    "thinking_tokens": 6211,
+    "cache_read_input_tokens": 864,
+    "cache_creation_input_tokens": 17051
+  },
+  "cost_usd": 0.6626715,
+  "latency_s": 149.392,
+  "raw_file": "raw/judge-fb1f662333b3.engineering-quality-v1.fable-5.k1.txt"
+}

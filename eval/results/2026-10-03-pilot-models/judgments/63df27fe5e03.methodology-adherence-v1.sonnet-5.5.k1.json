@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "63df27fe5e03.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "63df27fe5e03",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 72,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1 \"Depends on: V0 passes, Org sign-off on label schema, V1\"; Phase 0 V0 already includes injection tests",
+      "rationale": "Ordering is mostly substrate-upward with gates, but HITL batch approval is built in Phase 2a after production deploy, and Phase 1 depends on V1 which it runs itself (circular)."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Agent runs as a GitHub App with webhook receiver on HTTP endpoint (localhost:8000 for Phase 0; behind firewall or ngrok tunnel).",
+      "rationale": "A real end-to-end slice with CI deploy and rollback exists, but it runs on localhost/ngrok on a test repo rather than in production."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Resolution scope ... R3 ... Default: Phase 1 triage only ... Flip condition: If V1 shows precision <90%, revert to triage-only",
+      "rationale": "A table lists irreversible decisions with reversibility, default, assumption, validation and flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Rework runs widest first: Classifier prompt (affects all issues) → Phase 1. Duplicate detection → Phase 2b. Responders (narrowest) → Phase 3.",
+      "rationale": "Broad-to-narrow ordering is argued and roughly followed, but it's stated in a self-check and within-phase task ordering is not clearly by blast radius."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: Hard token cap + guardrail check in scaffold ... GitHub token scoped to read-only labels; Phase 2b: close action audit; Phase 4: quarterly security review",
+      "rationale": "Security controls appear concretely in every phase starting at Phase 0, though Phase 2a is thin (monitor budget)."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: Structured JSON logging (OpenTelemetry): per-issue logs with {timestamp, issue_id, category, confidence, labels, cost_usd, latency_sec, error_flag}",
+      "rationale": "Observability starts in Phase 0 with concrete fields and is extended in every subsequent phase."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "All prompts, few-shot examples, regex patterns, label schema stored in Git (versioned). Inference API calls logged with model name + version + exact prompt text",
+      "rationale": "Reproducibility is concrete in each phase for prompts and tests, but environments, dependency pinning and infra builds are barely addressed and some phases are thin."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Phase 2b, Phase 3 Resilience: \"No new changes; monitor.\"",
+      "rationale": "Resilience is concrete in Phases 0, 1, 2a and 4, but two phases have none, and the circuit breaker sits in 2a in the table but Phase 4 in the phase list."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Prompt-injection defense (Phase 0), cost+latency budget (Phase 0), human-in-the-loop gating (Phase 2a)",
+      "rationale": "Defenses and budgets precede capability, but HITL gating lands in Phase 2a after production labeling, and the retrieval → model → memory → orchestration order is loose (model access Phase 1, orchestration Phase 0)."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Vector store + semantic retrieval ... Pull-forward Condition: V1 accuracy <80% despite Phase 1 rework",
+      "rationale": "A deferred table lists six items with reasons and concrete pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong on gates, deferral, security and observability, but the skeleton is localhost-only, resilience is missing in two phases, and the human-in-the-loop gate arrives after production exposure.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1403,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 16311
+  },
+  "cost_usd": 0.05492849999999999,
+  "latency_s": 46.323,
+  "raw_file": "raw/judge-63df27fe5e03.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

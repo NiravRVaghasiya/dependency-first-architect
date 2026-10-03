@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "b930096823c3.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "b930096823c3",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 103,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1 Task 1 \"Integrate Yjs\" (requires V1 pass); Phase 2 Depends on \"Phase 1 complete, V3 pass\"",
+      "rationale": "Overall gated substrate-up ordering exists, but inconsistencies (auth after sync engine, V2 placed as load test before Phase 2 yet 'unlocks Phase 1 Task 1', Phase 0 schema vs CRDT state) weaken it."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"git push → CI runs tests and linting → deploy to single EC2 instance or local dev server → health check passes → rollback via git revert\"",
+      "rationale": "Phase 0 is a thin create/edit/reload path with deploy, rollback and exit check, though internal-only and allowing local server."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"V1 fails → revert to OT; user latency (V3) exceeds 500ms with CRDT → pivot to OT\"",
+      "rationale": "Irreversible decisions are tabled with reversibility, default, validation, and flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "\"R3 decisions (CRDT model, hosting, monolith vs. services) decided and gated early (V1, V0a, V2) before Phase 1 hardening.\"",
+      "rationale": "Decisions and API contract come early, but within Phase 1 auth and encryption follow the sync engine and the ordering by blast radius is not explicit."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "\"HTTPS/WSS not enforced yet (dev-only). Auth scaffolded as TODO.\"",
+      "rationale": "Phase 0 has only .env secrets; real security starts in Phase 1 and the pen test is at Phase 3, so it's threaded but weak early."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"Every WebSocket message logged with timestamp, user ID (or \"anon\"), operation type, latency (ms).\"",
+      "rationale": "Concrete observability in Phase 0 with baselines, then metrics, APM, tracing in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"Docker Compose file for PostgreSQL + Node backend; `npm install` and `docker-compose up` reproduces Phase 0 on any dev machine.\"",
+      "rationale": "Each phase has concrete reproducibility treatment: Compose, images/Helm, staging parity, then IaC."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"Graceful shutdown: on SIGTERM, close WebSocket connections, wait 5 sec for in-flight edits, then exit.\"",
+      "rationale": "Resilience is concretely addressed in every phase, with failure injection in Phase 0, circuit breakers, backups and multi-AZ."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"N/A — no AI component. The system does not use LLMs, retrievers, or agents\"",
+      "rationale": "Plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Comments and annotations | Deferred to Phase 4. Pulled forward if user study (V4) shows strong demand.\"",
+      "rationale": "Deferred items are listed with specific pull-forward conditions and costs."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, thorough plan with gates, skeleton, and threaded observability/resilience/reproducibility; weaker on early security and some internal ordering inconsistencies.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1279,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 15654
+  },
+  "cost_usd": 0.052046,
+  "latency_s": 44.001,
+  "raw_file": "raw/judge-b930096823c3.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

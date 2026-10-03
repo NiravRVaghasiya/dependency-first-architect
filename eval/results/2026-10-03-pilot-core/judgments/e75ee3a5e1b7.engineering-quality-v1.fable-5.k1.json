@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e75ee3a5e1b7.engineering-quality-v1.fable-5.k1",
+  "blind_id": "e75ee3a5e1b7",
+  "blind_sha256": "a3629d2704789c4e6d93a099945bdc1349097844934c30d2af8739db9be87179",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 223,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "A failover can lose a few seconds of counter increments. We accept that: it briefly weakens velocity features and doesn't block authorisations.",
+      "rationale": "Claims about Redis cluster hash-tag atomicity, ONNX/LightGBM parity, Kinesis per-key ordering, at-least-once dedup and fail-open stand-in semantics are all accurate, and real limits (failover loss, duplicate in-flight) are stated rather than glossed."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "this plan assumes you are a card issuer deciding on your own cardholders' authorisations",
+      "rationale": "It resolves the request's biggest ambiguity explicitly, covers inline scoring, rules, labels, review and retraining, and defers step-up, graph and multi-region with stated triggers; the 5-person team scope is credible."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Velocity counters ctr:{c:…} | Redis (derived, rebuildable) | Decision Service | Atomic per card via Lua",
+      "rationale": "Single-writer-per-key-prefix, system-of-record tables, consistent fail-open policy and the readiness-check-vs-degraded reasoning show one coherent design with no contradictions found."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Four spikes answer the processor contract, data/label availability, Redis hot-path latency, and model-scoring parity.",
+      "rationale": "The riskiest assumptions are tested in week 1–4 spikes with explicit 'changes plan if' conditions, targets are labelled provisional [A8], and validation continues in production via shadow, cohort control, reconciliation and PSI drift."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "I picked defaults and labelled each one [A#]; they're all listed in Section 5.",
+      "rationale": "Every design-bearing assumption is explicit with impact-if-wrong and a validation step, numbers are marked as estimates, and sensitivity (10× scale, Python-only team, PAN in payload) is spelled out."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "If it holds a stored decision, we return it without incrementing anything. If it is still 'pending' ... we compute a read-only decision.",
+      "rationale": "Covers duplicates, Redis failover, Kinesis loss, deadline misses, mass false declines, counter-probing, label poisoning and insider tampering with concrete detection/containment/recovery; only reversal counter-correction detail is thin."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "on-call is 24/7 from M3 (the first enforcement). That needs at least 4 people on the rotation",
+      "rationale": "Deployment, sub-minute rollback paths, Flyway expand/contract migrations, named alerts with thresholds, runbooks and an ownership split between fraud ops and engineering are all sized to the stated team."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "The real cost drivers are people and false declines. Controls: AWS Budgets alerts at 80% and 100%",
+      "rationale": "Run costs are ranged with a stated scale basis, the dominant drivers are correctly identified as people and false declines, controls are concrete, and build-vs-buy (D0) is reasoned on cost."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Point of no return: effectively none while the processor's rules remain. It arrives when processor-side rules are retired",
+      "rationale": "Each key decision carries a reversibility rating and revisit trigger, the language choice is flagged as the hard one-way door with an alternative, and schema/feature versioning keeps persisted formats additive."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "avoids learning and running Flink (5-person team), and is atomic per card",
+      "rationale": "Deliberately rejects Flink, a feature-store product and microservices with stated reasons, while a deferred-work table gives explicit triggers to add each later; nothing essential is cut."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Changes plan if: deadline < 100 ms (co-locate, drop the merchant call); no inline hook (switch to post-authorisation design)",
+      "rationale": "T0–T10 tasks have 'done when' criteria, the critical path and long-lead items are called out for day 1, and each spike states how disappointing results change the plan."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "Server-side p99 ≤ 50 ms at 500 TPS ... hard deadline 120 ms, then fallback"
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "Redis exceeds 15 ms or its circuit breaker is open: switch to degraded mode ... Fail open."
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "Training features come from replaying history through the same feature code used online ... prevents training/serving skew by construction"
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "Chargebacks arrive 30–90+ days late ... joins them to labels that are at least 120 days mature ... on a time-split holdout"
+    },
+    {
+      "id": "P8-05",
+      "status": 2,
+      "evidence": "value detection rate at 0.3% decline vs. the rule baseline ... Present the M2 baseline as a curve of fraud caught vs. decline rate"
+    },
+    {
+      "id": "P8-06",
+      "status": 2,
+      "evidence": "Actions: APPROVE, DECLINE, APPROVE_REVIEW ... Rules as CEL expressions in Git, hot-loaded via signed artefact + AppConfig"
+    },
+    {
+      "id": "P8-07",
+      "status": 2,
+      "evidence": "Analysts label cases, manage lists, and trigger cardholder notifications ... Label Joiner (consumes analyst labels from Case Service)"
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "No PAN anywhere [A7] ... With the PAN, the adapter enters PCI scope ... and must tokenise on entry"
+    },
+    {
+      "id": "P8-09",
+      "status": 2,
+      "evidence": "card.lua finds idem:<auth_id>. If it holds a stored decision, we return it without incrementing anything ... Partition key is the card token"
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "Shadow first, then cohort ramp ... score PSI (population stability index, a drift measure) > 0.2 vs. the training distribution"
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "100% of decisions logged with a feature snapshot and versions ... rule_hits[] (id, mode, action), ruleset_version, model_version, score"
+    },
+    {
+      "id": "P8-12",
+      "status": 2,
+      "evidence": "peak 500 TPS ... load test at 1,000 TPS (2× peak) ... Multi-AZ throughout, and at least 3 Decision Service tasks"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "Inline synchronous decisioning in one service, with the model running in-process (ONNX Runtime)"
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "120 ms overall deadline, 15 ms Redis timeout + circuit breaker ... decide on rules alone"
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "evaluates it against the champion on the last 8 matured weeks ... PR-AUC, and value detection rate ... on a time-split holdout"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "a 1,000-event replay produces identical counts in the Redis and in-memory store implementations"
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "No PAN anywhere [A7] ... Logs carry auth_id only, never the token"
+    }
+  ],
+  "note": "An exceptionally strong, internally consistent plan: inline sub-50ms scoring with explicit degraded/fail-open policy, skew-free training by construction, early spikes on the riskiest unknowns, and proportionate scope; only reversal counter handling and dollarized people costs are marginally thin.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 10365,
+    "thinking_tokens": 4556,
+    "cache_read_input_tokens": 30602,
+    "cache_creation_input_tokens": 36417
+  },
+  "cost_usd": 1.0041045,
+  "latency_s": 144.432,
+  "raw_file": "raw/judge-e75ee3a5e1b7.engineering-quality-v1.fable-5.k1.txt"
+}

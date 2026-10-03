@@ -1,0 +1,37 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "c90355d7e3ec.probe.sonnet-5.5",
+  "blind_id": "c90355d7e3ec",
+  "blind_sha256": "aa5db59d4475c6139304e2c4ed6c07ff8e7562eed018311dbcaa5ba5164cd451",
+  "judge": "sonnet-5.5",
+  "order_index": 67,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.85,
+  "cues": [
+    "Rigid numbered template (Summary, Context and Goals, Drivers, Current State, Assumptions and Open Questions, Architecture Overview, Key Decisions, Cross-Cutting, Build Sequence, Rollout, Risks, Deferred Work, Next Steps) that reads like a prescribed checklist",
+    "Ranked quality attributes table with measurable targets, each flagged as an assumption until confirmed",
+    "Key Decisions table with columns for options considered, reversibility, and 'Revisit if' triggers",
+    "Spikes that are time-boxed and carry explicit 'Changes the plan if' clauses, plus a named critical path",
+    "Milestones with exit criteria, dependencies and sizes. A task table has 'Done when' columns. The risk table has likelihood, impact, early warning and owner columns",
+    "Boilerplate sections that were included even though they don't apply, such as 'AI-specific: not applicable' and 'Cost: none'. Each open question has a default and an owner",
+    "The plan refers to the workspace ('wc3b55771/', an empty README), so it inspected the environment first and recorded that as Current State"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 452,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10798
+  },
+  "cost_usd": 0.031523,
+  "latency_s": 30.319,
+  "raw_file": "raw/probe-c90355d7e3ec.probe.sonnet-5.5.txt"
+}

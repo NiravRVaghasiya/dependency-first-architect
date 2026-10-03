@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "a86457e0d194.probe.sonnet-5.5",
+  "blind_id": "a86457e0d194",
+  "judge": "sonnet-5.5",
+  "order_index": 46,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens by stating missing info and assumptions, and closes with an 'Assumptions and questions' section; this could come from a methodology or from a good default style",
+    "Very clean, uniform structure: numbered sections, bold-labeled bullets, a phased table, and a risks section. This is typical of a polished default answer and doesn't suggest a specific procedure",
+    "No signs of methodology artifacts such as explicit step labels, verification checkpoints, alternatives considered, or a stated process",
+    "Content is generic best practice (hybrid search, reranker, golden set, confidence gate) with no idiosyncratic framing",
+    "Ends with an offer to produce an architecture diagram and backlog, which is a common conversational close and not a methodology marker"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 317,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2848
+  },
+  "cost_usd": 0.010298,
+  "latency_s": 22.701,
+  "raw_file": "raw/probe-a86457e0d194.probe.sonnet-5.5.txt"
+}

@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0567f8385683.engineering-quality-v1.fable-5.k1",
+  "blind_id": "0567f8385683",
+  "blind_sha256": "5f53a168789498ed37eae764a4d26dc4b1a259abbeec78ccb2029b410832d93b",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 419,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Retries happen only before streaming starts or on idempotent operations... A new embedding model with a different dimension gets a new `embedding_v2` column",
+      "rationale": "Claims about pgvector/HNSW scale, hybrid RRF retrieval, SSE semantics, embedding-dimension migration, idempotent upserts and token-based cost math are all accurate, including the subtle streaming/retry and index-versioning details."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Non-goals (v1): Account-specific answers... Languages other than English. [A4]",
+      "rationale": "Solves exactly the stated problem with explicit, reasoned exclusions, resolves ambiguities via marked assumptions and open questions, and is credibly buildable by the stated 2.5-engineer team in ~7 weeks."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "all in one Postgres database; each table has one writer",
+      "rationale": "Single-writer data ownership, a clear component table, versioned indexes honored in retrieval filters, and consistent error/identity handling throughout with no contradictions found."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "The judge is calibrated against 50 SME labels and must agree ≥85% before we trust it",
+      "rationale": "Risk-specific validation (eval baseline before features, spikes S1–S3 before commitments, leakage/injection gates, load and restore tests) with checkable criteria marked provisional [A6], continuing in production via sampling and A/B."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "A1... Impact if wrong: Connector and handoff code change... Confirm platform on day 1; spike S3 in M1",
+      "rationale": "Every assumption is tagged, given an impact-if-wrong and a validation date, and all targets/figures are explicitly labeled as assumptions rather than facts."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "killing the job mid-run and rerunning leaves no duplicate or orphaned chunks",
+      "rationale": "Covers the hard domain failures—hallucinated policy answers, internal-article leakage, provider outage with degraded modes, partial ingestion, duplicate handoffs, prompt injection and cost abuse—each with concrete detection, containment and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "The kill switch (`assistant_enabled=false`) means an outage never requires waking someone at 3 a.m.",
+      "rationale": "IaC deployment, four distinct rollback paths, six alerts each tied to a runbook, named ownership split between engineering and support ops, all sized to the stated small team."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Total is about $1–2k/month... These ranges are rough; re-estimate after spike S2 with real token counts",
+      "rationale": "Dominant cost driver (inference) estimated on a stated token basis as labeled ranges, with concrete controls (spend breaker, rate limits, model tiering) and a build-vs-buy cost comparison in D0."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "D9... bot sees only public content... **Hard-ish** (identity model); D10 Python/FastAPI... **Hard** (language). Decide before T1.",
+      "rationale": "Each decision carries an explicit reversibility rating and revisit trigger, the hard-to-reverse ones (identity model, language) are flagged and front-loaded, and index versioning/gateway interfaces isolate the rest."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "About 20k chunks doesn't need a dedicated vector database... There are no agents, no tool-calling and no microservices",
+      "rationale": "Deliberately the simplest workable design—one service, one Postgres—with speculative pieces (reranker, Redis, webhooks, admin UI) deferred behind measured triggers while keeping all essentials."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T7... Done when: A second `sync` makes 0 embedding calls; killing the job mid-run and rerunning leaves no duplicate or orphaned chunks",
+      "rationale": "T0–T16 with concrete done-when criteria, dependency-justified ordering, and spikes that state exactly what result would change the plan, so a team could start day 1."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "`reconcile` (nightly): lists all public article IDs and marks any missing ones `removed`"
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "split on H2/H3 sections, 200–800 tokens... Each chunk is prefixed with `Title > Section > Subsection`"
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "about 200 answerable questions from real tickets in the last 90 days, anonymised, each with gold article IDs"
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "If the best fused or rerank score is below τ... skip generation. Return `outcome=no_answer`"
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "If any cited article carries a configured label (`billing`, `refund`, `security`...), the `done` event sets `show_handoff=true`"
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "No side-effect tools; retrieved text wrapped as untrusted data; prompt rules against commitments... red-team suite (about 50 cases)"
+    },
+    {
+      "id": "P1-07",
+      "status": 2,
+      "evidence": "Index only articles visible to anonymous users, with a second visibility filter at query time"
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "redacted before storage and logging... provider no-training and short-retention terms (A7); 90-day retention"
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Non-goals (v1): Account-specific answers (order status, billing details, account changes)"
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "Support ops owns the content and the weekly review: 30 minutes on thumbs-downs, `ungrounded` answers, and a content-gap report"
+    },
+    {
+      "id": "P1-11",
+      "status": 2,
+      "evidence": "~4k input + ~300 output tokens per turn, mid-tier pricing | ~$0.01–0.02/turn... daily spend cap and circuit breaker"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "answer only from the sources; cite `[S#]` for each claim... If an `ANSWER` has no valid citation, the outcome is `ungrounded`"
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Visibility gate at ingestion (reject and count non-public); `visibility='public'` filter at query time; CI eval check"
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "`sync` (every 15 minutes): incremental export of articles changed since the last successful cursor"
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "A labelled question set built from real tickets is part of milestone 1 and gates every prompt, model or retrieval change in CI"
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "There are no agents, no tool-calling and no microservices... Kept only if spike S1 shows a recall gain worth the 200–400 ms"
+    }
+  ],
+  "note": "An exemplary plan: all checklist items concretely addressed, all traps explicitly recognized and avoided, with risk-ordered sequencing, labeled assumptions, and checkable exit criteria throughout.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6103,
+    "thinking_tokens": 3517,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 28587
+  },
+  "cost_usd": 0.6625075,
+  "latency_s": 106.827,
+  "raw_file": "raw/judge-0567f8385683.engineering-quality-v1.fable-5.k1.txt"
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0b2440d7f086.engineering-quality-v1.fable-5.k1",
+  "blind_id": "0b2440d7f086",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 66,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "GitHub's merge API and pushes need `contents:write`, and workflow files need `workflows`, so the App structurally cannot merge",
+      "rationale": "Claims about webhook timeouts, App permission semantics, fork-PR secret behavior, pull_request_target risks, sandbox isolation and eval contamination by training data are all accurate, including the subtle areas."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "I assume draft PRs that humans review and merge; the agent never merges or closes an issue on its own.",
+      "rationale": "Resolves the ambiguity of 'resolve' explicitly, covers triage and resolution with phased canaries, separates essentials from deferrals, and is clearly buildable by one team."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The tool executor holds short-lived installation tokens; the model never sees them",
+      "rationale": "Clear ownership (GitHub as system of record, Postgres ledger, executor-held credentials) is honored consistently across phases, validations and cross-cutting tables with no contradictions found."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "0 out-of-list executions, 0 unapproved gated actions, 0 honeytoken appearances in comments, PRs, URLs or egress logs",
+      "rationale": "V0–V6 test the riskiest assumptions (injection, sandbox escape, triage accuracy, fix value) before exposure, with checkable thresholds labeled as assumptions and continued production monitoring via drift alerts and quality breakers."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "ASSUMPTION: should beat today's human first response (measured in Phase 0); confirm with maintainers",
+      "rationale": "Every number is tagged REQUIREMENT/ASSUMPTION/UNKNOWN with an owner and a verification point, and §1 lists exactly which assumptions change the design and how."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Agent output is stripped of external URLs and images, which closes exfiltration through rendered markdown",
+      "rationale": "Covers injection, exfiltration channels, approval forgery/replay, label-automation side effects, pull_request_target secret leaks, missed webhooks, runaway loops, spam-driven cost and feedback poisoning, each with concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "One rollback is done by redeploying the previous image digest. A global write kill-switch flag exists from day zero.",
+      "rationale": "Deploy, rollback, per-repo flags, ledger-driven action reverts, meaningful alerts (DLQ, spend, correction rate) and a business-hours on-call team sized to the no-SLO posture are all specified."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Per-run hard caps | Triage: 30k tokens. Fix attempt: $5, 60 tool calls, 45 min",
+      "rationale": "Dominant inference costs have labeled caps, breakers and a value comparison (cost per merged PR vs human cost), but build-side engineering effort is never quantified and no order-of-magnitude run spend is estimated."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: a merged backdoor or leaked secret cannot be undone",
+      "rationale": "Every key decision carries an explicit reversibility class, a revisit trigger and a named fallback path (suggestions-only, edit-only, self-host), with irreversible choices validated earliest."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "one deployable for the receiver and workers; the sandbox pool is separate for isolation, not scale",
+      "rationale": "Minimal infrastructure (one service, managed queue, Postgres, sandbox pool), with fine-tuning, multi-agent, dynamic routing and a UI explicitly deferred behind measured triggers; complexity exists only where the threat model requires it."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Depends on: V2, V4, a V1 re-run with the push and open-PR tools in scope, and the `pull_request_target` audit for each canary repo",
+      "rationale": "A concrete first slice, dependency-justified phase order, checkable exit criteria per phase, and explicit if-it-fails branches mean a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "**Autonomous:** read; apply allowed labels; comment with a missing-info request or duplicate candidate. **Needs bound human approval:** close, assign, start a fix attempt. **Never:** merge"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "The tool executor holds short-lived installation tokens; the model never sees them. Upstream permissions: `issues:write`, `pull_requests:write`, `contents:read` only"
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "All issue, comment, repo and tool text is treated as data. The executor allow-list and permission design limit the damage when an injection works"
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "A fresh gVisor/Firecracker sandbox for each attempt: no credentials, outbound traffic only to a package mirror, destroyed by a time-to-live reaper"
+    },
+    {
+      "id": "P4-05",
+      "status": 1,
+      "evidence": "A diff guard that flags deleted, skipped or weakened tests and any change to `.github/`"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "≥ 300 issues created after the training cutoff, with the labels maintainers settled on; then 2 weeks of shadow mode"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "A quality circuit breaker per repo: auto-pause when the correction rate rises above that repo's Phase 2 level"
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "A forced runaway loop is cut off at its cap and emits a cost metric"
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Budgets: per-run caps, a per-author daily cap (guards against spam issues running up cost), a per-repo concurrency limit, and a monthly circuit breaker"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "Decision log for every allowed or denied tool call, with the reason"
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "Index of the repo's own issues, code search, CODEOWNERS"
+    },
+    {
+      "id": "P4-12",
+      "status": 2,
+      "evidence": "Idempotency on the delivery ID; DLQ; model-call timeout"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "Merging stays behind branch protection and a human CODEOWNERS review. The App also has no `contents:write`."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "The executor clones the repo and hands the sandbox a copy without credentials"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "issue text goes in a delimited untrusted-data block, with an 8k-token hard cap"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "≥ 50% of opened PRs merged with only minor edits (ASSUMPTION); median review time ≤ the BASELINE for human PRs of similar size"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "A global write kill-switch flag exists from day zero."
+    }
+  ],
+  "note": "An exemplary, security-first plan that avoids every trap and concretely addresses nearly the whole domain checklist; the only soft spots are per-PR issue-reproduction evidence, code-index freshness, and unquantified build cost.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 10267,
+    "thinking_tokens": 7514,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 17986
+  },
+  "cost_usd": 0.7381949999999999,
+  "latency_s": 185.411,
+  "raw_file": "raw/judge-0b2440d7f086.engineering-quality-v1.fable-5.k1.txt"
+}

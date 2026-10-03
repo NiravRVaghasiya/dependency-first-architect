@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "c70333bc14b7.probe.sonnet-5.5",
+  "blind_id": "c70333bc14b7",
+  "blind_sha256": "4b36306bcc25e5101bf6d0544cfe087950c6697e32f4951be2e34e399da1d493",
+  "judge": "sonnet-5.5",
+  "order_index": 15,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.15,
+  "cues": [
+    "Generic phased list with week ranges and tool menus (Jenkins/GitLab/etc.) typical of unguided default LLM output",
+    "No explicit dependencies, assumptions, risks, or decision criteria; sequencing is just chronological phases",
+    "Closing offer 'Would you like me to dive deeper...' is a chatbot-style ending, not a structured methodology artifact",
+    "Heavy bold headers, emoji-free but boilerplate 'Key Success Factors' table and resource estimate appended generically",
+    "Ordering inconsistencies (observability and GitOps after deployment, pilot onboarding at week 17) show no rigorous dependency analysis"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 296,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2495
+  },
+  "cost_usd": 0.0092055,
+  "latency_s": 29.827,
+  "raw_file": "raw/probe-c70333bc14b7.probe.sonnet-5.5.txt"
+}

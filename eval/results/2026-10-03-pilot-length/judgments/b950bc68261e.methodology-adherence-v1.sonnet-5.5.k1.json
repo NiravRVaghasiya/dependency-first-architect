@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "b950bc68261e.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "b950bc68261e",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 10,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: Phase 1, the eval set\"; Phase 3 \"Depends on: V3\"; Phase 4 \"Depends on: V1, V3, Phase 3\"",
+      "rationale": "Phases run substrate → defenses → retrieval → model hardening → canary, each with explicit dependencies and validation gates before the next."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "an internal staff member asks \"How do I reset my password?\" and gets a streamed answer citing the right article.",
+      "rationale": "Phase 0 is a real end-to-end slice deployed via CI/CD behind a flag with tracing, alerts and rollback, verified by V0."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Build vs buy ... Flip condition: The vendor passes V3 at lower total cost → buy",
+      "rationale": "Irreversible decisions have reversibility class, default, assumption, validation and flip condition, and unknowns are labeled."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Phase 1 tasks: masking, output filter, injection suite, caps, then handoff",
+      "rationale": "Broad defenses and schema-wide concerns mostly come before leaf work, but blast-radius ordering within phases isn't explicit and some ordering is loose (e.g., load test last)."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"Allow-list access, secrets in a vault, user and retrieved text treated as data\"",
+      "rationale": "Security has concrete content in every phase 0–4 in the cross-cutting table and in the phase tasks."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OpenTelemetry traces cover every step, with token counts, cost and latency. Alerts fire on errors and cost.",
+      "rationale": "Observability is concrete in Phase 0 and every later phase (retrieval scores, eval tracking, canary dashboards)."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Infrastructure as code, pinned model and embedding model",
+      "rationale": "Reproducibility is addressed per phase: IaC, pinned models, versioned evals/index/prompts, CI injection suite, rollout config snapshot."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Timeout plus degraded reply, handoff; Index alias rollback; Fallback model, load test",
+      "rationale": "Failure handling appears concretely in every phase starting with Phase 0 flag-off rollback and injected LLM failure."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Phase 0 wraps text as data, no tools, hard caps; Phase 1 defenses, budgets, handoff; then retrieval (2), model access/memory (3), feedback (4)",
+      "rationale": "Defenses, budgets and human-in-the-loop precede retrieval, then model access, memory, orchestration, routing (deferred) and feedback in the right order."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Routing between models: when V4 fails on cost. Long-term memory: when users repeatedly have to re-explain context",
+      "rationale": "Deferred items are listed each with a pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong, well-ordered plan; only weakness is that within-phase blast-radius ordering is implicit rather than reasoned.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1186,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 6204
+  },
+  "cost_usd": 0.027491,
+  "latency_s": 56.239,
+  "raw_file": "raw/judge-b950bc68261e.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

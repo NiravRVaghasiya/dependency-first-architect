@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "fd3e81c8edab.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "fd3e81c8edab",
+  "blind_sha256": "db09beb4ff47207c9d9cf2f48c698ddafa1bf6c8f96d14235dde24f6b7a11623",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 323,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "The full card number (PAN) never enters this system. The payment switch tokenizes it (HMAC, key held in an HSM).",
+      "rationale": "Mostly accurate on what the design depends on (ISO 8583 flow, per-card partitioning, SHAP reason codes, PSI, TC40, 90-day label maturity). Minor issues: Kafka dedup and window-state recovery are not detailed, and 'scorer outside PCI CDE' is hedged with 'where possible'."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Only the decision is synchronous. A feature may sit in the synchronous path only if it is a single key lookup of 5 ms or less.",
+      "rationale": "It solves the real inline-authorization problem, states the issuer/processor assumption, builds in phases with a shadow start, and defers items explicitly with reasons."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Modular monolith scoring service. Feature lookup, rules and model inference run in one process, so no internal network hops eat the latency budget.",
+      "rationale": "The design is consistent: the fail-open principle is applied in every phase, and IDs and decision records tie together. One loose end is the 'in-process store lookup' versus a networked Aerospike/Redis store."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Online and offline values agree for at least 99.9% of sampled transactions.",
+      "rationale": "It has shadow mode, replay reproducibility, backtests before rule merges, a canary, a tested rollback and a kill-pod test. Several thresholds are invented or left as X or N, and there is little on post-launch fraud-loss validation."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Assumption (stated, not silent): We are the issuer or processor, sitting inside the ISO 8583 authorization flow.",
+      "rationale": "Key assumptions are stated and each decision has a revisit trigger. Volumes and peak TPS are never given, and some numbers (50 ms, 80 ms, 2x, 15%) are presented without a basis."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Poisoning checks on fast labels (watch for coordinated \"it was me\" confirmations)",
+      "rationale": "It covers scorer outage, default-on-miss, DLQ, dedup, card testing, threshold probing, label poisoning, step-up provider outage and model failure. Fallback fraud-loss exposure and state-store failure or window recovery are thin."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Terraform for infrastructure, Argo CD for deploys, pinned image digests, CI with unit tests plus a contract test",
+      "rationale": "Deployment, rollback, kill switches, alerts, two-person rules and gradual enforcement are concrete. On-call ownership, incident response and schema migration are only lightly covered."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Fewer than about 3 fraud/ML engineers, or go-live required within 6 months. Then buy a vendor platform",
+      "rationale": "There is a build-vs-buy analysis with a trigger and in-process inference to avoid cost. There is no cost estimate for managed Kafka, Flink, Aerospike or Iceberg storage at 13 months of retention, and no scaling or cost controls."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "The target definition itself stays versioned.",
+      "rationale": "It has revisit triggers for each decision, a protobuf schema with compatibility rules, a stable txn_id, versioned labels, config-swappable models, a model interface and a deferred list. These cover the one-way decisions well."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "A plain Kafka consumer that updates the counter (no Flink yet; it isn't needed).",
+      "rationale": "It starts with the thinnest slice, rules before ML, a monolith, and a long deferred list. Phase 6 and the 'AI layer' section are slightly ceremonial but still justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: A real production authorization produces a decision record in Iceberg that joins to a single trace ID.",
+      "rationale": "Each phase has dependencies, ordered tasks, checkable exit criteria and a stated reason for its position. A few parameters (X, N) are left to the team."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "Scoring p99 ≤ 50 ms with an 80 ms hard timeout, plus the 5 ms rule for synchronous features."
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "If the scorer times out, the payment switch falls back to a local backup ruleset with tighter limits. It never hangs."
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "One definition compiles to both a Flink streaming job (online) and a point-in-time backfill on Iceberg (offline), with an automated test that the two match."
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "Point-in-time joined data, time-based splits, LightGBM with pinned seeds"
+    },
+    {
+      "id": "P8-05",
+      "status": 2,
+      "evidence": "A cost matrix weighing fraud losses against the cost of falsely declining good customers (including churn), signed off by Fraud Ops and Finance."
+    },
+    {
+      "id": "P8-06",
+      "status": 2,
+      "evidence": "Rules as code. CEL expressions in git, two-person approval, and a required backtest"
+    },
+    {
+      "id": "P8-07",
+      "status": 2,
+      "evidence": "A review queue whose decisions feed the label pipeline."
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "The schema has no PAN field. CI rejects fields that match a card-number pattern. A data-loss-prevention scan runs on the topics."
+    },
+    {
+      "id": "P8-09",
+      "status": 1,
+      "evidence": "Deduplication on `txn_id + message type`; ordering per card through token partitioning."
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "Shadow for 2 to 4 weeks, then a canary at 5% → 50% → 100%."
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "Stores the decision, score, reason codes, a snapshot of the feature values used, and the ruleset and model versions."
+    },
+    {
+      "id": "P8-12",
+      "status": 1,
+      "evidence": "p99 stays within budget under a load test at 2× peak."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "Only the decision is synchronous."
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "If the scorer times out, the payment switch falls back to a local backup ruleset with tighter limits."
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "Point-in-time joined data, time-based splits"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "Single feature-definition framework. One definition compiles to both a Flink streaming job (online) and a point-in-time backfill"
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "The full card number (PAN) never enters this system."
+    }
+  ],
+  "note": "A strong, risk-ordered plan that starts in shadow mode and has a fail-open fallback and PAN tokenization. Its weak points are cost estimation, peak-TPS and HA sizing, and the detail of stream state recovery.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2534,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 13823
+  },
+  "cost_usd": 0.0600787,
+  "latency_s": 29.98,
+  "raw_file": "raw/judge-fd3e81c8edab.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

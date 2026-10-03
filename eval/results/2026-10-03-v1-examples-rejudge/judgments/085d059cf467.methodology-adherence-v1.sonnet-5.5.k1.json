@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "085d059cf467.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "085d059cf467",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 19,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Presence \"needs the real user identities from step 5.\"",
+      "rationale": "Phases run from decisions to single-user editor, merge engine, sync, storage, then auth, presence, offline, history and comments, with each dependency explicit."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "\"Get a thin end-to-end version working early\"",
+      "rationale": "Early thin sync is intended, but Phase 1 builds in pieces (editor, merge, sync, storage) with no production deployment, so it is not a true prod walking skeleton."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"Use Yjs by default. Pick OT only if you want one authoritative server and don't need offline editing.\"",
+      "rationale": "Phase 0 lists the irreversible decisions (merge model, framework, schema, server routing, targets) with defaults and conditions, though not every decision has a flip trigger."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "\"This is the hardest correctness problem, and it's cheapest to test here.\"",
+      "rationale": "Widest-impact work comes first: the schema and merge engine, then sync and storage, with suggestion mode last because it touches everything."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "\"Required before anyone outside the team uses it.\"",
+      "rationale": "Security is a dedicated Phase 2 step, with only paste cleaning in Phase 1 and rate limiting in Phase 4, so it is not threaded from the start."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "\"Metrics such as how long edits take to reach other users... Start these at step 3, not step 12.\"",
+      "rationale": "Metrics begin at step 3 rather than at the first phase, and there is no logging or tracing detail per phase."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan says nothing about reproducible builds, environments or infrastructure as code. Randomized tests are mentioned but there is no seed or environment reproducibility."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"a dropped connection catches up with nothing lost\"; \"restarting the server loses no edit the server had confirmed\"",
+      "rationale": "Failure handling appears in sync, storage, offline editing, and fault tests in Phase 4. Phase 0 has no decisions on failure handling."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never states that no AI layer applies, so it does not address the question."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "\"Product features. Import/export (Markdown, DOCX, PDF), image uploads, search, sharing UI, templates, notifications and mobile.\"",
+      "rationale": "Later work is listed by phase, but there are no explicit pull-forward conditions beyond a few hints such as fixing undo soon after step 3."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan orders dependencies and irreversible decisions well, but it has no reproducibility treatment, no statement on the AI layer, and only partial threading of security and observability.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1090,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 570,
+    "cache_creation_input_tokens": 2690
+  },
+  "cost_usd": 0.017747,
+  "latency_s": 23.599,
+  "raw_file": "raw/judge-085d059cf467.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

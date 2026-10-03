@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "2c9c1ba8919a.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "2c9c1ba8919a",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 162,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Duplicate updates do no harm because applying a Yjs update twice has no extra effect.",
+      "rationale": "Yjs/Hocuspocus mechanics are accurate, including persisted acks tied to commit, GC-versus-snapshot tradeoff and the server still being needed; only minor imprecision remains, such as Redis multi-instance duplicate log writes."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Non-goals for v1: native mobile apps; full offline-first editing (short disconnects are handled); suggestion/track-changes mode",
+      "rationale": "It solves real multi-user rich-text co-editing with a buildable team and scope, and it states exclusions and their triggers."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Typically 1–5 editors per document, at most 50 editors and 200 viewers",
+      "rationale": "Ownership is clear (one writer per table, API decides permissions, Collab enforces them), but there are small contradictions: a 100-connection cap versus 50 editors plus 200 viewers, and GA at week ~16 versus a 13–22 week total."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "deliberately dropping every 10th update makes it fail (proves the test can catch bugs)",
+      "rationale": "Validation is tied to specific risks (kill -9 100 runs, convergence seeds, schema, fan-out spikes) and runs early, and a production canary continues it afterwards; targets are mostly labeled [A]."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "| Assumption | Impact if wrong | How / when validated |",
+      "rationale": "The assumptions table gives impact and validation for each, flags the sensitive ones (scale, self-hosting, offline, E2EE), and gives defaults."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "If Postgres is down, it keeps serving from memory, stops sending `persisted` acknowledgements (clients show \"Saving…\")",
+      "rationale": "It covers crash, DB outage, thundering herd, revocation and lost events, old-schema clients and XSS with concrete handling, but malformed or poisoned Yjs updates persisted permanently and slow-consumer handling are thin."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Collab has graceful drain on deploy. The health check verifies the database round-trip",
+      "rationale": "Deploy, rollback, expand/contract migrations, canary, alerts, restore drill, runbooks and on-call are concrete and sized for 4 engineers, with a few gaps in incident response detail."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "about $800–1,500/month: 2× Collab and 2× API containers (2 vCPU / 4 GB)",
+      "rationale": "It names the main drivers (Collab memory, DB IOPS), marks the figures as assumptions and weighs build versus buy in weeks, but growth with usage and cost controls beyond budget alerts are thin."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "**Hard**: the stored format is Yjs binary",
+      "rationale": "The decision table has a reversibility column and revisit triggers, the costly one-way choices (Yjs format, ProseMirror, schema rollout) get early spikes and a gating rule, and a custom-server fallback is scoped."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Redis is added in M3 so more than one Collab instance can run.",
+      "rationale": "Scope grows in stages (single instance, then Redis, then comments), with a small set of components; the separate API and Collab services, the canary and the M4 feature set add some weight."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Spike S1 (3 days): Can Hocuspocus give append-log persistence with ≤ 250 ms flushes ... Changes plan if forking is needed",
+      "rationale": "Ordered tasks with locations, done-when criteria, dependencies, parallel split and explicit plan-change triggers let a team start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "Use Yjs, an existing CRDT library, rather than building our own merge algorithm or using operational transformation (OT)."
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Define shared schema (paragraph, heading 1–3, bold, italic, link with href allowlist, lists, code) + SCHEMA_VERSION"
+    },
+    {
+      "id": "P5-03",
+      "status": 1,
+      "evidence": "3 headless Yjs clients doing random insert/delete/format, random disconnects and server restarts"
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "sends a stateless `persisted` message carrying the highest committed sequence number; compacts the log into snapshots"
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "Clients reconnect with exponential backoff plus jitter ... M3 runs at least 2 instances with the Hocuspocus Redis extension."
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "full offline-first editing (short disconnects are handled)"
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "closes connections when a permission-changed event arrives"
+    },
+    {
+      "id": "P5-08",
+      "status": 2,
+      "evidence": "Undo uses `Y.UndoManager` scoped to your own changes."
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "WebSocket sync, awareness (live presence), enforcing permissions on connections"
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "convergence suite (200 seeds) green in CI; S1–S3 write-ups"
+    },
+    {
+      "id": "P5-11",
+      "status": 2,
+      "evidence": "messages up to 1 MB; total document state up to 10 MB; 100 connections per document; 300 updates per second per connection"
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "new node types ship disabled for one release, then `minSchema` is raised, then they are enabled"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Building our own is a research project"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Collab service with append-log persistence, connection indicator, basic metrics, convergence harness."
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "confirms the save once the batch has committed"
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "Documents grow large (CRDT metadata, history)"
+    }
+  ],
+  "note": "Strong, sync-first plan built on proven Yjs/Hocuspocus, with early spikes and durable acks. Gaps are rich-text merge semantics, reorder/duplicate fuzzing detail, and a few minor internal inconsistencies.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4678,
+    "thinking_tokens": 2315,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 20691
+  },
+  "cost_usd": 0.0987005,
+  "latency_s": 62.417,
+  "raw_file": "raw/judge-2c9c1ba8919a.engineering-quality-v1.sonnet-5.5.k1.txt"
+}
