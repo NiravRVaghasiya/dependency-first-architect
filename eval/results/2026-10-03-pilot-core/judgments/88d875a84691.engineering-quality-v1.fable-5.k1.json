@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "88d875a84691.engineering-quality-v1.fable-5.k1",
+  "blind_id": "88d875a84691",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 131,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "the streaming aggregates may not yet include the transaction being scored ... Add the current transaction to the counts in the request path",
+      "rationale": "Technical claims (GBT latency, PR-AUC for imbalance, label maturity, selection bias, read-your-writes gap, PCI tokenization scope) are accurate including the subtle areas where fraud plans usually go wrong."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "I've assumed you're the issuer or processor: you score each authorization request before it's approved or declined.",
+      "rationale": "Solves exactly the stated problem, resolves the key ambiguity (issuer vs merchant) explicitly, covers all core capabilities, and defers graph/sequence work with reasons."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Kafka and Flink update features and record events next to it, but are never a blocking step in the decision.",
+      "rationale": "Hot-path/async separation, data ownership (online vs offline store), and error propagation are applied consistently everywhere with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "shadow mode (score but don't act) → champion/challenger ... backtest required before rollout ... Load-test at 10× peak",
+      "rationale": "Validation is tied to the specific risks (latency SLO in phase 1, out-of-time evaluation, rule backtests, shadow deployment, exploration group) and continues in production via drift and business metrics."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Target (assumption, adjust to your numbers) ... Open questions that would change the design",
+      "rationale": "Every design-bearing number is labeled an assumption, the issuer assumption is explicit, and the open-questions section states which answers would change the design."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Hard timeout around the fraud call ... Circuit breakers, multi-AZ deployment ... card-testing bursts at one merchant or BIN range",
+      "rationale": "Scoring outages, adversarial bursts, drift, and label bias all get concrete handling, but duplicate, out-of-order and reversal/refund events in the stream (which corrupt velocity features) are unaddressed, blocking a 4."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "System: p50/p99 latency per stage, timeout and fallback rate, consumer lag, online-store hit rate.",
+      "rationale": "Monitoring across system/model/business layers, safe rollout with automatic rollback, and analyst tooling are concrete, but incident ownership and on-call responsibility are never assigned."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "cost = fraud loss × P(fraud) vs. lost interchange + customer churn × P(false decline)",
+      "rationale": "Fraud-loss vs false-decline economics and build-vs-buy are flagged, but infrastructure cost drivers (feature-store, Flink state, Kafka at 10× peak) and growth are deferred to a future 'cost estimate'."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Technology choices (swappable) ... Serving: Go/Java/Rust gRPC service with the model embedded (ONNX/Treelite)",
+      "rationale": "Vendors are explicitly swappable, portable formats isolate commitments, and heavy ML is deferred, though the hardest one-way choices (event schema, token scheme in phase 0) are not singled out for extra validation."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Later: sequence models over each card's transaction history, and graph neural networks ... (phase 2)",
+      "rationale": "Starts with rules plus a single GBT model on standard streaming infrastructure the domain genuinely requires, deferring graph/sequence/consortium work; every component earns its place."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Phase 0 | Event schema, tokenization, Kafka, lakehouse, label ingestion, baseline rules | 4–6 weeks",
+      "rationale": "Phasing follows real dependencies with specific, implementable decisions (40 ms timeout, LightGBM, PSI), but per-phase exit criteria beyond 'latency SLOs met' and rollback limits are left unquantified."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "≤ 50 ms p99 inside an auth flow that has a few hundred ms in total ... one batched read from the online store, about 5–10 ms p99"
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "Hard timeout around the fraud call (for example 40 ms) ... fail open below an amount threshold and step up above it."
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "Define each feature once (Feast/Tecton or in-house) and use that definition for both serving and training."
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "train only on transactions old enough for their labels to have arrived ... Training (point-in-time joins) ... Validate on later time periods"
+    },
+    {
+      "id": "P8-05",
+      "status": 2,
+      "evidence": "precision-recall AUC (not ROC), dollar-weighted recall ... cost = fraud loss × P(fraud) vs. lost interchange + customer churn × P(false decline)"
+    },
+    {
+      "id": "P8-06",
+      "status": 2,
+      "evidence": "analysts should be able to change rules without a code deploy, with versioning ... approve / step-up (3DS, OTP, push notification) / decline / approve-and-queue-for-review"
+    },
+    {
+      "id": "P8-07",
+      "status": 2,
+      "evidence": "analyst outcomes on reviewed cases (hours) ... cardholder fraud claims ... analyst case tool ... feed straight into rule updates"
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "Tokenize the card number (PAN) before it reaches the fraud system (PCI DSS). This keeps most of the pipeline outside PCI scope."
+    },
+    {
+      "id": "P8-09",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "shadow mode (score but don't act) → champion/challenger on 5–10% of traffic → gradual ramp, with automatic rollback ... feature drift (PSI)"
+    },
+    {
+      "id": "P8-11",
+      "status": 1,
+      "evidence": "Each decision returns reason codes for analysts and customer service."
+    },
+    {
+      "id": "P8-12",
+      "status": 2,
+      "evidence": "Built for 10× normal peak (Black Friday, payroll days) ... Circuit breakers, multi-AZ deployment, and per-region online stores."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "the authorization path is a synchronous request/response call ... never a blocking step in the decision."
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "If it times out, fall back to a rules-only decision or a default stand-in policy."
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "precision-recall AUC (not ROC) ... Validate on later time periods than training (out-of-time), never a random split."
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "Define each feature once ... This prevents the model seeing different values in training than in production."
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "Tokenize the card number (PAN) before it reaches the fraud system (PCI DSS)."
+    }
+  ],
+  "note": "An expert-level, trap-free plan with accurate hot-path design, label-delay handling, and safe rollout; the main gaps are stream event correctness (duplicates/reversals/ordering), per-decision audit detail, and infrastructure cost reasoning.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 9229,
+    "thinking_tokens": 6598,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11625
+  },
+  "cost_usd": 0.6067825,
+  "latency_s": 828.056,
+  "raw_file": "raw/judge-88d875a84691.engineering-quality-v1.fable-5.k1.txt"
+}

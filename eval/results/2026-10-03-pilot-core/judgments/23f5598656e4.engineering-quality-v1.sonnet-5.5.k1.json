@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "23f5598656e4.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "23f5598656e4",
+  "blind_sha256": "d7f7797843c7c0518c64fc8f5b4a67ec23289f5974e87fc90e6143411b3f8b38",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 357,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Kubernetes doesn't let you change a Deployment's selector labels, so a label mismatch forces a side-by-side cutover.",
+      "rationale": "Mechanisms (OIDC trust, Argo CD hooks and adoption, immutable digests, expand/contract) are accurate; only minor imprecision, such as the floating workflow tag and the org-wide bot key."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "The bulk of the work is **moving 50 live services onto it safely**, not building the pipeline.",
+      "rationale": "It fits the request and is buildable, with explicit non-goals, but contract testing and flaky-test handling are left out."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Each cluster's Argo CD reads only its own config repo. CI holds no cluster credentials.",
+      "rationale": "Responsibilities and data ownership are clear and applied consistently; the shared org-secret bot key is a small loose end."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Spike S2: adopt a live workload... Changes plan if a selector mismatch is common in S1",
+      "rationale": "Risky assumptions get early spikes with change-the-plan triggers, drills and ongoing metrics, but some thresholds are invented and tests for flakiness and contracts are missing."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "| A7 | GitHub plan allows ≥ 180 concurrent hosted jobs | Builds queue at peak; may need self-hosted runners | Check plan limits day 1; burst test in M2 |",
+      "rationale": "Twelve assumptions each state the impact if wrong and how they will be validated, and the numbers are labeled as assumptions."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "The publish step checks `git merge-base --is-ancestor <currently-deployed sourceSha> <A>`. That returns false, so A is not promoted",
+      "rationale": "It covers domain-specific failures (out-of-order builds, lost notifications, Argo CD outage, workflow regression, break-glass, adoption downtime) with detection and recovery, but not flaky tests or a GitHub outage beyond break-glass."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Platform team owns: `platform-workflows`, `platform-charts`, both Argo CD instances... A prod Argo CD outage is P2",
+      "rationale": "Ownership, alerts, rollback, runbooks and drills are concrete and sized for 4 engineers; CI on-call is business hours only."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "400 runs/day × 10 min × 30 days ≈ 120k minutes/month. On 2–4-core hosted runners that's about $1–3k/month.",
+      "rationale": "The cost driver, its basis and controls (spend limit, cancel-in-progress, path filters, revisit triggers) are covered; people cost and the build-versus-buy tradeoff are thin."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "| D2 | GitOps pull with Argo CD | ... | Hard (all deploy config shaped around it) | Not on Kubernetes (A1) |",
+      "rationale": "Each decision carries a reversibility rating and a revisit trigger, the hard ones (Argo CD, shared chart, digests) get early spikes, and the easy ones are deferred."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Canary releases, ephemeral PR environments, a developer portal and self-hosted runners are deferred.",
+      "rationale": "It uses existing tools and defers speculative pieces with triggers; the two config repos, Kyverno and signing are heavy but justified by the assumed SOC 2 control."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T2 ... Time box 4 days ... Changes plan if > 30% are C (extend M2, add escape hatches earlier)",
+      "rationale": "Tasks, dependencies, exit criteria per milestone, the critical path and adaptation triggers are specific enough to start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "S1 inventory classifies A/B/C; \"A ~15-line `ci.yml` that calls the reusable workflows\" with `pre-build`/`post-test` escape hatch."
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Per-service cutover (the old and new paths run side by side for each service)... `argocd app delete --cascade=false`... Re-enable the legacy job."
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Each service is built once into a container image that never changes and is identified by its digest"
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "OIDC only, no stored AWS keys. One IAM role per service... PR builds get no role"
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Third-party actions are pinned by commit SHA and allowlisted; cosign keyless signatures; Kyverno `verifyImages`"
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "PreSync migration Job, then the rolling update, then the PostSync smoke Job; expand/contract only; rollback ≤ 10 min"
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Contract tests are deferred."
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Shared staging; no PR environments"
+    },
+    {
+      "id": "P3-09",
+      "status": 2,
+      "evidence": "Build time comes down through dependency caches, Docker layer cache (`type=gha`) and test splitting where p95 exceeds 20 min."
+    },
+    {
+      "id": "P3-10",
+      "status": 2,
+      "evidence": "D11 GitHub-hosted runners... 400 runs/day × 10 min × 30 days ≈ 120k minutes/month"
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Platform team owns... Argo CD controller down → platform; delivery-metrics dashboard (deployment frequency, lead time, change failure rate, time to restore)"
+    },
+    {
+      "id": "P3-12",
+      "status": 2,
+      "evidence": "1 code-owner approval from someone other than the author... PR history = deploy ledger; nightly mirror to S3 with Object Lock"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Ring 0 is the pilot (M1). Ring 1 is the 6–8 diverse pilots (M2). Waves 1–2 (M3) and waves 3–4 (M4)"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Each image is promoted unchanged from dev to staging to prod."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "0 long-lived cloud keys in CI"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Assumed: Services are already in prod and are deployed independently (no lockstep releases)"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "GitHub Actions with central reusable workflows; GitOps pull with Argo CD"
+    }
+  ],
+  "note": "Very strong, migration-centred plan with explicit assumptions, early spikes and reversibility ratings; the main gaps are contract testing, flaky-test handling and a thin test-environment strategy.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4638,
+    "thinking_tokens": 2085,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 27371
+  },
+  "cost_usd": 0.1149887,
+  "latency_s": 39.342,
+  "raw_file": "raw/judge-23f5598656e4.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

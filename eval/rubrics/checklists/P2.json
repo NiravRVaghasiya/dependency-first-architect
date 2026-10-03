@@ -1,0 +1,107 @@
+{
+  "schema": "dfa-eval/checklist@1",
+  "prompt_id": "P2",
+  "request": "Architect a multi-tenant SaaS billing system.",
+  "provenance": "eval/rubrics/authoring/eq-rubric-and-checklists-p1-p5.json (blind-authored; see eval/rubrics/AUTHORING.md)",
+  "items": [
+    {
+      "id": "P2-01",
+      "title": "Exact money representation",
+      "addressed_means": "Amounts are stored as integers in the currency's smallest unit (such as cents) or as fixed-precision decimals, every amount carries its currency, and rounding rules and the stage at which rounding happens (line item or invoice total) are defined.",
+      "category": "correctness"
+    },
+    {
+      "id": "P2-02",
+      "title": "Immutable financial records",
+      "addressed_means": "Finalized invoices and ledger entries are never edited or deleted. Corrections are made through credit notes, adjustments or reversing entries, and there is a full audit trail.",
+      "category": "data"
+    },
+    {
+      "id": "P2-03",
+      "title": "Idempotent charging and webhook handling",
+      "addressed_means": "Charge and invoice creation use idempotency keys. Payment-provider webhooks are deduplicated and handled correctly when they arrive out of order or more than once. Retries cannot double-charge.",
+      "category": "reliability"
+    },
+    {
+      "id": "P2-04",
+      "title": "Payment provider integration and PCI scope",
+      "addressed_means": "Card data is collected through the provider's hosted fields or tokenization so the system never stores raw card numbers. Webhook signatures are verified. Asynchronous payment states (pending, requires action, disputed) are modeled.",
+      "category": "security"
+    },
+    {
+      "id": "P2-05",
+      "title": "Enforced tenant isolation",
+      "addressed_means": "Tenant scoping is enforced at a layer that individual queries cannot bypass, such as row-level security or a mandatory tenant-scoped data access layer, and automated tests check for cross-tenant data leaks.",
+      "category": "security"
+    },
+    {
+      "id": "P2-06",
+      "title": "Usage metering correctness",
+      "addressed_means": "If usage is billed, events are deduplicated, late-arriving events are handled, billing periods have defined cutoffs, and aggregations can be reproduced and recomputed. Invoiced usage can be traced back to the raw events.",
+      "category": "data"
+    },
+    {
+      "id": "P2-07",
+      "title": "Subscription lifecycle, proration and price versioning",
+      "addressed_means": "Upgrades, downgrades, trials, cancellations and pauses are specified, including proration rules, billing anchor dates and time zones. Price changes create new versions so existing customers can keep their old price.",
+      "category": "correctness"
+    },
+    {
+      "id": "P2-08",
+      "title": "Tax and invoice compliance",
+      "addressed_means": "Sales tax or VAT is calculated by a tax service or rules engine, customer tax IDs and reverse-charge cases are handled, invoice numbering meets the sequential rules of each jurisdiction, and record-retention requirements are met.",
+      "category": "compliance"
+    },
+    {
+      "id": "P2-09",
+      "title": "Failed payments and dunning",
+      "addressed_means": "Failed payments trigger a defined retry schedule, customer notifications, a grace period and a policy for downgrading or suspending access. Card-update and recovery flows are included.",
+      "category": "product"
+    },
+    {
+      "id": "P2-10",
+      "title": "Reconciliation with the payment provider and bank",
+      "addressed_means": "A recurring job reconciles internal ledger entries with provider charges, refunds, disputes and payouts, and discrepancies are flagged and resolved by a named owner.",
+      "category": "reliability"
+    },
+    {
+      "id": "P2-11",
+      "title": "Entitlements separated from billing availability",
+      "addressed_means": "Product access is decided from entitlement state that is cached or stored locally, so an outage in billing or the payment provider does not lock paying customers out.",
+      "category": "reliability"
+    },
+    {
+      "id": "P2-12",
+      "title": "Build-versus-buy for the billing engine",
+      "addressed_means": "The plan compares building the billing engine against buying a billing platform, weighing fees, flexibility, compliance burden and lock-in, and justifies which parts are built in-house.",
+      "category": "cost"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "title": "Floating-point money",
+      "recognize": "Amounts are stored or calculated as binary floating-point numbers, or the plan never says how money is represented while doing arithmetic such as proration or tax on prices."
+    },
+    {
+      "id": "P2-T2",
+      "title": "Mutable invoices and balances",
+      "recognize": "Invoices or balances are updated in place, or records are deleted to fix mistakes. There are no credit notes or reversing entries and no audit trail."
+    },
+    {
+      "id": "P2-T3",
+      "title": "Non-idempotent charges and naive webhook trust",
+      "recognize": "Charges are retried on timeout without idempotency keys, or the plan assumes webhooks arrive exactly once and in order, and does not verify their signatures."
+    },
+    {
+      "id": "P2-T4",
+      "title": "Handling raw card data in-house",
+      "recognize": "The plan stores card numbers in its own database or builds its own card vault without acknowledging the full PCI DSS compliance burden, when a provider's tokenization would avoid it."
+    },
+    {
+      "id": "P2-T5",
+      "title": "Tenant isolation by convention only",
+      "recognize": "Shared tables rely on every developer remembering a tenant filter in every query, with no enforcement mechanism and no tests for cross-tenant access."
+    }
+  ]
+}

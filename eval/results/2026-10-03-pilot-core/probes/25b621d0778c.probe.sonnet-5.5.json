@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "25b621d0778c.probe.sonnet-5.5",
+  "blind_id": "25b621d0778c",
+  "blind_sha256": "f8ccb59a72398409b893f3a3c3dade1cf8fc37c8680124daa9148db9de8fd0e3",
+  "judge": "sonnet-5.5",
+  "order_index": 14,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Well-organized numbered sections (goal, tech, CLI, logic, layout, testing, milestones, open questions) resemble a standard template, but this is also typical of unprompted strong plans",
+    "Closes with an 'Open questions' section that gives recommendations, which could reflect a methodology step that surfaces assumptions",
+    "Milestones are ordered by risk (MVP, then Safety, then Formats), which suggests deliberate sequencing",
+    "Safety design is detailed: two-step rename, undo log written before any change, rollback, case-insensitive collision checks",
+    "There is no explicit methodology scaffolding such as labeled assumptions, alternatives considered, risk tables, or verification criteria, so it reads like a natural thorough plan"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 321,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3474
+  },
+  "cost_usd": 0.011903,
+  "latency_s": 23.127,
+  "raw_file": "raw/probe-25b621d0778c.probe.sonnet-5.5.txt"
+}

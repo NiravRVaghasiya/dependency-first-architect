@@ -1,0 +1,110 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P2.dfa.sonnet-5.5.r02",
+  "prompt_id": "P2",
+  "condition": "dfa",
+  "generator": "sonnet-5.5",
+  "run_index": 2,
+  "seed": 1848043159,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Architect a multi-tenant SaaS billing system.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P2.dfa.sonnet-5.5.r02.md",
+  "output_sha256": "45fe928476836ec8efbfab7c8f84595ed79668d8a83af05e3419e2444ae94785",
+  "metrics": {
+    "words": 3258,
+    "chars": 20064,
+    "visible_tokens_est": 5016
+  },
+  "turns": 3,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/validation.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "dependency-first-architect:dependency-first-architect",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "reference/plan-template.md",
+      "sha256": "95ccaec942bf8a640ff4d830daada167a340b6b652242e2ed41aec6d24605c2a",
+      "words": 1257
+    },
+    {
+      "path": "reference/validation.md",
+      "sha256": "d5ddad548e7b7be656dc51d5946c3da45ceb21ce5234164440fa5c5829edd407",
+      "words": 1879
+    }
+  ],
+  "started_at": "2026-10-02T23:45:15+00:00",
+  "finished_at": "2026-10-02T23:47:20+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 13808,
+    "thinking_tokens": 5786,
+    "cache_read_input_tokens": 7063,
+    "cache_creation_input_tokens": 13276
+  },
+  "cost_usd": 0.17269460000000003,
+  "latency_s": 124.164,
+  "raw_file": "raw/gen-P2.dfa.sonnet-5.5.r02.txt"
+}

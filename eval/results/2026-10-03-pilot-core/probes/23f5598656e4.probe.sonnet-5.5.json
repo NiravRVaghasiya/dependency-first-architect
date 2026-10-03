@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "23f5598656e4.probe.sonnet-5.5",
+  "blind_id": "23f5598656e4",
+  "blind_sha256": "d7f7797843c7c0518c64fc8f5b4a67ec23289f5974e87fc90e6143411b3f8b38",
+  "judge": "sonnet-5.5",
+  "order_index": 4,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.85,
+  "cues": [
+    "Explicit numbered assumptions (A1–A12) with 'impact if wrong' and 'validated how/when' columns, plus open questions with defaults, owners and needed-by dates",
+    "Rigid template of sections: ranked quality attributes with measurable targets, hard parts, decision table with options considered/reversibility/'revisit if', deferred work with triggers",
+    "Opens with a context note about the empty workspace and README, then explicitly grounds the plan in that finding (§4 Current State)",
+    "Milestones with explicit exit criteria, 'Changes plan if' clauses on each spike, and a 'Why this order' justification; first milestone broken into T1–T17 tasks with 'Done when'",
+    "Includes mandatory-looking sections such as 'AI-specific concerns: not applicable', failure-path flows, and a risk table with likelihood/impact/early warning/owner"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 367,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 20745
+  },
+  "cost_usd": 0.0555405,
+  "latency_s": 11.95,
+  "raw_file": "raw/probe-23f5598656e4.probe.sonnet-5.5.txt"
+}

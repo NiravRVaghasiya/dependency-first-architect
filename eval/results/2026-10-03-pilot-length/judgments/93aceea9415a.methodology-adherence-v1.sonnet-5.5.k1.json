@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "93aceea9415a.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "93aceea9415a",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 15,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 0 Foundations: \"GitHub App, queue, state machine, sandbox, audit log, offline benchmark\"",
+      "rationale": "Phases progress from substrate to shadow triage to live triage to fixing, which is sensible, but the plan does not say what must be proven before each phase. Guardrails and the knowledge layer are not placed in the ordering."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Phase 0. Foundations | 2–3 wks | GitHub App, queue, state machine, sandbox, audit log, offline benchmark",
+      "rationale": "Phase 0 is infrastructure and a benchmark. It is not a thin end-to-end slice running in production, and the first real output is shadow triage in Phase 1."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan has no list of irreversible decisions with defaults and flip conditions. Choices such as vector index, model, and sandbox are made without stating alternatives."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Ordering of Phase 0: \"GitHub App, queue, state machine, sandbox, audit log\"",
+      "rationale": "Wider-impact items such as the state machine and permissions come early. Ordering within phases is not stated as a principle, and the risks section is unordered."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "\"Secrets never enter the sandbox or the LLM context.\"",
+      "rationale": "Security content is strong (least-privilege scopes, injection defense, a sandbox, the security path), but it sits in standalone sections rather than being tied to each phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "\"Every action is written to an append-only audit log.\"",
+      "rationale": "Phase 0 includes an audit log and there are a dashboard and metrics. Per-phase observability is not specified, and the dashboard is not tied to Phase 0."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "\"pin the sandbox image to the repo's devcontainer or CI config, and rebuild it on dependency changes.\"",
+      "rationale": "Reproducibility is covered for the sandbox and the offline benchmark replay. Prompt, model, and index versioning are not addressed, and the coverage is not threaded through the phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "\"Events are idempotent and keyed by delivery ID.\"",
+      "rationale": "The plan covers durable retries, resumable state, a circuit breaker, a kill switch, and flaky-test handling. These appear in the architecture and risk sections rather than in each phase."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "\"Budgets: set token, time, and compute caps per issue, per day, and per repo.\"",
+      "rationale": "Defenses, budgets, and human gates are thorough, but they are not sequenced before capabilities in the phases. Retrieval, model access, memory, orchestration, routing, and feedback are not ordered. The learn stage is a feedback step that comes last, which fits."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "\"Expansion | later | More repos, larger changes, feature-request scoping, possible auto-close of confirmed duplicates\"",
+      "rationale": "Non-goals and the expansion phase name deferred work. There are no explicit pull-forward conditions beyond general phase sign-off."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A solid, safety-minded agent design with a sensible shadow-to-live rollout. It lacks a production walking skeleton, decision gates with flip conditions, and per-phase threading of cross-cutting concerns.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1273,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 5414
+  },
+  "cost_usd": 0.026386,
+  "latency_s": 41.103,
+  "raw_file": "raw/judge-93aceea9415a.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

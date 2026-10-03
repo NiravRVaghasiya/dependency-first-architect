@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a40d66ef7d52.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "a40d66ef7d52",
+  "blind_sha256": "66a679aecb893e1d8c25368af0de8aa00585f4b3dad16348f76a9a6e9fb360ae",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 474,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Applying the same edit twice is harmless by design (CRDT property).",
+      "rationale": "The Yjs, append-log, fencing-token and relative-position mechanisms are used correctly; the only slips are secondary (an ALB can't route by doc_id hash, and 'byte-identical' and per-client state hashes are imprecise for Yjs)."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "A signed-in user opens document `/d/{id}` and types \"hello\". A second user in another browser sees \"hello\" appear.",
+      "rationale": "It covers co-editing, persistence, permissions, offline, history, comments and export, and defers items explicitly with triggers, but collaborative undo and rich-text merge behaviour are missing."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Exactly one sync server owns each document at a time, via a lease in Redis with a fencing token",
+      "rationale": "Roles and data ownership are clear and choices are honoured across phases; the only inconsistency is that the table implies per-edit permission checks are a later option while Phase 1 already requires them."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "10,000 fuzz runs with recorded random seeds all converge.",
+      "rationale": "Validation targets the real risks early (fuzzing, crash-loss scripts, PITR restore, a production divergence detector, load and chaos tests), but numeric targets such as 500 editors and 200 ms are not labeled provisional."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "500 concurrent editors on one document, and 50,000 documents open.",
+      "rationale": "Revisit triggers are given for the key decisions, but team size, scale and budget are never stated and the load targets appear as given facts."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Lease fencing tokens stop a stale owner from writing.",
+      "rationale": "It covers stale owners, Redis outage, malicious edits, XSS, duplicates with DLQ and orphaned anchors, each with detection and recovery, but has little on doc-bloat abuse and no answer for a corrupted document."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "GitHub Actions builds the image, runs tests and database migrations, and does a rolling deploy to ECS on every merge to `main`.",
+      "rationale": "Deploy, drain, dashboards and alerts are concrete, but rollback, on-call ownership, incident response and access administration are not covered, and the operational load (Redis, pg-boss, chaos, mTLS) is heavy for a small team."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Build vs buy | Buy or adopt: Yjs, TipTap/ProseMirror, an auth provider",
+      "rationale": "Build versus buy is covered and OpenSearch is deferred, but there is no run-cost analysis of Postgres log growth, S3, Redis or Chromium exports, and no cost controls or scaling estimates."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "This is effectively irreversible after Phase 1, because it changes storage, validation, search and export. Decide before the data format is locked.",
+      "rationale": "The plan names the one-way doors (CRDT choice, data format, E2E encryption, tenant_id) and settles them early, but it gives no concrete exit path off Yjs's encoding."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Encrypted, authenticated (mTLS) traffic between servers.",
+      "rationale": "It uses a modular monolith, defers OpenSearch and microservices, and starts on Hocuspocus, but Phase 2 ownership leases, Redis, mTLS, a 500-editor target and chaos tests are speculative scale for an unstated user base."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Tasks (widest first): 1. Document data contract. Fix the Yjs update encoding and a versioned ProseMirror schema",
+      "rationale": "The plan gives dependency-ordered phases, concrete schemas and tasks, and checkable exit criteria, and it says what to do if an assumption fails; gaps remain on undo and protocol-version details."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "CRDT (Yjs). It merges edits made offline or during a network split without a central sequencer."
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "a versioned ProseMirror schema (`schema_version` stamped on every document)... add-only node types, and unknown nodes are kept intact"
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "Simulate 5+ clients making random concurrent edits under random network splits, delays and reorderings. Assert that all states end up byte-identical."
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "The server acknowledges only after the write commits... append-only `doc_updates` log plus periodic snapshots"
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "Connections go to the owning server via consistent hashing on `doc_id`... Redis pub/sub broadcasts edits across servers"
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "The client keeps an offline queue in IndexedDB (`y-indexeddb`), and reconnects with backoff plus jitter."
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "Checks happen when a connection opens and on every incoming edit... A permission change disconnects affected sessions."
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "A restore is applied as a *new forward edit*, never a destructive rewrite."
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "Presence data (cursors, who's online) goes on a separate channel and is never stored."
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Phase 1 — Document substrate: data format, storage, permissions, merge correctness"
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "Cap edit size and rate per connection. Cap connections per document. Batch broadcasts for very busy documents."
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "An old client opening a document with new node types keeps the content intact; the client is gated on version and forced to refresh."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "CRDT (Yjs)."
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "a minimal TipTap editor (paragraph and text only) bound to a Yjs document"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "writes it durably to Postgres before acknowledging it"
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "Merge metadata exceeding about 3× the document's content size on typical documents after compaction."
+    }
+  ],
+  "note": "A strong, risk-ordered Yjs plan with durable-ack, fuzzing and lease fencing; weak on collaborative undo, rich-text merge semantics, cost, and ops ownership and rollback.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 5239,
+    "thinking_tokens": 2757,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 14130
+  },
+  "cost_usd": 0.08789620000000001,
+  "latency_s": 49.731,
+  "raw_file": "raw/judge-a40d66ef7d52.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

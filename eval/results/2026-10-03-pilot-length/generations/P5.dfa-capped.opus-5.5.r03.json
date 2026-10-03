@@ -1,0 +1,100 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P5.dfa-capped.opus-5.5.r03",
+  "prompt_id": "P5",
+  "condition": "dfa-capped",
+  "generator": "opus-5.5",
+  "run_index": 3,
+  "seed": 4210719599,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Order the build of a real-time collaborative document editor.\n\nLength limit: your entire answer must be at most 1500 words.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P5.dfa-capped.opus-5.5.r03.md",
+  "output_sha256": "4f5791e3a2928b1a084985f6b5e5ec58e8a038abce1c5753e059646fe6fbe48c",
+  "metrics": {
+    "words": 2237,
+    "chars": 13104,
+    "visible_tokens_est": 3276
+  },
+  "turns": 2,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "dependency-first-architect:dependency-first-architect",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "reference/plan-template.md",
+      "sha256": "95ccaec942bf8a640ff4d830daada167a340b6b652242e2ed41aec6d24605c2a",
+      "words": 1257
+    }
+  ],
+  "started_at": "2026-10-03T00:03:37+00:00",
+  "finished_at": "2026-10-03T00:05:46+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [
+    "claude-opus-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 8156,
+    "thinking_tokens": 2936,
+    "cache_read_input_tokens": 7101,
+    "cache_creation_input_tokens": 8876
+  },
+  "cost_usd": 0.20894420000000002,
+  "latency_s": 129.021,
+  "raw_file": "raw/gen-P5.dfa-capped.opus-5.5.r03.txt"
+}

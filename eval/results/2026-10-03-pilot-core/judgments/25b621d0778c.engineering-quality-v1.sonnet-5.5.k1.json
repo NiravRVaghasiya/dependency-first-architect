@@ -1,0 +1,173 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "25b621d0778c.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "25b621d0778c",
+  "blind_sha256": "f8ccb59a72398409b893f3a3c3dade1cf8fc37c8680124daa9148db9de8fd0e3",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 470,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "EXIF stores dates as `YYYY:MM:DD HH:MM:SS`. Parse it strictly and reject placeholder values like `0000:00:00 00:00:00`.",
+      "rationale": "Tag IDs, fallback order, colon handling, and local-time semantics are correct; minor slips include Pillow reading subsec/offset from the Exif sub-IFD without detail and the 'Windows and macOS don't distinguish case' claim being a default-config generalization."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "It previews changes by default and only renames when you pass `--apply`.",
+      "rationale": "Covers the core needs including sidecars, collisions, undo, and fallback, with explicit scope exclusions (date folders), but video and RAW support is left partly open."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Keep `planner.py` free of side effects: it takes a list of `(path, datetime)` pairs and returns a plan.",
+      "rationale": "Clean separation between scan, dates, planner, executor, undo; small loose ends such as the undo log's tmp field and subsecond not being in the planner's input tuple."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "`--apply` followed by `undo` restores the original state exactly",
+      "rationale": "Tests target the real risks (swaps, idempotency, sidecars, cross-OS CI, shift at boundaries), but there is no test for crash mid-run, real camera files, or HEIC/exiftool samples, and no post-release checks."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "I suggest local time, with a `--utc` option.",
+      "rationale": "Open questions are listed and defaults chosen, but assumptions on scale, users and platforms are not stated, and there is no sensitivity analysis."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "If anything fails partway, stop and roll back the completed renames using the log.",
+      "rationale": "Covers collisions, case-insensitive clashes, bogus dates, reserved names, swaps, partial failure with a write-ahead log; lacks handling of crash-mid-run recovery after process death, permission errors, symlinks, and sidecar orphan conflicts."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "CI: run on Windows, macOS and Linux, since file-system behavior differs.",
+      "rationale": "For a CLI, packaging via pipx/PyPI and cross-OS CI are reasonable, with exit codes, but there is no versioning, log-format compatibility, or support guidance."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "`argparse` (no extra dependency) or `typer` (nicer help text).",
+      "rationale": "Costs are barely discussed, though for a local CLI they are negligible; dependency and maintenance burden only lightly touched."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Optional: shell out to **ExifTool** with `--backend exiftool`",
+      "rationale": "Backend is isolated behind an interface and the undo log is a persisted format, but log format versioning and the default filename template as a lock-in are not discussed."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "`argparse` (no extra dependency) or `typer`",
+      "rationale": "Small local CLI with modular files; slight extras such as --shift, PyInstaller binaries, two backends, and the deferral of --organize are mostly justified."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "1. **MVP:** JPEG only, Pillow backend, dry run and `--apply`, default format, counter suffixes.",
+      "rationale": "Concrete CLI, module layout, and milestones ordered by dependency; the MVP ships apply before the safe rename, and the plan has no checkpoints or criteria for changing course."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "1. `DateTimeOriginal` (tag 0x9003), the moment the shutter fired"
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "The file's modified time, only if `--fallback mtime` is set. Otherwise skip the file and report it."
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "First, add subseconds if available (`_123`). Otherwise, add a counter: `_01`, `_02`, …"
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "**Dry run:** a table of `old name → new name` plus a summary"
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "Never use a rename call that silently overwrites an existing file. Check that the target doesn't exist first."
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "Before any file is touched, write the undo log (JSON Lines: `{\"old\": ..., \"new\": ..., \"tmp\": ...}`)."
+    },
+    {
+      "id": "P7-07",
+      "status": 2,
+      "evidence": "By default the name uses the local time the photo was taken, with no time-zone conversion."
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "Group files that share a base name and rename them together"
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "`--format TEMPLATE       strftime template (default: \"%Y-%m-%d_%H-%M-%S\")`"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Check that the target doesn't exist first."
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "`DateTime` (0x0132). This is often the edit time, so warn when it's used."
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "Language: Python 3.10+."
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "create small JPEGs during tests with `piexif`"
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "Remove characters that are invalid on Windows (`: * ? \" < > |`)."
+    }
+  ],
+  "note": "Solid, proportionate CLI plan that covers nearly all the domain safety concerns. It is weaker on explicit assumptions, operational and cost reasoning, and crash recovery details.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2131,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 848,
+    "cache_creation_input_tokens": 9756
+  },
+  "cost_usd": 0.045877600000000004,
+  "latency_s": 27.301,
+  "raw_file": "raw/judge-25b621d0778c.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

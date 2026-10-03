@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a50db20cb446.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "a50db20cb446",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 106,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan is a component catalog with no phases or build ordering, so nothing is sequenced from the substrate upward."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No Phase 0 or thin end-to-end production slice is defined; the plan describes the whole system at once."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Option A: Shared DB, schema per tenant / Option B: Shared DB, tenant_id in all tables / Option C: Dedicated DB per tenant (costly)",
+      "rationale": "Tenancy options are listed, but there is no default, no flip condition, and other irreversible choices (Kafka vs RabbitMQ, currency) are left silent."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No within-phase ordering by blast radius exists."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "✓ Row-level security: tenant_id in every query",
+      "rationale": "Security has a standalone section with a checklist and tenant middleware, but it isn't tied to phases, and the checklist is partly label-only."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "'payment_failure_rate > 5%': 'trigger_page'",
+      "rationale": "Metrics and alerts are described in a standalone section, not from a first phase, and are mostly business KPIs."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There is no mention of reproducible builds, IaC, environments, or seeded data."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Retry with exponential backoff",
+      "rationale": "Retries, idempotency keys, dead-letter queues and Multi-AZ appear, but they are scattered and not threaded by phase."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, although it adds none."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There is no explicit list of deferred work or pull-forward conditions; the tenant migration section is only a scaling procedure."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "This is a broad component-level design document with no phases, walking skeleton, or deferral logic, so it scores low on the rubric despite reasonable technical content.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 835,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 11406
+  },
+  "cost_usd": 0.036986,
+  "latency_s": 26.953,
+  "raw_file": "raw/judge-a50db20cb446.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "324156580bb7.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "324156580bb7",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 109,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Postgres write throughput ≤100k evt/sec (confirmed by vendor)",
+      "rationale": "Several material errors: a single Postgres sustaining 100k/sec plus an unsupported claim of vendor confirmation, SOC 2 Type II issued by week 24 despite 6+ month observation, HMAC that doesn't stop tampering while the plan claims immutability, a tenant filter that 'enforces' WHERE clauses, and a charge-centric model that has no invoices or proration."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Synchronous charge API with durable queue + 3-retry exponential backoff; if payment processor fails, queue to DLQ and daily reconciler issues credits.",
+      "rationale": "It models a payment-charge/event pipeline and leaves out core billing: plans, subscriptions, proration, tax, dunning and price versions. Build-versus-buy is dismissed in a line, and 1M events/sec is not realistic."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Strong consistency at invoice commit (ACID); events are immutable log, derived state reconciles on read.",
+      "rationale": "The overall shape is recognizable but has contradictions: the plan says strong consistency while using a DLQ and daily reconciler. It also calls the API key handling 'hardcoded' while forbidding hardcoding, and it has a synchronous 100ms charge beside a 3-retry queue."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "chaos test: injected failures, invoice count matches event sum",
+      "rationale": "Named gates V0–V7 with thresholds and early spikes, but several thresholds are invented. There is no validation of money correctness, webhook ordering, or cross-tenant leak tests beyond a lint, and production validation is thin."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "REQUIREMENT: 100k events/sec ingestion at launch, 1M/sec within 12 months (stated by product).",
+      "rationale": "The plan labels invented figures as 'stated by product' and 'stated contract' when the request stated nothing. Some true assumptions are marked, but the labelling is misleading."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Circuit breaker for Stripe API: if Stripe returns 5xx for >30 sec, stop sending charges to Stripe",
+      "rationale": "It covers Stripe outage, DLQ, DB failover, and reconciliation. Webhook duplicates and out-of-order delivery, late events, partial failures, double charge on timeout with a timestamp-based idempotency key, and dunning are missing or vague."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "On-call: pager (PagerDuty) escalation; initial responder within 5 min, incident commander within 15 min.",
+      "rationale": "It has monitoring, canary, flags, runbooks and migrations. The burden is heavy for 2–3 teams (Vault, Kinesis, Snowflake, Datadog, SOC2), rollback of isolation by disabling the filter is dangerous, and rollback feature-flagging is sloppy."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "cost at 1M evt/sec ≈$50k/mo (estimated); acceptable per product cost model.",
+      "rationale": "Tracks per-tenant cost and names a stream cost driver, but the $50 and $1 per-tenant figures are ungrounded. The vendor fees (Stripe %) and build cost are not considered."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "R3 (defines query filter addition, scaling strategy, and cost model; changes schema, code, deployments per choice",
+      "rationale": "It has a reversibility table with R-levels and revisit triggers covering tenancy, consistency and region. Money and ID schemes, ledger model, and vendor coupling to Stripe are not examined, and the build-versus-buy decision is dismissed."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Managed stream (Kinesis / GCP Pub/Sub) for ≤1M evt/sec capacity",
+      "rationale": "It is over-built for an invented scale (Kinesis, Snowflake, Vault, multi-region replica, 2-person approval, sharding, a 10-min process ceremony), yet it under-builds essentials such as subscriptions, tax and dunning."
+    },
+    {
+      "dim": 11,
+      "score": 2,
+      "evidence": "Exit check: rotate a test key, verify old key works for 30 days then fails, new key works immediately",
+      "rationale": "Phased with exit checks and specific steps, but the content is partly mis-ordered (isolation before data model), some tests are impractical (30-day waits), and billing domain decisions are not specified."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 1,
+      "evidence": "Body: { \"amount\": 1000, \"description\": \"100 API calls\" }"
+    },
+    {
+      "id": "P2-02",
+      "status": 1,
+      "evidence": "audit_events table (append-only, no UPDATE/DELETE); on INSERT trigger verifies tenant_id"
+    },
+    {
+      "id": "P2-03",
+      "status": 1,
+      "evidence": "all charge requests include idempotency_key (charge_id + timestamp hash)."
+    },
+    {
+      "id": "P2-04",
+      "status": 1,
+      "evidence": "Payment data PCI DSS tokenization (no plaintext card)"
+    },
+    {
+      "id": "P2-05",
+      "status": 1,
+      "evidence": "middleware enforces WHERE tenant_id = ? on every query (ORM + raw SQL)."
+    },
+    {
+      "id": "P2-06",
+      "status": 1,
+      "evidence": "Reverse auditing (trace invoices back to events)"
+    },
+    {
+      "id": "P2-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-09",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-10",
+      "status": 1,
+      "evidence": "Cron job (hourly): fetch all Stripe charges created in past 2 hours, compare to `events` table"
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-12",
+      "status": 1,
+      "evidence": "Build vs buy billing engine: no mature open-source option with multi-tenancy + PCI compliance + support; building is necessary."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": true,
+      "evidence": "Body: { \"amount\": 1000, \"description\": \"100 API calls\" }"
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "audit_events table (append-only, no UPDATE/DELETE)"
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "all charge requests include idempotency_key (charge_id + timestamp hash)."
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "Payment data PCI DSS tokenization (no plaintext card)"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "Unit tests: 50 queries, each missing the filter deliberately, must fail CI (using sqlc or similar to typecheck)."
+    }
+  ],
+  "note": "A well-structured, gate-driven process plan that is really a payments/event pipeline rather than a billing system, with invented 'stated' requirements and most core billing domain issues missing.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2519,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 32981
+  },
+  "cost_usd": 0.10783550000000001,
+  "latency_s": 34.302,
+  "raw_file": "raw/judge-324156580bb7.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

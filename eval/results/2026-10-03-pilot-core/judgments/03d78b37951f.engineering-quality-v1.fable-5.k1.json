@@ -1,0 +1,173 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "03d78b37951f.engineering-quality-v1.fable-5.k1",
+  "blind_id": "03d78b37951f",
+  "blind_sha256": "c59ad5a02d885e122453ad8949a73874df7d188d87d69e57681c5e44b5750af4",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 476,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "hard-link then unlink on POSIX, `os.rename` on Windows (it fails if the target exists). Where hard links aren't supported (exFAT)",
+      "rationale": "Precise and correct throughout the subtle areas: no-overwrite rename semantics per OS/filesystem, EXIF tag priority, case-insensitive clash detection, QuickTime UTC caveat, and Windows filename rules."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Formats in scope. JPEG only, or also HEIC, RAW… Default: JPEG and HEIC",
+      "rationale": "Solves exactly the stated problem, resolves ambiguities (formats, sidecars, OSes, timezone) with explicit defaults, and defers out-of-scope items with reasons."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "1. Build the whole plan first. 2. Detect collisions inside the plan… 3. Write each journal entry and flush it to disk before doing that rename",
+      "rationale": "Planner/journal/executor/undo responsibilities fit together with no contradictions, and the journal-first invariant is honored consistently across phases, validation, and rollback."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Kill-injection tests send SIGKILL at random points during `apply`, then run `resume` or `undo`. Run on ext4, NTFS, APFS, and exFAT",
+      "rationale": "Validation is built around the specific worst failures (overwrite, partial run, wrong date), with measurable criteria, gating before `apply` is exposed, and staged real-library rollout afterward."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "ASSUMPTION (basis: ExifTool in batch mode reads headers at hundreds of files per second…)",
+      "rationale": "Every number is labeled REQUIREMENT or ASSUMPTION with a basis, missing inputs are listed with defaults and the decisions they block, and revisit triggers state what changes if assumptions fail."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "case-only clashes on case-insensitive filesystems, existing targets, and same-second bursts. A rename cycle aborts the run",
+      "rationale": "Covers the hard domain failures — collisions, interruption mid-run, corrupt files, missing EXIF, catalog link breakage, symlink escape — each with concrete detection, containment, and recovery via journal/undo/resume."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Rollback: reinstall the previous version (`pipx install photorename==<prev>`) and yank the bad release. Rehearsed once",
+      "rationale": "Deploy, rehearsed rollback, run-ID logs with versions, exit codes, and a bug-report path are all concrete and sized to a one-developer CLI tool."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "A small build: one developer, no outside service, no money flow, and no regulated data… There are no economic dependencies",
+      "rationale": "Correctly identifies that money costs are nil and addresses the build-vs-buy (ExifTool vs own parser) trade-off, but gives no estimate of the dominant cost, engineering time."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: if wrong, photos are overwritten, which cannot be undone… R2: once users have renamed whole libraries, changing the scheme means renaming them all again",
+      "rationale": "Explicitly grades reversibility per decision, validates the irreversible ones first, isolates ExifTool behind an interface, versions the journal schema, and names the point of no return."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "N/A: Monolith vs services: it's one process. Sync vs async: it's sequential local I/O",
+      "rationale": "The simplest workable single-process design; the only heavy machinery (property tests, filesystem matrix) is justified by the irreversible data-loss risk, and extras are explicitly deferred."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Tasks, in order (widest impact first): 1. Define the plan and journal format… 2. Build the no-overwrite rename primitive",
+      "rationale": "Ordered tasks with dependency reasoning, a concrete first slice, specific decisions, checkable exit criteria per phase, and stated fallbacks if each validation fails."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "Date from `DateTimeOriginal`, then `CreateDate`, otherwise skip and report the file"
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "a file with no EXIF date should be left alone rather than guessed"
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "Same-second collisions get `_01`, `_02`, … in `SubSecTimeOriginal` order, then by original name"
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "Default mode: dry run; real renames need `--apply` plus a confirmation prompt"
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "Rename each file atomically without ever overwriting: hard-link then unlink on POSIX, `os.rename` on Windows (it fails if the target exists)"
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "Write each journal entry and flush it to disk before doing that rename… `undo <run-id>` and `resume <run-id>`"
+    },
+    {
+      "id": "P7-07",
+      "status": 2,
+      "evidence": "Camera-local time… Time-zone normalization (`OffsetTimeOriginal`, GPS time). Pulled forward if you mix photos taken in different time zones"
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "rename `.xmp`, `.aae`, and Live Photo `.mov` files that share the photo's base name together with it"
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "Name format `YYYY-MM-DD_HH-MM-SS.ext`: hyphens because Windows forbids colons, and the original extension is kept"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Rename each file atomically without ever overwriting: hard-link then unlink on POSIX"
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "Date from `DateTimeOriginal`, then `CreateDate`, otherwise skip and report the file"
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "No services to run; one pipx package plus ExifTool on the user's PATH"
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "the request says \"renames\": a rename keeps every file and its bytes"
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "hyphens because Windows forbids colons, and the original extension is kept"
+    }
+  ],
+  "note": "An exemplary plan for this task: correct on the subtle rename/EXIF mechanics, journal-first safety with undo and kill-injection validation, explicit assumptions and reversibility grading, and proportionate scope; the only soft spot is unestimated engineering effort.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 9350,
+    "thinking_tokens": 4178,
+    "cache_read_input_tokens": 14337,
+    "cache_creation_input_tokens": 19748
+  },
+  "cost_usd": 0.728727,
+  "latency_s": 159.19,
+  "raw_file": "raw/judge-03d78b37951f.engineering-quality-v1.fable-5.k1.txt"
+}

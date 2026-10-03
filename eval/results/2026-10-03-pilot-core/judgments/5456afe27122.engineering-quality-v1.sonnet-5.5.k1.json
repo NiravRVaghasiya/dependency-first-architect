@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "5456afe27122.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "5456afe27122",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 174,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Database replication on-prem→cloud is **async**, using change data capture (CDC).",
+      "rationale": "Mechanisms (CDC, fencing, reverse CDC, SIU/ADT, NIST 800-88) are accurate; minor issues like managed DB with reverse CDC via DMS, \"Monday 08:00 peak\" lag claim, and replay against clone are plausible but not fully qualified."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "No unplanned outage, and staff never lose the ability to *view* schedules. At the one moment the database writer switches over, new bookings pause for up to 60 seconds.",
+      "rationale": "Interprets zero-downtime sensibly and honestly, covers core needs and defers scope explicitly, though vendor support and cutover communication/hypercare are thin."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "the on-prem app's write permission is revoked at both the routing layer *and* the database, so the two sides can never both accept writes.",
+      "rationale": "Single write authority, consistent fencing, rollback and sync/async choices are applied consistently across phases; no contradictions found."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Replay a week of captured production write requests against a *cloned snapshot* of the cloud database, never the live replica.",
+      "rationale": "Validation targets specific risks (shadow compare, checksums, rule checks, rehearsals, rollback drill) early via Phase 0 and continues post-cutover, though some thresholds are stated without justification."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Assumptions to confirm in week 1. These can change the plan:",
+      "rationale": "Key assumptions and revisit triggers are explicit, but numeric targets (60 s, 99.99%, 5 s) are presented as defaults with limited basis."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Worst failure: Split-brain. Both the old and new databases accept bookings at the same moment",
+      "rationale": "Split-brain, PHI leak, lag, hidden dependencies, rollback triggers covered concretely; WAN/cloud outage clinical downtime handling and adversarial input are lighter."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Written runbook, with a timed step for each action and named owners.",
+      "rationale": "IaC, dashboards, alerts, rollback and ownership are addressed; incident response/on-call and ongoing ops team sizing are thin."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Cost optimisation (reserved capacity, right-sizing). Pull forward after 60 days of steady usage data.",
+      "rationale": "Cost is essentially deferred with no estimates, drivers (dual-running, egress, DR, links), or controls."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Keep it as a permanent switch. Remove it only if it becomes a latency or operations burden.",
+      "rationale": "Identifies one-way points (write cutover, engine/vendor choice) with revisit triggers, reverse CDC exit and routing bypass; replatform to managed DB lock-in has a fallback."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Keep the monolith as it is. A migration is not the time to re-architect.",
+      "rationale": "Mostly proportionate, avoiding rewrite; eight phases and 3 rehearsals plus 14-day gates are heavy but justified for a hospital."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Tasks, in runbook order, in a low-volume window (e.g. Sunday 02:00): 1. Pause writes at the routing layer.",
+      "rationale": "Dependency-ordered phases with concrete tasks, checkable exit criteria, and revisit triggers; team can start from Phase 0 immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "BAA signed before any PHI moves. Private link only. PHI scrubbed from logs."
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "Every interface has been repointed to the cloud and back in a test environment."
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "Per-table row counts and checksums, nightly and on demand."
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "Exactly one database accepts bookings at any time, protected by a fencing mechanism."
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "Rollback completed in ≤ 15 min with zero lost bookings."
+    },
+    {
+      "id": "P6-06",
+      "status": 1,
+      "evidence": "Add a second redundant private link, plus a site-to-site VPN as last-resort backup."
+    },
+    {
+      "id": "P6-07",
+      "status": 1,
+      "evidence": "Paper downtime procedures and downtime report PCs refreshed and staged"
+    },
+    {
+      "id": "P6-08",
+      "status": 2,
+      "evidence": "Federate on-prem AD with Entra ID (or IAM Identity Center)."
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "Load-test at 2× the recorded Monday 08:00 peak."
+    },
+    {
+      "id": "P6-10",
+      "status": 1,
+      "evidence": "in a low-volume window (e.g. Sunday 02:00)"
+    },
+    {
+      "id": "P6-11",
+      "status": 1,
+      "evidence": "Retire on-prem storage under NIST 800-88 media sanitisation, with records-retention sign-off."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "At least 3 full rehearsals on a production-sized clone, including one rollback rehearsal."
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "Exactly one database accepts bookings at any time"
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "Deny non-BAA services."
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "Admissions feed in (HL7 ADT)"
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "Keep the monolith as it is."
+    }
+  ],
+  "note": "Strong, disciplined replatform plan with explicit single-writer fencing, CDC, rehearsed rollback and interface inventory; weak on cost, cutover communication/hypercare, vendor licensing, and clinical downtime detail.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2180,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 919,
+    "cache_creation_input_tokens": 14298
+  },
+  "cost_usd": 0.057736800000000005,
+  "latency_s": 30.744,
+  "raw_file": "raw/judge-5456afe27122.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

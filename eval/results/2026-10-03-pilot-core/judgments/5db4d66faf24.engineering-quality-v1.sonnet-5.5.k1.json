@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "5db4d66faf24.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "5db4d66faf24",
+  "blind_sha256": "02a1c7717c73a9228112209925f4acb9a51ecff115c196fcbd1103f313ea2142",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 352,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "PRs come from forks, so CI runs without secrets and first-time-contributor workflow approval stays on",
+      "rationale": "Mostly accurate on GitHub mechanics (fork PR secrets, App permissions, at-least-once webhooks), with minor imprecision such as the rate limit stated as a 'requirement' and no mention of the GitHub App's limitation on pushing to forks or the cross-fork draft PR constraints."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "I assume it means \"open a draft PR for human review.\" If you want auto-merge, that adds an R3 gate and a later phase",
+      "rationale": "Covers triage and resolve, resolves ambiguity sensibly, explicit deferrals with reasons, and a buildable phased path."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "All GitHub writes go through a separate **executor** that holds the App key and accepts only typed actions",
+      "rationale": "Trust boundary, executor, sandbox, fork org and per-repo scoping are applied consistently across decisions, phases and cross-cutting tables."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Injection suite of ≥100 cases planted in issue bodies, comments, repo files, tool output and test output",
+      "rationale": "Validation is tied to specific risks, riskiest (trust boundary) early, replay evals, shadow mode, canary, and thresholds labeled as assumptions; ongoing CI and production metrics."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "I assume public repos with outside authors, the worst case. If the repos are internal only, the order stays the same and V3 gets easier.",
+      "rationale": "Assumptions, unknowns and baselines are labeled (ASSUMPTION/UNKNOWN/CONFIRMED), with revisit triggers and sensitivity."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Text planted in an issue, comment, repo file or test output takes over the agent. It then either (a) leaks secrets or private code",
+      "rationale": "Domain-specific failures (injection, exfiltration, backdoor PRs, cross-repo leak, bot interaction, dropped webhooks, runaway loops) with detection and recovery; minor gaps on mid-work issue edits."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Terraform plus a GitHub Actions pipeline deploy pinned image digests. Rollback means redeploying the previous digest.",
+      "rationale": "Deploy, rollback, alerts, pause drills and per-phase rollback are concrete; on-call ownership and incident response are thin ('business-hours on-call')."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Triage: ≤30k tokens and ≤$0.30 per issue. Fix attempt: ≤$8, ≤50 tool calls, ≤45 min",
+      "rationale": "Caps, monthly ceiling, cost per merged PR, build vs buy and routing are covered with labeled assumptions, but there is no bottom-up cost estimate and the sandbox/infra/people cost is largely absent."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "| Trust boundary and where credentials live | R3: a leaked secret can't be taken back |",
+      "rationale": "Decisions are classified by reversibility, validated early, with revisit triggers, exit paths, and model seam isolation."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "3 deployables (agent service, action executor, sandbox pool) plus a queue and Postgres; business-hours on-call",
+      "rationale": "Mostly justified, with the split forced by the trust boundary; some ceremony (reversibility tags, phased routing, fork org, buy comparison) is heavy but defensible."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Tasks, widest impact first: 1. Trust boundary: network-denied sandbox, registry proxy, no credentials inside, fork org (V1).",
+      "rationale": "Phased build with dependencies, concrete first slice, checkable exit criteria, and fallback actions if checks fail."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Comments always need approval ... The agent never merges, approves, closes PRs, or edits `.github/workflows`"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "The App has no `workflows`, `administration` or merge rights."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Issues, comments, repo files and tool output are data. Tool allow-list; typed actions; URL, image and path filters"
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "throwaway sandbox (gVisor/Firecracker) with **no GitHub token and no cloud credentials**. Network is denied by default"
+    },
+    {
+      "id": "P4-05",
+      "status": 1,
+      "evidence": "scored against the fix PR's tests; Fork PRs without secrets; secret scanning on diffs"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Precision ≥90% for each auto-applied label class; duplicate detection precision ≥80%"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Cost per merged PR, review time and outcome metrics; ≥30% merged with only minor edits"
+    },
+    {
+      "id": "P4-08",
+      "status": 1,
+      "evidence": "caps cut runaway loops; Executor fails closed; pause drill run; kill switch"
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Fix attempt: ≤$8, ≤50 tool calls, ≤45 min"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "Append-only audit log of every action and approval"
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "Code search in the sandbox (ripgrep plus a symbol index)"
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "Webhook redelivery plus idempotency keys; dead-letter queue; polling sweep"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "A human always merges."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "no GitHub token and no cloud credentials"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Issue text goes in as a delimited data block, never as instructions."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "Cost per merged PR ≤ the owner's target"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Hard caps: 20k tokens and $0.25."
+    }
+  ],
+  "note": "Exceptionally strong, security-first phased plan with explicit validation gates and reversibility reasoning; weaker on cost grounding, incident ownership, and mid-work event handling.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2356,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 16184
+  },
+  "cost_usd": 0.0642012,
+  "latency_s": 34.16,
+  "raw_file": "raw/judge-5db4d66faf24.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

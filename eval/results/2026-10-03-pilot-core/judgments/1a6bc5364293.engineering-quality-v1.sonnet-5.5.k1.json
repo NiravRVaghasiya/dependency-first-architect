@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "1a6bc5364293.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "1a6bc5364293",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 24,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Truly zero write pause is only possible if the application was built for it. Plan for near-zero",
+      "rationale": "Accurate on single write authority, CDC, reverse replication and DNS TTL; minor imprecision such as DNS-flip reliance and no mention of sequence/identity handling in reverse replication."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Switch the database that accepts bookings in one step. Most systems need a pause in new bookings of seconds to a few minutes.",
+      "rationale": "Honestly reinterprets zero downtime as near-zero with read-only continuity and covers core needs, but is thin on specifics like cost and exclusions."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "One database accepts bookings at a time; freeze bookings at the switch",
+      "rationale": "Consistent single-writer design with reverse replication and rollback, though the optional phasing and the cutover table's read-only step are lightly connected."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "at least two complete practice cutovers and rollbacks in a staging copy, each timed.",
+      "rationale": "Validation targets main risks (shadow HL7, load test, failure tests, rehearsals, lag thresholds) with checkable criteria, but little post-launch validation and some thresholds are unjustified."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "I don't have details about your system, so this plan uses common assumptions.",
+      "rationale": "States assumptions and asks questions, but doesn't say how specific design parts change if the assumptions are wrong beyond vendor and shared-resource notes."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Watch for duplicates. Reminders and outbound messages must not fire from both environments.",
+      "rationale": "Covers double-booking, duplicate reminders, hidden integrations, AZ and link loss, rollback, but little on data corruption, adversarial input, or partial failure mid-cutover."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Support period of 2–4 weeks: extra staff on hand and daily check-ins with clinic managers.",
+      "rationale": "Covers rollback, hypercare and monitoring in passing, but lacks specific health signals, ownership and incident response."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Typical timeline: 4–6 months for a mid-size hospital",
+      "rationale": "Cost is essentially unaddressed beyond a timeline; only running on-prem for 30–90 days is implied as overlap cost."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Time-box the rollback decision, for example within 72 hours. After that, problems are fixed forward in the cloud.",
+      "rationale": "Reverse replication, read-only-first, lift-and-shift without redesign, and IaC isolate commitments; vendor lock-in and key/ID choices not examined."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "move the app as-is with a managed database. Don't redesign the app as part of this migration; that adds risk.",
+      "rationale": "Lean phased design; every element is justified and no speculative components."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "T+3–5 min | Point the app, load balancer and interface engine to the cloud; start reverse replication",
+      "rationale": "Ordered phases with a timed cutover runbook and go/no-go gates; remains generic on tooling choices and team roles."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 1,
+      "evidence": "Sign a Business Associate Agreement (BAA) with the cloud provider (HIPAA, or your local equivalent). Use only services the provider lists as eligible"
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "Map every integration. ... EHR/ADT feeds and HL7 SIU scheduling messages; Interface engine (Mirth, Rhapsody, Cloverleaf)"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "Check continuously: row counts, checksums on key tables (appointments, slots, resources, patients), and replication lag."
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "One database accepts bookings at a time; freeze bookings at the switch"
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "Prepare reverse replication (cloud back to on-prem). ... at least two complete practice cutovers and rollbacks"
+    },
+    {
+      "id": "P6-06",
+      "status": 1,
+      "evidence": "a dedicated link (Direct Connect, ExpressRoute or Interconnect) plus a backup VPN"
+    },
+    {
+      "id": "P6-07",
+      "status": 1,
+      "evidence": "run across multiple availability zones, with backups, monitoring, and central logging."
+    },
+    {
+      "id": "P6-08",
+      "status": 1,
+      "evidence": "single sign-on or AD integration so staff log in exactly as they do now."
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "Load testing at 1.5–2× your Monday-morning peak ... Send copies of HL7 traffic to the cloud environment in shadow mode."
+    },
+    {
+      "id": "P6-10",
+      "status": 2,
+      "evidence": "Agree a change freeze around cutover ... Support period of 2–4 weeks: extra staff on hand"
+    },
+    {
+      "id": "P6-11",
+      "status": 1,
+      "evidence": "If it's a vendor product ... confirm early that the vendor supports your cloud and approach."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "Continuous change capture to keep the cloud copy current"
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "That rules out simply running two live copies side by side."
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "Use only services the provider lists as eligible for patient data."
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "Map every integration. This is usually where the risk is"
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "Don't redesign the app as part of this migration; that adds risk."
+    }
+  ],
+  "note": "Sound, proportionate single-writer CDC migration with reverse replication and rehearsed rollback; weak on cost, operations detail, and the specifics of HIPAA, DR targets and break-glass access.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2159,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 919,
+    "cache_creation_input_tokens": 9949
+  },
+  "cost_usd": 0.046654299999999996,
+  "latency_s": 24.349,
+  "raw_file": "raw/judge-1a6bc5364293.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

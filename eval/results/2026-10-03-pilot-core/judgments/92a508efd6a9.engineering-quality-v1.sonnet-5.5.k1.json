@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "92a508efd6a9.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "92a508efd6a9",
+  "blind_sha256": "b580e6194aca65415688b47ec1dbbeddf8a77421d294c84e7b5733430c13d299",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 226,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Signing: a cloud KMS key, not public Rekor, which would publish private repo names.",
+      "rationale": "Mechanisms (OIDC, GitOps pull, Kyverno admission HA risk, expand/contract, Argo pre-sync) are accurate; only minor imprecision such as pre-sync migrations interacting with canary rollback."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Buy and adopt: GitHub Actions, ARC runners, Argo CD and Rollouts, Kyverno, a managed registry. No in-house orchestrator",
+      "rationale": "Covers migration, security, and rollout for 50 services with explicit deferrals, though contract testing, flaky tests and cost estimation are weak or deferred."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "CI only writes image-version bumps to a `deploy-config` repo and holds no cluster credentials.",
+      "rationale": "Pull-based trust boundary, ownership, rollback, single-deployer rule and data flows are applied consistently across phases and cross-cutting table."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "a red-team run from a PR job on a branch and a fork. It attempts to: (a) get production cloud credentials; (b) deploy an unsigned image",
+      "rationale": "V0–V6 target specific risks, test risky assumptions early with measurable thresholds labeled as assumptions, and per-wave post-cutover checks continue."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Assumptions this plan's order depends on (your request didn't say; if any is wrong, tell me and I'll re-sequence)",
+      "rationale": "A1–A4, labeled ASSUMPTION/BASELINE/UNKNOWN numbers, revisit triggers and consequences are explicit."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Worst failure: someone gets into the pipeline, or a bad shared template ships, and an unverified artifact reaches production for many services at once.",
+      "rationale": "Strong on supply chain, admission controller outage, break-glass, platform down, cross-team writes; weaker on flaky tests, dependency pinning and contract breaks."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "A platform on-call rotation and runbooks, including break-glass.",
+      "rationale": "Monitoring, alerts, rollback, DR drill, on-call and page budget sized to a 3-5 person team; a few gaps remain."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "CI compute and storage cost | — | UNKNOWN: needs a monthly CI budget from engineering leadership or finance",
+      "rationale": "Cost is a budget gate and V2 projection with build-vs-buy noted, but no estimate from commit volume and few concrete controls."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: it decides where production credentials for 50 services live",
+      "rationale": "Decisions are rated by reversibility with validation, revisit triggers, exit paths and a guarded point of no return."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Deferred: Per-PR preview environments ... Self-service portal (e.g. Backstage)",
+      "rationale": "Buys existing tools and defers extras explicitly; signing/admission/canary and V-check ceremony are somewhat heavy but justified by security constraint."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "One real commit reaches production with a single trace across every tier.",
+      "rationale": "Walking skeleton first, phases with dependencies, exit checks, rollback and adaptation on failure make it startable immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "Build template families for the tech stacks found in the inventory."
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Run the new CI in shadow on PRs for one week... Only one pipeline may deploy a service at any moment."
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Build each image once and promote the same version through every environment."
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "Cloud access uses short-lived OIDC tokens scoped per repo and environment."
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Every image is signed (cosign with a cloud KMS key) and carries an SBOM and build provenance."
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "expand/contract migrations, run as an Argo pre-sync job"
+    },
+    {
+      "id": "P3-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Merge queue and flaky-test quarantine: feedback p90 goes over 10 min because of retries."
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Add test caching."
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Self-hosted, throwaway runners (one job per pod) in an isolated CI account with no route to production"
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Platform service-level targets with burn-rate alerts."
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "On-call has an audited break-glass deploy"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Old deploy jobs are disabled, not deleted, until V6 passes."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Registry: managed (ECR or GAR) with immutable tags."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "removal of all static CI secrets"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Each team gets an Argo AppProject that restricts it to its own namespaces"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "No in-house orchestrator"
+    }
+  ],
+  "note": "Strong, security-centered, well-sequenced GitOps migration plan with explicit assumptions and validation; weak on contract testing, flaky tests, and quantified compute cost.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 4478,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 18082,
+    "cache_creation_input_tokens": 18783
+  },
+  "cost_usd": 0.0953659,
+  "latency_s": 34.205,
+  "raw_file": "raw/judge-92a508efd6a9.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

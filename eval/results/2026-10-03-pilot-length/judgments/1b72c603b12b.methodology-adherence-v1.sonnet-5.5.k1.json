@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "1b72c603b12b.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "1b72c603b12b",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 44,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Weeks 1–2: GitHub App, webhook ingestion, state machine, triage classifier in shadow mode, and building the historical evaluation set.",
+      "rationale": "Milestones go roughly substrate → triage → sandbox → coding, but guardrails/cost controls land in weeks 8–10, after the coding loop, and no proof gates between phases."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Weeks 1–2: GitHub App, webhook ingestion, state machine, triage classifier in shadow mode",
+      "rationale": "Phase 1 is an end-to-end thin slice (webhook to shadow triage), but it writes nothing and isn't a production path to a real output."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Licensing and data policy for sending code to model providers needs legal sign-off.",
+      "rationale": "Some open questions are listed, but there is no table of irreversible decisions with defaults and flip conditions; stack choices are 'or' options."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "GitHub App, webhook ingestion, state machine, triage classifier in shadow mode",
+      "rationale": "Foundational ingestion/state machine comes before leaf features, but blast radius ordering is not explicit within phases, and policy layer is deferred."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Weeks 8–10: Handling review feedback, plan-approval flow, dashboard, cost controls, red-team pass.",
+      "rationale": "Security content is strong in design (sandbox, least-privilege, policy layer), but milestones put red-teaming and cost controls late rather than threading them per phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Weeks 8–10: ... dashboard, cost controls, red-team pass.",
+      "rationale": "Observability is a standalone section and dashboard is scheduled late; Phase 0 does not explicitly include tracing, though shadow logging exists."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No treatment of reproducible builds, pinned environments, prompt/model versioning or data snapshots across phases beyond held-out eval sets."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Events go into a durable queue (SQS, Pub/Sub or Redis Streams) so retries are idempotent.",
+      "rationale": "Resilience (durable queue, persisted state, budgets, circuit breaker, flaky-test rerun) is described in design but not tied to each phase."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "L0, Shadow: Triage runs but writes nothing.",
+      "rationale": "Has guardrails, budgets, human approval, and autonomy levels, but milestones build triage/retrieval and coding before cost controls and red-teaming, and memory/routing/feedback ordering isn't addressed."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Out of scope at first: merging its own PRs, security vulnerabilities, breaking API changes, architecture decisions",
+      "rationale": "Out-of-scope list and autonomy level promotion criteria exist, but pull-forward conditions for deferred items are mostly absent."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, detailed design with good safety and autonomy ladder, but milestones put guardrails, observability and cost controls late and lack explicit decision gates, reproducibility and deferral triggers.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1210,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 5505
+  },
+  "cost_usd": 0.0259835,
+  "latency_s": 52.303,
+  "raw_file": "raw/judge-1b72c603b12b.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

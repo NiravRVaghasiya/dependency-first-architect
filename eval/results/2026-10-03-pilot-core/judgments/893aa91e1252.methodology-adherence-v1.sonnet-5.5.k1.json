@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "893aa91e1252.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "893aa91e1252",
+  "blind_sha256": "ead2b798233e9769df362ae66be4dc407071e092d43e9660d42394066af118f9",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 441,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1 Foundation: \"Event schema, Kafka, tokenization, lakehouse, rules engine inline, labels pipeline\"",
+      "rationale": "Phases go roughly substrate → features → model → go-live → advanced, but no proof gating of dependencies beyond exit criteria, and the online store/decision engine are loosely sequenced."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 1: \"Rules live; ≥12 months of labeled history available\"",
+      "rationale": "Phase 1 builds a broad foundation (6–8 weeks) rather than a thin end-to-end production slice; model scoring doesn't reach production until Phase 3."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "\"Are you an issuer, acquirer/processor, or merchant? This decides the actions available, the labels, and the liability.\"",
+      "rationale": "Assumptions and open questions exist, including build-vs-buy, but there are no irreversible decisions listed with default plus explicit flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No ordering within phases by blast radius; items are listed without priority rationale."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "\"tokenize the card number (PAN) at the edge and never store CVV or track data.\"",
+      "rationale": "Strong PCI tokenization in ingestion/Phase 1, but security is not addressed in later phases (access control, model/rule change control, etc.)."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "\"System: latency percentiles, timeout and fallback rate, Kafka consumer lag, feature freshness.\"",
+      "rationale": "Monitoring is a standalone section and not tied to Phase 1; only shadow-mode comparison appears in phases."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "\"Define each feature once and use that definition for both streaming and batch backfill\"",
+      "rationale": "Feature definitions, point-in-time correctness, registry and versioning are covered, but not threaded as per-phase environment/build reproducibility."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "\"if features or the model time out, use rules only and a conservative default per segment... use circuit breakers.\"",
+      "rationale": "Good fallback design, but in a standalone section and not tied to phase deliverables; load testing isn't phase-scheduled."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "\"Later: sequence models ... and graph neural networks (GNNs) in the async path.\"",
+      "rationale": "Rules precede the model and shadow mode/champion-challenger exist, plus human analysts, but there are no explicit budgets or defenses, and ML layers are not ordered on the AI-layer sequence."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "\"4. Advanced (ongoing) | Graph/ring detection, sequence models, automated retraining, exploration slice | Gains measured per added part\"",
+      "rationale": "Deferred items are listed with a vague measured-gain condition, but no explicit pull-forward triggers."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Solid domain content on fraud architecture, but weak on build-plan structure: no thin production slice first, no decision gates with flip conditions, and cross-cutting concerns sit in standalone sections.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1191,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 5214
+  },
+  "cost_usd": 0.024953,
+  "latency_s": 17.978,
+  "raw_file": "raw/judge-893aa91e1252.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

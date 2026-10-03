@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "b58b08dc528e.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "b58b08dc528e",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 41,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "hosted fields or Checkout keep us at PCI SAQ A (reduced scope, not zero)",
+      "rationale": "Accurate on PCI, idempotency, RLS, at-least-once with dedupe, and the ledger; minor imprecision, such as a Stripe 30-day event history as a rebuild basis and serializable posting at scale, has limited consequence."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "It bills **our tenants** (customer organizations) for subscriptions plus usage.",
+      "rationale": "It resolves the key ambiguity (who pays whom) with a stated default and lists what changes if wrong, covers the core billing capabilities, and defers out-of-scope items explicitly with triggers."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Provider webhooks are the source of truth for payment status. The bill run is an idempotent batch per (tenant, period).",
+      "rationale": "Ownership, consistency choices and the data flows are consistent across decisions, phases and cross-cutting tables, with no visible contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Property-based tests ... replay each webhook 3×, reorder webhooks ... ≥ 10,000 random scenarios ... 0 unexplained reconciliation differences over 14 days",
+      "rationale": "Each validation is tied to a specific risk with measurable criteria, assumptions labeled, risky items (build vs buy, RLS, PCI) are checked early, and checks continue in production through reconciliation and V3 re-runs on every deploy."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "UNKNOWN: peak usage events/s and growth. Product eng lead supplies it from current telemetry before Phase 2",
+      "rationale": "Assumptions and unknowns are explicitly labeled, with owners and what changes if wrong; a few numbers such as the 20% overhead and the 0.5–0.8% fee are labeled as assumptions."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "kill workers mid-posting, replay each webhook 3×, reorder webhooks, run two bill-run workers on one tenant-period, time out after the provider succeeds",
+      "rationale": "Domain failures (duplicates, out-of-order, tax engine down, cross-tenant, DLQ, DR) are covered with detection and recovery, though disputes and dunning recovery or card-update flows are thin."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Deploy: Terraform provisions the infrastructure. GitHub Actions builds a pinned image, runs migrations (expand-only) ... Rollback: redeploy the previous image.",
+      "rationale": "Deployment, rollback, alerts, SLOs, DR drills and wave gating are concrete for a 3–6 person team, but incident ownership and on-call are only lightly specified."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "fee basis ASSUMPTION: about 0.5–0.8% of billed revenue",
+      "rationale": "Cost drivers (vendor fees, stream and storage, build vs run) are identified with cost checks in the exit criteria, but there is little quantified cost modeling or scaling analysis of Kafka/MSK."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: invoices are legal documents once issued ... Then that tenant gets its own silo",
+      "rationale": "Each decision is tagged with reversibility, the one-way decisions get early validation, and each has a revisit trigger, exit path and isolation seam such as home_region."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "A modular monolith billing service, plus a separate usage-ingestion pipeline (very different scale profile)",
+      "rationale": "It is mostly proportionate with deferrals, but Kafka and Iceberg before the peak rate is known, and a heavy phase and validation structure, add some weight."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Run the §4 request end to end; deploy and roll back through the pipeline; break the webhook endpoint (force 500s)",
+      "rationale": "It gives a concrete first slice, phases ordered by dependencies with exit checks, and fallbacks when validations fail, so a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Money as integer minor units plus ISO 4217 currency. Rated usage held as `numeric`, rounded once per line (rule set by finance)."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "UPDATE and DELETE are revoked at the database level. ... corrections by credit note only."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "Payment intents with idempotency keys. Webhook receiver: signature check, dedupe, out-of-order handling."
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "hosted fields or Checkout keep us at PCI SAQ A; disputes coming in; signed webhook"
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "Row-level security (RLS) with the tenant set per transaction from the verified token, failing closed."
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "5% duplicates, late events inside the window ... Re-rating from raw data; late events accepted up to 72 h"
+    },
+    {
+      "id": "P2-07",
+      "status": 1,
+      "evidence": "Subscription lifecycle: create, change with proration, cancel. Prices immutable and versioned"
+    },
+    {
+      "id": "P2-08",
+      "status": 2,
+      "evidence": "each registered jurisdiction × B2B with and without a valid VAT ID (reverse charge) × exempt; Gapless sequential invoice numbers"
+    },
+    {
+      "id": "P2-09",
+      "status": 1,
+      "evidence": "Dunning that sends reminders only."
+    },
+    {
+      "id": "P2-10",
+      "status": 1,
+      "evidence": "Daily reconciliation of ledger, invoices and provider balance transactions, alerting on any unexplained difference."
+    },
+    {
+      "id": "P2-11",
+      "status": 2,
+      "evidence": "Entitlements are served from a last-known cache ... the product keeps serving when billing is down"
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Buy payments ... tax ... Build catalog, subscriptions, rating, invoicing and an append-only ledger; V1 spike compares 3-year fees"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Money as integer minor units plus ISO 4217 currency."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "UPDATE and DELETE are revoked at the database level."
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "replay each webhook 3×, reorder webhooks"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "No card numbers ever reach us: hosted fields or Checkout keep us at PCI SAQ A"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "Row-level security (RLS) ... CI fails if a new endpoint has no test"
+    }
+  ],
+  "note": "A strong, rigorous plan with explicit assumptions, reversibility tagging and a risk-driven validation program; weaker on cost quantification and on dunning and recovery detail.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2502,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 17881
+  },
+  "cost_usd": 0.0699155,
+  "latency_s": 30.276,
+  "raw_file": "raw/judge-b58b08dc528e.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

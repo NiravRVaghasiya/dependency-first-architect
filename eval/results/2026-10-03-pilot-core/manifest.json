@@ -1,0 +1,234 @@
+{
+  "schema": "dfa-eval/manifest@1",
+  "run_id": "2026-10-03-pilot-core",
+  "created": "2026-10-03",
+  "harness_version": "1.0.0",
+  "repo_commit": "7ec18f4+uncommitted",
+  "skill": {
+    "version": "2.0.0",
+    "files": {
+      "SKILL.md": "362e6e5b84ec4321d01077a9949f971e837cdcad16977b142da527f260ba4d64",
+      "reference/ai-systems.md": "623e02a2b37bbf9bd637a2689d1510179b4a3a65cada3e2f162c1ed11444d579",
+      "reference/evals.md": "f533fee328538d3336e8c44a1a448f182a20ced41bd3323792e75707fdd057b7",
+      "reference/layer-map.md": "ff4531a685bfdd0cb2940f2138f689193e0a93f7eee69524d2dbfdaeb7525169",
+      "reference/plan-template.md": "95ccaec942bf8a640ff4d830daada167a340b6b652242e2ed41aec6d24605c2a",
+      "reference/validation.md": "d5ddad548e7b7be656dc51d5946c3da45ceb21ce5234164440fa5c5829edd407"
+    }
+  },
+  "condition_files": {
+    "dfa": {
+      "SKILL.md": "362e6e5b84ec4321d01077a9949f971e837cdcad16977b142da527f260ba4d64",
+      "reference/plan-template.md": "95ccaec942bf8a640ff4d830daada167a340b6b652242e2ed41aec6d24605c2a",
+      "reference/ai-systems.md": "623e02a2b37bbf9bd637a2689d1510179b4a3a65cada3e2f162c1ed11444d579",
+      "reference/validation.md": "d5ddad548e7b7be656dc51d5946c3da45ceb21ce5234164440fa5c5829edd407",
+      "reference/layer-map.md": "ff4531a685bfdd0cb2940f2138f689193e0a93f7eee69524d2dbfdaeb7525169"
+    },
+    "dfa-v1": {
+      "eval/conditions/dfa-v1.0.0/SKILL.md": "e7065359694646516fc22ef7c1d5dbcb2d887e12a80d5ed86f241583a3f0d1c5",
+      "eval/conditions/dfa-v1.0.0/reference/ai-systems.md": "d9019167e05dac3611774515a2bf5e7fa8d84d95e999c4080eaa7d130b7cb986",
+      "eval/conditions/dfa-v1.0.0/reference/plan-template.md": "7ee2689530ddeb6e7687d0b4fb047e05fa76399fa898b7b64cea9dd27e06d55f",
+      "eval/conditions/dfa-v1.0.0/reference/evals.md": "0963dcac6ec329c02bb18cf61be28bef74fd706baf296a8726575d3bcc286b07",
+      "eval/conditions/dfa-v1.0.0/reference/layer-map.md": "ff4531a685bfdd0cb2940f2138f689193e0a93f7eee69524d2dbfdaeb7525169"
+    },
+    "generic-control": {
+      "eval/conditions/generic-architect/SKILL.md": "8202d700b6a8acade9661ef75d970d36a285ad53dce31009f40a704046ea20c9",
+      "eval/conditions/generic-architect/reference/document-template.md": "517670de5932f7ab0ecf24b9552eef0898f2878615236f7a28d2df41ea230c02",
+      "eval/conditions/generic-architect/reference/guidance.md": "a1221cbaa4130a04df554c6ee69526c259863c4ac6c0c5975970a4bbb636b6ad"
+    }
+  },
+  "config_file": "eval/experiments/pilot-core.json",
+  "config_sha256": "485968cbac66c00835a05f0d5700ab59a26c785babd8ca8ec4f890aaf8dbf2f0",
+  "config": {
+    "schema": "dfa-eval/config@1",
+    "name": "pilot-core",
+    "description": "Pilot, part 1 of 3: does the skill change plans, and is the change specific to it? 8 prompts x {bare request, v2 skill, v1 skill, active control} x 5 runs on Opus 5.5 (effort high), each plan judged blind by Sonnet 5.5 on both rubrics and by Fable 5 on the engineering-quality rubric, plus a leakage probe.",
+    "seed": 20261003,
+    "prompts": [
+      {
+        "id": "P1",
+        "title": "RAG support chatbot",
+        "kind": "AI",
+        "request": "Plan a customer-support RAG chatbot over our help-center docs.",
+        "checklist": "eval/rubrics/checklists/P1.json",
+        "tags": []
+      },
+      {
+        "id": "P2",
+        "title": "Multi-tenant SaaS billing",
+        "kind": "non-AI",
+        "request": "Architect a multi-tenant SaaS billing system.",
+        "checklist": "eval/rubrics/checklists/P2.json",
+        "tags": []
+      },
+      {
+        "id": "P3",
+        "title": "CI/CD for 50 microservices",
+        "kind": "non-AI",
+        "request": "Sequence building a CI/CD platform for 50 microservices.",
+        "checklist": "eval/rubrics/checklists/P3.json",
+        "tags": []
+      },
+      {
+        "id": "P4",
+        "title": "GitHub issue agent",
+        "kind": "AI",
+        "request": "Plan an autonomous agent that triages and resolves GitHub issues.",
+        "checklist": "eval/rubrics/checklists/P4.json",
+        "tags": []
+      },
+      {
+        "id": "P5",
+        "title": "Collaborative doc editor",
+        "kind": "non-AI",
+        "request": "Order the build of a real-time collaborative document editor.",
+        "checklist": "eval/rubrics/checklists/P5.json",
+        "tags": []
+      },
+      {
+        "id": "P6",
+        "title": "Hospital scheduling cloud migration",
+        "kind": "non-AI",
+        "request": "Plan migrating our hospital's on-premises patient scheduling system to the cloud without downtime.",
+        "checklist": "eval/rubrics/checklists/P6.json",
+        "tags": [
+          "brownfield",
+          "regulated"
+        ]
+      },
+      {
+        "id": "P7",
+        "title": "Photo renaming CLI",
+        "kind": "non-AI",
+        "request": "Plan a command-line tool that renames a folder of photos by their EXIF capture date.",
+        "checklist": "eval/rubrics/checklists/P7.json",
+        "tags": [
+          "small"
+        ]
+      },
+      {
+        "id": "P8",
+        "title": "Card fraud detection",
+        "kind": "AI",
+        "request": "Plan a real-time fraud-detection pipeline for card transactions.",
+        "checklist": "eval/rubrics/checklists/P8.json",
+        "tags": [
+          "latency",
+          "ml"
+        ]
+      }
+    ],
+    "conditions": {
+      "baseline": {
+        "kind": "plain",
+        "description": "The request alone, no planning instructions.",
+        "length_cap_words": null
+      },
+      "dfa": {
+        "kind": "skill",
+        "description": "The Dependency-First Architect skill (SKILL.md and the reference files it names, without reference/evals.md), invoked as /dependency-first-architect.",
+        "skill_dir": ".",
+        "skill_name": "dependency-first-architect",
+        "length_cap_words": null
+      },
+      "dfa-v1": {
+        "kind": "skill",
+        "description": "Dependency-First Architect exactly as v1.0.0 measured it (commit 3ba6b70: SKILL.md + the reference files it names, including reference/evals.md, which its Step 8 self-score uses).",
+        "skill_dir": "eval/conditions/dfa-v1.0.0",
+        "skill_name": "dependency-first-architect",
+        "length_cap_words": null
+      },
+      "generic-control": {
+        "kind": "skill",
+        "description": "Active control: an independently written, comparably long generic planning skill.",
+        "skill_dir": "eval/conditions/generic-architect",
+        "skill_name": "architecture-planner",
+        "length_cap_words": null
+      }
+    },
+    "generators": [
+      {
+        "id": "opus-5.5",
+        "provider": "claude-cli",
+        "model": "claude-opus-5-5",
+        "effort": "high",
+        "options": {}
+      }
+    ],
+    "judges": [
+      {
+        "id": "sonnet-5.5",
+        "provider": "claude-cli",
+        "model": "claude-sonnet-5-5",
+        "effort": "high",
+        "options": {}
+      },
+      {
+        "id": "fable-5",
+        "provider": "claude-cli",
+        "model": "claude-fable-5",
+        "effort": "high",
+        "rubrics": [
+          "engineering-quality-v1"
+        ],
+        "options": {}
+      }
+    ],
+    "runs_per_cell": 5,
+    "contrasts": [
+      {
+        "treatment": "dfa",
+        "control": "baseline"
+      },
+      {
+        "treatment": "dfa",
+        "control": "generic-control"
+      },
+      {
+        "treatment": "dfa",
+        "control": "dfa-v1"
+      },
+      {
+        "treatment": "dfa-v1",
+        "control": "baseline"
+      },
+      {
+        "treatment": "generic-control",
+        "control": "baseline"
+      }
+    ],
+    "rubrics": [
+      "methodology-adherence-v1",
+      "engineering-quality-v1"
+    ],
+    "judge_repeats": 1,
+    "blinding": {
+      "strip_self_score": true,
+      "neutralize_terms_for": [
+        "engineering-quality-v1"
+      ]
+    },
+    "probe": {
+      "enabled": true,
+      "judges": [
+        "sonnet-5.5"
+      ]
+    },
+    "workspace": {
+      "readme": "eval/conditions/neutral-workspace-README.md"
+    },
+    "limits": {
+      "max_cost_usd": 200,
+      "jobs": 10,
+      "timeout_s": 3600
+    }
+  },
+  "seed": 20261003,
+  "platform": {
+    "python": "3.13.2",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26100-SP0"
+  },
+  "tools": {
+    "claude": "2.1.288.1084"
+  }
+}

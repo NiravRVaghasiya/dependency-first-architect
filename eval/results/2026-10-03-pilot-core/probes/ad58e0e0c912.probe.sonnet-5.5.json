@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "ad58e0e0c912.probe.sonnet-5.5",
+  "blind_id": "ad58e0e0c912",
+  "blind_sha256": "47f01bcbb088031b3de944eca75e37f1697f072e9dd2a345a9735ea21a19bbd5",
+  "judge": "sonnet-5.5",
+  "order_index": 47,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Fixed, highly structured template: Classification and constraints, Dependencies, Key decisions, first end-to-end slice (Phase 0), Phases, Validation checks, Cross-cutting, AI layer, Exceptions, Deferred",
+    "Reversibility labels (R2/R3) on each decision, with a revisit trigger and a validating check ID (V0–V5)",
+    "Explicit ASSUMPTION/UNKNOWN labels in the budgets table, with named owners and the phase where each gets resolved",
+    "A walking-skeleton Phase 0 that deploys to production with trace, rollback and alerts on day zero, plus 'disposable' docs, and a 'point of no return' marker",
+    "Boilerplate sections that only make sense under a methodology: 'All seven dependency kinds bind', 'N/A: AI rows', 'Exceptions: None', 're-plan from Step 1'"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 377,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8865
+  },
+  "cost_usd": 0.0259405,
+  "latency_s": 27.932,
+  "raw_file": "raw/probe-ad58e0e0c912.probe.sonnet-5.5.txt"
+}

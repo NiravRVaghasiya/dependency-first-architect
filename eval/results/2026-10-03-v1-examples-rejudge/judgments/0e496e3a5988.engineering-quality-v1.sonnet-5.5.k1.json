@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0e496e3a5988.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "0e496e3a5988",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 6,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Postgres sequences leave gaps when a transaction rolls back, and several tax authorities object to gaps",
+      "rationale": "Accurate on subtle points (Stripe idempotency key 24h expiry, SET LOCAL with PgBouncer, partitioned unique index needs partition key, 404 vs 403), with minor slips like Stripe webhooks retry claim and 'Stripe itself guarantees it succeeds at most once'."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "If you meant the billing part of your own SaaS product, see the Build-vs-buy flip in §2. It changes most of this plan.",
+      "rationale": "Resolves the ambiguity explicitly, covers all core billing capabilities, defers others with triggers, and is buildable in phases."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Each module owns its tables and talks to others through interfaces and outbox events. ArchUnit checks the boundaries in CI.",
+      "rationale": "Consistent ownership, same idempotency/tenancy/ledger approach across phases, CP choice honored, phases depend logically; only trivial loose ends (e.g., PDF/email async vs sync finalize is handled)."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "replays every webhook three times, out of order. Result: zero duplicate charges and zero untracked payments.",
+      "rationale": "Validation tied to specific risks (gap-free numbering under concurrency, chaos tests, 36-month simulated clock, replay of 10M events), early canary, and production continuous checks; some thresholds are provisional/invented but labeled as guesses in places."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "when sustained postings near the ceiling measured in Phase 2 (initial guess about 5k/s)",
+      "rationale": "Many assumptions stated with revisit triggers and guesses labeled, but some figures (±30%, 2.5k events/s, 35 days, 20%) are given without basis and team size/scale/budget not stated."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "On an unclear result (timeout or 5xx), look the payment up in Stripe by `metadata.invoice_id`. Never create a new one blindly",
+      "rationale": "Thorough domain-specific failures: duplicate charges, out-of-order webhooks, tax outage, billing-run anomalies, SSRF, late events, with detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "PagerDuty pages on two canary failures in a row, any ledger imbalance, or a job older than 5 minutes.",
+      "rationale": "Strong monitoring, rollback, migrations, break-glass, restore drills; team size/on-call ownership and sizing to a realistic team are not stated, and the scope is heavy."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Buy the rest: payments (Stripe Connect), tax (Anrok or Avalara, Phase 7), email (Postmark)",
+      "rationale": "Build-vs-buy and scaling triggers are addressed, but there are no cost estimates, vendor fee analysis or infra cost drivers/controls."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Each task has a tag in parentheses showing how much would need rework if that task were wrong.",
+      "rationale": "Explicitly separates strict-from-day-zero from flexible, isolates PSP/tax behind interfaces, cell routing, revisit triggers, and exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Modular monolith. One repo, one image, one Postgres.",
+      "rationale": "Modular monolith, Postgres queue, deferrals are proportionate; but the full nine-phase scope, 1M-subscription test, cell routing and SOC2 evidence are some heavy extras."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "The one real request. An internal canary tenant sends `POST /v1/invoices` with an `Idempotency-Key` header",
+      "rationale": "Concrete walking skeleton, ordered phases with dependencies, specific decisions and checkable exit criteria at every stage."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Integers in the currency's smallest unit (`bigint`) plus the ISO-4217 code... Rounding happens once per line, half-up"
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Append-only double-entry ledger... Updates and deletes are blocked, and corrections are reversing entries. Finalized invoices never change; corrections are credit notes."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "Exactly one PaymentIntent per invoice, created with the invoice ID as its idempotency key... handle duplicates and out-of-order events by re-fetching the object"
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "Card details are collected only through Stripe Elements and SetupIntents, so we hold `pm_…` tokens and never a card number."
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "Postgres row-level security (RLS) is forced on, the app role doesn't own the tables... CI rejects any migration that adds a table without RLS"
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "duplicates are dropped by `(tenant_id, event_id)` for 35 days... official numbers are recomputed from raw events at period close"
+    },
+    {
+      "id": "P2-07",
+      "status": 2,
+      "evidence": "Month-end start dates clamp: Jan 31, then Feb 28, then back to Mar 31... a price can't change once it's been used, so editing creates a new version"
+    },
+    {
+      "id": "P2-08",
+      "status": 2,
+      "evidence": "take the next gap-free invoice number from a per-tenant, per-series counter row... Anrok or Avalara behind the `TaxProvider` interface"
+    },
+    {
+      "id": "P2-09",
+      "status": 2,
+      "evidence": "retry schedules per tenant based on decline codes, never retrying hard declines; moves subscriptions from `past_due` to `unpaid` or `canceled`"
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "Daily PSP reconciliation matches every Stripe balance transaction to a ledger posting by PSP ID, and anything unmatched in either direction pages someone."
+    },
+    {
+      "id": "P2-11",
+      "status": 1,
+      "evidence": "An entitlements API: build when tenants ask to gate product features by plan in real time."
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Build the core: catalog, subscriptions, metering, rating, invoicing and the ledger... If this is billing for your own SaaS, flip the whole gate: buy Stripe Billing or Chargebee"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Integers in the currency's smallest unit (`bigint`) plus the ISO-4217 code"
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Finalized invoices never change; corrections are credit notes."
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "replays every webhook three times, out of order"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "so we hold `pm_…` tokens and never a card number"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "Postgres row-level security (RLS) is forced on, the app role doesn't own the tables"
+    }
+  ],
+  "note": "Exceptionally strong, correctness-first billing plan with concrete validation and reversibility reasoning; weakest on cost quantification and stated team/scale assumptions.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2618,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 21496
+  },
+  "cost_usd": 0.079928,
+  "latency_s": 32.12,
+  "raw_file": "raw/judge-0e496e3a5988.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

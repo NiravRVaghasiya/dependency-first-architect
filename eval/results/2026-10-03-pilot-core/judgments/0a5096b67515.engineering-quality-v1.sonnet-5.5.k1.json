@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0a5096b67515.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "0a5096b67515",
+  "blind_sha256": "9f4e125ab24e9c643623aabbc26c68ab28950b641cd4cb13519df3758beae15a",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 469,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Publisher ... opens a draft PR using the GitHub Git Data API (it creates blobs, a tree, a commit, and a ref without ever running `git push`)",
+      "rationale": "Mostly accurate on GitHub App, HMAC, SKIP LOCKED and Git Data API; minor slips (Fargate microVM claim, rulesets on app branches, PR workflows from same-repo branches still get secrets, no-egress ECR pull nuance) are caught by spikes."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Resolution only starts when a **maintainer triggers it** ... Non-goals (pilot): Auto-merging. Closing issues automatically.",
+      "rationale": "Covers triage and resolve with sensible interpretation of ambiguity, explicit exclusions with reasons, and a buildable scope."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "The agent loop runs *outside* the sandbox, and only the Publisher holds a GitHub write token.",
+      "rationale": "Clear ownership and consistent trust boundaries; small loose ends (triage dup search uses two calls despite 'one call'; token scope for resolve vs publish)."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Before anything acts on real issues, historical issues ... become a triage eval set and a SWE-bench-style resolution eval set",
+      "rationale": "Validation is tied to specific risks, spikes come first, thresholds are labeled assumptions, eval gates in CI and live feedback continue post-launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Assumption | Impact if wrong | How and when validated",
+      "rationale": "Explicit assumption table with impact and validation; targets labeled as assumptions until confirmed."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Each step checks before writing: does the ref exist pointing at a commit whose tree SHA matches? Skip",
+      "rationale": "Covers duplicates, crashes mid-publish, provider outage, injection, spam, loops, CI secret exposure, dependency drift with concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Kill switch: `uv run admin kill --repo org/x` or `--global`. It takes effect before the next write, within seconds.",
+      "rationale": "Concrete deploy, rollback, alerts, runbooks, undo, ownership; business-hours only and CLI admin are plausible but some on-call gaps remain."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Resolution: about 0.5–2M input tokens per attempt (less with prompt caching) ... roughly $1–5 each.",
+      "rationale": "Drivers, scaling and controls (per-attempt cap, daily budget) are given with labeled estimates; no explicit build-cost/engineering time comparison beyond buy-vs-build."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "| D9 | **Draft PRs only. Humans merge. Enforced by GitHub rulesets.** ... Hard (to loosen safely)",
+      "rationale": "Decision table with reversibility and revisit triggers; one-way items identified and validated early via spikes; adapters isolate vendors."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Postgres doubles as the queue. Revisit only on the D4 trigger.",
+      "rationale": "Simple single service, no multi-agent, no vector index; the plan is large and includes some ceremony (many components, 18 sections) but mostly justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Done when | Tests replaying recorded payload fixtures show that a valid delivery creates 1 job, a replayed delivery creates 0 new jobs",
+      "rationale": "Task-level breakdown with locations, done-criteria, dependency ordering, and explicit pivots if spikes disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Triage: `T0` shadow (record only), `T1` suggest ... `T2` act; Resolution: `R0` off, `R1` maintainer-triggered draft PRs"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "Mints installation tokens **scoped to one repo and the minimum permissions for that job**"
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Untrusted input handling: delimiting, plus control through capability rather than wording (Flow 5)."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "Sandbox subnet - NO egress, NO IAM permissions, NO secrets ... Destroyed when the attempt ends."
+    },
+    {
+      "id": "P4-05",
+      "status": 1,
+      "evidence": "On `finish(fixed)`, the orchestrator itself runs the repo's full `test` and `lint` commands."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Auto-applied labels ≥ 90% precision on the gold eval set. Duplicate suggestions ≥ 85% precision."
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "removal of a label the agent added within 14 days, counted as a triage false positive"
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "at most 1 unsolicited agent comment per issue per 24 h ... It drops events whose sender is the app itself."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "up to **50 tool calls, 25 min wall-clock, and $5 model spend**"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "The `actions` table is the tamper-resistant audit log: append-only database role, exported nightly to S3 with object lock."
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "`search(pattern, glob)` | ripgrep, max 100 hits"
+    },
+    {
+      "id": "P4-12",
+      "status": 2,
+      "evidence": "`INSERT ... ON CONFLICT DO NOTHING` on `X-GitHub-Delivery` ... one active attempt per issue"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent **never merges, never pushes to protected branches, and never closes issues** in the pilot."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "Agent-executed code can reach no secrets and no network."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Model output is always validated against a schema and passed through the Policy Engine before any write."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "Share of agent draft PRs merged (possibly after edits) | ≥ 30%"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Loop detection: the same tool with the same arguments 3 times ... ends the attempt with `stuck`."
+    }
+  ],
+  "note": "Exceptionally thorough, safety-first plan with eval-first spikes, strong containment and explicit pivots; only minor technical imprecision and some bulk.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2413,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 32998
+  },
+  "cost_usd": 0.1068062,
+  "latency_s": 26.323,
+  "raw_file": "raw/judge-0a5096b67515.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a15b7a95e8c4.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "a15b7a95e8c4",
+  "blind_sha256": "9c87a960956b7871bffe9638a994b5f0976305d84448e970344a9f5644cdfae2",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 456,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Argo CD reconciles from the config repo, so CI never holds prod credentials.",
+      "rationale": "Mechanisms (digest promotion, keyless cosign, Kyverno admission, expand/contract, OIDC) are used correctly; minor imprecision such as 'SLSA L3 aim' and 'Lambda push' with no design consequence."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Phase 0 first slice; Phase 4 \"Onboarding waves. Tier 3 first, then tier 2, then tier 1.\"",
+      "rationale": "Covers core needs, buildable, with explicit deferrals, but does not include a service inventory survey up front and assumes Kubernetes."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "CI/CD is asynchronous and pull-based: Argo CD reconciles from the config repo, so CI never holds prod credentials.",
+      "rationale": "Decisions on GitOps, digest, roles and policy are honored consistently in every phase and the cross-cutting table."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "A deliberately broken release is reverted automatically within 5 minutes.",
+      "rationale": "Each phase has checkable exit checks tied to risks (rollback demo, unsigned image rejection, DR drill, audit before enforce), but thresholds like 5 and 15 minutes are unjustified and post-launch validation is limited."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Kubernetes, with one cluster per environment. This is stated as an assumption, not left silent.",
+      "rationale": "Revisit triggers give sensitivity for key assumptions, but team size, compliance, and commit volume assumptions are not stated and the thresholds are invented."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Ephemeral runners, so a poisoned runner can't persist.",
+      "rationale": "Covers compromised template, platform outage, bad rollout, migration, and unsigned image with detection and recovery, but fork PR handling and partial failures are thin."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "A queryable deploy audit trail (who, which digest, when, which policy decision).",
+      "rationale": "Monitoring, rollback, break-glass, DR drill and runbook are concrete, but a named platform owner and on-call are not defined."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Hosted CI minutes cost more than the total cost of running our own runners",
+      "rationale": "Cost appears only as a trigger and a late cost-per-pipeline report; no estimate of build volume or compute cost, and no build-vs-buy figures."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "If this is wrong, every later phase gets rewired, so it goes first.",
+      "rationale": "Identity, artifact contract and config-repo layout are front-loaded, with revisit triggers and deferrals, though exit paths from vendor lock-in are not spelled out."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Build only the glue: templates, the promotion policy, the `service.yaml` contract and onboarding automation.",
+      "rationale": "Adopts existing tools and defers Backstage, monorepo and custom orchestrator; the toolset (Kyverno, SBOM, SLSA, OTel) is somewhat heavy but justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phase 1 depends on \"Phase 0 path running end to end in prod\"; each phase lists unlocks, dependencies, ordered tasks and exit checks.",
+      "rationale": "Ordering is justified by dependency and risk, decisions are specific, and each stage has checkable results, though there is little on adapting to disappointing results."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "Each service declares owner, tier (1–3), archetype, build entrypoint, test entrypoint, health endpoint"
+    },
+    {
+      "id": "P3-02",
+      "status": 1,
+      "evidence": "Pick 5 pilot services that cover at least 3 languages, plus one stateful service and one batch job."
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Build once and promote the same immutable image digest through dev, staging and prod."
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "OIDC federation from CI to the cloud, with no static keys anywhere."
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Every image is cosign-signed."
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "Expand/contract only, so the previous version still runs against the new schema."
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Each service declares owner, tier (1–3), archetype"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Flaky-test detection and quarantine."
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Layer cache plus a dependency proxy or mirror."
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Runner autoscaling with a minimum warm pool."
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "Change-failure rate and MTTR are reported weekly."
+    },
+    {
+      "id": "P3-12",
+      "status": 2,
+      "evidence": "A queryable deploy audit trail (who, which digest, when, which policy decision)."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Legacy cleanup. Delete each old pipeline and revoke its credentials as each service cuts over."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Images are referenced by digest. Tags are informational only."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "OIDC federation from CI to the cloud, with no static keys anywhere."
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Each service declares owner, tier (1–3), archetype"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "A custom pipeline DSL or orchestrator. Not planned."
+    }
+  ],
+  "note": "A strong, dependency-ordered, security-first GitOps plan that reuses existing tools. Its main weaknesses are almost no cost estimation, no up-front service inventory, and thin ownership and fork-PR handling.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2184,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 12924
+  },
+  "cost_usd": 0.054331199999999996,
+  "latency_s": 32.335,
+  "raw_file": "raw/judge-a15b7a95e8c4.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

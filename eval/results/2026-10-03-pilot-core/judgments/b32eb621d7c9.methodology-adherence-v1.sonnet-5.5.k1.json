@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "b32eb621d7c9.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "b32eb621d7c9",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 204,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Every tenant-scoped table, API and job | Tenancy model (V3) | decision + validation | specified (Phase 1), exposed (Phase 5)",
+      "rationale": "Explicit dependency map and gates (V1 before Phase 1, V3 before exposure, V4/V6/V8 before live charges) order phases from tenancy/ledger substrate upward."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "An internal operator runs \"bill tenant `internal-dogfood` for period P\". The response is a finalized invoice of $1.00, paid with a company-owned card",
+      "rationale": "Phase 0 is a real production end-to-end slice through all tiers with live Stripe, webhook, email, usage path, deploy and rollback."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "V1 shows the full price book bills correctly in a hosted engine... Then buy the engine, keep our own metering, and demote our ledger",
+      "rationale": "A table lists irreversible decisions with reversibility class, default, assumption, validation and explicit flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tenancy keys, RLS and tenant context in the request and in jobs. V3 runs first on this slice",
+      "rationale": "Within phases, widest-impact work (tenancy, money type/ledger, idempotency) precedes leaf work; waves widen 5 tenants, 10%, 50%, all."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "0 | IdP authentication; secrets manager; hosted card fields; webhook signature check; least-privilege database roles",
+      "rationale": "Concrete security controls appear in every phase 0–6 in the cross-cutting table and in tasks."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OTel traces across sync and async legs; JSON logs tagged with tenant and classification; redaction filter; alerts on errors, outbox lag and webhooks",
+      "rationale": "Observability is concrete in Phase 0 and specified for each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform; pinned images; migrations in CI; internal tenant fixture as code",
+      "rationale": "Reproducibility is addressed in every phase (deterministic invoices, replayable raw log, versioned imports, cutover records, checksummed archive)."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Expand-only migrations; rollback rehearsed; idempotency keys and backoff on provider calls; PITR on",
+      "rationale": "Failure handling is concrete from Phase 0 through Phase 6, including per-phase rollback and fallbacks."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: there is no AI component.",
+      "rationale": "Plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Ledger partitioning or sharding. Pulled forward when bill-run writes pass 1,000/s or a run misses the 6 h budget.",
+      "rationale": "Deferred items are listed, each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan that meets all ten rubric dimensions with concrete content; no significant weaknesses found.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1154,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 11688
+  },
+  "cost_usd": 0.040881,
+  "latency_s": 35.662,
+  "raw_file": "raw/judge-b32eb621d7c9.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

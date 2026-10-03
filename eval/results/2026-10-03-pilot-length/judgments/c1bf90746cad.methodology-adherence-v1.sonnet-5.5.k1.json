@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "c1bf90746cad.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "c1bf90746cad",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 12,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Invoicing (Phase 4) | V1 ledger invariants | validation | specified",
+      "rationale": "Phases run data model → catalog → usage → invoicing → live exposure, with explicit dependency table and gates proven before dependents are specified or exposed."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "an internal admin subscribes the internal tenant to a $0 plan... invoice-run job produces a $0 invoice, sends a charge to the processor in test mode",
+      "rationale": "Phase 0 is a real end-to-end deployed slice crossing all tiers with deploy, monitor and rollback, though the processor is in test mode."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Ledger write p99 > 100 ms at 3× load → split the ledger by tenant",
+      "rationale": "Irreversible decisions have reversibility class, default, assumption, validation and flip conditions, with unknowns labeled."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Phase 1 tasks: Ledger schema and money types. Tenant RLS and identifiers. Append-only audit log.",
+      "rationale": "Phase ordering shows widest-impact items first (ledger, RLS before leaf items), but blast-radius ordering within phases is not explicitly reasoned."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: Secrets in a vault; processor test keys only; access via SSO ... Phase 5: Live keys under dual control",
+      "rationale": "Security has concrete, phase-specific entries in every phase starting at Phase 0, plus V2 gate."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Structured logs and an OpenTelemetry trace keyed by tenant and request ID. Alerts for webhook failures and job lag.",
+      "rationale": "Observability is concrete in Phase 0 and each later phase in the cross-cutting table."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Phase 0: IaC; pinned builds ... Phase 1: Versioned migrations ... Phase 3: Raw events kept for replay",
+      "rationale": "Reproducibility has concrete per-phase treatment from Phase 0 through 6."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 3: Dead-letter queue (DLQ); backpressure ... Phase 5: Kill switch for live charging",
+      "rationale": "Resilience appears concretely in every phase, from blue/green rollback in Phase 0 onward, along with per-phase rollback statements."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: no AI component.",
+      "rationale": "Plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Billing-as-a-service (tenants bill their own customers): pulled forward if the assumption in §1 is false.",
+      "rationale": "Deferred items are listed with explicit pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, thorough plan with real walking skeleton, gated decisions and per-phase cross-cutting treatment; only weakness is implicit rather than explicit blast-radius ordering within phases.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1132,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 6079
+  },
+  "cost_usd": 0.026638500000000002,
+  "latency_s": 37.23,
+  "raw_file": "raw/judge-c1bf90746cad.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

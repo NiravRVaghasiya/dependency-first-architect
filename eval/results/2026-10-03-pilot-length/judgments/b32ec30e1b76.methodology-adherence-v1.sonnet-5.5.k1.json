@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "b32ec30e1b76.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "b32ec30e1b76",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 16,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Editor features | V1 (merge algorithm converges with our schema) | validation | specified",
+      "rationale": "Phases go convergence/durability → identity → sync scale → editor features → rollout, each gated by a validation that unlocks the next."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "an internal user, signed in through company SSO, types a character into a plain-text area bound to Yjs... A reload shows the saved state.",
+      "rationale": "Phase 0 is a real end-to-end deployed slice across all tiers with canary, trace and rollback before any feature."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Buy Yjs... Flip condition: V1 or V5 fails → switch to server-ordered operational transform (OT)",
+      "rationale": "Irreversible decisions are tabulated with reversibility, default, assumption, validation and flip condition, and missing inputs are declared."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1 tasks: schema v1, convergence fuzz harness, update log... Phase 4: Rich-text formatting first, then presence, history, comments",
+      "rationale": "Within phases, foundational schema and storage come before leaf features, and tenant model and RLS precede ACL roles and share links; mostly well ordered."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "0 | SSO, TLS, allow-list, secrets in a vault | ... 4 | Input sanitization (pasted HTML)",
+      "rationale": "Security has concrete entries in every phase starting with Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OpenTelemetry carries one trace from browser to database... A deliberately rejected write must trigger an alert.",
+      "rationale": "Observability is concrete in Phase 0 and every subsequent phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform, Helm, pinned dependencies | Fuzz seeds recorded and replayable | Migrations versioned in CI",
+      "rationale": "Reproducibility is addressed concretely in every phase, from infra as code to release tags."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Rollback rehearsed | Snapshot plus log restore drill | Backpressure, Redis failover | Reconnect resend, local buffering",
+      "rationale": "Failure handling appears concretely in each phase including Phase 0."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: there is no AI component.",
+      "rationale": "Plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Full offline-first editing: a customer requirement, or ≥ 10% of sessions spending more than 5 minutes offline.",
+      "rationale": "Deferred items are listed each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong, well-ordered plan with concrete treatment of all dimensions; no significant gaps found.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1056,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 6181
+  },
+  "cost_usd": 0.026133499999999997,
+  "latency_s": 33.263,
+  "raw_file": "raw/judge-b32ec30e1b76.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

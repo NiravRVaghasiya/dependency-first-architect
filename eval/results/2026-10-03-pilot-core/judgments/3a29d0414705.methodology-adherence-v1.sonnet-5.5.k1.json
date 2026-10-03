@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "3a29d0414705.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "3a29d0414705",
+  "blind_sha256": "5b1380448e70cff4d5382e26a4004a717e79de5b2a7daa22338b4db6b7ccbc30",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 241,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Defenses and trust boundary\" ... \"Depends on: V0\"; Phase 3 \"Depends on: Phase 2, V3; V5 and V6 inside this phase.\"",
+      "rationale": "Phases build substrate → defenses → triage → resolution → canary → waves, with explicit dependencies and validation gates proven before dependents."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "The agent posts one triage comment ... GitHub webhook → receiver (HMAC check, ack < 10 s) → SQS → worker ... Terraform deploys to ECS Fargate",
+      "rationale": "Phase 0 is a real production end-to-end slice with deploy, rollback, and trace, before features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Decision | Reversibility | Default (chosen now) | Assumption | Validated by | Flip condition",
+      "rationale": "Irreversible decisions are tabulated with defaults, reversibility class, assumptions, and concrete flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks (widest rework first): 1. App permission set and rulesets ... 2. Bot fork ... 3. Sandbox egress",
+      "rationale": "Within phases, widest-impact items (permissions, rulesets) precede leaf work, and Phase 1 is explicitly ordered that way."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "0 | HMAC-checked webhooks; minimal App scope on 1 repo; token only in the executor (secrets manager); author allow-list; untrusted-data block; hard caps",
+      "rationale": "The cross-cutting table gives concrete security treatment in every phase starting at Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "One OpenTelemetry trace per issue across all tiers. Token and $ metrics per call. Alerts on worker error rate, dead-letter queue depth, and cap hits.",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "GitHub Actions builds a signed image pinned by digest, and Terraform deploys ... Prompt, model ID, and tool schemas are versioned in git and stamped on every trace.",
+      "rationale": "Reproducibility is addressed per phase: Terraform and pinned images, versioned policy, frozen eval sets, pinned sandbox images, canary config in git."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Ack-then-queue; idempotency key; DLQ; kill switch; rollback rehearsed",
+      "rationale": "Resilience measures appear in every phase, from Phase 0 through per-wave rollback and model deprecation planning."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "1. Prompt-injection / guardrail defense ... 2. Cost + latency budget ... 3. Human-in-the-loop ... 4. Retrieval ... 5. Model access ... 6. Memory ... 7. Orchestration ... 8. Routing ... 9. Feedback",
+      "rationale": "Defenses, budgets, and HITL come first in Phase 0/1, followed by retrieval, model access, memory, orchestration, routing (deferred), and feedback in correct order."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Autonomous merge. Pull forward when maintainers ask for it on a narrow class ... and a new gate passes: zero reverted agent merges",
+      "rationale": "Deferred items are explicit, each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan: it meets every rubric dimension with concrete content, and I found no significant gaps.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1310,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11448
+  },
+  "cost_usd": 0.041728,
+  "latency_s": 18.357,
+  "raw_file": "raw/judge-3a29d0414705.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

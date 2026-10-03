@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "aaec3964c6c8.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "aaec3964c6c8",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 116,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 4: \"Depends on: Phase 1 (policy engine and budgets). Uses Phase 2 repo snapshots by SHA.\"",
+      "rationale": "Each phase declares dependencies and proceeds substrate→control plane→eval/retrieval→triage→sandbox→resolve→routing→feedback with exit checks proving prior layers."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "within 60 s the GitHub App applies one label chosen from that repo's existing labels",
+      "rationale": "Phase 0 is a real end-to-end slice (webhook→queue→LLM→policy→ledger→GitHub write) with deploy, tracing and kill switch."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Add a permission only after a written threat model plus maintainer sign-off. Never add `workflows:write` while the agent can read untrusted text.",
+      "rationale": "A full table lists irreversible decisions each with a default and a concrete flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks (widest first): 1. Freeze the GitHub App permission set and the installation/tenant schema.",
+      "rationale": "Phase 1 is explicitly ordered widest-first (permissions, ledger contract, policy) with reasoning, and phases order widest-impact first."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Webhook HMAC check. App private key in a secrets manager (KMS). Short-lived installation tokens. Label allow-list. Kill switch.",
+      "rationale": "The per-phase table gives concrete security content for every phase 0–7 starting with the skeleton."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OTel trace rooted on `delivery_id`. Job, queue-age, token and cost metrics. DLQ, queue-age and error-rate alerts.",
+      "rationale": "Tracing, metrics and alerts exist in Phase 0 and each later phase has specific observability items."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform. Image pinned by digest. Prompt in git, prompt hash written to each action. Pinned model version.",
+      "rationale": "Reproducibility is concretely addressed in every phase, from pinned images to frozen eval sets, snapshots and replayable runs."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Webhook acknowledged before processing. Queue retries with backoff, then DLQ. Dry-run mode.",
+      "rationale": "Each phase lists specific failure handling such as idempotency, fallbacks, reaping, resumability, router fallback and demotion."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Prompt-injection and guardrail defense (Phase 1)... Cost and latency budget (Phase 1)... Human-in-the-loop gating (Phase 1)... Retrieval (Phase 2)... Model access... Memory... Orchestration... Routing... Feedback",
+      "rationale": "Defenses, budgets and HITL come in Phase 1 before retrieval, then model hardening, memory, orchestration, routing and feedback in the required order."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Multi-agent orchestration... Pulled forward if the single-agent state machine stalls on the resolve eval while traces show planning, not coding, is what fails.",
+      "rationale": "A deferred list with specific pull-forward conditions for each item."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan that meets every rubric dimension with concrete, phase-tied content; the only concern is that the model-access layer appears in thin form in Phase 0, which is a reasonable skeleton choice.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1286,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 10237
+  },
+  "cost_usd": 0.0385735,
+  "latency_s": 26.798,
+  "raw_file": "raw/judge-aaec3964c6c8.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

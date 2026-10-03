@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a519f32db900.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "a519f32db900",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 56,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Money stored as integer minor units plus ISO currency. Invoices derived from the ledger",
+      "rationale": "Mostly correct on RLS via non-owner role, SAQ-A, idempotency, but \"serializable\" consistency plus \"Stripe retries webhooks\" lacks ordering nuance and SAQ-A claim is asserted lightly."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Subscription and usage billing for the tenants of a SaaS product. It covers plans, metering, invoices, payments, dunning and ledger.",
+      "rationale": "Covers core needs with explicit deferrals and reasons, but tax/invoice numbering, entitlements and reconciliation to payouts are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Modular monolith (catalog, metering, rating, invoicing, payments, ledger) with enforced module boundaries",
+      "rationale": "Consistent design with clear ownership; minor loose ends (serializable ledger vs ingest latency handled via outbox, who owns entitlement unclear)."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Property-based test: 1M random operations with duplicated, reordered and retried webhooks and calls",
+      "rationale": "Risk-specific validation V0–V4 with checkable thresholds labeled assumption, early for riskiest parts, shadow billing and cohort rollout; post-launch SLO/reconciliation."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Usage-ingest throughput | UNKNOWN. Product must supply peak events/sec per tenant; needed in Phase 2",
+      "rationale": "Assumptions and unknowns labeled, with what changes if wrong (Stripe Connect, residency, schema-per-tenant)."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Webhook signature verification; SAQ-A review",
+      "rationale": "Major failures covered (double charge, cross-tenant, duplicate/reordered webhooks, DLQ, kill switch), though dispute, provider outage and tax failures are thin."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Rollback is a blue/green switch, rehearsed once.",
+      "rationale": "Deploy, rollback, alerts, restore drill, SLO, migrations addressed; incident ownership/on-call is thin."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Stripe fees or coverage unacceptable.",
+      "rationale": "Cost is barely addressed: no fee estimates, infra or people cost, or scaling of cost with usage."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: tenant IDs sit in every row; a leak cannot be undone",
+      "rationale": "Each decision classified by reversibility with validation, revisit trigger, exit seam (vault-token export) and deferred items."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Operational complexity | 1 deployable, Postgres, 1 queue",
+      "rationale": "Modular monolith, deferred Connect/FX/multi-region, essentials retained; small ceremony overhead."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "an internal test tenant calls `POST /subscriptions` on a $1 plan. That posts a ledger entry, issues an invoice",
+      "rationale": "Concrete walking skeleton, phased by dependencies with exit checks and fallbacks on validation failure."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 1,
+      "evidence": "Money stored as integer minor units plus ISO currency."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Append-only double-entry ledger... Credits and refunds as ledger entries."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "Property-based test: 1M random operations with duplicated, reordered and retried webhooks and calls"
+    },
+    {
+      "id": "P2-04",
+      "status": 1,
+      "evidence": "card tokenization via hosted fields keeps us in PCI SAQ-A scope"
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "row-level security enforced by a non-owner DB role"
+    },
+    {
+      "id": "P2-06",
+      "status": 1,
+      "evidence": "A usage-ingest endpoint with deduplication by event ID."
+    },
+    {
+      "id": "P2-07",
+      "status": 1,
+      "evidence": "Plans and versioned prices; a price never changes once published."
+    },
+    {
+      "id": "P2-08",
+      "status": 1,
+      "evidence": "Tax-vendor integration."
+    },
+    {
+      "id": "P2-09",
+      "status": 1,
+      "evidence": "Dunning and retries."
+    },
+    {
+      "id": "P2-10",
+      "status": 1,
+      "evidence": "Stripe PaymentIntents and webhook reconciliation."
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Buy: Stripe for payments and card vault, a tax vendor for tax. Build: catalog, rating, ledger, invoicing"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Money stored as integer minor units plus ISO currency."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Append-only double-entry ledger. Invoices derived from the ledger"
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "Webhook signature verification; SAQ-A review"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "No card data on our side."
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "row-level security enforced by a non-owner DB role"
+    }
+  ],
+  "note": "Strong, risk-ordered plan with excellent validation, assumptions and reversibility; weak on cost, tax/invoice numbering, entitlements, and reconciliation detail.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2014,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 12096
+  },
+  "cost_usd": 0.05057300000000001,
+  "latency_s": 56.156,
+  "raw_file": "raw/judge-a519f32db900.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

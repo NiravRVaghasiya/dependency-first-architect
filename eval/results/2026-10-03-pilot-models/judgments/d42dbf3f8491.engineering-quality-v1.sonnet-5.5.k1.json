@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "d42dbf3f8491.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "d42dbf3f8491",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 94,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Kafka messages carry `tenant_id` as the partition key, which preserves per-tenant ordering.",
+      "rationale": "Mostly correct on money, RLS, PCI SAQ-A, outbox and idempotency; minor imprecisions (hot partition for a 10k eps tenant, 'gapless' numbering with jitter/drafts, Debezium relay with exactly-once claims) have modest consequence."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "I'm assuming you're building a platform where many customer companies (tenants) bill their own end customers",
+      "rationale": "Resolves the ambiguity explicitly and covers core billing capabilities with phased scope and build-vs-buy, though some items are deferred without reasoning and scope is large."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Start as a **modular monolith** with these as internal modules, and split out only Usage Metering and Payments first.",
+      "rationale": "Clear responsibilities and consistent idempotency/tenancy, but the diagram shows many services while the text says monolith, and the cell architecture versus pooled RLS and the MVP is a bit loose."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Backfill and replay: ... you can re-rate a period in a sandbox and diff it against the real invoice.",
+      "rationale": "Has tenant-isolation tests in CI, re-rating diffs, and reconciliation, but lacks measurable acceptance criteria, load tests for ingestion, or early risk spikes."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Questions That Would Change the Design",
+      "rationale": "States the tenant-of-tenant assumption and lists open questions, but figures like 10k+ events/sec, RPO/RTO and team size under 15 are unqualified and sensitivity is only lightly explained."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Make PSP webhooks the source of truth, and reconcile against PSP settlement reports daily to catch missed webhooks.",
+      "rationale": "Covers double-charge, usage duplication, late events, thundering herd, leaks and ledger imbalance paging with concrete mitigations, but webhook out-of-order/dedupe, disputes and recovery steps are thin."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Business metrics: invoice success rate, payment failure rate by decline code, MRR/ARR, usage lag, dunning recovery rate, and ledger imbalance",
+      "rationale": "Good domain signals, DR targets and break-glass access, but little on deployment, rollback, schema migration, on-call ownership, and the stack (Kafka, ClickHouse, Temporal, K8s, cells) is heavy to run."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "A custom build costs years of edge cases (tax, proration, dunning).",
+      "rationale": "Build-vs-buy is noted qualitatively, but there is no cost analysis of PSP/tax fees, infrastructure, ClickHouse/Kafka scaling or cost controls."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "**Prices are immutable.** Changing a price creates a new version, and subscriptions reference a specific price ID.",
+      "rationale": "Identifies immutable prices, PSP abstraction, tax adapter, tenancy tiers with cell routing, and modular monolith to split later; identifier schemes and lock-in are not deeply examined."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Start as a **modular monolith** with these as internal modules",
+      "rationale": "Starts with a monolith and phases, but the stack (Kafka, Flink, ClickHouse, Temporal, Redis, warehouse, cells, Debezium) is a lot for the stated team, and the MVP boundaries are blurred by cell architecture in the recommendation."
+    },
+    {
+      "dim": 11,
+      "score": 2,
+      "evidence": "**MVP:** Catalog, flat-rate subscriptions, invoices, one PSP, basic ledger, webhooks, pooled tenancy with RLS.",
+      "rationale": "Has phased ordering and concrete design choices, but no checkable milestones or exit criteria, and it ends with an offer to go deeper rather than detailed first steps."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 1,
+      "evidence": "**Money** is stored as integer minor units plus an ISO 4217 currency code. Never use floats."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "**Invoices are immutable once finalized.** Corrections go through credit notes or new invoices."
+    },
+    {
+      "id": "P2-03",
+      "status": 1,
+      "evidence": "Idempotency keys are derived from `invoice_id + attempt_number` on every PSP call."
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "Never store card data. Use tokenization to stay at PCI SAQ-A."
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "RLS policies on every table: `USING (tenant_id = current_setting('app.tenant_id')::uuid)`."
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "Keep raw events in object storage (S3/Parquet) so any invoice can be reproduced."
+    },
+    {
+      "id": "P2-07",
+      "status": 2,
+      "evidence": "store the billing anchor and timezone explicitly per subscription."
+    },
+    {
+      "id": "P2-08",
+      "status": 2,
+      "evidence": "finalize (assign a gapless sequential number per tenant, as some jurisdictions require)"
+    },
+    {
+      "id": "P2-09",
+      "status": 1,
+      "evidence": "It uses smart retries based on the decline code (soft and hard declines differ), sends emails, and ends with a terminal action"
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "reconcile against PSP settlement reports daily to catch missed webhooks."
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-12",
+      "status": 1,
+      "evidence": "If billing isn't your core product, use Stripe Billing, Orb, Metronome, or Lago and build only the integration layer."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Never use floats."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "LedgerAccount ─< LedgerEntry (double-entry, append-only)"
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "Idempotency keys are derived from `invoice_id + attempt_number` on every PSP call."
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "Use PSP-hosted fields or tokens so card data never touches your systems."
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "automated tenant-isolation tests in CI"
+    }
+  ],
+  "note": "Strong, domain-aware billing architecture that avoids all traps, but it is weak on entitlements, cost analysis, measurable validation and operational detail, and it is heavy on infrastructure.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2415,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 12443
+  },
+  "cost_usd": 0.0554505,
+  "latency_s": 40.517,
+  "raw_file": "raw/judge-d42dbf3f8491.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

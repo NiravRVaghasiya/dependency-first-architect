@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "53e1509201a2.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "53e1509201a2",
+  "blind_sha256": "783523fa2a4d6f339e6e65784c4e7580834a70b940bbc676b61feb70330a2861",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 450,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Because `workflows` is withheld, GitHub itself rejects any change to workflow files.",
+      "rationale": "Mechanisms are largely accurate (HMAC, delivery IDs, SKIP LOCKED, App permissions, 10s webhook timeout), with minor imprecision such as 'GitHub does not reliably redeliver' and Fargate microVM isolation claims, and same-repo branch CI secret exposure correctly flagged."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Non-goals: Merging PRs, closing issues, or pushing to protected branches. These stay human actions.",
+      "rationale": "Covers triage and resolve with explicit scope exclusions, sensible ambiguity defaults, and a buildable pilot."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Only the GitHub Gateway can write to GitHub, and it accepts only a short list of typed actions.",
+      "rationale": "Responsibilities, data ownership, trust zones and idempotency are consistently applied throughout, with only trivial loose ends."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Pass means **zero writes that get past the gateway** and the expected verdicts.",
+      "rationale": "Validation targets specific risks (back-test with fail-to-pass, adversarial suite, egress checks, fault injection), is front-loaded in M1 spikes, labels thresholds as assumptions, and continues in production sampling."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "| A5 | Pilot repositories have tests that run in a container **without** secrets or Docker-in-Docker ... | If not: we need fork-based PRs",
+      "rationale": "Assumptions are numbered with impact and validation, defaults given, targets flagged as provisional; a few figures like infra cost are lightly grounded."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "The Worker running the attempt crashes during `running`. The heartbeat stops, and after 5 minutes another worker takes over the lease.",
+      "rationale": "Covers duplicates, partial publish failure, injection, provider outages, missed webhooks, and secrets in CI with concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Support during business hours only, no 3 a.m. pager, because the failure mode is \"humans triage as they do today\".",
+      "rationale": "Deployment, rollback, alerts, runbook, ownership and migrations are concrete and sized to the team; some gaps like the policy-violation response taking a business day and limited incident detail."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Fix attempts are expected to cost $1–8. This is *unmeasured* and S1 will produce real numbers.",
+      "rationale": "Dominant driver identified, per-attempt/daily caps enforced at gateway, cost per merged PR tracked; infra figures have thin basis."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "| D2 | ... | Hard (shapes everything) | ... | D8 ... Hard once built (language) | Switch before M1 week 1 if so.",
+      "rationale": "Decision table rates reversibility, isolates vendor coupling behind ResolverEngine/SandboxRunner and model aliases, and validates hard choices early."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Postgres as both database and queue ... One fewer system; volume is under 1 job per second",
+      "rationale": "Mostly proportionate with deliberate shortcuts and deferrals, though separate Model Gateway, egress proxy, two Apps and extensive eval machinery are substantial for a pilot."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "*Done when* `uv run ops sandbox-smoke --repo <pilot1>` runs its test suite green in staging, with timings recorded. *Changes the plan if* that fails",
+      "rationale": "Tasks have files, done-when criteria, dependencies, week ordering, and explicit adaptation rules and a go/no-go rule."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "`off → shadow → assist → auto` ... Promotion needs the stage's metrics to be met for 2 weeks and sign-off from the champion and the agent team."
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "No `workflows`, `administration`, `secrets`, or `members` permissions. ... Installation tokens are short-lived (1 hour)."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Comments are **templates** filled with those keys, not free text from the model, so an injected instruction cannot make the bot post arbitrary content."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "**No task IAM role.** A security group that allows only the egress proxy, the Model Gateway, and S3"
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "a second, fresh sandbox applies the patch to the clean snapshot and runs the repository's configured `test_command`. The agent's own claims are not trusted."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Triage: 200–300 closed issues per pilot repository ... Metrics: per-label precision and recall, duplicate precision, abstain rate."
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "The `label` webhook records an `outcomes` row (override), which feeds the dashboard and the next eval refresh."
+    },
+    {
+      "id": "P4-08",
+      "status": 1,
+      "evidence": "≤ 60 harness steps, ≤ 45 minutes wall clock, ≤ $8 in model spend ... Kill switch (global or per repository, within 60 s"
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "The number that matters is cost per *merged* PR, because failed attempts count too."
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "`agent_actions` (audit) | Postgres (append-only; app role has INSERT only) | GitHub Gateway | Every intended or applied write with policy verdict"
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "a tool configuration that allows file read/edit, search, and shell inside the workspace."
+    },
+    {
+      "id": "P4-12",
+      "status": 2,
+      "evidence": "Both map to the same `idempotency_key` because `trigger_id` is the **comment ID**. ... `/agent stop` or closing the issue cancels the attempt"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent never merges, never closes issues, and never changes CI workflows [A3]."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "**No GitHub credential ever enters the sandbox.**"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "wrapped in marked \"untrusted content\" blocks ... Safety comes from what the agent is allowed to do, not from prompt instructions."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "The number that matters is cost per *merged* PR"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "≤ 60 harness steps, ≤ 45 minutes wall clock, ≤ $8 in model spend (enforced by the Model Gateway, not only the harness)."
+    }
+  ],
+  "note": "Exceptionally thorough, capability-based design with evidence-first sequencing; minor weaknesses are limited retrieval detail and some weight for a small pilot.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2572,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 34622
+  },
+  "cost_usd": 0.112283,
+  "latency_s": 49.287,
+  "raw_file": "raw/judge-53e1509201a2.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

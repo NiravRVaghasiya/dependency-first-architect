@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "bc088b473ada.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "bc088b473ada",
+  "blind_sha256": "d713896ed145231e84ef5e9e8bfa5962e6104579c803a870ba0253c7b904c68e",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 24,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "CRDT (Yjs library: simpler eventual-consistency, no OT tombstones, works offline-first)",
+      "rationale": "Yjs does have tombstones (deleted-item metadata), and the plan says to add version vectors and message IDs on top of Yjs, treats Yjs ops as a custom op log, and treats GC of old ops after 7 days as safe. Compacting a CRDT log that way can lose history and break offline clients. Some claims are also contradictory: 'Y.Doc replaces ad-hoc CRDT'."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Phase 0: User 1 types three characters, a second user sees them with <500 ms latency, both users' cursors visible",
+      "rationale": "It covers the main collaboration path with a realistic stack, but omits undo, version history and the rich-text schema. Offline is both included and deferred."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Offline support: Yes: queue local ops offline ... Deferred: Offline-first client (sync on background): Deferred until Phase 4",
+      "rationale": "The overall design is recognizable, but it contradicts itself on offline support, on tenancy ('one document per workspace' vs multi-workspace deferral), and on auth stubs vs a feature flag that defaults to off."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "simulate 5 concurrent clients, 20 ops each, with random delays and out-of-order delivery; compare final state across all clients",
+      "rationale": "Convergence testing comes early, and load, failover and ACL tests have checkable criteria. However, the test is small, there is no duplicate-delivery fuzzing, and some thresholds are invented."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "ASSUMPTION: typical small-team document",
+      "rationale": "Budgets are labeled as assumptions and missing inputs are listed, but sensitivity is only lightly covered. Some figures are inconsistent, such as '$50/month for 50 users' 500 GB aggregate' against the 10 GB storage target."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "add message ID to detect duplicates; ... kill Postgres; backend alerts and stops accepting ops",
+      "rationale": "The plan covers crashes, DB failure, duplicates and viewer writes. It misses malicious or oversized updates, revocation on open connections, schema corruption and poison-update handling."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Prometheus metrics (ops/s ingested, latency histogram, Postgres query latency, snapshot size, GC duration); ... on-call runbook",
+      "rationale": "Observability, canary rollout, rollback and restore testing are present and sized for a small team. Some pieces, such as ELK, DataDog, chaos tests and SAML, are too heavy for the team, and the rollback steps are thin."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Storage cost | ≤ $50/month for 10 GB active documents",
+      "rationale": "The cost drivers are identified and the budget is stated, but the figures are thin or inconsistent. The plan mentions 'inference cost' alerts with no AI component, and gives no build cost or people cost."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "CRDT vs. Operational Transform | R3 (both assume different network ordering; switching mid-development breaks clients)",
+      "rationale": "Each decision has a reversibility rating and a revisit trigger, and the OT/CRDT choice is validated early. However, persisted format versioning is missing, and the suggested fallback switch to OT is unrealistic."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Add Postgres replica for read-only queries (not critical yet, but prepared)",
+      "rationale": "The core stack is simple, but the plan has ceremony and speculative items such as replicas, SAML, chaos engineering and blue-green. It also leaves out essentials such as undo."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Spawn 10 clients, each submitting 10 ops/s for 60 s (Poisson-distributed); kill backend at t=30 s",
+      "rationale": "The phases are ordered with exit checks, specific tasks and fallbacks. Some sequencing problems remain: auth lands late at Phase 3, and persistence comes in Phase 2 even though Phase 0 already writes ops_log."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "CRDT (Yjs library: simpler eventual-consistency, no OT tombstones, works offline-first)"
+    },
+    {
+      "id": "P5-02",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "5 concurrent clients, 20 ops each, with random delays and out-of-order delivery; compare final state across all clients"
+    },
+    {
+      "id": "P5-04",
+      "status": 1,
+      "evidence": "implement periodic cleanup of old ops (keep last 7 days; snapshot every 1 day to enable recovery)"
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "WebSocket server (ws library), routes messages between peers; implement per-doc subscriptions"
+    },
+    {
+      "id": "P5-06",
+      "status": 1,
+      "evidence": "offline queue survives client crash (persisted to localStorage)"
+    },
+    {
+      "id": "P5-07",
+      "status": 1,
+      "evidence": "op is rejected server-side if user not in ACL"
+    },
+    {
+      "id": "P5-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "Both clients' cursor positions update on remote keystroke; presence indicators (who is online)"
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Phase 0 end-to-end slice; Phase 1 — CRDT conflict resolution & algorithm validation"
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "on client join, send snapshot + ops since"
+    },
+    {
+      "id": "P5-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Implement Yjs `Y.Doc` and Y.Text for shared document (replaces ad-hoc CRDT)"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "Persistence layer: ops_log table; write all ops to Postgres with commit timestamp (event sourcing)"
+    },
+    {
+      "id": "P5-T5",
+      "present": true,
+      "evidence": "CRDT (Yjs library: simpler eventual-consistency, no OT tombstones, works offline-first)"
+    }
+  ],
+  "note": "A reasonable Yjs-based, phased plan with early convergence testing and clear gates. It is weakened by weak CRDT log compaction and GC semantics, internal contradictions on offline and persistence, and missing undo, version history and protocol versioning.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2424,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 16256
+  },
+  "cost_usd": 0.06506119999999999,
+  "latency_s": 34.425,
+  "raw_file": "raw/judge-bc088b473ada.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

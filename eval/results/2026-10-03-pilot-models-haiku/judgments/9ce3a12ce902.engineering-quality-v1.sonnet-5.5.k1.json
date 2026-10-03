@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9ce3a12ce902.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "9ce3a12ce902",
+  "blind_sha256": "4215f3a27aab63c7483e2b25fadb80e058a1a6ec5d5fa45c2115c21ee71107bc",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 57,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Flakiness detection: \"if a test fails then passes on the same commit (within the same build), flag as flaky and don't fail the build\"",
+      "rationale": "Mostly sound (digest-pinned images, HMAC webhook, buy-not-build), but several errors: auto-passing retried tests hides real flakes, \"Sealed Secrets\" is not a runtime secrets manager, \"Postgres + etcd\" is unexplained, and the \"consistency vs availability\" framing is misapplied."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Build vs buy: \"Buy a managed CI/CD service (GitHub Actions or Buildkite for scale, or self-hosted GitLab CI); do NOT build a custom orchestrator\"",
+      "rationale": "The phased migration with a pilot is buildable, but there is no inventory of languages or build tools, no build contract beyond .platform.yaml, and the tool is left undecided. The Phase 3 timeline of 35 services in 3 weeks is optimistic."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"Per-service RBAC (Phase 1); single 'can deploy' role\" vs Phase 1 task list lacking RBAC, and Phase 3 \"old pipelines are decommissioned\" vs per-service cutover",
+      "rationale": "The design is recognizable but has loose ends: RBAC is deferred to \"Phase 1\" while being built in Phase 2, the Phase 4 feature-flag material contradicts the Phase 3 service-mesh task, and the \"PII logging\" and audit items are muddled."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "\"Phase 0 exits if the chosen tool meets latency, throughput, and availability targets on a canary\"; V0–V5 with thresholds marked ASSUMPTION",
+      "rationale": "Validation is risk-targeted and early (tool spike, load tests, canary drills, DR restore) with checkable criteria and labeled assumptions. Little of it continues in production, and some thresholds are invented."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "\"Missing inputs: Current state of the 50 services... Assumption: at least one service has a clear deployment pattern\"",
+      "rationale": "Assumptions are labeled, with missing inputs and owners. However, the \"two-person platform team\" and \"$500/month\" figures are weakly grounded, and V3 labels a budget as a REQUIREMENT when it is not."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"Document the top 5 failure modes (build queue stuck, registry unavailable, secrets backend down, runner OOM, control-plane unhealthy)\"",
+      "rationale": "Operational failures are covered with runbooks and drills. Supply-chain compromise, fork-PR abuse, poisoned caches and bypass of the deploy path are missing, and so is the handling of DB migrations."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "\"Control-plane state is version-controlled... Runners are stateless and ephemeral... Artifact storage and secrets backend are backed up nightly\"",
+      "rationale": "Monitoring, alerting, runbooks, DR drills, rollback per phase and a burn-rate SLO are concrete. Named ownership is thin, and the two-person team carries a heavy load."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"Storage cost | < $500/month for initial 50 services | ASSUMPTION: conservative estimate\"",
+      "rationale": "Cost metering and retention controls are in place, but the dominant driver (runner compute from build volume) is never estimated. The hosted vs self-hosted trade-off is not analyzed, and chargeback is over-planned."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "\"Reversibility | R2 ... R3\" table with \"Revisit trigger\"; \"Point of no return: Decommissioning old pipelines\"",
+      "rationale": "The plan explicitly rates reversibility, isolates the tool choice behind an early spike, and names the point of no return. Some ratings are odd, and the `.platform.yaml` lock-in is not examined."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Multi-region architecture... Service-mesh integration (Istio, Linkerd)... Obsidian dashboard + Slack slash commands\"",
+      "rationale": "The plan is mostly deferral-driven, but it includes speculative Phase 3–4 items (multi-region, service mesh, feature-flag canary, chargeback, custom dashboards) and heavy ceremony around a lean team."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "\"Tasks (in order — rework widest first, exposure smallest first)\" with per-phase exit checks and E2 spike",
+      "rationale": "The ordering is justified, with concrete tasks and checkable exits. The tool choice and build contract details are left open, and some wave sizes and timing are unrealistic."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "commit a `.platform.yaml` file with build and deploy config"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Services onboarded in Phase 2 keep their old pipeline (the fallback) active during wave 1."
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "image digest (immutable)... every deploy maps to a specific commit"
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "Centralized secrets backend... per-service temporary credentials; Secrets injected as environment variables"
+    },
+    {
+      "id": "P3-05",
+      "status": 1,
+      "evidence": "Build job uses immutable base image (digest pinned, not tag); Changes to strategy require code review"
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "automated rollback to previous image... error rate > 5%"
+    },
+    {
+      "id": "P3-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "flag as flaky and don't fail the build, but log for the service team to fix"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Platform runs them in parallel; Build feedback < 5 min p95"
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Configure runners to spawn on demand... runner count peak ≤ 60"
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "Availability / SLO 99.5% over 30 days; MTTR, rollback count per week"
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "Audit: who approved each deploy, when; prod deploys require approval from service lead"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Weeks 1–2: Onboard 3 lowest-risk services... old pipeline is decommissioned for that service"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "image digest (immutable)"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "Secrets injected as environment variables (not mounted files; Phase 1 hardens this)"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "per-service promotion manifests"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "do NOT build a custom orchestrator from scratch"
+    }
+  ],
+  "note": "The plan is a solid phased migration with a pilot, early validation and a no-custom-orchestrator decision. It is weak on supply-chain security, fork-PR and credential handling, schema-migration safety, contract tests, and runner compute cost. It also has an unresolved tool choice and speculative Phase 4 scope.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2659,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 23786
+  },
+  "cost_usd": 0.0862362,
+  "latency_s": 29.752,
+  "raw_file": "raw/judge-9ce3a12ce902.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "af251a438376.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "af251a438376",
+  "blind_sha256": "c59426cd423ef490a7477a4c8245a4e3ccc8fbf904dcca6d5f8161551c3e85ec",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 355,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "all keys hash-tagged by `{card_token}` so the script runs on a single shard and is atomic",
+      "rationale": "Redis Lua on one slot, failover write loss, LightGBM/ONNX parity and event-time replay are all described correctly, with small gaps such as the idempotency-key crash path (key set before the decision is stored)."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Non-goals (v1) - 3-D Secure risk-based authentication ... Building a case-management tool. We push into the existing one",
+      "rationale": "It solves the real inline issuer problem with explicit exclusions, but step-up and review-queue actions are out of scope, so graded actions are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Redis key families, one writer each: `idem:*` and `v:*` belong to the Decision Service, `p:*` to the Profile Builder.",
+      "rationale": "Ownership, data flows and the single-feature-implementation choice are applied consistently, with small loose ends such as the idem-entry lifecycle."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Changes plan if p99 > 10 ms or failover loses > 60 s of writes → evaluate MemoryDB or bucketed counters",
+      "rationale": "Early spikes test the riskiest assumptions, time-split backtests, replay determinism, fault injection, shadow gates and production PSI monitoring are tied to specific risks, and thresholds are labelled provisional."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "| A6 | ≥ 12 months of tokenised authorisations with ≥ ~5k labelled fraud transactions are obtainable | Not enough labels means the model won't beat rules.",
+      "rationale": "Each assumption has an impact-if-wrong and a validation point, and the numbers are labelled as placeholders."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Label poisoning (\"friendly fraud\" claims) | Labels weighted by source; analyst-confirmed labels preferred",
+      "rationale": "It covers retries and duplicates, Redis and Kafka outages, GC deadline misses, bad rules, forged calls, insider ALLOW rules, feedback-loop bias and corrupt snapshots, each with detection and handling."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "24/7 from the first enforcement (M3), on a weekly rotation of 5. That's thin; the backup is an agreed escalation",
+      "rationale": "Deployment, rollback levers, kill switches, runbooks, alerts and ownership are concrete, and the burden is honestly flagged as thin for the team."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Cost (rough, prod + staging, ~$6–12k/month) ... replay jobs capped in size by the card sample rate",
+      "rationale": "Line-item ranges and controls are given and the replay cost driver is managed, but scaling with volume and people or build-versus-buy cost are thin and the basis is loosely stated."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "| D4 | One feature implementation + Replay Harness ... | Hard: it shapes all data work | Features exceed ~200 ...",
+      "rationale": "Every key decision has a reversibility rating and a revisit trigger, hard ones are validated early with spikes, and an off-ramp is placed at the end of M1."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "There's no separate model-serving tier and no Flink in v1.",
+      "rationale": "It starts simple (in-process scoring, no Flink, single region, existing case tool) and defers extras, though the control-plane and process ceremony is somewhat heavy for 5 engineers."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T7 ... Done when: Written results. Changes plan if p99 > 10 ms or failover loses > 60 s of writes",
+      "rationale": "Ordered tasks with locations, done-criteria, dependencies, a critical path and stated adaptation triggers let a team start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "Server-side p99 ≤ 50 ms and p99.9 ≤ 120 ms at 1,000 TPS. Internal deadline 150 ms."
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "L2 | Redis circuit open ... Degraded ruleset on request-only fields ... L3 | Internal 150 ms deadline reached"
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "Card-level real-time features are implemented only in the Decision Service ... Replay Harness"
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "train on months 1–9, validate on 10–11, test on month 12 with labels matured ≥ 90 days"
+    },
+    {
+      "id": "P8-05",
+      "status": 2,
+      "evidence": "Thresholds are chosen per segment from a cost curve (fraud $ saved vs false-decline cost ..."
+    },
+    {
+      "id": "P8-06",
+      "status": 1,
+      "evidence": "\"decision\": \"APPROVE|DECLINE|APPROVE_AND_ALERT\" ... Non-goals: 3-D Secure risk-based authentication"
+    },
+    {
+      "id": "P8-07",
+      "status": 2,
+      "evidence": "customer \"was this you?\" replies (via Alert Router); analyst case outcomes"
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "No PAN, CVV, expiry, name or address enters the fraud platform. Fields not in the v1 request schema are rejected"
+    },
+    {
+      "id": "P8-09",
+      "status": 1,
+      "evidence": "Testcontainers tests cover duplicates, out-of-order events, window edges, cap"
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "challenger (shadow-scored on 100% of traffic) for 2 weeks ... PSI ... > 0.2 ... one-click rollback"
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "100% of decisions have a DecisionRecord (inputs, feature vector, model and ruleset versions, rules fired"
+    },
+    {
+      "id": "P8-12",
+      "status": 2,
+      "evidence": "ECS Fargate across 3 AZs, minimum 6 tasks ... We design for 2,000 TPS"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "Inline, synchronous decisions with layered fallback."
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "Degrade, never fail closed; the degraded ruleset is owned by fraud ops"
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "Chargebacks arrive 30–120 days later ... Time-split: train on months 1–9, validate on 10–11"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "Removes skew by construction (driver 2) and replay is exact"
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "The fraud system only ever sees card tokens, never the full card number (PAN)."
+    }
+  ],
+  "note": "A very strong, well-assumed and actionable inline fraud plan with real degradation, replay and validation design. Its gaps are thin graded actions (no step-up or review queue), no reversal/refund event handling, and shallow cost and people-cost reasoning.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4474,
+    "thinking_tokens": 1909,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 31468
+  },
+  "cost_usd": 0.1235912,
+  "latency_s": 48.749,
+  "raw_file": "raw/judge-af251a438376.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

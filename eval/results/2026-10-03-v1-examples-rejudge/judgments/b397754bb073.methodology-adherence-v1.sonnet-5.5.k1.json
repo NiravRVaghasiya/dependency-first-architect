@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "b397754bb073.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "b397754bb073",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 16,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Foundation: versioned catalog, flat and per-seat subscriptions, cards, invoices, basic dunning, the tax adapter, entitlements, and the ledger. Adding a ledger later is painful.",
+      "rationale": "Phasing is roughly substrate-first (ledger early, usage then enterprise then global), but Phase 1 is bundled and nothing is gated on proof of the prior layer."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Foundation: versioned catalog, flat and per-seat subscriptions, cards, invoices, basic dunning, the tax adapter, entitlements, and the ledger.",
+      "rationale": "Phase 1 is an end-to-end billing slice, but it is a broad feature bundle rather than a thin production walking skeleton."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Shard by the top-level `customer_id`... Design keys for sharding from day one, but only shard (Citus, by `customer_id`) when you need to.",
+      "rationale": "Many decisions carry defaults and some triggers (build vs buy, sharding, numbering), but there is no consolidated up-front gate list with flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Nothing orders work within phases by blast radius; phases are flat feature lists."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "The gateway maps each token to a `customer_id`, and every database transaction runs `SET LOCAL app.customer_id`. RLS then hides all other customers' rows",
+      "rationale": "Security is detailed (RLS, PCI, KMS, approvals), but it sits in standalone sections and is not tied to each phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Business-level alerts: billing-run delay, drafts stuck > 2 h, payment success rate, reconciliation mismatches",
+      "rationale": "Alerts and reconciliation are described, but only in a standalone table, not as Phase 0 and per-phase deliverables."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Build simulated clocks per customer from day one. That's the only practical way to test a three-year contract with price steps.",
+      "rationale": "Reproducibility exists in recomputable invoices, snapshots, and parallel-run migration, but there is no environment or build reproducibility threaded through the phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Every operation is safe to repeat. That covers API writes, usage events, scheduled jobs, payment-provider calls, and webhook handlers.",
+      "rationale": "Resilience is strong in design (idempotency, outbox, fail-open, reconciliation), but it is a cross-cutting section and not stated per phase."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never says whether an AI layer applies (the llm.tokens example is only a metered event type), so there is no explicit N/A declaration."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Global: regional cells, the silo tier, e-invoicing channels, testing pricing changes against past usage.",
+      "rationale": "Later phases show what is deferred, but the plan gives no pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is a strong technical reference architecture, but it is weak on phase-level process: there is no Phase 0 skeleton, no blast-radius ordering, no per-phase threading, no pull-forward triggers, and no AI N/A declaration.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1226,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 570,
+    "cache_creation_input_tokens": 14012
+  },
+  "cost_usd": 0.047411999999999996,
+  "latency_s": 26.553,
+  "raw_file": "raw/judge-b397754bb073.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

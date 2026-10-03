@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ddc175a4be50.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "ddc175a4be50",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 63,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "GitHub App, webhook router, queue, state machine and audit log",
+      "rationale": "Build order goes substrate (app/queue) upward, but guardrails, limits and kill switch are placed last (step 6) after the resolver that needs them."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Triage agent, dedup index and repo config",
+      "rationale": "No thin end-to-end production slice is Phase 0; build order starts with infrastructure and rollout begins with shadow mode, not a prod path."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Is it one org-wide GitHub App, or installed per repo?",
+      "rationale": "Open questions are listed, but with no defaults or flip conditions; only a few decisions carry defaults such as never auto-closing in v1."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "GitHub App, webhook router, queue, state machine and audit log",
+      "rationale": "Foundational wide-impact pieces come first, but the kill switch and limits are deferred to the end, so the ordering is only partly blast-radius-aware."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "No secrets inside the sandbox. A separate service holding the GitHub token pushes the branch and opens the PR.",
+      "rationale": "Security is strong in a standalone section and in the architecture, but it isn't tied to each build phase, and limits and kill switch come last."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Full audit log: prompts, tool calls, diffs and decisions, linked to the issue.",
+      "rationale": "An audit log is in step 1, but dashboards come in step 6 and metrics sit in a separate section, not threaded through the phases."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "install dependencies from a cached image",
+      "rationale": "Only ephemeral sandboxes and cached images are mentioned, with a versioned eval run on every prompt or model change; nothing is threaded through the phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Each event is processed only once, so retries are safe.",
+      "rationale": "Idempotency, iteration caps and an escalation state are present, but failure handling isn't addressed phase by phase."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Feedback commands, dashboards, limits and kill switch",
+      "rationale": "Human-in-the-loop (draft PRs, opt-in label) is strong, but budgets and the kill switch are built last, after the LLM and resolver; the order of retrieval, model, memory, orchestration and routing isn't explicit."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Merging code on its own. Large features, architecture changes, or issues involving security or private disclosures.",
+      "rationale": "Non-goals are explicit and phase 4 expansion depends on acceptance rates, but there are no pull-forward conditions for the deferred items."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan has solid content on safety and the agent design, but it lacks a walking skeleton, puts guardrails and budgets late in the build order, and doesn't thread the cross-cutting concerns through the phases.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1109,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 4360
+  },
+  "cost_usd": 0.022111,
+  "latency_s": 25.058,
+  "raw_file": "raw/judge-ddc175a4be50.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

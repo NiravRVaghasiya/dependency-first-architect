@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ae5700a230cd.engineering-quality-v1.fable-5.k1",
+  "blind_id": "ae5700a230cd",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 173,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Vector top-20 (cosine similarity on HNSW) and Postgres full-text top-20 (`websearch_to_tsquery`), merged with reciprocal rank fusion (RRF)",
+      "rationale": "Claims about pgvector/HNSW, hybrid search, the outbox pattern, idempotency keys, SSE streaming, Zendesk user segments and even the Air Canada precedent are accurate and precise, with real limits (e.g., retries only before streaming) stated correctly."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Non-goals (v1): Account-specific questions... Actions such as refunds, cancellations or plan changes",
+      "rationale": "Solves exactly the stated problem for a realistic 2-person team, resolves ambiguities with stated defaults, and excludes scope explicitly with reasons and triggers to revisit."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Component table | Responsibility | Owns (single writer)",
+      "rationale": "Single-writer data ownership, consistent interfaces, and uniform handling of identity, error propagation (degraded mode) and tracing across every section with no contradictions found."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Build the evaluation set before the features... becomes the release gate for every change",
+      "rationale": "Validation is designed around the specific risks (groundedness, abstention, injection, sync safety), happens before commitment (spikes, build-vs-buy bake-off, judge calibration), uses provisional labeled targets, and continues in production via sampling and a holdout."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Every default is marked [A]... | Assumption | Impact if wrong | How / when validated |",
+      "rationale": "Every design-bearing assumption is explicit with impact-if-wrong and a validation step, numbers are marked as estimates, and the plan lists which answers would change the design."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "a partial sync must never mass-delete the index... idempotency key... doesn't create a duplicate ticket",
+      "rationale": "Covers the hard domain failures—partial sync, duplicates, LLM/embedding outage, helpdesk outage, prompt injection, cost abuse, restricted-content leakage, stale index—each with concrete detection, containment and recovery flows."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Health check `/healthz/ready` runs a DB query and checks that the last successful sync was less than 2 hours ago",
+      "rationale": "Domain-meaningful alerts, runbooks, kill switch, rollback paths for prompts/models/embeddings/schema, and an on-call burden explicitly sized to a 2-person team."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "rough, list-price based, replaced by measured cost per turn in M1... ≈ $0.02 per turn",
+      "rationale": "Identifies inference as the dominant driver with a token-level basis, labels estimates, covers scaling and concrete controls (spend cap, turn caps), and grounds the build-vs-buy trade-off in cost."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "| Decision | Options considered | ... | Reversibility | Revisit if |",
+      "rationale": "Every major decision carries a reversibility rating and revisit trigger; the hard-to-reverse ones (build-vs-buy, embedding model) get early validation and explicit blue/green or interface-isolated exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Postgres + pgvector... not a separate vector database. A help center is tens of thousands of chunks at most",
+      "rationale": "Simplest workable design—one database, no framework, no agents, one deployable—with every element justified by a driver and a deferred-work list with triggers for growth."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T7→T8→T9→T10 in order; T11 in parallel... | Task | Location | Done when |",
+      "rationale": "Dependency-ordered tasks with checkable done-when criteria, concrete day-1 steps, and spikes whose outcomes explicitly state how the plan changes if results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "an article is soft-deleted only after a *complete* listing succeeds... If a run would delete more than 10% of articles, it stops and alerts"
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Splits into chunks at H2/H3 headings with a ~600-token cap, prefixing each chunk with `title > heading path`"
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "150 answerable questions (expected article IDs + 1–3 key facts each), 30 unanswerable, 20 adversarial... 15 multi-turn"
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "If the status is `answered` but no valid citation appears, the turn is downgraded to `partial`"
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "Refunds and billing disputes, account deletion or recovery, legal and privacy requests... creates the ticket with the transcript and cited articles"
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "The bot has no tools or permissions. Sources and user text are delimited and marked as data... adversarial evaluation suite that must have 0 violations"
+    },
+    {
+      "id": "P1-07",
+      "status": 2,
+      "evidence": "Keeps only articles that are published, in English, and visible to anonymous users... a fixture restricted article must never appear in `documents`"
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "card-like numbers (Luhn check), emails and phone numbers are masked... Vendor zero-retention/no-training terms. 90-day retention"
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Non-goals (v1): Account-specific questions (\"where is my order\", \"why was I charged\")"
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "weekly report of \"cannot answer\" and thumbs-down questions grouped by topic... 2% of production turns plus all thumbs-down turns are sampled"
+    },
+    {
+      "id": "P1-11",
+      "status": 2,
+      "evidence": "~5k input + 400 output tokens on a mid-tier model... ≈ $0.02 per turn... Daily spend cap: alert at 80%"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Answer only from retrieved articles, with checked citations and an explicit \"can't answer\" path"
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "This one filter is what stops internal or agent-only content from leaking"
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "scheduled every 15 min... Edited articles show up in answers within 30 min"
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "becomes the release gate for every change to prompts, models or retrieval"
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "No RAG framework... Fixed pipeline, one generation call, no tools or agents"
+    }
+  ],
+  "note": "An exemplary plan: evaluation-first, grounded answers with enforced citations and escalation, retrieval-time safety via ingestion filtering, explicit assumptions with validation, proportionate architecture, and an immediately actionable build sequence; it avoids all five traps.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6828,
+    "thinking_tokens": 4156,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 28558
+  },
+  "cost_usd": 0.698395,
+  "latency_s": 125.056,
+  "raw_file": "raw/judge-ae5700a230cd.engineering-quality-v1.fable-5.k1.txt"
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "bf11e0ed0934.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "bf11e0ed0934",
+  "blind_sha256": "7196e481d502c956105dcc311d623b2aac12cdde10362d55c42c6f622c9d384c",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 219,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Per-card counters have a single writer per token partition. Merchant and device aggregates are eventual, with staleness p99 ≤ 1 s (ASSUMPTION)",
+      "rationale": "Mechanisms the design depends on (in-process GBDT, log-replayed features, token-only pipeline, fallback to incumbent) are sound, with minor imprecision such as RPO 0 on a drop-and-count tap and no min.insync.replicas or dedup semantics."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "a streaming pipeline that scores each card authorization within the authorization deadline. It returns approve, step-up or decline with reason codes",
+      "rationale": "It solves the real inline problem for an explicit issuer assumption, with explicit deferrals, but economic cost-based thresholds and reversal handling are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "One scoring service doing feature fetch, rules, model and policy in-process. One stream job. Offline training kept separate",
+      "rationale": "Responsibilities, data ownership and failure handling are consistent across sections, with small tensions such as the '≤ 4 new components' budget versus the many tools listed."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "an all-decline model trips the breaker in ≤ 60 s; incremental declines ≤ 0.5 pp (ASSUMPTION)",
+      "rationale": "Nine checks are tied to specific risks (wrongful declines, PAN leak, latency, parity, uplift), run early before commitments, use labeled provisional thresholds and continue in production via cohort checks and drift alerts."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Each line says what changes if the assumption is wrong.",
+      "rationale": "Assumptions, unknowns and baselines are explicitly labeled with owners and consequences, and the missing-inputs list is explicit."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Fault injection on replayed traffic (timeouts, crashes, state loss, corrupt features, an all-decline model, a bad rule push)",
+      "rationale": "Covers fail-closed, bad model and rule pushes, card testing, probing, label poisoning and PAN leakage with detection and recovery, but duplicate, out-of-order and reversal events are not handled."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Rollback is an Argo CD revert plus the auth-host flag.",
+      "rationale": "Deployment, flags, rollback, domain-meaningful signals and shared on-call are concrete, but incident response and access administration are thin."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "compute cost per 1M scores metered",
+      "rationale": "Cost appears only as a metering note and build-vs-buy reversibility, with no cost drivers, scaling estimates, or people and infrastructure costs."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: labels, training data and the decision log build up on it from Phase 1",
+      "rationale": "The plan rates each decision's reversibility, validates the one-way ones early (PAN boundary, schema and identifiers, buying), isolates the vendor seam and gives revisit triggers."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Build on open components. Incumbent and network scores (e.g. Visa/Mastercard risk scores) become features and the fallback",
+      "rationale": "The core is lean (in-process monolith, one stream job, deferred graph and multi-region), but the template-driven 'AI layer' sublayers, exceptions table and heavy gating add some ceremony."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: V2 and V3 pass; consumer lag < 1 s at peak.",
+      "rationale": "A concrete Phase 0 slice, dependency-justified phases with exit checks, named defaults and explicit fallback actions on failed validations let a team start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "p99 ≤ 50 ms; hard timeout 80 ms, then incumbent decides"
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "Fail to the incumbent's decision. Never decline because the new path failed"
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "Features defined once in Flink; backfill replays history through the same job"
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "Train an out-of-time GBDT ... each with a maturity date"
+    },
+    {
+      "id": "P8-05",
+      "status": 1,
+      "evidence": "At equal decline and referral rate, fraud value caught ≥ incumbent + uplift"
+    },
+    {
+      "id": "P8-06",
+      "status": 2,
+      "evidence": "Orchestrate rules, then model, then policy, then reason codes"
+    },
+    {
+      "id": "P8-07",
+      "status": 2,
+      "evidence": "Wire referrals to the analyst queue and step-up through existing SMS or app alerts"
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "PAN and sensitive authentication data never leave the auth host. The pipeline sees only card token"
+    },
+    {
+      "id": "P8-09",
+      "status": 1,
+      "evidence": "Per-card counters have a single writer per token partition."
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "Add drift alerts (population stability index, PSI)"
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "decision-log schema (score, reason codes, model and rule versions, feature-vector hash, latency, fallback flag)"
+    },
+    {
+      "id": "P8-12",
+      "status": 2,
+      "evidence": "3× measured peak-hour authorizations per second"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "A sync inline score call with a hard timeout runs in shadow until V4/V5 pass, and enforces only from Phase 5"
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "Fail to the incumbent's decision. Never decline because the new path failed"
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "Out-of-time backtest on the latest 3 months with matured labels"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "Online features equal backfilled features"
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "DLP scan (Luhn-valid 13–19-digit numbers, track-data patterns) of every topic, store, log"
+    }
+  ],
+  "note": "Strong, risk-driven plan with a sound fallback-to-incumbent design and well-labeled assumptions. Its weak spots are almost no cost analysis, thin cost-based thresholding, and no handling of duplicate, out-of-order and reversal events.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4245,
+    "thinking_tokens": 1934,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 18459
+  },
+  "cost_usd": 0.0886055,
+  "latency_s": 42.034,
+  "raw_file": "raw/judge-bf11e0ed0934.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

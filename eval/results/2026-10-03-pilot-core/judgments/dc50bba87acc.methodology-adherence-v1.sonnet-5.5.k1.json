@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "dc50bba87acc.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "dc50bba87acc",
+  "blind_sha256": "482dae5be5b7788ab6a68381972df05a436e7e76a4347479150ffecd538d4240",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 347,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Depends on: Immutable invoices that match the ledger (Phase 3), and the Stripe path proven in Phase 0.",
+      "rationale": "Phases run tenancy/ledger → catalog → invoicing → payments → usage → UI, with explicit Depends-on and exit checks proving each layer before the next."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "POST /v1/subscriptions for one internal tenant ... followed by a real live-mode charge to a company card. The charge is refunded afterwards.",
+      "rationale": "Phase 0 is a real end-to-end production path across all tiers with deployment, tracing and an exit check."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Decide this before Phase 1 because every table changes.",
+      "rationale": "A table of irreversible decisions each has a default and a concrete flip condition, including the interpretation gate."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks (widest → narrowest): 1. Tenant isolation model ... 7. Read-only internal admin view of tenants and ledgers.",
+      "rationale": "Phases state widest-first ordering and the task lists follow it, with foundations and contracts ahead of leaf items like emails and dashboard polish."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "TLS and WAF. Secrets in AWS Secrets Manager. Restricted Stripe keys. Least-privilege IAM. RLS on from the first table.",
+      "rationale": "The per-phase table gives concrete security controls in every phase from 0 to 6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OpenTelemetry traces across every tier. JSON logs with trace_id, tenant_id and idempotency_key. RED metrics. Outbox lag. Ledger invariant alert.",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform for every environment. Pinned dependencies. One image digest promoted through every environment. Versioned migrations.",
+      "rationale": "Reproducibility is addressed per phase, with digest-pinned builds, injected clock, fixed-seed tests, replayable events and versioned pricing."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Transactional outbox (no writes to two systems at once). Idempotent Stripe calls. Retries with backoff plus a dead-letter queue.",
+      "rationale": "Each phase has concrete failure handling, starting in Phase 0 and continuing through Phase 6, and exit checks test it."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "**N/A.** This system has no model-driven parts.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Automated revenue recognition (ASC 606 / IFRS 15) | Audit preparation, or finance can no longer close from the accounting export.",
+      "rationale": "A deferred table lists many items, each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "An excellent plan that meets every rubric dimension with concrete content; I found no substantive weaknesses.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1135,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9347
+  },
+  "cost_usd": 0.0347255,
+  "latency_s": 16.231,
+  "raw_file": "raw/judge-dc50bba87acc.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,75 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P4.baseline.opus-5.5-max.r01",
+  "prompt_id": "P4",
+  "condition": "baseline",
+  "generator": "opus-5.5-max",
+  "run_index": 1,
+  "seed": null,
+  "seed_honored": false,
+  "request": "Plan an autonomous agent that triages and resolves GitHub issues.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P4.baseline.opus-5.5-max.r01.md",
+  "output_sha256": "7389b30a4887e381311af76e079f22e696228eca4da8698dc9219cd1b3686801",
+  "metrics": {
+    "words": 3165,
+    "chars": 20174,
+    "visible_tokens_est": 5044
+  },
+  "turns": 9,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "w01",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w01/README.md",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w01/package.json",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w01/pyproject.toml",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w01/.git/config",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w01/CLAUDE.md",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w01/requirements.txt",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w01/go.mod",
+      "ok": false
+    }
+  ],
+  "skills_available": null,
+  "instructions_loaded": null,
+  "started_at": null,
+  "finished_at": null,
+  "provider": "imported",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [],
+  "model_mismatch": false,
+  "usage": null,
+  "cost_usd": null,
+  "latency_s": null,
+  "raw_file": null
+}

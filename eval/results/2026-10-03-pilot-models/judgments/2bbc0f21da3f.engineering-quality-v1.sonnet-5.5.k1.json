@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "2bbc0f21da3f.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "2bbc0f21da3f",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 12,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "\"PostgreSQL — ACID, cheaper, easier to reason about versioning, strong consistency model aligns with CRDT guarantees.\"",
+      "rationale": "Several material errors: CRDT 'simpler distributed/easier to scale', RPO ≤1 min claimed via daily backups, 99.9% called 'four 9s', 'both happen (CRDT guarantees)' intent claim, Yjs state re-encoded per edit, 'version' monotonic counter with Yjs, and conflating 'Phase 0 broadcasts to self' persistence; hard parts (rich text merge) untouched."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"Document schema (title, content, version, author, timestamp)\"",
+      "rationale": "Covers a buildable collaborative editor via Yjs, but treats document as a text blob, excludes offline/history/comments/presence, and spends a lot on generic SaaS launch work."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"Route edits to in-memory store; broadcast to all clients.\"",
+      "rationale": "Mostly recognizable design but contradictions: V2 placed at Phase 1 and conflicts with V3 timing, Phase 0 edits table vs Yjs blob storage, 'four 9s' vs 99.9%, single monolith vs multi-instance routing with no document affinity."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "\"Chaos test: apply 50 edits to a doc, inject SIGKILL to backend mid-merge... no edits lost or duplicated.\"",
+      "rationale": "Has gates with thresholds, early CRDT spike and crash test, but no property-based/randomized convergence testing, thresholds largely invented, and the user study is thin."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "\"ASSUMPTION = 10 concurrent users per document, 100 documents active; refine after V1.\"",
+      "rationale": "Assumptions and unknowns are explicitly labeled with revisit triggers, though some figures (RPO/RTO, 99.9% as REQUIREMENT) are asserted without support."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"Penetration test spike: SQL injection, XSS, CSRF, WebSocket hijacking.\"",
+      "rationale": "Covers crash, auth, rate limits, reconnect, DB failure, but misses malicious update payloads, revocation on open sockets, duplicate delivery, document corruption/tombstone growth, and hot-doc overload."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "\"Canary deployments: new version deployed to 10% of traffic first, monitored for 10 min; if error rate >1%, auto-rollback\"",
+      "rationale": "Concrete deployment, rollback, monitoring, runbooks, on-call and DR drills, though load is heavy for 1–2 engineers and signals are generic rather than sync-specific."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"Cost per active user must stay <$5/mo to keep total <$500/mo during beta. Validate in Phase 1.\"",
+      "rationale": "Identifies cost budget and measurement but figures are invented, dominant drivers (WebSocket connections, state storage growth) not analyzed, and multi-AZ/multi-region adds unaddressed cost."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "\"R3 — months of rework; affects sync protocol, client state machine, server merge logic, database schema.\"",
+      "rationale": "Explicit reversibility tiers with validation and revisit triggers, but misses persisted-format/schema versioning and ID scheme lock-in, and claims hosting is R3 oddly."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Helm chart (or CloudFormation template) for single-AZ deployment.\"",
+      "rationale": "Lots of ceremony (Helm, APM, ELK, multi-region, 2FA, ten-step methodology) for a small beta while essentials like presence, undo, offline are deferred."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "\"Version := monotonic counter per doc (incremented on each server-applied edit).\"",
+      "rationale": "Concrete phased tasks, durations, message shapes, and gates with evidence; but the ordering starts with a single-input text page and some sequencing is inconsistent."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 1,
+      "evidence": "\"CRDT (Yjs/Automerge) — simpler distributed, deterministic, easier to scale to many writers later.\""
+    },
+    {
+      "id": "P5-02",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-03",
+      "status": 1,
+      "evidence": "\"apply in both orders, verify output is identical and merge time <10ms.\""
+    },
+    {
+      "id": "P5-04",
+      "status": 1,
+      "evidence": "\"Ensure every edit hits the database before ACK to client.\""
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "\"Exponential backoff for WebSocket reconnect (1s → 10s → 30s, cap).\""
+    },
+    {
+      "id": "P5-06",
+      "status": 1,
+      "evidence": "\"Offline-first (local-only edits, sync on reconnect)** | Deferred to Phase 4.\""
+    },
+    {
+      "id": "P5-07",
+      "status": 1,
+      "evidence": "\"only allow edit if user is doc owner or has share token.\""
+    },
+    {
+      "id": "P5-08",
+      "status": 0,
+      "evidence": "\"Document versioning and history browser** | Deferred to Phase 4.\""
+    },
+    {
+      "id": "P5-09",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-10",
+      "status": 1,
+      "evidence": "\"Phase 0... Frontend skeleton... Backend scaffold\" with Yjs integrated in Phase 1"
+    },
+    {
+      "id": "P5-11",
+      "status": 0,
+      "evidence": "\"Insert 1000 CRDT blobs (each ~50KB)\""
+    },
+    {
+      "id": "P5-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "\"Backend merges incoming edits: decode client update → apply to CRDT\""
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "\"Build the core sync engine (CRDT merge, WebSocket protocol)... open-source CRDT libraries (Yjs)\""
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "\"Phase 0... Route edits to in-memory store; broadcast to all clients.\" (multi-client from start, Yjs in Phase 1)"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "\"Ensure every edit hits the database before ACK to client.\""
+    },
+    {
+      "id": "P5-T5",
+      "present": true,
+      "evidence": "\"both happen (CRDT guarantees)\"; \"RPO: 1 min (restore from backup)\"; \"99.9% (four 9s)\""
+    }
+  ],
+  "note": "Polished generic SaaS launch plan that picks Yjs sensibly and persists before ack, but ignores rich-text model, presence, undo, convergence fuzzing and live authorization revocation, with several technical slips.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2509,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 21886
+  },
+  "cost_usd": 0.079998,
+  "latency_s": 33.112,
+  "raw_file": "raw/judge-2bbc0f21da3f.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

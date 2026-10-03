@@ -1,0 +1,392 @@
+Now I have the reference materials. Let me create a comprehensive BUILD PLAN for a customer-support RAG chatbot. I'll follow all 10 steps carefully, treating this as an AI/agentic system.
+
+---
+
+# BUILD PLAN — Customer-Support RAG Chatbot
+
+## 1. Classification and constraints
+
+**What:** A retrieval-augmented generation (RAG) chatbot that answers customer support questions by retrieving relevant passages from internal help-center documentation and generating responses via a hosted LLM.
+
+**Type:** AI/agentic system; greenfield (new chatbot capability); small build (one team, internal beta first, no personal data, cost-driven by token consumption).
+
+**Dominant constraint:** Cost (inference spending on retrieved context and reasoning) balanced against latency (first token time and total response time); correctness (answer relevance and accuracy on help-center content).
+
+**Worst failure:** A prompt injection via retrieved or user-supplied text that causes the model to reveal system instructions, bypass guardrails, or access external systems; or runaway token consumption driving costs above budget.
+
+**Budgets:**
+
+| Budget | Target | Label | Checked by |
+|---|---|---|---|
+| Latency (time to first token) | p95 < 2 s | ASSUMPTION: acceptable for help-center chat | V0 baseline, Phase 3 exit check |
+| Latency (complete answer) | p95 < 6 s | ASSUMPTION: acceptable for async follow-up | V0 baseline, Phase 3 exit check |
+| Throughput | 10 requests/s at peak (support business hours) | ASSUMPTION: internal beta, one cohort | Phase 2 load test |
+| AI inference cost | < USD 0.10 per resolved conversation | UNKNOWN: needs cost per human ticket from support ops, before Phase 4 | V4 (Phase 3 canary) |
+| Availability / SLO | 99.5% (model API + vector store + database in series) | ASSUMPTION: acceptable for non-critical support tool | Phase 4 SLI targets |
+| Storage cost | Negligible (help-center docs ~10 MB embedded) | ASSUMPTION: one index version | Baseline in Phase 1 |
+| Operational complexity | One deployed service + managed vector store + model API (no self-hosted model) | ASSUMPTION: two-person team | Phase 3 exit check |
+
+**Missing inputs:**
+- Human cost per support ticket (support lead) — needed before Phase 4 to validate V4.
+- Help-center source: how many docs, update frequency, access control (all customers or per-account)?
+- Model choice: hosted API preference (e.g., OpenAI GPT, Anthropic Claude), latency SLA, context window.
+- Deployment target: cloud region(s), on-premise or SaaS only?
+
+**Assumption:** Help-center docs are public, accessed by all customers equally (no per-tenant access control). If false, retrieval must enforce caller's document permissions, adding a risk/security dependency to Phase 1.
+
+---
+
+## 2. Dependency map
+
+| What waits | Depends on | Kind | Blocked from being |
+|---|---|---|---|
+| Answer generation (model inference) | Injection defense + cost/latency caps | Risk/security, economic | deployed |
+| Retrieval tuning and eval | Chunking strategy and embedding model chosen | Decision, structural | specified |
+| Canary rollout | Injection containment gate (V1) + cost measurement on shadow traffic | Risk/security, validation | exposed |
+| Human-in-the-loop review flow | Decision: which actions (if any) require human approval | Decision | specified |
+| Help-center sync and freshness | ETL pipeline from help-center source system defined | Structural, runtime | deployed |
+| Production launch | Cost per resolved conversation validated (V4) + canary SLO met | Validation, economic | committed |
+
+**No organizational dependencies initially** (no external contracts or approvals declared yet; assume team access and budget are in hand).
+
+---
+
+## 3. Tradeoff gates (resolved up front)
+
+| Decision | Reversibility | Default (chosen now) | Assumption | Validated by | Flip condition |
+|---|---|---|---|---|---|
+| Prompt+RAG vs fine-tune | R2 — keeps the model locked in only at embedding time | Prompt+RAG | Retrieval + prompt tuning will outperform fine-tune on real queries | V2 (retrieval eval) + Phase 2 prompt iteration | Retrieved hit-rate < 0.80 or cost > budget; then consider fine-tune on collected bad queries |
+| Hosted API vs self-host model | R3 — commits to vendor dependency and pricing model | Hosted API (OpenAI GPT-4o or Claude 3.5 Sonnet) | Vendor availability and pricing sustainable; team cannot maintain MLOps | Vendor uptime and cost data from Phase 0 | Cost per token exceeds ASSUMPTION consistently, or latency SLA violated; self-host only with full MLOps team |
+| Sync vs async retrieval + answer | R1 — chatbot always generates answers in real-time | Sync (retrieve → generate → return) | Response time targets (p95 < 6 s) met with sync; retrieved context is current enough | V3 (latency gate) | If p95 > 6 s in load test, break into async (return placeholder + async gen) before Phase 4 |
+| Chunking strategy | R2 — affects every retrieval eval; re-chunking requires re-embedding | Paragraph-level chunks (~200–400 tokens) with metadata (doc title, section, source URL) | Balances context relevance and token waste | V2 (retrieval eval) | Hit-rate < 0.80: try smaller chunks (100–200 tokens) or sentence-level before Phase 2 |
+| Embedding model | R2 — switches require re-embedding the entire corpus | OpenAI text-embedding-3-large or open-source equivalent pinned (e.g., Mistral embed v0.2) | Sufficient dimensionality (~1536) and semantic quality for help-center queries | V2 (retrieval eval on pinned version) | Hit-rate < 0.80: try a larger model (text-embedding-3-large if using smaller) |
+| Data-privacy boundary | N/A — help-center docs are public; no personal data in context | — | — | — | — |
+| Human-in-the-loop for answers | R1 — low-cost decision, easily added/removed | No automatic approval required for answers (all generated answers go to user); high-confidence handoff-to-human logic added in Phase 2 | Answers are informational, not transactional; no writes or money involved | Phase 2 exit check: human feedback on false positives | Answers cause harm (e.g., billing advice): gate all answers or route to human first |
+
+**R1 defaults:** Logging JSON to stdout + stderr → structured logs in Phase 0; retry failed API calls (3× exponential backoff) → configurable per Phase 1.
+
+**N/A:** Brownfield migration (system is greenfield); tenancy / multi-tenancy (single customer, internal beta); consistency model (reads only; no writes to shared state).
+
+---
+
+## 4. Walking skeleton (Phase 0)
+
+**Request:** A support agent or customer behind an allow-listed IP posts:
+```
+POST /api/v1/chat (internal endpoint, no auth until Phase 1)
+{
+  "query": "How do I reset my password?",
+  "session_id": "test-001"
+}
+```
+
+**Response:**
+```
+{
+  "answer": "<generated answer from retrieved docs>",
+  "sources": [{"title": "...", "url": "..."}],
+  "tokens_used": 342,
+  "cost_usd": 0.0051
+}
+```
+
+**Tiers crossed:**
+1. **API endpoint** (FastAPI or Flask, Python 3.12).
+2. **Retrieval layer** (Langchain wrapper around vector store client).
+3. **Vector store** (Pinecone or Weaviate, running or managed SaaS).
+4. **Embedding service** (OpenAI API call; cached in vector store; one call per unique query at Phase 0, cached thereafter).
+5. **LLM endpoint** (OpenAI / Claude API).
+6. **Logging** (structured JSON to stdout; picked up by container logs).
+
+**Deployment:**
+- Deployed via Docker container to a dev/staging cluster (Kubernetes or serverless, e.g., AWS Lambda or GCP Cloud Run).
+- Help-center docs pre-loaded into vector store (seeded manually for Phase 0; ETL pipeline added in Phase 1).
+- CI/CD pipeline: commit → build image → unit tests + injection tests → push to staging → deploy to allow-listed endpoint.
+- Rollback: revert to previous image tag, redeploy.
+
+**Logging, monitoring, rollback:**
+- **Logs:** Every request/response pair logged as JSON with trace ID, latency (ms), tokens, cost, model name, and any error.
+- **Alerts:** Injected failure (curl with prompt-injection payload) → should not produce a tool call or disclose instructions → logs should show it was dropped or rewritten.
+- **Monitoring:** Cost per request, latency p50/p95/p99, error rate, token count distribution.
+- **Rollback:** Previous image tag; rollback to pre-injection-tests version if gate fails.
+
+**Who can reach it:** Internal network only; no auth required in Phase 0 (behind a firewall or allow-listed IP range). Not exposed to real customers or production traffic yet.
+
+**Hard caps (Phase 0, before full defenses):**
+- Token cap per request: 1,000 tokens (input + output).
+- Cost cap per session: USD 1.00 (safety valve; soft warning at USD 0.50).
+- Max retrieve call retries: 3.
+- Model timeout: 10 s.
+
+**Exit check (V0):**
+- A real query succeeds: retrieval returns passages, LLM generates an answer, response includes sources and token count, latency is recorded (baseline p95 target: < 6 s at 1 req/s).
+- One trace spans all five tiers, visible in logs with trace ID.
+- Deploy via CI/CD pipeline succeeds; old image is still tagged and can be redeployed.
+- Injected payloads (prompt-injection strings) do not cause: model to disclose instructions, tool calls outside an allow-list (none yet), or outbound URLs in the response. Injection attempts are logged and counted.
+- Budget baselines recorded: cost per request, latency, token distribution at 1 req/s.
+
+---
+
+## 5. Phases (Phase 1 onward)
+
+### Phase 1 — Injection containment and cost budgets (Defenses)
+**Unlocks:** Phase 2 (retrieval and prompt tuning) and Phase 3 (orchestration and scaling).
+
+**Depends on:** V0 (walking skeleton deployed and working).
+
+**Tasks (in blast-radius order):**
+
+1. **Input validation and injection filter** (wide impact: affects every request).
+   - Sanitize user input: detect and log jailbreak patterns (e.g., "ignore previous instructions", role-play prefixes, code blocks asking to perform actions).
+   - PII redaction rules (mask email, phone, credit card patterns in user input before sending to LLM).
+   - Filter does not block; it truncates or rewrites risky text and logs the action.
+
+2. **Retrieval input/output boundaries** (affects retrieved context).
+   - Treat retrieved documents as untrusted data: wrap them in markers (e.g., `<retrieved_doc>...</retrieved_doc>`) that separate them from system instructions.
+   - Inject prompt tags that instruct the model to treat all `<retrieved_doc>` content as citations, not commands.
+
+3. **Tool allow-list and validation** (zero tools at Phase 0; needed for future tools).
+   - Define a tool schema: each tool has a name, allowed arguments (with types and allowed values), and a one-line description.
+   - Model can call only tools in the allow-list; invalid calls are logged and user-facing error is returned.
+   - Prepare for future phases: no tool calls yet, but the executor is ready.
+
+4. **Cost budgets per request and session** (prevents runaway spend).
+   - Per-request token cap: hard 1,500 tokens (input + output). If exceeded, stop generation and return cached partial answer.
+   - Per-session cost cap: USD 2.00 (sum of all turns in a session). Warn at USD 1.50; refuse new turns at USD 2.00.
+   - Log cost per request, per session, and aggregate daily.
+   - Dashboard: cost over time, cost per resolved conversation (once Phase 3 canary begins).
+
+5. **Latency budgets and timeout** (prevents slow paths).
+   - Request timeout: 15 s (hard stop; return graceful degradation: "I'm taking longer than usual; please try again or contact support.").
+   - Latency budget per step: retrieval ≤ 2 s, model inference ≤ 8 s, total ≤ 12 s (with some headroom to 15 s timeout).
+   - Log step-wise latencies (retrieval_ms, inference_ms, total_ms) for every request.
+
+6. **Output validation** (filter model response).
+   - No sensitive data exfiltration: scan output for email patterns, credit cards, phone numbers; mask or drop them with a warning in logs.
+   - No unvalidated URLs in output: if the model tries to include a URL, require that it is to a help-center domain (whitelist) or redact it.
+
+**Rollback:** Disable filters and cost caps → revert to Phase 0 behavior (unsafe, for testing only). Cost budgets can be disabled per-account without code change (config). Injection filter can be toggled in config before Phase 2 starts.
+
+**Exit check (V1 — Injection containment gate, **gated**):**
+- Injection test suite (OWASP Top 10 prompt-injection strings, planted in user input, retrieved docs, and response templates) runs in CI.
+- Pass bar: no injection payload causes a tool call (none exist yet) or discloses system instructions; the model response is normal or gracefully degrades with an error message.
+- Artifact: CI report (test case IDs, pass/fail, sanitized payloads attempted, model responses). Log 100% of failed injection attempts.
+- Evidence kept in: CI logs and a dashboard metric "injection_attempts_blocked_count".
+- Cost cap is enforced: a runaway loop (query designed to maximize tokens) hits the cap and logs a cost-cap-hit event.
+
+---
+
+### Phase 2 — Retrieval quality and prompt tuning (Capabilities: retrieval)
+**Unlocks:** Phase 3 (full orchestration and deployment).
+
+**Depends on:** Phase 1 (V1 injection gate passes); V2 (retrieval hit-rate benchmark).
+
+**Tasks:**
+
+1. **Finalize help-center ingestion** (structural dependency).
+   - Confirm source: where are help-center docs? (internal wiki, Zendesk knowledge base, GitHub, etc.)
+   - Crawl/export all public docs; store raw content + metadata (title, section, source URL, last-modified date).
+   - Implement ETL: daily sync from source, diff-based updates, re-embed changed docs only (to save cost).
+
+2. **Embedding and chunking finalized** (structural).
+   - Chunk strategy: 200–400 token paragraphs, with overlap (~50 tokens) to preserve context.
+   - Embed all chunks with the pinned embedding model; store in vector store with metadata.
+   - Version the index (index_v1, index_v2, …) so V2 eval and Phase 3 can compare.
+
+3. **Retrieval evaluation** (V2 — **gated**, validation).
+   - Curate 200+ labeled queries from past support tickets + anticipated customer questions, each with known source passages.
+   - For each query, retrieve top 5 passages and check: is a source passage in the top 5? (hit-rate@5).
+   - Pass bar: hit-rate@5 ≥ 0.80.
+   - If failed, iterate: adjust chunk size, re-embed, or try embedding model variant.
+   - Artifact: eval report (query IDs, hit-rate, top-5 passages for each, precision/recall).
+
+4. **Prompt engineering and answer format** (Phase 1 already set structure).
+   - Design a prompt template that uses the retriever context:
+     ```
+     You are a helpful customer support agent. Answer the user's question using the provided documentation.
+     
+     <context>
+     <retrieved_doc>{{ doc_1 }}</retrieved_doc>
+     <retrieved_doc>{{ doc_2 }}</retrieved_doc>
+     </context>
+     
+     Question: {{ user_query }}
+     
+     Answer (cite sources):
+     ```
+   - Test variations: different citation styles, different context ordering, temperature settings.
+   - Exit check: on the same 200 labeled queries, measure correctness (human review of answers, or automated scoring if rubric exists).
+
+5. **Token efficiency** (cost optimization).
+   - Measure tokens per request (input: query + context + system message; output: answer).
+   - Optimize: fewer context chunks retrieved (tradeoff: lose relevance?), shorter prompts, summarization of retrieved text.
+   - Target: < 500 input tokens + 200 output tokens per typical question (cost < USD 0.01 per query at Phase 2 volumes).
+
+**Rollback:** Revert to Phase 1 vector store (if new index is unstable); trigger daily ETL off until manually re-enabled.
+
+**Exit check:**
+- V2 retrieval gate passes (hit-rate@5 ≥ 0.80 on labeled set).
+- Prompt is finalized and reproducible (committed to repo).
+- Token distribution: p95 input < 600 tokens, output < 300 tokens (recorded as baseline).
+- Cost per request tracked daily; aggregate cost per resolved conversation UNKNOWN (needs feedback from Phase 3 canary).
+
+---
+
+### Phase 3 — Observability, load testing, and canary (Orchestration + runbook)
+**Unlocks:** Phase 4 (production launch).
+
+**Depends on:** Phase 2 exit check; V3 (latency under load); V4 (cost per resolved conversation on canary).
+
+**Tasks:**
+
+1. **End-to-end orchestration and state** (structural).
+   - Session management: store session ID, turn history, cumulative cost. Expire sessions after 1 hour of inactivity.
+   - Conversation context: pass previous turns to the model as part of the system prompt (or memory sublayer, see §8).
+   - Error handling: if retrieval times out, return "I'm temporarily unavailable; please try again."; if cost cap hit, refuse new turns.
+
+2. **Observability stack** (cross-cutting; feeds debugging and metrics).
+   - Structured logging: every request/response as JSON with trace ID, user (anonymized session), query, sources, latency (retrieval_ms, inference_ms), tokens, cost, any errors or warnings.
+   - Metrics: Prometheus or CloudWatch counters for requests, errors, cost, tokens, latency (p50/p95/p99); stored 30 days.
+   - Alerts: error rate > 5%, latency p95 > 8 s, cost per day > USD 50, cost cap hits > 10/day.
+   - Dashboard: live requests, cost trends, latency distribution, top error types.
+
+3. **Resilience and fallback** (cross-cutting).
+   - Fallback if LLM times out or errors: return retrieved passages as a formatted FAQ-style answer (no model inference).
+   - Fallback if retrieval fails: return a generic "I'm not sure; contact support." with a link to the help center.
+   - Retry logic: retrieval retries up to 3×, model API retries up to 2× with exponential backoff (1s, 2s).
+
+4. **Load testing (V3 — **gated**, latency and throughput).**
+   - Simulate 10 requests/s (peak support hours) for 15 minutes.
+   - Mix of query types: short (< 20 tokens), medium (20–50 tokens), long (> 50 tokens).
+   - Measure: latency p50/p95/p99, error rate, cost per request.
+   - Pass bar: p95 latency < 6 s, error rate < 2%, cost per request < USD 0.05 (average, supporting USD 0.10/resolved conversation budget).
+   - Artifact: load test report (requests, latencies, errors, cost) in CI; run weekly.
+
+5. **Canary rollout prep** (Phase 4 entry gate).
+   - Prepare a 5% canary cohort: a subset of support agents or customers (internal or beta).
+   - Route canary to the new chatbot; measure: resolution rate (conversation ended and user satisfied?), cost per resolved conversation, error rate, latency.
+   - Keep fallback: full AI answers go to canary; other users still use old support system.
+   - Collect feedback: thumbs-up/down, manual corrections; log for Phase 4 feedback loop.
+
+6. **Deployment hardening** (cross-cutting).
+   - Secrets management: API keys (OpenAI, vector store) from environment / secrets vault (AWS Secrets Manager, Vault).
+   - RBAC for logs and dashboard: only team and on-call can see.
+   - Change log: every config change, every prompt change is git-tracked and tagged with date and author.
+
+**Rollback:** Stop routing to chatbot, resume old system; chatbot continues running in shadow mode (logs to dashboard but does not affect users).
+
+**Exit check:**
+- V3 load test passes: p95 < 6 s, error rate < 2%, cost < USD 0.05 per request.
+- Canary deployment successful: 5% of traffic reaches chatbot; logs are clean; dashboard metrics are stable.
+- V4 (cost per resolved conversation) measured: on canary for 1 week, calculate cost / (resolved conversations). If UNKNOWN threshold was supplied by support ops, compare.
+
+---
+
+### Phase 4 — Feedback loop and production launch (Feedback + exposure)
+**Unlocks:** Full production availability; future improvements (Phase 5+).
+
+**Depends on:** Phase 3 exit check; V4 (cost per resolved conversation acceptable).
+
+**Tasks:**
+
+1. **Feedback collection and refinement** (feedback sublayer).
+   - Capture user feedback: explicit (thumbs-up/down, text correction, "this answer did not help") and implicit (session ended, user requested escalation to human).
+   - Log feedback with the chatbot response, sources, and user metadata (anonymized).
+   - Feed corrections back into a labeling store: corrections become re-training data for prompt tuning (weekly review before re-deployment).
+   - Dashboard: feedback volume, sentiment trends, top N most-corrected topics.
+
+2. **Cost per resolved conversation finalized** (V4 gate consumer; economic dependency).
+   - Support lead supplies: average human cost per ticket (salary + tools amortized).
+   - From Phase 3 canary: calculate cost per resolved conversation (cost_per_turn × turns_per_conversation).
+   - Compare: chatbot cost vs human cost. Pass bar: chatbot cost < 25% of human cost, or business accepts higher cost if resolution quality is high enough.
+   - If V4 fails: narrow rollout (only low-risk queries), route more to humans, or optimize prompt/retrieval to reduce tokens.
+
+3. **Rollout strategy** (exposure, smallest first).
+   - Week 1: Canary (5%) → observe cost, quality, errors.
+   - Week 2: Expand to 25% of support agents/customers → monitor same metrics.
+   - Week 3: Expand to 50% → check for any degradation.
+   - Week 4: Full rollout (100%) → continue monitoring.
+   - Rollback at any stage: disable chatbot, resume old system.
+
+4. **Production runbook** (operational, cross-cutting).
+   - On-call playbook: how to respond to alerts (high error rate, cost spike, latency spike).
+   - Incident post-mortem template.
+   - Escalation: who to page if the chatbot is down.
+   - Dashboard and log queries: copy/paste ready for debugging.
+
+5. **Privacy and security final checks** (risk/security; cross-cutting).
+   - PII in logs: verify no customer data (credit cards, SSNs, passwords) leaked in logs or dashboard.
+   - Audit: who accessed logs and dashboards over Phase 3. Rotate API keys.
+   - Compliance check (if applicable): if help-center docs contain personal data (e.g., names, emails), verify they are redacted in logs and retrieval context before shown to model.
+
+**Rollback:** Disable chatbot feature flag; revert routing to old system. Chatbot continues to run in shadow mode (offline logs, no user impact).
+
+**Exit check:**
+- V4 cost per resolved conversation gate passes (or business accepts higher cost with justification).
+- Production rollout plan is approved and rehearsed (rollback tested).
+- On-call team is trained and runbook is live.
+- First 30 days of production: SLI targets met (99.5% availability), cost within budget, no security incidents, user satisfaction ≥ baseline (or improvement over old system).
+
+---
+
+## 6. Validation gates
+
+| ID | Hypothesis | Method | Acceptance threshold | Evidence | Unlocks (and if it fails) | Phase |
+|---|---|---|---|---|---|---|
+| **V0** | A change can be deployed, observed, and rolled back through every tier in production (skeleton) | Real request succeeds; spans all tiers (API → retrieval → embedding → LLM → logging); deploy and rollback via CI/CD succeed; injected failure fires an alert | One request succeeds with latency p95 recorded; deploy and rollback both succeed; injection payload is logged and does not disclose instructions (no tool call, no secret); budget values recorded as baselines | Trace in logs with request ID; deploy logs in CI; injected failure logged; latency and cost baseline values in monitoring dashboard | Phase 1 (injection defense) | 0 |
+| **V1** | Prompt-injection payloads are contained; cost budgets are enforced | Injection test suite (20+ OWASP Top 10 + red-team strings) planted in user input, retrieved docs, and response templates; runaway loop designed to maximize tokens | Pass bar: 100% of injections do not produce a tool call (none exist yet) or disclose system instructions; model response is normal or gracefully degrades; cost cap stops runaway loop and logs event | CI report: test case IDs, pass/fail, payloads attempted, model responses; cost-cap-hit counter in logs | Phase 2 (retrieval + prompt tuning); if it fails: iterate filter rules and retest before Phase 2 starts | 1 |
+| **V2** | For answerable questions, the index returns a supporting passage in the top 5 (retrieval quality) | 200+ labeled queries from past support tickets + anticipated questions; each tagged with source passages; retrieve top 5 for each query; check hit-rate@5 (support passage in top 5?) | Hit-rate@5 ≥ 0.80 (ASSUMPTION: typical for well-chunked FAQ; sample size 200 is about ±3% sampling error at 80%) | Eval report: query ID, hit-rate, precision, recall, top-5 passages, sources found; stored in CI artifact | Phase 3 (orchestration + load testing); if it fails: adjust chunk size, try embedding model variant, re-embed and re-eval | 2 |
+| **V3** | Under peak load (10 req/s), latency and throughput targets are met | Load test: simulate 10 req/s for 15 minutes; mix of query types (short, medium, long); record latency (every request), error rate, cost per request | Latency p95 < 6 s; p99 < 8 s; error rate < 2%; cost per request < USD 0.05 (ASSUMPTION: supporting USD 0.10 per resolved conversation at ~2 turns/conversation) | Load test report (requests, latencies, errors, cost distribution, cost total); stored in CI; run weekly | Phase 4 (rollout); if it fails: optimize prompt/retrieval to reduce tokens, add response caching, or defer scaling to Phase 5 | 3 |
+| **V4** | Cost per resolved conversation is acceptable and cheaper than human support | Measure on Phase 3 canary (5% traffic, 1 week): sum all turns in a conversation, count as "resolved" when user feedback = satisfied or session ends after N turns; divide total cost by resolved count; compare to human cost per ticket (from support lead) | Cost per resolved conversation < 25% of human cost (UNKNOWN: needs support lead input before Phase 4); or business accepts higher cost if quality improves; target: < USD 0.10 per conversation if human cost is ~ USD 1.00 | Canary dashboard: cost per turn, turns per conversation, cost per resolved conversation; support lead attestation of human cost; cost/quality trade-off signed off by product owner | Phase 4 (rollout strategy); if it fails: optimize token usage, narrow rollout to low-risk questions, route more to humans, or re-plan chatbot scope | 3 |
+
+---
+
+## 7. Cross-cutting concerns (per phase, from the first commit)
+
+| Phase | Security | Observability | Reproducibility | Resilience |
+|---|---|---|---|---|
+| **0** | Injection payload logged; API request/response sanitized (PII redaction stub); cost cap enforced (hard 1k token limit) | Structured JSON logs: request, response, latency, tokens, cost, trace ID; baseline metrics recorded (p50/p95 latency, cost/request) | Code in Git (commit hash in every deployment); model name and embedding model pinned (no auto-upgrade); prompt template committed | Timeout on every external call (retrieval, LLM, embedding): 10 s hard stop; graceful degradation returns "temporarily unavailable" |
+| **1** | Input filter for jailbreak patterns and PII; output filter for URLs (whitelist help-center domain) and sensitive patterns; tool allow-list defined (0 tools at Phase 0); API keys from secrets vault | Injection attempts logged with full payload and response; cost per request, per session, per day; alert on cost-cap hits | Filters committed to config; injection test suite in CI; test results reproducible with same payload list | Fallback if filter fails: log and allow request (not blocking); circuit breaker on excessive injection attempts (log and refuse) |
+| **2** | ETL pipeline: validate source docs before ingestion; track doc version and last-modified; no PII in embedded docs (audit crawled content) | Retrieval eval: hit-rate metrics per index version; embedding model and chunking logged with index; daily ETL logs (docs added, modified, deleted, errors) | Index versioned (index_v1, index_v2, …); chunking strategy and embedding model in index metadata; eval report in CI with query set versioned | ETL retries on doc fetch failures (3× backoff); index rollback: keep two versions in vector store, quick switch if new index is bad |
+| **3** | Session state encrypted at rest (Redis or database); no credentials in session (API keys fetched fresh per request from secrets vault); access logs for dashboards | Per-request trace ID spans all components; step-wise latencies (retrieval_ms, inference_ms, total_ms) logged; dashboard: error rates, cost trends, top N error types; SLI dashboard (availability ≥ 99.5%) | Deployment from git tag; config version tracked; every alert and incident logged in a searchable store (with timestamp, on-call, resolution) | Fallback logic: if LLM times out → return FAQ answer; if retrieval fails → return "contact support" + help center link; queue + retry async backup for critical queries |
+| **4** | User feedback tagged with user ID (anonymized), timestamp, and response ID for audit trail; PII audit: verify no customer data in feedback logs; RBAC on feedback and dashboard (team + on-call only) | Feedback dashboard: volume, sentiment, top corrected topics; cost per turn, cost per resolved conversation tracked daily; anomaly detection on cost spikes | Feedback loop: corrections committed to labeling store (versioned) before re-training prompt; change log for every prompt update (git tag + date) | Graceful degradation: if chatbot is down, users see "temporarily unavailable" and are routed to contact-support form; canary rollback: disable feature flag and resume old system in < 5 minutes |
+
+---
+
+## 8. AI layer (AI/agentic systems only)
+
+| Sublayer | In this system | Built in | Exit check or V-ID |
+|---|---|---|---|
+| **1. Prompt-injection / guardrail defense** | Jailbreak pattern filter + PII redaction + output URL whitelist + cost/token caps; injection test suite in CI | Phase 1 | V1 (injection containment gate) |
+| **2. Cost + latency budget** | Per-request token cap (1.5k tokens), per-session cost cap (USD 2.00), per-request timeout (15 s), latency budget per step (retrieval ≤ 2s, inference ≤ 8s) | Phase 1 | V1 (cost cap enforced, runaway loop cut off), V3 (load test: p95 latency < 6s) |
+| **3. Human-in-the-loop gating** | No approval required for answers (informational, no writes); high-confidence escalation logic (confidence < 0.5 or out-of-domain query → suggest human escalation) | Phase 2 | Phase 2 exit check: escalation logic deployed, tracked in logs |
+| **4. Retrieval** | Vector store (Pinecone/Weaviate) with help-center chunks; retrieve top 3–5 passages; re-rank if time permits | Phase 1 (skeleton), Phase 2 (tuning) | V2 (retrieval hit-rate@5 ≥ 0.80) |
+| **5. Model access** | Hosted LLM API (OpenAI GPT-4o or Claude 3.5 Sonnet); provider abstraction layer; retry logic (2× backoff); fallback model ready (not yet used) | Phase 0 (skeleton), Phase 1 (hardened) | Phase 0 baseline; Phase 3 load test (model API meets latency target under load) |
+| **6. Memory** | Session state: conversation turns stored in Redis or database; expires after 1 hour; previous turns sent to model as context (short-term only) | Phase 3 | Phase 3 exit check: session state retrieved and appended to prompts; no stale context in responses |
+| **7. Orchestration** | Single-turn retrieval + LLM call, multi-turn within a session (previous context passed); no loops or agentic actions yet; chain: retrieve → generate → return | Phase 0 (skeleton), Phase 3 (session state) | Phase 3 load test; Phase 4 canary: conversations complete as expected, turns are traced |
+| **8. Routing** | Not needed — one model (LLM), one retrieval path; no difficulty/cost-based routing yet | — | — |
+| **9. Feedback** | Explicit feedback (thumbs, corrections, escalation); implicit feedback (session ended, human escalation); stored for re-training signal | Phase 4 | Phase 4 exit check: feedback volume, sentiment tracked; corrections enter labeling store; re-training iteration starts |
+
+---
+
+## 9. Methodology exceptions
+
+None.
+
+---
+
+## 10. Deliberately deferred
+
+- **Fine-tuning on customer queries:** Deferred until V2 (retrieval hit-rate) passes AND V4 (cost per resolved conversation) shows that fine-tuning ROI is worth the weeks of data collection and re-training. Flip: retrieval + prompt tuning stops improving after 4 weeks in Phase 4, or cost exceeds baseline by > 50%.
+
+- **Multi-model routing by difficulty/cost:** Deferred until Phase 4 canary shows that 10% of queries could be handled by a cheaper model with acceptable quality. Flip: cost per query exceeds budget by > 20% OR quality regression detected in Phase 4 feedback.
+
+- **Agentic actions (writes, external tool calls):** Deferred entirely; this system is read-only (retrieval + generation, no writes or side effects). Flip: product requirement changes to allow chatbot to create support tickets, reset passwords, etc. — then Phases 1–3 restart with human-in-the-loop gates, authorization checks, and rollback per tool.
+
+- **Knowledge graph / semantic search:** Deferred until retrieval hit-rate (V2) plateaus below 0.90. Flip: V2 fails or Phase 4 feedback shows frequent "not found" responses (> 5%).
+
+- **Conversation summarization for long sessions:** Deferred until Phase 4 shows that sessions average > 10 turns. Flip: observed in Phase 4 canary or full rollout.
+
+- **Per-tenant or per-account document access control:** Deferred; assumes public help-center (all customers see same docs). Flip: product requirement for per-customer doc visibility — then retrieval must enforce caller's document permissions (Phase 1 risk/security dependency re-opens).
+
+---

@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "3e905cabeb5c.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "3e905cabeb5c",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 46,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "MVP: catalog, flat and per-seat subscriptions, Stripe adapter, invoices, basic ledger, webhooks, RLS.",
+      "rationale": "Phases go roughly simple to complex (MVP, usage, finance, enterprise) but ledger/tax/reconciliation ordering isn't justified by dependency and tax is late despite invoices needing it."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "MVP: catalog, flat and per-seat subscriptions, Stripe adapter, invoices, basic ledger, webhooks, RLS.",
+      "rationale": "The MVP is an end-to-end-ish slice but is a feature bundle, not a thin production walking skeleton with deploy, observability, and proof of path."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Build vs. buy: if your pricing is simple, Stripe Billing, Chargebee, or Lago can replace much of 3.1–3.5.",
+      "rationale": "A decision table with choices and rationale plus stated assumptions and open questions exist, but no explicit flip conditions for most irreversible decisions (only tenancy escape hatch and build-vs-buy hints)."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Treat RLS as a backstop. Application-layer checks and automated cross-tenant tests are also required.",
+      "rationale": "Tenancy isolation and ledger are in the MVP, but no explicit widest-impact-first ordering within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "PCI: tokenize through the PSP, so card data never touches your systems.",
+      "rationale": "Security is thorough but in a standalone section; phases only mention RLS in MVP, with SOC2/GDPR not tied to phases."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "Observability | OpenTelemetry, Prometheus/Grafana, with `tenant_id` as a trace attribute",
+      "rationale": "Observability is only a tech-stack row, absent from the phased rollout and Phase 1."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "you can re-rate any period in a sandbox and diff it against production before fixing billing bugs.",
+      "rationale": "Replayable billing runs and re-rating are reproducibility of data, but no reproducible builds/environments/IaC across phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Idempotency everywhere: API Idempotency-Key headers, usage dedupe, bill-run keys, and PSP charge keys",
+      "rationale": "Strong resilience patterns exist but in a standalone section; phases only sporadically mention them (webhooks in MVP, reconciliation/dunning in phase 3)."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so no N/A declaration."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Enterprise: custom contracts and overrides, committed-use drawdown, multi-entity, regional cells, dedicated-tenant tiers.",
+      "rationale": "Later phases implicitly show deferred work, but there is no explicit not-built list with pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong technical domain design, but weak as a build plan: no walking skeleton, observability and security not threaded through phases, no explicit deferral triggers, and no AI N/A statement.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1202,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 6768
+  },
+  "cost_usd": 0.029060999999999997,
+  "latency_s": 37.91,
+  "raw_file": "raw/judge-3e905cabeb5c.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

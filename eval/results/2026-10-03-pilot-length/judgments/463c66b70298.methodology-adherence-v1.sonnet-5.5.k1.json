@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "463c66b70298.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "463c66b70298",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 54,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Each one depends on the one before it.",
+      "rationale": "Phases run discovery → foundations → CI → CD → observability → hardening → migration → self-service with exit criteria proving each layer, though observability and security come after CD."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 0: Discovery and Baseline ... Know what you're standardizing before you build anything.",
+      "rationale": "Phase 0 is discovery only; the first prod deploy comes in Phase 3, so no thin end-to-end slice runs first."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Key decisions to lock in: CI engine ... Deploy model: GitOps or push-based ... Repo strategy: polyrepo or monorepo.",
+      "rationale": "Irreversible decisions are listed up front, but there are no defaults or flip conditions, except a trunk-based recommendation."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Wave 3 | ~12 | Critical-path and high-traffic services",
+      "rationale": "Waves go from low risk to critical, and foundations come before leaf work, but the explicit blast-radius ordering within phases is weak and the wave order is risk-ascending rather than widest-first."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Identity and access: SSO, RBAC, and OIDC federation from CI to the cloud, so there are no long-lived cloud keys",
+      "rationale": "Security appears in Phases 1 and 2 but is mostly concentrated in Phase 5, and Phases 0, 3, 6 and 7 add little."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Phase 4: Observability and Progressive Delivery",
+      "rationale": "Observability is a dedicated phase after foundations, CI and CD, so it is missing from early phases, though DORA baselining starts in Phase 0 and pipeline observability comes later."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Infrastructure as code for the platform itself ... pinned base images ... Never rebuild per environment.",
+      "rationale": "Reproducibility is covered in Phases 1–3 (IaC, pinned images, immutable tags, same artifact), but it is not threaded through Phases 0 and 4–7."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "automatic rollback when thresholds are breached",
+      "rationale": "Resilience shows up as rollback, PDBs and parallel old/new pipelines in Phases 3, 4 and 6, but not in early phases, and there is no failure handling for the platform itself."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so N/A is not declared."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Template the top archetypes first and let the long tail wait.",
+      "rationale": "Deferrals such as the long tail, preview environments and exceptions are mentioned, but there is no explicit deferred list with pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "This is a solid conventional CI/CD rollout plan with good dependency ordering and a migration strategy. It has no walking skeleton, no decision defaults or flip conditions, observability and security arrive late, and it doesn't address the AI layer.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1153,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 5031
+  },
+  "cost_usd": 0.0242285,
+  "latency_s": 36.999,
+  "raw_file": "raw/judge-463c66b70298.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

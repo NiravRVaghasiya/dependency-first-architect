@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "36ec2c02184d.probe.sonnet-5.5",
+  "blind_id": "36ec2c02184d",
+  "judge": "sonnet-5.5",
+  "order_index": 26,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Clean, conventional structure (scope, architecture, domain, subsystems, phases, trade-offs) that is typical of default strong model output",
+    "No explicit methodology artifacts such as stated assumptions to verify, open questions, risk register, alternatives-considered, or explicit decision records",
+    "Has a Scope and Assumptions section and a Key Trade-offs section, which gives mild methodology-like structure",
+    "Phased delivery and build-vs-buy reasoning are present but brief and not tied to any named framework",
+    "Dense technical detail with uniform formatting (tables, ASCII diagram) and no process-oriented sections like validation steps or success criteria"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 293,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 5775
+  },
+  "cost_usd": 0.0173755,
+  "latency_s": 34.687,
+  "raw_file": "raw/probe-36ec2c02184d.probe.sonnet-5.5.txt"
+}

@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "d1453562468a.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "d1453562468a",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 74,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Nothing about naming or collisions gets specified until this is proven.",
+      "rationale": "Phases run extraction substrate → naming/collision/undo → failure-safe execution → companions/UX, each stating its dependency."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "`exifrename ./fixtures/one --apply` on a folder with one real JPEG... A tag push publishes to PyPI via trusted publishing.",
+      "rationale": "Phase 0 is a real end-to-end slice that is installed, run in CI on three OSes, and published."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Filename contract (irreversible once users' libraries carry it) | `YYYY-MM-DD_HH-MM-SS<ext>`... Repeated user requests for other layouts. Then add a `--format` template.",
+      "rationale": "A large gate table gives a default and a concrete flip condition for each decision, including the irreversible ones."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Freeze the data contracts... so this has the widest blast radius in the tool.",
+      "rationale": "Tasks within each phase are explicitly ordered widest first, for example the typed result before fixtures and the contracts before the plan builder."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "The resolved target path must stay inside the source directory (realpath check).",
+      "rationale": "The security column has concrete, phase-specific entries from Phase 0 through Phase 4."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "`--log-json` writes one structured line per file to stderr... exit codes are a contract from day zero",
+      "rationale": "Observability is concrete in Phase 0 and in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "`uv.lock`, a 3-OS CI matrix, a committed fixture, and builds from tags only.",
+      "rationale": "Reproducibility has concrete content in every phase: lockfile, generated corpus, deterministic sort, seeded tests, and version recorded in journals."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Never overwrites. Stops at the first execution error and exits nonzero. A journal entry is written before the rename.",
+      "rationale": "Failure handling is specific in every phase, from Phase 0 no-overwrite and journal through write-ahead fsync and group rollback."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "**N/A.** No model, retrieval or agent is involved.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "`--format` naming templates: pulled forward by repeated user requests. The v1 format stays the default.",
+      "rationale": "A dedicated deferred list gives each item a pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan: it meets every rubric dimension with concrete, phase-specific content, and I found no significant weaknesses.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1047,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 6839
+  },
+  "cost_usd": 0.027688499999999998,
+  "latency_s": 16.375,
+  "raw_file": "raw/judge-d1453562468a.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

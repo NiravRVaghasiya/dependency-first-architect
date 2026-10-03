@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "2711a8b22a00.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "2711a8b22a00",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 39,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Do this before adding features.",
+      "rationale": "Phases go from decisions to single-user editor to sync to persistence to auth to collaboration UX. Convergence tests gate later work, and auth comes before presence and comments."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Milestone: two browsers edit the same document and converge.",
+      "rationale": "A thin end-to-end slice appears only in Phase 2, after a full single-user editor. No production deployment or CI path is in Phase 0."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "CRDTs are easier for offline support and peer-to-peer. The cost is metadata growth.",
+      "rationale": "Irreversible decisions are listed up front with tradeoffs. There is no explicit default or flip condition, and the plan leaves the choice open."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Put this before the social features, because presence and comments depend on knowing who the user is.",
+      "rationale": "Some ordering puts wide-impact work first, such as convergence tests and schema before features. Within phases it is not reasoned, and Phase 1 puts the toolbar before persistence."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "Security: rate limiting, input and update validation, payload size caps, and protection against malicious or malformed updates.",
+      "rationale": "Security is mostly a Phase 7 trailing step. Only auth in Phase 4 comes earlier, and Phases 0 to 3 have no security treatment."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "Observability: metrics for sync latency, connection counts, and update sizes, plus error tracking.",
+      "rationale": "Observability is placed in Phase 7 hardening, not from day zero."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan says nothing about reproducible builds, environments, CI or infrastructure as code."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Handle reconnection and resync, and make applying an update idempotent.",
+      "rationale": "Resilience appears in Phase 2 (reconnect, idempotency), Phase 3 (durable log) and Phase 5 (offline), but not in every phase. Flaky-network testing and DR drills come late."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never says whether an AI layer applies, so it does not earn the N/A credit."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Phase 8: Polish and scale ... Slash commands, embeds, tables, and images with an upload pipeline.",
+      "rationale": "Later work is placed in Phase 8, but there are no pull-forward conditions and no explicit statement of what is deferred."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan has sound dependency ordering and a good convergence-test gate. Security, observability, reproducibility and a Phase 0 production skeleton are missing or come late, and it never says the AI layer is N/A.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1050,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 2659
+  },
+  "cost_usd": 0.0172685,
+  "latency_s": 33.499,
+  "raw_file": "raw/judge-2711a8b22a00.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

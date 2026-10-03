@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "7a3e61031343.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "7a3e61031343",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 36,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "The fraud system stays outside the cardholder-data environment (CDE). It only sees the tokenized card number, the BIN (first digits) and the last 4 digits",
+      "rationale": "Mostly correct on design-critical parts (in-process GBT serving, Flink checkpoints, Kafka RF3/min ISR, Object Lock); minor over-confidence on PCI scope and loose 'strong consistency' for a Kafka-sunk log."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "A system that scores each card authorization in real time and returns a decision (approve, decline, or approve and alert the cardholder).",
+      "rationale": "Fits the request, states the issuer assumption, and defers scope explicitly; step-up (3DS) is deferred, narrowing graded actions."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Modular monolith on the hot path. One decision service with in-process rules, model and policy.",
+      "rationale": "Consistent responsibilities and data ownership; minor loose ends such as the 'approve and alert' flow being lightly specified."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Parity mismatch < 0.5% on replay. Feature freshness p99 < 2 s. Feature fetch p99 < 10 ms at peak load.",
+      "rationale": "Per-phase exit checks tied to risks, shadow first, time-split and challenger comparison, drift monitoring; thresholds are largely invented and not labeled provisional."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Sizing assumptions to replace with your numbers: 2k TPS on average, 10k TPS at peak, and a fraud-decision SLO of p99 ≤ 50 ms",
+      "rationale": "Assumptions and revisit triggers are explicit, including the issuer assumption; some numbers are unqualified and sensitivity is only partial."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Overflow policy: when the queue SLA is breached, low-priority cases are decided automatically. Backpressure on case creation.",
+      "rationale": "Covers degraded modes, kill switches, DLQ, probing, label poisoning and bad rules; out-of-order and reversal handling is thin."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Terraform, images pinned by digest, config in git, GitOps deploys.",
+      "rationale": "Deployment, canary, rollback, alerting, access control and drills are covered; on-call ownership is not explicit and the stack is heavy for a small team."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Infrastructure cost per 1k transactions.",
+      "rationale": "Build vs buy and a cost-per-1k metric exist, but no cost estimate, drivers or scaling, and active-active cost goes unremarked."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "In-process serving behind a swappable interface.",
+      "rationale": "Identifies identity model, schema compatibility, immutable labels, revisit triggers and deferrals; vendor exit paths are less explicit."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Modular monolith on the hot path.",
+      "rationale": "Shadow slice, rules first, and deferrals keep it proportionate; multi-region active-active and some ceremony are heavy but gated late."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: A real production authorization returns a decision within budget. Its trace is visible end to end",
+      "rationale": "Dependency-reasoned phases, concrete tasks, checkable exit criteria and revisit triggers; a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "p99 50 ms total, split as: parsing: 2 ms; feature fetch: 10 ms; rules: 2 ms; model: 5 ms; policy: 1 ms"
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "Fall back in steps: full score → rules only → static fallback. The static fallback fails open below an amount threshold and fails closed"
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "The same definition generates both the Flink streaming job and the offline point-in-time SQL."
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "Point-in-time joins, a label-maturity window, splits by time (no random shuffling), and a cost matrix"
+    },
+    {
+      "id": "P8-05",
+      "status": 1,
+      "evidence": "Tune thresholds per segment against the cost matrix."
+    },
+    {
+      "id": "P8-06",
+      "status": 1,
+      "evidence": "CEL rules versioned in git and reviewed by a second person."
+    },
+    {
+      "id": "P8-07",
+      "status": 2,
+      "evidence": "Cardholder confirmation (\"Was this you?\" by SMS or push), with replies fed back as labels."
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "The fraud system stays outside the cardholder-data environment (CDE). It only sees the tokenized card number"
+    },
+    {
+      "id": "P8-09",
+      "status": 1,
+      "evidence": "Clear handling of retries, reversals and partial reversals."
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "Run the model in shadow → as a challenger on a few % of traffic → as champion."
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "model version and top-feature reason codes logged per decision"
+    },
+    {
+      "id": "P8-12",
+      "status": 1,
+      "evidence": "Multi-region active-active decision service and online store."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "Synchronous for the authorization decision only."
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "Hard timeout with fallback response."
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "splits by time (no random shuffling)"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "Feature definitions as one source of code."
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "A CI test fails the build if a full card number pattern shows up in logs."
+    }
+  ],
+  "note": "Strong, dependency-ordered fraud plan with a shadow-first slice, fallback policy and leak-free training; weaker on cost quantification, step-up actions, and out-of-order/reversal detail.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 4732,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 16444,
+    "cache_creation_input_tokens": 17304
+  },
+  "cost_usd": 0.0938808,
+  "latency_s": 45.73,
+  "raw_file": "raw/judge-7a3e61031343.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

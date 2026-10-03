@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "3d6c68248af5.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "3d6c68248af5",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 206,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "short-lived credentials (OIDC from CI to the cloud and registry), with no long-lived keys stored in pipelines",
+      "rationale": "Technical claims are correct (OIDC, cosign with Kyverno, expand-and-contract, GitOps), though shallow on hard parts such as build-once promotion and fork PR secrets."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "First get one service all the way from commit to production. Then turn that path into reusable templates",
+      "rationale": "Covers inventory, pilots, templates, waves, CD and rollback with a buildable sequence, but omits test environments and flaky tests, runner cost, and audit."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Critical path: identity and secrets → registry → deployment model → pilot to prod with rollback.",
+      "rationale": "Consistent sequence and clear responsibilities, with small loose ends such as Phase 5 placed after Wave 1 in the diagram and the signing in Phase 1 versus admission policy in Phase 5."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Done when: each pilot deploys to prod and rolls back through the platform, and the owning teams have signed off.",
+      "rationale": "Exit criteria and a tested rollback are checkable and early, but there is no validation for the riskiest assumptions, and the thresholds are thin (CI under 10 minutes is given as an example)."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Assumptions (tell me if any are wrong and I'll adjust the plan): services are or can be containerized",
+      "rationale": "Assumptions are stated up front and timeline estimates are flagged as rough, but there is little sensitivity analysis beyond team size and stack variety."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Start every new gate in warn-only mode, then switch to blocking once false positives are under control.",
+      "rationale": "Some failure handling (rollback, DB migrations, shared databases, warn-only gates), but it misses platform outages, fork PR threats, flaky tests and pipeline bypass."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Track the DORA metrics: deployment frequency, lead time, change failure rate and time to restore.",
+      "rationale": "Covers rollback, DORA metrics, template versioning and migration runbook, but has no named platform owner, no CI/CD outage plan and no incident response."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Add self-service through a developer portal, cost visibility for runners, and preview environments.",
+      "rationale": "Runner cost is mentioned only as a late add-on, with no hosted versus self-hosted choice, no estimate and no cost controls."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Choose the tools: CI engine, artifact registry, CD approach (GitOps with Argo CD or Flux, or a push-based tool), secrets manager.",
+      "rationale": "Versioned templates, a published service contract and waves with fallback limit lock-in, but tool choices are not analysed for exit cost and little reversibility reasoning is given."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Add these after the basic path works, so gates don't hold up adoption",
+      "rationale": "It is phased and starts from a thin slice using existing tools, with mild extras such as Backstage, preview environments and feature flags left late or optional."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Done when: a \"hello world\" container builds, is signed, is pushed to the registry and deploys to dev automatically.",
+      "rationale": "Phases have weeks, dependencies and checkable done criteria, but tool choices are left open and there is no adaptation plan if early results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Group them into archetypes... Write versioned, reusable pipeline templates, one per archetype... Document how to override the template, and limit how much teams can override."
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Run the old and new pipelines in parallel for a short time, then shut the old one off."
+    },
+    {
+      "id": "P3-03",
+      "status": 1,
+      "evidence": "a semantic version or commit SHA as the artifact ID"
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "short-lived credentials (OIDC from CI to the cloud and registry), with no long-lived keys stored in pipelines"
+    },
+    {
+      "id": "P3-05",
+      "status": 1,
+      "evidence": "Image signing and admission policy (for example cosign with Kyverno or Gatekeeper)."
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "canary or blue-green deployments with automated analysis based on SLO metrics, plus automatic rollback."
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Contract or integration tests in staging."
+    },
+    {
+      "id": "P3-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "CI runners that scale automatically, with build caching."
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "cost visibility for runners"
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "Track the DORA metrics: deployment frequency, lead time, change failure rate and time to restore."
+    },
+    {
+      "id": "P3-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Run the old and new pipelines in parallel for a short time, then shut the old one off."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "An artifact and container registry with retention and immutability policies."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "with no long-lived keys stored in pipelines"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Each service's pipeline to about 10–20 lines of config."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Choose the tools: CI engine, artifact registry, CD approach"
+    }
+  ],
+  "note": "Sensible, risk-aware sequencing (pilot, templates, waves, progressive delivery before critical services) that avoids every trap. It is thin on test environments and flaky tests, runner cost, change control and audit, fork-PR secrets, and platform ownership.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2182,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 9656
+  },
+  "cost_usd": 0.046153,
+  "latency_s": 39.926,
+  "raw_file": "raw/judge-3d6c68248af5.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

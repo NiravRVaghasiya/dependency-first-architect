@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9680034ba3b8.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "9680034ba3b8",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 127,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "GitOps (pull) instead of CI running `helm upgrade` (push). CI never holds prod credentials, every prod change is a Git commit, and rollback is `git revert`.",
+      "rationale": "Mechanisms (OIDC, cosign keyless, Argo PreSync, expand/contract, pull_request_target) are accurate; minor issues like OIDC condition on refs/heads/main with PR runs and auto-approved revert PR nuance, and PreSync migration on rollback."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Non-goals: Rewriting service code beyond what it takes to externalise config... Building a developer portal (Backstage) or per-PR preview environments. Both are deferred (§17).",
+      "rationale": "Covers core CI/CD needs, states assumptions, explicit deferrals with triggers, buildable with a 4-person team; contract testing is a gap."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "`deploy-config` is the single source of truth, and Argo CD only reads it.",
+      "rationale": "Clear ownership and consistent flows; small loose ends (auto-sync prod vs. rollback PR auto-approval, PreSync with rollback by revert)."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "S1 ... A migration Job for one real archetype-B service against a staging copy of its database, plus a review of its last 10 migrations",
+      "rationale": "Early time-boxed spikes with decision thresholds and fixture repos, timed rollback drills; some targets are invented but labelled assumptions, and post-launch validation is modest."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "A5. ≤ 30% of services bake environment config into images | Each such service needs refactoring. Onboarding effort grows to 2–5 days each. | Spike S4, M1",
+      "rationale": "Explicit assumptions table with impact and how/when checked; questions with defaults; estimates marked rough."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "If Argo CD is down, running workloads keep serving and only new deploys stop. Recovery is a Terraform/Helm reinstall",
+      "rationale": "Covers bad deploys, migrations, GitHub outage, workflow injection, Argo takeover, bad template release; less on flaky tests, duplicate/race details and runner compromise."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Business-hours support goes through a `#platform-help` channel with a weekly rotating \"platform shield\" engineer.",
+      "rationale": "Monitoring, alerts, runbooks, rollback, ownership and support model sized to a 4-person team; off-hours coverage is limited."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "about 200k Actions minutes/month at about $0.008–0.016/min comes to about $1.6–3.2k.",
+      "rationale": "Estimate with basis, controls (cancel superseded, lifecycle, spend alerts) and hosted vs ARC trade-off; build cost in people time somewhat covered via timeline but minutes figure is thinly derived."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Point of no return: the M4 decommissioning of the legacy deploy systems.",
+      "rationale": "Reversibility column per decision, revisit triggers, per-step rollback, isolation via thin calls and narrow contract, hard decisions spiked early."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Canary needs Argo Rollouts plus metric queries per service, so it comes later.",
+      "rationale": "Uses existing tools, defers portal/previews/canary; Kyverno, two Argo instances and ESO add some weight but are justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T4 ... Done when: `terraform plan` runs in CI on PR; apply has created the registry and role in non-prod; a fixture workflow pushes without any stored cloud keys",
+      "rationale": "Task-level breakdown with done-when criteria, dependencies, critical path, exit criteria per milestone, and adaptation triggers from spikes."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Narrow contract plus golden paths ... `publish.yml`: the escape hatch for custom builds. Inventory all 50 services: repo, language/build tool, current deploy method"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Get it running in dev, then staging, with the **old pipeline still deploying prod**. ... reverse the move by suspending its Argo CD Application's auto-sync and re-enabling the old job."
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "A release moves between environments by committing the *same image digest* into the next environment's folder."
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "CI has no cluster credentials ... GitHub OIDC to a cloud role ... fork PRs get no secrets ... ESO from the secret manager"
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Actions pinned by SHA ... cosign keyless signing + Kyverno verify ... CODEOWNERS guard `envs/prod/`"
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "The rule is expand/contract. Each release's migrations must stay compatible with the previous image version."
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Each service deploys independently via per-service folders; but no contract tests or schema compatibility checks are described (only `smoke-test-command`)."
+    },
+    {
+      "id": "P3-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "registry layer caching, dependency caching, and 4–8 core runners for heavy builds; PR feedback p90 ≤ 10 min"
+    },
+    {
+      "id": "P3-10",
+      "status": 2,
+      "evidence": "GitHub-hosted runners are the default ... ARC on a non-prod cluster ... about 200k Actions minutes/month ... comes to about $1.6–3.2k"
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Platform SLO: 99.5% CI success rate ... Platform team owns the templates ... the four DORA metrics"
+    },
+    {
+      "id": "P3-12",
+      "status": 2,
+      "evidence": "Prod changes go through a PR with CODEOWNERS set per service folder ... 100% of prod changes are traceable (commit, PR approver, image digest, signature)."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "The old and new systems never deploy the same environment at the same time. ... the old pipeline stays available until the end."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "No `:latest` tag ... committing the *same image digest*"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "CI has no long-lived cloud credentials ... fork PRs get no secrets"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Each service deploys independently via per-service folders; waves of 5–8 services"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "CI runs on **GitHub Actions** using central, versioned *reusable workflows*"
+    }
+  ],
+  "note": "Strong, well-sequenced, assumption-explicit plan using existing tools with pilot-first waves; gaps are contract testing, flaky-test handling, and test-data/environment detail.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2563,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 27063
+  },
+  "cost_usd": 0.0932955,
+  "latency_s": 47.331,
+  "raw_file": "raw/judge-9680034ba3b8.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

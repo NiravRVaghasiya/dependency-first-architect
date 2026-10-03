@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "b6d58bc60693.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "b6d58bc60693",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 64,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1: \"Cost & Latency Gates + Guardrails\"; Phase 2 \"Retrieval Quality\"; Phase 3 \"Human-in-the-Loop Escalation + Pilot\"",
+      "rationale": "Mostly substrate-upward with gates proven before next phase, but HITL comes after retrieval and the Phase 0 jailbreak and V-ID numbering are inconsistent (V2 cited as retrieval F1 and latency)."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"One real user question, end-to-end retrieval and LLM response, deployed to an internal staging environment, logged, monitored, and rolled back.\"",
+      "rationale": "Phase 0 is a genuine thin end-to-end slice with deploy, trace, and rollback, though staging/internal rather than full production."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"LLM provider: API vs self-hosted | R2 ... | Default: API | ... | Flip condition: V1 fails → switch to self-hosted\"",
+      "rationale": "Irreversible decisions are tabulated with reversibility, default, assumption, and flip conditions, plus labeled unknowns."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "\"Phase 1 ... Cost gate V1 ... Latency gate V2 ... Guardrail validation V3 ... Rate limit & cost cap\"",
+      "rationale": "Broad concerns (guardrails, budgets) precede leaf work across phases, but ordering within phases is not explicitly reasoned by blast radius and guardrail implementation is listed after measurement tasks."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "\"Hard token cap (500 tokens). Jailbreak injection test\" (Phase 0); Phase 1 injection filter; Phase 2 PII audit; Phase 3 ticket redaction; Phase 4 audit logging",
+      "rationale": "Security has concrete content in every phase starting from Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"Stdout/file logging: question, retrieved docs, response, cost, latency, tokens.\"",
+      "rationale": "Observability is present in Phase 0 and extended concretely in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"Docker image with pinned deps. Seed for FAISS index reproducible.\"",
+      "rationale": "Reproducibility is concretely addressed in all five phases (versioned index, gold dataset, scripted rollout)."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "\"Manual rollback tested (stop, revert, delete logs).\" Phase 1: \"Graceful degradation: if LLM API down, return cached answers or escalate.\"",
+      "rationale": "Phase 0 only has rollback, and real failure handling (retries, circuit breaker) arrives from Phase 1; reasonably threaded but Phase 0 lacks failure handling proper."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "\"Human-in-the-Loop | Escalation trigger ... | Phase 3\"; \"Orchestration ... Phase 1\"; \"Memory ... Phase 0\"",
+      "rationale": "Defenses and budgets come early, but HITL is built after retrieval, and memory/orchestration/routing phasing is inconsistent with the required order."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Multi-model routing ... Pull forward: Cost baseline (V1) shows >$0.02 mean; A/B test ... cost reduction >20% with <5% accuracy loss.\"",
+      "rationale": "Six deferred items each have concrete pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong gates, skeleton, and threaded cross-cutting tables; weaknesses are the HITL-after-retrieval ordering, inconsistent gate IDs, and a preamble admitting missing reference files.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1397,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 11103
+  },
+  "cost_usd": 0.0418485,
+  "latency_s": 56.378,
+  "raw_file": "raw/judge-b6d58bc60693.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

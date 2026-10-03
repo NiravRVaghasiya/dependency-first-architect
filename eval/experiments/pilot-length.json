@@ -1,0 +1,105 @@
+{
+  "schema": "dfa-eval/config@1",
+  "name": "pilot-length",
+  "description": "Pilot, part 2 of 3: the output-length control. P1-P5 x {bare request, v2 skill}, both with a 1,500-word limit, x 3 runs on Opus 5.5 (effort high), judged blind by Sonnet 5.5 on both rubrics, plus a leakage probe. Compare with the uncapped pair in pilot-core (same generator and Sonnet judge).",
+  "seed": 20261004,
+  "prompts": [
+    {
+      "id": "P1",
+      "title": "RAG support chatbot",
+      "kind": "AI",
+      "request": "Plan a customer-support RAG chatbot over our help-center docs.",
+      "checklist": "eval/rubrics/checklists/P1.json"
+    },
+    {
+      "id": "P2",
+      "title": "Multi-tenant SaaS billing",
+      "kind": "non-AI",
+      "request": "Architect a multi-tenant SaaS billing system.",
+      "checklist": "eval/rubrics/checklists/P2.json"
+    },
+    {
+      "id": "P3",
+      "title": "CI/CD for 50 microservices",
+      "kind": "non-AI",
+      "request": "Sequence building a CI/CD platform for 50 microservices.",
+      "checklist": "eval/rubrics/checklists/P3.json"
+    },
+    {
+      "id": "P4",
+      "title": "GitHub issue agent",
+      "kind": "AI",
+      "request": "Plan an autonomous agent that triages and resolves GitHub issues.",
+      "checklist": "eval/rubrics/checklists/P4.json"
+    },
+    {
+      "id": "P5",
+      "title": "Collaborative doc editor",
+      "kind": "non-AI",
+      "request": "Order the build of a real-time collaborative document editor.",
+      "checklist": "eval/rubrics/checklists/P5.json"
+    }
+  ],
+  "conditions": {
+    "baseline-capped": {
+      "kind": "plain",
+      "description": "The request alone, with a 1,500-word length limit.",
+      "length_cap_words": 1500
+    },
+    "dfa-capped": {
+      "kind": "skill",
+      "description": "The Dependency-First Architect skill, with a 1,500-word length limit.",
+      "skill_dir": ".",
+      "skill_name": "dependency-first-architect",
+      "length_cap_words": 1500
+    }
+  },
+  "generators": [
+    {
+      "id": "opus-5.5",
+      "provider": "claude-cli",
+      "model": "claude-opus-5-5",
+      "effort": "high"
+    }
+  ],
+  "judges": [
+    {
+      "id": "sonnet-5.5",
+      "provider": "claude-cli",
+      "model": "claude-sonnet-5-5",
+      "effort": "high"
+    }
+  ],
+  "runs_per_cell": 3,
+  "contrasts": [
+    {
+      "treatment": "dfa-capped",
+      "control": "baseline-capped"
+    }
+  ],
+  "rubrics": [
+    "methodology-adherence-v1",
+    "engineering-quality-v1"
+  ],
+  "judge_repeats": 1,
+  "blinding": {
+    "strip_self_score": true,
+    "neutralize_terms_for": [
+      "engineering-quality-v1"
+    ]
+  },
+  "probe": {
+    "enabled": true,
+    "judges": [
+      "sonnet-5.5"
+    ]
+  },
+  "workspace": {
+    "readme": "eval/conditions/neutral-workspace-README.md"
+  },
+  "limits": {
+    "max_cost_usd": 60,
+    "jobs": 8,
+    "timeout_s": 3600
+  }
+}

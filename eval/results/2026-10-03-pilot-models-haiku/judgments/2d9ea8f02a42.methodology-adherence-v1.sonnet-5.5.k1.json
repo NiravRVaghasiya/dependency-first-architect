@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "2d9ea8f02a42.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "2d9ea8f02a42",
+  "blind_sha256": "1091d3cf90992bec1844c93ad5a43cae92e21e8c7b14708e1c6c4499a9394942",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 23,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan contains no phases or build ordering, only a refusal and offers of help."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No walking skeleton or Phase 0 is described."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No irreversible decisions, defaults, or flip conditions are listed."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No work items are ordered by blast radius."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Security is never mentioned."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Observability is never mentioned."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Reproducibility is never addressed."
+    },
+    {
+      "dim": 8,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Resilience and failure handling are absent."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so it gets no credit for declaring it N/A."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No deferred work or pull-forward conditions are given."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The response is a non-answer that declines and offers help, with no build plan content, so it scores 0 on every dimension.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 543,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2007
+  },
+  "cost_usd": 0.0104555,
+  "latency_s": 26.91,
+  "raw_file": "raw/judge-2d9ea8f02a42.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0bc53d03dd15.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "0bc53d03dd15",
+  "blind_sha256": "f9e5bd4cfee65797e4f60063866d6ec8f3f38b8429aaee8665846a39b71944a3",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 463,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 3 \"Depends on: The chunk schema (Phase 1), plus guardrails proven against injected docs (Phase 2).\"",
+      "rationale": "Each phase names its dependency and proof, going from skeleton to contracts/eval to defenses and upward."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "An internal staff member types \"How do I reset my password?\" into the widget on the **production** help center, behind a feature flag",
+      "rationale": "Phase 0 is a real end-to-end thin slice in production with deploy, trace, dashboard and exit check."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Build vs buy ... Flip condition: An off-the-shelf support bot (Intercom Fin, Zendesk AI) beats our eval set at equal or lower cost",
+      "rationale": "A comprehensive table gives defaults and flip conditions for the irreversible decisions, and it states the assumptions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phases \"ordered by dependency; within each phase, widest blast radius first\"; Phase 1 schema \"Every later layer reads this\" listed first",
+      "rationale": "Task ordering puts shared, wide-impact items first in each phase: schema before evals, trusted/untrusted separation before the leaf items, and ingestion before tuning."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"Staff-only feature flag; secrets in a vault; TLS; zero-retention LLM contract\"",
+      "rationale": "The per-phase table gives concrete security measures in every phase from Phase 0 through 9."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OpenTelemetry trace per request with spans for retrieve and generate... dashboard of request count, p50/p95 latency, error rate and tokens/cost",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Container built by CI from a pinned lockfile... Index tagged with `embed_version`/`chunker_version`; rebuildable from the CMS",
+      "rationale": "Reproducibility measures appear in each phase: lockfile, versioned eval sets, pinned models and release tags."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: \"Kill switch; timeout on the LLM call; static fallback message\"",
+      "rationale": "Each phase has concrete failure handling, from the kill switch through fallback, dead-letter queue and auto rollback."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Phase 2: Defenses, budgets and human-in-the-loop, before Phase 3 retrieval → 4 model access → 5 memory → 6 orchestration → 7 routing → 8 feedback",
+      "rationale": "Defenses, budgets and HITL precede the capabilities, and the capability order matches the rubric exactly."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Account-aware answers / actions ... Pull it forward when: More than 25% of handoffs are account-specific and auth plus per-user access control plus a privacy review are funded.",
+      "rationale": "A deferred table lists concrete items, each with a pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan that meets every rubric dimension with concrete, phase-specific content and the correct AI layer ordering.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1198,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8118
+  },
+  "cost_usd": 0.032283,
+  "latency_s": 23.51,
+  "raw_file": "raw/judge-0bc53d03dd15.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "aeb86e5f51f5.engineering-quality-v1.fable-5.k1",
+  "blind_id": "aeb86e5f51f5",
+  "blind_sha256": "b7f97c67d7524038e28ab6922cb4b270a22377e0b1c2da607582a1e84a2b3973",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 429,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "returns 202 within 10 s (GitHub's webhook timeout)... Verifies the `X-Hub-Signature-256` HMAC",
+      "rationale": "GitHub webhook semantics, App permission model (no `workflows` permission blocking CI changes), installation tokens, delivery-ID idempotency and microVM isolation are all stated accurately, including the subtle guarantees the design depends on."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "reads new issues and triages them... reproduces the bug, writes a fix in a sandbox, and opens a **draft PR**",
+      "rationale": "Covers both triage and resolution exactly as asked, resolves autonomy ambiguity with explicit tiers, and every exclusion (auto-merge, auto-close, multi-provider) is deferred with a stated trigger."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "A separate executor holds the GitHub token, checks each action against policy, and runs it.",
+      "rationale": "Ledger ownership, token custody, policy enforcement and the sandbox boundary are decided once and honored consistently in every phase and cross-cutting table, with no contradictions found."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Thresholds are starting targets; recalibrate once a baseline exists.",
+      "rationale": "Each phase has checkable exit criteria, the riskiest assumptions (injection, sandbox reproducibility, resolve rate) are tested early via red-team suite, replay harness and shadow mode, thresholds are labeled provisional, and validation continues in production via scorecards."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Assumptions (none were given): GitHub.com, one org... If any of these is wrong, re-check gates G1, G6 and G7.",
+      "rationale": "Assumptions are explicit up front, every default decision carries a revisit trigger explaining what changes if it proves wrong, and numeric targets are marked as provisional rather than asserted facts."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "An attacker hides instructions in an issue body, a code comment or test output.",
+      "rationale": "Covers injection, memory/eval poisoning, duplicate deliveries, half-finished actions (reconciler), flaky tests, provider outage and runaway loops with concrete detection and recovery; only human/agent collision on in-flight issues is thin."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Alerts fire when dead-letter-queue depth is above 0, job error rate is above 5% over 15 minutes",
+      "rationale": "Deployment, meaningful alerts, kill switches and per-repo isolation are concrete and sized to a small team, but incident ownership/on-call and explicit deployment rollback are not specified."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Per-repo daily cap and an org-wide monthly cap. Reaching a cap pauses the repo's queue and alerts.",
+      "rationale": "The dominant driver (model inference) has per-task budgets, caps, tiering and tracked cost-per-resolved-issue, and build-vs-buy is cost-framed, but engineering/build cost and overall run-cost magnitude are never estimated."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "The ledger and policy schema already key on `(provider, org, repo)` to keep this open",
+      "rationale": "A decision table separates defaults from revisit triggers, hard-to-reverse items (ledger schema, model coupling, autonomy expansion) get isolation or exit paths, and reversible choices are made quickly without over-analysis."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "**Postgres-backed queue**... This allows transactional enqueue and is the simplest option.",
+      "rationale": "Modular monolith, single agent loop, no fine-tuning or embedding index until triggers fire — every component is justified by a need and the only forced split is a security boundary."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phase 0 — First end-to-end slice... within 60 s, the agent posts a comment",
+      "rationale": "A team could start immediately: concrete first slice, dependency-justified phase ordering, specific technology and schema decisions, checkable exit criteria per phase, and deferral conditions that say how to adapt."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "**Forbidden:** merge, close, push to the default branch, workflow or settings changes."
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "GitHub App with fine-grained, per-repo installations... **No `workflows` permission**... Short-lived installation tokens."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "The model can only **propose** typed actions; the executor checks each one against policy."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "an ephemeral microVM per job. No secrets. Network egress denied except a proxy that allows only package registries"
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "The body contains the reproduction, root-cause summary, test evidence, trace link and an \"AI-generated\" label."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "offline type-label accuracy ≥ 85% top-1. Duplicate precision ≥ 90% at recall ≥ 50%. Two weeks of shadow mode"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Outcome capture schema: human label edits after agent labels, PR merged / merged-with-edits / closed, review comments."
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "a single feature flag that stops all GitHub writes. It exists from commit one."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Triage: ≤ 30k input tokens, ≤ $0.05... Resolution: ≤ 40 tool iterations, ≤ $3 per attempt"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "full job replay possible from ledger (inputs, model version, prompt hash)"
+    },
+    {
+      "id": "P4-11",
+      "status": 2,
+      "evidence": "agentic search tools inside the sandbox (`ripgrep`, tree-sitter symbol lookup, file reads)"
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "inserts the event into Postgres keyed by `X-GitHub-Delivery`. Duplicate deliveries do nothing."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent never merges, never closes issues and never pushes to default branches. PRs are drafts only."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "The token never enters model context or the sandbox."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "treat as untrusted data: issue titles, bodies, comments, repo files (README, code comments), test output"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "replay resolve rate ≥ 20% (hidden tests pass) and **zero** proposed PRs with failing visible tests"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "a deliberately looping test task is cut off at the iteration cap"
+    }
+  ],
+  "note": "An exceptionally strong plan that avoids every trap and concretely addresses nearly the whole domain checklist; remaining gaps are human/agent coordination on in-flight issues, incident ownership, and build-cost estimation.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 9304,
+    "thinking_tokens": 6642,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 16953
+  },
+  "cost_usd": 0.6771325,
+  "latency_s": 130.811,
+  "raw_file": "raw/judge-aeb86e5f51f5.engineering-quality-v1.fable-5.k1.txt"
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ec527cf3377e.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "ec527cf3377e",
+  "blind_sha256": "4a878189057ae3cfa0764697a7adb18b02e264514f1727478eaa4d4de8ba6b61",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 293,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "M1 scope: \"Out: routing classifier (stubbed as 'always how_to' until S2 lands), handoff, rate limits, production.\"",
+      "rationale": "Mostly substrate-up (infra, ingestion, retrieval, API, widget, then safety, then prod), but rate limits, redaction and routing come after an internal chat path exists and the eval set is built in parallel."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "M1: Walking skeleton + eval baseline — \"full sync of real articles, hybrid retrieval, cited answers, basic abstain, Chat API with SSE, minimal widget... CI/CD to staging\"",
+      "rationale": "A real end-to-end slice on real docs is first, but it runs on staging rather than production, so this is a near-complete rather than ideal skeleton; still credited as a thin deployed slice."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D1 ... \"Revisit if: The vendor bot comes within 5 points of our bot on the M1 eval set... If so, stop and buy.\"",
+      "rationale": "Decision table lists options, reversibility, and explicit revisit triggers, and assumptions carry impact and validation dates."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "T3 provision and T4 migration first, then ingestion, retriever, pipeline, API, widget; \"Parallel with T3, Eng A\"",
+      "rationale": "Task ordering shows widest-impact items (infra, schema) first, but no explicit blast-radius ordering principle within phases, and the eval set (widest gate) is parallel."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "\"Security (built in M1 and M2, verified before M3)\"",
+      "rationale": "M1 has secrets, read-only tokens, allowlist and sanitised markdown, but redaction, rate limits, WAF and injection tests are deferred to M2, with security presented as a standalone section."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "\"Observability (M1 basics, M2 dashboards and alerts)\"",
+      "rationale": "Traces, cost accounting and structured logs are present in M1, but alerts and dashboards wait until M2 and the concern is not tied to each milestone's tasks."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"terraform apply from CI\"; Alembic upgrade→downgrade→upgrade; uv; versioned eval set and prompts; pinned model versions; pgvector container",
+      "rationale": "Reproducible builds, infra, migrations, data derivation and eval sets are covered from M1 onward."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "T8: \"timeouts, a single pre-stream retry, circuit breaker\"; T5 backoff; idempotent handoff; Flow 4 and 5 failure flows",
+      "rationale": "Failure handling appears in M1 (gateway, ingestion, degraded mode) and M2–M3 (handoff retry, injected failure test, kill switch, restore test)."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "\"Budgets per turn: at most 2 model calls, about 6k input tokens, 500 output tokens, and 20 s wall-clock.\"",
+      "rationale": "Budgets, human handoff, and a retrieval→gateway→pipeline order are good and there is no agent or memory, but defenses (redaction, rate limits, injection gates) and routing arrive after the first retrieval and generation in M1 rather than before capabilities."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Authenticated mode... Build it when: Ticket analysis shows account questions are the main volume.\"",
+      "rationale": "Deferred table with explicit pull-forward conditions, plus deliberate shortcuts and non-goals."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, well-gated plan with explicit decisions, deferrals, and eval-first thinking; its weaknesses are that safety, defenses, and alerting are concentrated in M2 rather than present from the first phase, and the skeleton is staging-only.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1431,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 23177
+  },
+  "cost_usd": 0.0722605,
+  "latency_s": 24.397,
+  "raw_file": "raw/judge-ec527cf3377e.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

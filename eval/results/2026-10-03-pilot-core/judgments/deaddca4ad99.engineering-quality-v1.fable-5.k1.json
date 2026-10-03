@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "deaddca4ad99.engineering-quality-v1.fable-5.k1",
+  "blind_id": "deaddca4ad99",
+  "blind_sha256": "c382589354e8e4d03a4abc2eb176a6b2b4127437a57ca70fa5959f41907bc62d",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 104,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Promote the same immutable artifact through dev → staging → prod. Never rebuild it per environment.",
+      "rationale": "Technical claims about OIDC, immutable artifacts, GitOps, progressive delivery and DORA are all accurate; the plan just doesn't probe subtle limits deeply enough for a 4."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "build one standard pipeline (a \"paved road\"), prove it on a few representative services, then move the rest over in waves",
+      "rationale": "Directly answers the sequencing request and is credibly buildable, but implied core needs like schema-migration safety, test-environment strategy and runner sizing are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "The built artifact is the hand-off between CI and CD",
+      "rationale": "Components, phase dependencies and the critical path connect cleanly with no contradictions; only minor loose ends like who owns contract tests."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Prove one-click (or automatic) rollback first, then turn on production deploys.",
+      "rationale": "Each phase has a checkable exit gate, pilots and a rollback drill de-risk before mass migration, and DORA dashboards continue post-launch, though some risks (flaky tests, migration compatibility) go unvalidated."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "the weeks above assume a 4–6 person platform team. Adjust for your team size.",
+      "rationale": "Team size and timeline sensitivity are stated, wave sizes are marked approximate, and the plan offers to adapt to actual tooling, though stack and budget assumptions stay implicit."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Shared database or tightly coupled services: these may have to move together. Spot them in the Phase 0 dependencies.",
+      "rationale": "Named risks have concrete mitigations, but schema migrations breaking rollback, platform-outage handling for all 50 services, and flaky tests are missing or vague."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Self-service onboarding with a scaffolding CLI or template repo, docs, and office hours. The platform team shouldn't hand-migrate every service.",
+      "rationale": "Deployment, rollback, observability, metrics and ownership burden are sized to a realistic 4–6 person team, though incident response for the platform itself is unaddressed."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Cost controls on runners and ephemeral preview environments.",
+      "rationale": "Runner compute is identified as the cost driver and controls are mentioned, but there is no hosted-vs-self-hosted decision, no scaling reasoning, and no estimate basis."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Keep the old pipeline as a fallback for 1–2 weeks after each cutover, then retire it.",
+      "rationale": "Big decisions are made deliberately with ADRs, validated on pilots before the 47-service commitment, and fallbacks exist, though explicit vendor exit paths are not discussed."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Group services into archetypes. You'll usually find 3–6... These decide how many templates you need.",
+      "rationale": "A handful of templates instead of 50 pipelines, each foundation component justified by need, and optional extras like the developer portal deferred — nothing to cut."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit gate: all 3 pilots run CI only through templates, PR feedback takes under 10 minutes",
+      "rationale": "Ordering is justified by dependencies and risk, every phase has checkable gates, first steps are concrete, and between-wave reviews provide an adaptation mechanism."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "List every service: language/runtime, build tool, deploy target... Group services into archetypes."
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "3 pilot services chosen (different archetypes, low-to-medium criticality)... Keep the old pipeline as a fallback for 1–2 weeks"
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Promote the same immutable artifact through dev → staging → prod. Never rebuild it per environment."
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "SSO, OIDC for pipelines, no long-lived keys"
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "SBOM and dependency/image scanning → sign artifact... SLSA provenance, image signing enforced at admission."
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Progressive delivery: canary or blue/green with automated analysis"
+    },
+    {
+      "id": "P3-07",
+      "status": 2,
+      "evidence": "Contract tests between services that depend on each other, plus smoke tests after each deploy."
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Environments defined as code (dev/staging/prod)"
+    },
+    {
+      "id": "P3-09",
+      "status": 2,
+      "evidence": "PR feedback takes under 10 minutes... test sharding, build caching, affected-service detection"
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Shared runners/build agents with caching | Keeps queues and costs under control at 50 services"
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "A platform SLO... DORA dashboards for each team and overall."
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "production has approval gates"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "move the remaining ~47 services over without a big-bang cutover"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Artifact/container registry with immutable tags... Never rebuild it per environment."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "SSO, OIDC for pipelines, no long-lived keys"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Within a wave, migrate a service's upstream dependencies before the services that call them."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Make the platform decisions: CI engine, artifact registry, deploy model (GitOps vs. push)"
+    }
+  ],
+  "note": "A well-sequenced, gated, pilot-first plan that avoids every classic CI/CD trap; its weaknesses are schema-migration/rollback compatibility, flaky tests, fork-PR secrets, audit trails, and ungrounded compute-cost reasoning.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8639,
+    "thinking_tokens": 6245,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10476
+  },
+  "cost_usd": 0.5629200000000001,
+  "latency_s": 147.127,
+  "raw_file": "raw/judge-deaddca4ad99.engineering-quality-v1.fable-5.k1.txt"
+}

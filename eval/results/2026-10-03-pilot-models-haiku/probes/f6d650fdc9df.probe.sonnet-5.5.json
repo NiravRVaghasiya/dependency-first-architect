@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "f6d650fdc9df.probe.sonnet-5.5",
+  "blind_id": "f6d650fdc9df",
+  "blind_sha256": "79ad3cf550eafb1bae39e8da6c713f302b207fc9285f028eabe5617d4972c78f",
+  "judge": "sonnet-5.5",
+  "order_index": 22,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Rigid templated structure: Classification and constraints, Dependencies, Key decisions, Phase 0 end-to-end slice, Phases, Validation checks, Cross-cutting, AI layer, Exceptions, Deferred",
+    "Budgets table with REQUIREMENT/ASSUMPTION labels and 'Checked by' phase column, plus 'Missing inputs' list naming suppliers",
+    "Decisions tagged with reversibility codes (R2/R3), default, assumption, validated-by V-ID, and revisit trigger",
+    "Phase 0 walking-skeleton 'first end-to-end slice' with every tier and exit check V0; each phase has Unlocks/Depends on/Rollback/Exit check",
+    "Explicit 'N/A' and 'Exceptions: None' sections, Deferred items with pull-forward triggers, and a per-phase cross-cutting matrix (security/observability/reproducibility/resilience) from the first commit"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 397,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 17397
+  },
+  "cost_usd": 0.0474705,
+  "latency_s": 42.125,
+  "raw_file": "raw/probe-f6d650fdc9df.probe.sonnet-5.5.txt"
+}

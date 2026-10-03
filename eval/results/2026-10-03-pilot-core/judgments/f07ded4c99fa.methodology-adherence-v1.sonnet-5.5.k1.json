@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f07ded4c99fa.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "f07ded4c99fa",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 71,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "doc-schema (T6) → editor binding (T7) and Collab Server (T8) → persistence (T9) → staging slice (T15) → identity and permissions (M2) → versions and comments (M3)",
+      "rationale": "Build goes schema/contracts/DB → server → persistence → identity → versions/comments, with spikes proving hard parts before dependent features (tables gated on fuzz)."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "two people edit the same document in a real staging environment through the real CI/CD pipeline. Edits survive a forced Collab Server crash.",
+      "rationale": "M1 is a thin end-to-end slice through real CI/CD, though to staging rather than production, which is explicitly out of M1 scope."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D1 ... Reversibility: Hard ... Revisit if: S1 finds divergence or content loss ... fall back to ProseMirror central-authority collab",
+      "rationale": "Decision table lists options, reversibility and flip conditions, with assumption defaults and owners in the open questions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Critical path: doc-schema (T6) → editor binding (T7) and Collab Server (T8) → persistence (T9)",
+      "rationale": "Widest-impact items (schema, contracts, migrations, persistence) come first and the risky spikes come early, but blast-radius ordering within phases isn't stated as a principle."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "authorisation matrix tests in M1; full set in M2; pen test in M4 ... T14 forged, expired and wrong-document tokens are refused",
+      "rationale": "Security work appears in M1 (token auth, viewer read-only, scanning, stub-mode guard), M2 (authz matrix, revocation), M3 and M4 (pen test, rate limits)."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "T5. Set up baseline observability: pino JSON logs ... OpenTelemetry metrics ... Sentry ... one CloudWatch dashboard",
+      "rationale": "Observability is in M1, with the canary and alerts in M2 and dashboards in M3, and it is tied to the milestones."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform in infra/ ... Docker builds ... images tagged with the git SHA ... remote state in S3 with a DynamoDB lock",
+      "rationale": "M1 already has pinned toolchain, Terraform, SHA-tagged images, migrations in CD, generated seeded test data, and rollback by image SHA."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Killing the Collab Server task while 3 clients type → after reconnect, every edit is present and all clients are identical (scripted).",
+      "rationale": "Failure handling (crash tests, backoff, bounded buffer, SIGTERM flush) starts in M1 and continues with rolling deploy tests in M2, load tests in M3 and the restore drill in M4."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "AI-specific concerns: not applicable. There are no AI features in scope (Section 2).",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "SSO/SAML, SCIM | First enterprise deal ... Instant revocation guarantee (timed recheck) | Customer security requirement",
+      "rationale": "The deferred table gives a pull-forward trigger for each item, with non-goals and deliberate shortcuts listed."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, concrete plan. The only weak spot is dimension 4: it has no explicit blast-radius ordering within phases, and the slice runs on staging rather than production.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1339,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 21517
+  },
+  "cost_usd": 0.0673035,
+  "latency_s": 24.649,
+  "raw_file": "raw/judge-f07ded4c99fa.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

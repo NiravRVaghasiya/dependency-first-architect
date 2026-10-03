@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "7b90d0189120.engineering-quality-v1.fable-5.k1",
+  "blind_id": "7b90d0189120",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 17,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "The app must not connect as the table owner (owners skip RLS unless it's FORCEd).",
+      "rationale": "Technical claims are correct and precise even in subtle areas: Postgres RLS owner bypass, ClickHouse FINAL for eventual dedup, SAQ A scope with hosted fields, billing-anchor date drift, timeout-as-unknown payment semantics."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "If your tenants are instead merchants billing their own customers (billing-as-a-service), see §12.",
+      "rationale": "Resolves the request's main ambiguity explicitly, covers every core billing capability (subscriptions, usage, tax, dunning, ledger, entitlements), and phases the build credibly with explicit buy-first deferrals."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Finalizing an invoice, using up credits, posting to the ledger, and emitting the event must all succeed or fail together in one database transaction.",
+      "rationale": "Responsibilities and data ownership are crisp; sharding by top-level customer is honored consistently in consolidation, numbering, and locking, and the consistency boundary justifies the monolith/metering split with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Run both in parallel for 2–3 billing cycles and compare every invoice to the cent before switching over.",
+      "rationale": "Domain-specific validation (simulated clocks from day one, cross-tenant leak tests, nightly reconciliations, invoice recomputability) targets the real risks, though pre-commitment checks like load-testing the metering pipeline at target throughput or explicit phase-gate criteria are absent."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "If your numbers are different, the sizing changes but the structure still works.",
+      "rationale": "Assumptions on payer model, pricing mix, scale, and currencies are explicit in §1, estimates are labeled, and the plan says which assumption changes the design (the §12 merchant variant) and invites confirmation."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "A timeout means \"unknown,\" not \"failed.\" Ask the provider using the same key.",
+      "rationale": "Covers the hardest domain failures concretely — duplicate/out-of-order webhooks, double-charge on retry, late usage events, tax-engine outage, drift between systems, pricing bugs post-finalization — each with detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Business-level alerts: billing-run delay, drafts stuck > 2 h, payment success rate, reconciliation mismatches",
+      "rationale": "Domain-meaningful health signals, reconciliation ownership, and operable workflows are concrete, but deployment, rollback, and schema-migration mechanics are not addressed."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Build your own if pricing flexibility is a competitive advantage, or if per-transaction fees hurt at your volume.",
+      "rationale": "Build-vs-buy trade-offs, grounded infra sizing (~600 GB/day raw, 'medium-sized' cluster), and deferral controls are present, but run-cost magnitudes and how spend grows with usage are thin."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Design keys for sharding from day one, but only shard (Citus, by `customer_id`) when you need to.",
+      "rationale": "One-way doors get the care: ledger in phase 1 ('adding a ledger later is painful'), immutable price versions, vendor adapters for payments/tax/e-invoicing, deferred sharding, and a parallel-run migration path."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Payments and tax are thin wrappers around providers. Buy these; don't build them.",
+      "rationale": "Every component is justified by a stated need at the assumed scale, heavy machinery is deferred (sharding, cells, revenue allocation bought not built), and smaller-scale alternatives are noted."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Foundation: versioned catalog, flat and per-seat subscriptions, cards, invoices, basic dunning, the tax adapter, entitlements, and the ledger.",
+      "rationale": "A team could start immediately: concrete schema with constraints, idempotent billing-run pseudocode, API contracts, a worked billing-cycle timeline, and a dependency-justified phase order."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Store amounts as integers in the smallest currency unit (cents), plus an ISO-4217 currency code... Round once per line, using a documented rounding rule."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Finalized invoices and ledger entries are never edited or deleted. Mistakes are fixed with new documents: credit notes and reversing entries."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "The idempotency key sent to the provider is `invoice_id:attempt_no`... Retrying with a new key is how customers get charged twice."
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "card numbers never touch your servers. Use the provider's hosted card fields... Check the signature, store the raw payload, and drop duplicates"
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "RLS then hides all other customers' rows, so a missing `WHERE` clause can't leak data... Automated tests try to read another tenant's data through every API."
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "Anything arriving after close goes on the next invoice as a visible prior-period adjustment line... lets you explain and recompute any invoice number during a dispute."
+    },
+    {
+      "id": "P2-07",
+      "status": 2,
+      "evidence": "Changing a price creates a new version. Existing customers keep their old price until you move them on purpose."
+    },
+    {
+      "id": "P2-08",
+      "status": 2,
+      "evidence": "validate VAT IDs against the EU's VIES service, apply reverse charge... Some countries require numbers with no gaps."
+    },
+    {
+      "id": "P2-09",
+      "status": 2,
+      "evidence": "Retry based on the decline reason. Never retry a card reported stolen... Escalate in stages: grace (banner) → restricted (read-only) → suspended"
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "compare the provider's transaction and payout reports with your payments table and with the ledger's provider-clearing account. Any mismatch alerts finance engineering."
+    },
+    {
+      "id": "P2-11",
+      "status": 2,
+      "evidence": "If billing is unreachable, keep using the last known state and alert when it gets stale. Never lock out a paying customer because billing is down."
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Seriously consider buying the billing engine itself... Build your own if pricing flexibility is a competitive advantage, or if per-transaction fees hurt at your volume."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "No floats, ever. Store amounts as integers in the smallest currency unit (cents)"
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "After finalizing, only the invoice's status can change. Fixes are new documents: credit notes"
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "Incoming webhooks arrive duplicated and out of order. Check the signature, store the raw payload, and drop duplicates"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "store only the token, brand, last 4 digits, expiry, and fingerprint. That keeps you in the lightest PCI category (SAQ A)."
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "Enforced by the database, not by developers remembering filters"
+    }
+  ],
+  "note": "An exemplary, near-production-grade billing architecture that avoids every classic trap and nails the subtle correctness details; only deployment/migration mechanics, run-cost estimates, and explicit pre-build validation gates fall short.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7002,
+    "thinking_tokens": 4124,
+    "cache_read_input_tokens": 934,
+    "cache_creation_input_tokens": 20218
+  },
+  "cost_usd": 0.6037790000000001,
+  "latency_s": 232.599,
+  "raw_file": "raw/judge-7b90d0189120.engineering-quality-v1.fable-5.k1.txt"
+}

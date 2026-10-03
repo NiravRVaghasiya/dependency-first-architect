@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a2a3efee6567.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "a2a3efee6567",
+  "blind_sha256": "a5f9340666cf475dcaabdb7673d8a7c7351bf0f793b0e7ef7e3c406baebe7a34",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 244,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 3: \"Depends on: V1, Phase 2 (repo retrieval), V2 before any repo code runs.\"",
+      "rationale": "Phases go skeleton → defenses → triage → sandbox → live resolution → widening, with each phase listing proven dependencies and gates."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "a team member opens an issue on `org/agent-sandbox`, a real repo in the production org. The agent applies exactly one label",
+      "rationale": "Phase 0 is a real production end-to-end slice through 8 tiers, deployed, traced and rolled back, before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Flip condition: \"V1 fails → suggestions go only to a maintainer dashboard, with no public writes\"",
+      "rationale": "The gate table gives reversibility, default, assumption, validation and flip condition for each irreversible decision, and the missing inputs are stated explicitly."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1 tasks: policy executor and approval binding first, then redaction, budgets, then shadow triage; Phase 3 sandbox before coding loop.",
+      "rationale": "Within phases the cross-cutting gates (executor, approvals, isolation) come before narrower leaf work, and rollout is one repo, then more."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"Minimal App permissions on one repo; HMAC check; secrets in a secret manager; untrusted-data block; author allow-list; kill switch\"",
+      "rationale": "Each phase from 0 to 5 has concrete security controls."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: \"One OpenTelemetry trace per run across all tiers; token and cost metrics; DLQ and error alerts\"",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Phase 0: \"IaC; image digest, model ID and prompt version stamped on every run\"",
+      "rationale": "Reproducibility is addressed in every phase: pinned digests, versioned evals, fixed replay inputs."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: \"Idempotency on the delivery ID; DLQ; model-call timeout; rollback to the previous digest\"",
+      "rationale": "Each phase has failure handling: a reconciliation sweep, fallback model, TTL reaper, PR caps and quality breakers."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Sublayer table: injection defense (0,1), budgets (0,1), HITL (1), retrieval (2), model access, memory (2), orchestration (3), routing (2), feedback (5)",
+      "rationale": "Defenses, budgets and human gating come before capabilities, then retrieval → model → memory → orchestration → routing → feedback. Routing is built in Phase 2, slightly out of order relative to orchestration in Phase 3, but it is fixed-by-task and dynamic routing is deferred."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Auto-merge of agent PRs. Pulled forward if, for one narrow change class, V5's merged-with-minor-edits rate stays high over ≥ 100 PRs\"",
+      "rationale": "Each deferred item has a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan that meets every rubric dimension with concrete content; the only quibble is that routing is built before orchestration.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1274,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11462
+  },
+  "cost_usd": 0.041402999999999995,
+  "latency_s": 23.879,
+  "raw_file": "raw/judge-a2a3efee6567.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

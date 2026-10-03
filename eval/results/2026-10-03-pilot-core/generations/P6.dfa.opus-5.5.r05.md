@@ -1,0 +1,208 @@
+# BUILD PLAN: Moving the hospital patient scheduling system to the cloud with no downtime
+
+## 1. Classification and constraints
+- **What:** Move the existing on-premises patient scheduling system (its app servers, database, interfaces and batch jobs) to the cloud while scheduling staff keep booking the whole time.
+- **Type:** Infrastructure plus software. This is a brownfield migration of a system already in use. It is not a small build: it handles patient health information (PHI), affects many teams and has outside interface partners.
+- **Dominant constraint:** Correctness first (every appointment kept exactly once), then availability.
+- **Worst failure:** Appointments that are silently lost, duplicated or double-booked during coexistence or cutover. For example, an oncology infusion or surgery slot disappears and the patient is never seen. A visible outage is less dangerous because the hospital already has downtime procedures for that. A silent data error is not caught by anything.
+
+**Budgets**
+
+| Budget | Target | Label | Checked by |
+|---|---|---|---|
+| Planned scheduling outage during migration | 0 minutes | REQUIREMENT (stated in the request) | V6, Phase 5 |
+| Pause on saving bookings at cutover | ≤ 60 s; the screen shows "saving", not an error | ASSUMPTION: staff will accept one slow save. Confirm with the Director of Patient Access before Phase 4. If any pause counts as downtime, see the flip condition for consistency vs availability in §3 | V6 |
+| Lost or duplicated committed appointments | 0 | ASSUMPTION based on patient safety. Confirm with the CMIO before Phase 4 | V3, V6, Phase 5 checks |
+| Latency (search slots, book, reschedule, check-in) | p95 ≤ 1.2 × the current p95 | BASELINE measured in Phase 0. The 1.2× factor is an ASSUMPTION (a slowdown staff won't notice); confirm with Patient Access | V2, V4 |
+| Throughput | 2 × the busiest current hour (e.g. Monday-morning call center) | BASELINE measured in Phase 0. The 2× headroom is an ASSUMPTION covering seasonal peaks | V4 |
+| Replication delay (on-prem → cloud) | p99 ≤ 5 s | ASSUMPTION: this sets how long cutover takes to drain | V3 |
+| Rollback time after cutover | ≤ 30 min back to the on-prem database | ASSUMPTION | V6 |
+| Availability target after migration | — | UNKNOWN: the IT service owner supplies the committed target before Phase 3. Phase 0 records the current uptime from incident history as a BASELINE | Phase 3, V4 |
+| RPO / RTO after migration | — | UNKNOWN: the business-continuity / disaster-recovery owner supplies the tier for scheduling before Phase 3 | V4 |
+| Run cost | — | UNKNOWN: finance supplies the approved annual budget before capacity is committed in Phase 3 | Phase 3 exit check |
+| Operational complexity | Same on-call team; managed database; no new cluster to run ourselves | ASSUMPTION: current infrastructure staffing stays the same | Phase 3 exit check |
+
+**Missing inputs.** These are listed in the order they could change the plan:
+1. **What the system is.** Is it a vendor product (which one, and does the vendor support or certify the target cloud and database service)? Or was it built in-house? If the vendor offers its own hosted version, this becomes a vendor-led move and most of Phases 1–3 change. If scheduling is a module of the hospital's main health record system (EHR), it cannot be moved on its own.
+2. **How the client connects.** The plan assumes a 3-tier setup: a browser or Citrix-published client talks to app servers, which talk to the database. If desktop clients connect straight to the database, moving the app servers first (§3) is not possible and the flip to a single combined cutover applies from the start.
+3. **The meaning of "no downtime."** Does a save pause of under a minute count as downtime? This decides between a single writable database and a far riskier multi-writer design.
+4. **Cloud provider, region and BAA status** (a business associate agreement is the HIPAA contract with the provider). Also: where the EHR and the interface engine run, and whether they stay on-prem.
+5. **Jurisdiction.** The plan assumes the US and HIPAA. Other regimes add dependencies but do not change the order.
+
+**Inherited constraints (not changed by this move):** the application and its version, the database engine (SQL Server assumed), the HL7 interface engine, hospital Active Directory/Entra login, and the EHR message formats (scheduling and admission/transfer messages, i.e. SIU and ADT). Changing any of these means re-testing interfaces with the EHR: months of work.
+
+## 2. Dependency map
+
+| What waits | Depends on | Kind | Blocked from being | Status |
+|---|---|---|---|---|
+| Phase 0 cloud app servers connecting to the production database | Signed BAA with the cloud provider, plus V1 | Organizational + risk/security | Deployed | ASSUMED (BAA status unknown) |
+| The whole target design | Software vendor's written support for the target cloud and managed database | Organizational | Specified | ASSUMED |
+| Phase 1 pilot clinic; Phase 2 rollout waves | Two redundant private network links (lead time ASSUMPTION: 6–12 weeks; order in Phase 0) | Organizational + runtime | Exposed | ASSUMED |
+| Moving app servers first, in user waves | V2 (app servers in the cloud tolerate the network delay to the on-prem database) | Validation | Specified | — |
+| Cutover runbook and rollback design | V3 (replication is complete and current) | Validation | Specified | — |
+| Cutover save-pause design | Definition of "no downtime" from Patient Access and the CMIO | Decision + organizational | Specified (Phase 4) | ASSUMED |
+| Reminder (SMS/IVR), patient portal and eligibility interfaces | Outside partners adding the new cloud outbound IPs to their allow-lists | Organizational | Deployed | ASSUMED |
+| V4 acceptance threshold | RTO/RPO from the continuity owner | Organizational | V4 cannot pass without it | ASSUMED |
+| Cutover | Every direct database user found: ODBC reports, ETL, SQL Agent jobs, hard-coded hostnames | Structural (often missed) | Exposed | ASSUMED (found in Phase 0 from 30+ days of connection logs) |
+| After cutover, cloud app servers | On-prem interface engine, EHR and AD reachable over the network links | Runtime (often missed) | Exposed | ASSUMED |
+| Downtime fallback | Downtime-report job (prints the next 24–72 h of schedules locally) still runs from the cloud | Risk/security | Exposed (Phase 5) | ASSUMED |
+| Cutover window | Change board slot, plus a freeze on vendor upgrades and EHR changes | Organizational | Committed | ASSUMED |
+| Decommissioning | Records-retention and privacy review | Organizational / legal | Committed | ASSUMED |
+| Reserved cloud capacity | Run-cost budget | Economic | Committed | ASSUMED |
+
+All seven dependency kinds apply to this system.
+
+## 3. Tradeoff gates (resolved up front)
+
+| Decision | Reversibility | Default (chosen now) | Assumption | Validated by | Flip condition |
+|---|---|---|---|---|---|
+| Consistency vs availability | R3: double-booked or lost appointments harm patients and can't be undone afterwards | Only one writable database at any moment. No two-way, multi-writer replication. Cutover is a brief, drained save pause | Staff accept a pause of 60 s or less | V3, V6 | V6 fails because the pause can't be brought under budget, or Patient Access rejects any pause. Then the app queues saves durably during the switch (a re-plan), never multi-writer |
+| Migration strategy | R2: weeks of change across teams | App servers: rehost, same build and version on cloud VMs. Database: move to a managed SQL service with the same engine and a compatible version. No upgrades combined with the move | The vendor supports the managed database service | Vendor statement (Phase 0), V4 | Vendor won't support the managed service → run SQL Server on cloud VMs |
+| Coexistence sequence | R2: changes the order of Phases 1–5 | Move app servers first (users routed in waves by the hospital reverse proxy, database still on-prem), then move the database in one gated cutover | The app's database calls are few enough per transaction to tolerate the network delay | V2 | V2 fails → app servers and database cut over together in Phase 5, with no live-user exposure before then except read-only checks |
+| Replication method | R2: the cutover and rollback depend on it | The database engine's own replication (e.g. a SQL Server distributed availability group, or the managed service's link feature). It keeps ID values and can run in reverse for failback | The engine version supports replicating both ways | V3 | No reverse direction available, or V3 fails → a change-data-capture tool (e.g. a cloud database migration service) plus full reconciliation, and rollback becomes reverse CDC |
+| System of record and rollback | R3: once the database is decommissioned there is no way back | On-prem database is the system of record until Phase 5. Then the cloud database is, with reverse replication to on-prem kept running until V7 | Reverse replication stays healthy for the whole stabilization period | V6, V7 | Reverse replication delay breaks budget after cutover → fail back (Phase 5 rollback) |
+| Data-privacy boundary | R3: once PHI is exposed, that can't be undone | PHI only in services covered by the BAA, in US regions, on private endpoints. Logs that may hold PHI are classified as PHI. No PHI goes to tools not covered by the BAA | Every service needed is covered by the BAA | V1 | A needed service isn't covered → replace it, or keep that function on-prem |
+| Cloud provider and region | R3: data gravity (once the data lives there, leaving is costly) | The provider the hospital already has an enterprise agreement and BAA with; a primary region plus a paired region | Such an agreement exists | Basis: existing contract (missing input 4); V1 | No existing agreement → procurement decision before Phase 0 |
+| Network link | R2: carrier lead time | Two redundant private links (ExpressRoute or Direct Connect type), with an IPsec VPN as a third path. The VPN alone carries the Phase 0 skeleton | One link's delay is stable enough for V2 | V2, V4 | V2 fails on delay rather than on number of calls → the coexistence sequence flips |
+
+**Low-risk defaults (R1):** infrastructure as code → Terraform in the existing CI system; monitoring → the provider's native tools, forwarded to the hospital's SIEM; app servers → VM images, not containers; admin access → federated through hospital Entra/AD with MFA.
+
+**Not applicable:**
+- Monolith vs services, and sync vs async: inherited and not changed during a move.
+- Replacing the system ("build vs buy"): that is a re-architecture outside this scope (see §10). Using managed cloud services is covered by the migration-strategy row.
+- AI rows: there is no AI component.
+
+## 4. Walking skeleton (Phase 0)
+Phase 0 is the thinnest real path through the new cloud setup, with the old system as the fallback:
+
+- **Start long-lead items on day one:** BAA, security risk analysis, vendor support statement, network link orders, partner allow-list requests, change board calendar, the "no downtime" definition, RTO/RPO and run-cost budget.
+- **List everything that depends on the system.** Sources: interface engine routes, 30+ days of database connection logs covering a month-end, firewall flow logs, SQL Agent and other scheduled jobs, DNS lookups. Mark each item CONFIRMED by its owner or ASSUMED.
+- **Measure the current system.** Install performance monitoring on the on-prem app servers through the normal change board process. Record p95 for key transactions, the busiest hour, message volumes per interface, database size and growth, batch job timings, and current uptime.
+- **The one real request:** an allow-listed IT analyst, at a hospital workstation, books and then cancels an appointment. It uses the production test patient (e.g. "ZZTEST, PATIENT") in a production test clinic. The confirmation appears on screen, the booking shows up in the on-prem app too (same database), and the interface engine sends the scheduling message to the EHR. The test patient must already be excluded from reminders and billing (ASSUMED; confirm with the interface team).
+- **Tiers it crosses:** workstation → hospital DNS and reverse proxy (routing flag by AD group) → IPsec VPN → private cloud load balancer → cloud app server VM (same version as on-prem) → back across the link to the on-prem database → on-prem interface engine → EHR.
+- **Deploy, log, monitor, roll back:**
+  - Terraform and app images go through the existing CI pipeline.
+  - Logs from the app, load balancer and VPN flows go to a log store classified as PHI and are forwarded to the SIEM, with one trace ID carried across tiers.
+  - A synthetic test-patient booking runs every 5 minutes and alerts on-call if it fails.
+  - Rollback: switch the proxy flag back to the on-prem servers, and redeploy the previous Terraform version. Both are exercised once.
+- **Who can reach it:** only the IT allow-list AD group. The connection to the production database is opened only after V1 passes. Everyone else stays on the on-prem servers.
+
+**Exit check (V0):**
+- The test booking succeeds with one trace across every tier.
+- A deploy and a rollback both succeed through the pipeline.
+- An injected failure (app VM stopped) fires the alert.
+- The network round-trip time and cloud-path latency are recorded as near-zero-load floors, not as capacity figures.
+
+## 5. Phases
+
+- **Phase 1: Network links, replication and pilot clinic**
+  - **Unlocks:** the decision on the coexistence sequence (V2) and the cutover design (V3).
+  - **Depends on:** V0 and V1.
+  - **Tasks:**
+    1. Bring both private links live; test failover between them and to the VPN.
+    2. Start read-only replication from the on-prem database to the cloud database. This opens V3's 14-day window.
+    3. Use traces to count database calls per key transaction.
+    4. Route one low-acuity outpatient clinic's schedulers to the cloud app servers for V2.
+  - **Rollback:** switch the proxy flag back for the pilot. Stop replication and destroy the cloud copy, recording the deletion.
+  - **Exit check:** V2 and V3 pass.
+
+- **Phase 2: Interfaces ready; app-server waves**
+  - **Unlocks:** all users on the cloud app servers; a cutover-ready interface list.
+  - **Depends on:** V2 (for the waves) and V3 (for moving read-only users).
+  - **Tasks** (widest rework first):
+    1. Replace hard-coded database and app hostnames or IPs with DNS aliases in every consumer found.
+    2. Get the cloud outbound IPs onto partner allow-lists.
+    3. Test each interface in a cloud test environment with test data only. Drill holding and releasing message queues in the interface engine (V5).
+    4. Move read-only users (reporting ETL) to the cloud copy.
+    5. Move users in waves, at least 5 business days each: low-volume outpatient → high-volume outpatient → central call center → procedural, oncology and OR scheduling. A wave widens only when latency, error rate and help-desk tickets stay within the V2 bar.
+  - **If V2 failed:** step 5 is dropped and users stay on-prem until Phase 5.
+  - **Rollback:** proxy flag per wave; DNS aliases pointed back.
+  - **Exit check:** V5 passes, and every wave has held for 5 days.
+
+- **Phase 3: Cloud database capacity and resilience**
+  - **Unlocks:** cutover rehearsals and capacity commitments.
+  - **Depends on:** V3, plus the RTO/RPO and budget inputs.
+  - **Tasks:**
+    1. Load test and failure drills for V4.
+    2. Set backup policy and test restores.
+    3. Run the downtime-report job from the cloud and confirm it prints at each site.
+    4. Set alerts on the cloud database (replication delay, blocking, storage).
+    5. Compare run cost to budget, then commit reserved capacity.
+  - **Rollback:** nothing is exposed; resize or re-tier the database.
+  - **Exit check:** V4 passes; run cost is within budget; on-call runbooks are updated.
+
+- **Phase 4: Cutover rehearsals and go/no-go**
+  - **Unlocks:** Phase 5.
+  - **Depends on:** V1–V5 and the "no downtime" definition.
+  - **Tasks:**
+    1. Write the runbook (Phase 5 steps), the rollback triggers and the communications plan for staff and help desk.
+    2. Run at least two full rehearsals on a production-sized copy, each including a complete rollback (V6).
+    3. Put the change freeze in place.
+    4. Pick the lowest-volume window from the baseline.
+  - **Rollback:** nothing in production changes.
+  - **Exit check:** V6 passes, including the go/no-go signatures.
+
+- **Phase 5: Production cutover and stabilization**
+  - **Unlocks:** the cloud database as system of record.
+  - **Depends on:** V6.
+  - **Tasks:**
+    1. Interface engine holds incoming admission/transfer and order queues.
+    2. App enters save-hold mode (ASSUMED the app supports this; otherwise the proxy returns a retry).
+    3. Wait for replication delay = 0 and confirm the log positions match.
+    4. Promote the cloud database to primary and start reverse replication to on-prem.
+    5. Switch the database DNS alias; release the interface queues.
+    6. Run a test-patient booking smoke test and reconciliation (row counts per table, plus a hash per appointment ID for the last 30 and next 365 days).
+    7. Go/no-go at T+15 minutes; reconcile again at T+1 h, T+24 h and T+7 days. A month-end batch must run in the cloud.
+  - **Rollback (available until V7):** fail back to on-prem using the reverse replication within 30 minutes. Triggers: any reconciliation difference not explained within 15 minutes; error rate above 2 × baseline for 10 minutes; an interface backlog that isn't draining.
+  - **Exit check:** zero reconciliation differences, reverse replication within budget, month-end completed.
+
+- **Phase 6: Decommission (point of no return)**
+  - **Unlocks:** retiring the on-prem servers.
+  - **Depends on:** V7.
+  - **Tasks:**
+    1. Final archive export in an open format.
+    2. Stop reverse replication.
+    3. Remove the on-prem app servers from the proxy pool.
+    4. Wipe the media to NIST SP 800-88 and keep the certificates.
+  - **Rollback:** none after reverse replication stops. V7 guards this.
+  - **Exit check:** asset records are updated; the inventory shows no remaining connections to the old hosts.
+
+## 6. Validation gates
+
+| ID | Hypothesis | Method | Acceptance threshold | Evidence | Unlocks (and if it fails) | Phase |
+|---|---|---|---|---|---|---|
+| V0 | A change can be deployed, observed and rolled back through every tier in production | Phase 0 skeleton | The V0 exit check in §4 | Pipeline run records, trace export for the test patient, alert record | Phase 1 | 0 |
+| V1 | The cloud scope protects PHI before any PHI passes through it | BAA executed. Security risk analysis of the target design. Policy-as-code scan (Azure Policy / AWS Config) plus an external port scan. Review of the logging path | Sign-off by the HIPAA Security Officer, addressing 45 CFR 164.308(a)(1) (risk analysis), 164.308(b) (BAA) and 164.312 (technical safeguards) (REQUIREMENT). Zero public endpoints in scope. All storage encrypted with customer-managed keys. Audit logs arriving in the SIEM | Signed risk analysis, BAA reference, scan reports, kept in the GRC repository | Phase 0 connection to the production database; Phase 1 replication. If it fails: no PHI goes to the cloud; fix and re-review | Starts in 0; needed before the skeleton touches the production database |
+| V2 | App servers in the cloud with the database on-prem stay within the latency budget for real schedulers | Database calls per transaction × measured round-trip time as a forecast, then a 10-business-day pilot clinic | Each key transaction's p95 ≤ 1.2 × BASELINE p95 (ASSUMPTION). Error rate no higher than BASELINE. No severe tickets caused by the move | Latency dashboard export (no PHI), pilot ticket log | Phase 2 waves. If it fails: the coexistence sequence flips to a combined cutover | 1 |
+| V3 | The cloud copy stays complete and current | At least 14 days of replication covering a month-end and the nightly batch. Hourly reconciliation (row counts per table, hash per appointment ID) | Delay p99 ≤ 5 s (ASSUMPTION). 0 unexplained differences | Reconciliation output (IDs and counts only), kept in the PHI-classified migration log store | Read-only users moved (Phase 2), Phase 4 rehearsals. If it fails: the replication method flips | 1 |
+| V4 | The cloud stack handles peak load and survives failures within RTO | In an isolated, PHI-controlled environment restored from a production copy: replay 2 × the peak-hour workload; take a zone down, fail the database over, cut one network link, restore from backup; torn down afterwards | p95 ≤ 1.2 × BASELINE at 2 × BASELINE peak. Database failover loses no committed transactions and the app recovers in ≤ 60 s (ASSUMPTION). Restore within RTO (UNKNOWN until the continuity owner supplies it, which is a Phase 0 task). The downtime report prints | Load-test report, failover drill log, restore timing log | Phase 4 and capacity commitment. If it fails: resize and retest, or move the database to VMs | 3 |
+| V5 | Every dependent interface and job works against the cloud stack and switches over without losing messages | Each inventory item confirmed by its owner. Each interface tested in the cloud test environment with test data. Queue hold/release drill | 100% of inventory items pass a test signed by their owner. 0 messages lost or duplicated (counted by message control ID). Every partner confirms its allow-list change | Signed interface test matrix, drill message-count report | Phase 4. If it fails: the failing interface blocks cutover until fixed or bridged | 2 |
+| V6 | Cutover fits the save-pause budget with zero lost or duplicate appointments, and can be reversed | At least two full rehearsals of the exact runbook on a production-sized copy, each with a full rollback. Then a go/no-go meeting | Save pause ≤ 60 s (ASSUMPTION) in both rehearsals. 0 reconciliation differences. Rollback ≤ 30 min (ASSUMPTION) with 0 differences. V1–V5 green; no other changes in the freeze window. Signed by the CIO, CMIO/CNIO, Director of Patient Access and the change board | Rehearsal timing logs, reconciliation reports, signed go/no-go record | Phase 5. If it fails: fix the runbook and rehearse again. If the pause can't be met: the consistency-vs-availability flip applies (re-plan) | 4 |
+| V7 | The on-prem fallback is no longer needed and its data obligations are met | At least 60 days stable (ASSUMPTION), including a month-end. A disaster-recovery restore drill in the cloud. Final archive. Retention review | 0 severe incidents caused by the migration in the last 30 days. The DR drill restores within RTO (supplied before Phase 3). Records manager and privacy officer sign the retention plan (REQUIREMENT: state medical-record retention law; the records manager names the statute). The CIO approves | Sign-off record, DR drill log, archive manifest | Phase 6. If it fails: keep the old system running alongside and check again in 30 days | 6 |
+
+## 7. Cross-cutting concerns (per phase, from the first commit)
+
+| Phase | Security | Observability | Reproducibility | Resilience |
+|---|---|---|---|---|
+| 0 | V1 before any PHI. Private endpoints only. Admin access through Entra with MFA. Proxy allow-list | Monitoring on the on-prem baseline; one trace ID across tiers; synthetic booking every 5 min plus alert; logs classified as PHI and sent to the SIEM | Landing zone and app servers fully defined in Terraform through CI; app image built from the vendor's install files at a pinned version | Proxy flag rollback and a redeploy of the previous version, both exercised |
+| 1 | Replica encrypted with customer-managed keys; access logs on the replica; only the migration team can read it | Replication-delay and reconciliation dashboards; per-transaction database call counts | Replication configuration in code; reconciliation job version-controlled | Two links plus VPN; link failover tested; pilot switch-back in under 5 min |
+| 2 | Partner allow-lists scoped to fixed outbound IPs; test data only in the test environment | Per-interface message counts and queue depth; dashboards per wave | DNS aliases managed in code; interface test matrix repeatable | Each wave can be rolled back separately; queue hold/release drilled |
+| 3 | Load-test copy kept inside the PHI scope with the same controls and a recorded teardown | Alerts on the cloud database (delay, blocking, storage); availability measurements against the target | Load workload captured and replayable; backup policy in code | Zone, database and link failure drills; restore within RTO; downtime report from the cloud |
+| 4 | Least privilege for the cutover operators, used only during the window; change freeze | Rehearsal timings and reconciliation built into the runbook | Runbook scripted and run identically in both rehearsals | Full rollback rehearsed twice |
+| 5 | Break-glass access audited; check the access review after cutover | Live reconciliation at T+15 min, 1 h, 24 h and 7 days; rollback-trigger alerts | Production follows the rehearsed runbook exactly; any deviation logged | Reverse replication to on-prem; staff downtime procedures on standby |
+| 6 | Media wiped to NIST SP 800-88; old service accounts and firewall rules removed | Confirmation that nothing still connects to the retired hosts | Archive in an open format with a manifest | DR runs in the cloud's paired region; the on-prem fallback is gone, which V7 guards |
+
+## 8. AI layer
+N/A: there is no AI component.
+
+## 9. Methodology exceptions
+None.
+
+## 10. Deliberately deferred
+These are not being built yet. Each comes forward when its condition is met:
+- **Re-architecture** (breaking the app into services, horizontal scaling, cloud-native redesign). Brought forward if V4 shows one database or the app design cannot meet 2 × peak.
+- **Database engine or version upgrade.** Brought forward as a separate change *before* Phase 1 if the target managed service doesn't support the current version.
+- **Moving the interface engine to the cloud.** Brought forward if the on-prem data center has a closure date, or if link dependency becomes the main availability risk.
+- **Multi-region active disaster recovery.** Brought forward if the RTO/RPO supplied for Phase 3 can't be met by restoring into the paired region.
+- **Patient-portal self-scheduling and FHIR APIs.** Brought forward after V7, as their own build.
+- **Replacing the system or moving to vendor SaaS.** Brought forward if the vendor won't support the cloud target (Phase 0) or offers its own hosted version.

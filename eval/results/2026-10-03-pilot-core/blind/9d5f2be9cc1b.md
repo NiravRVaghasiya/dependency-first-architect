@@ -1,0 +1,167 @@
+# BUILD PLAN: Real-time fraud detection for card transactions
+
+## 1. Classification
+- **What:** A system that scores each card authorization in real time and returns a decision (approve, decline, or approve and alert the cardholder). Separately and asynchronously, it learns from what happens afterwards: chargebacks, analyst decisions and cardholder replies.
+- **Type:** A mix of software, infra and machine learning (ML). The model is a classical ML model (gradient-boosted trees), not an LLM or agent. The AI layer in §6 therefore covers ML scoring, and I've translated the LLM-specific items into their ML equivalents.
+- **Dominant constraint:** Latency on the authorization path, with correctness close behind. A fraud decision that arrives after the switch's timeout has no effect. Compliance (PCI DSS and explainable declines) is a hard boundary throughout.
+- **Worst failure:** A wrong decision at scale. Either a bad rule or model declines a large share of real customers in minutes, or an outage quietly turns the system into "approve everything" while card testers drain accounts. The plan protects against both with kill switches, canaries, a fail-open/fail-closed policy and alerts on how decisions are distributed.
+- **Assumption (please confirm):** You are the **issuer or issuer-processor**, receiving ISO 8583 authorization messages from a switch. If you are a merchant or payment service provider scoring at checkout, the ingress tier and the "approve and alert" option change. The phase order stays the same.
+
+## 2. Tradeoff gates (resolved up front)
+
+| Decision | Default (chosen now) | Flip condition |
+|---|---|---|
+| **Consistency vs availability** | **Availability on the decision path.** Velocity counters (e.g., transactions per card per hour) may be up to about 2 s stale. **Strong consistency for the decision log**: append-only, write-once storage, one record per transaction ID. | Measured fraud losses from stale counters exceed the agreed loss target, e.g., card testing that slips between counter updates. Then move the hottest counters to synchronous atomic increments in the online store. |
+| **Fail-open vs fail-closed** (when scoring breaks) | Fall back in steps: full score → rules only → static fallback. The static fallback **fails open** below an amount threshold and **fails closed** (decline) above it, and for high-risk merchant categories (MCCs). | Losses during an outage exceed the cost of the declines a fail-closed policy would cause. Then lower the threshold. Signs-off from the risk and business owners are required either way. |
+| **Monolith vs services** | **Modular monolith on the hot path.** One decision service with in-process rules, model and policy. Feature computation (Flink), training and case management are separate deployables because they run at different speeds. | Separate teams need separate release schedules for rules and models, or one module's resource profile (e.g., GPU models) starves the others. |
+| **Sync vs async** | **Synchronous** for the authorization decision only. Everything else is **asynchronous** over Kafka: features, decision logging, cases, labels and retraining. | None for the decision itself, which is inherently synchronous. If a slow, valuable signal can't fit the latency budget, it moves to post-authorization review rather than the hot path. |
+| **Build vs buy** | **Buy the substrate:** managed Kafka (MSK or Confluent), managed Flink, Redis Enterprise or Aerospike, S3 + Iceberg, MLflow. **Build the decision service and rules layer**, since this is the core intellectual property. **Use** the network risk scores already in the authorization message as features. | Buy a vendor platform (Featurespace, Feedzai) if time to an ML model must be under about 3 months, or if the fraud team has no ML staff. Revisit consortium data when your own labels can't cover a fraud type. |
+| **Rules vs ML first** (stands in for "prompt+RAG vs fine-tune") | **Rules first, then a gradient-boosted tree model (LightGBM)**, with the rules kept as a guardrail layer. Rules are explainable and need no mature labels. | Recall from the trees plateaus while organized fraud rings grow → graph or sequence models (deferred, §7). |
+| **Hosted vs self-hosted model serving** | **In-process serving**: the trees are compiled with Treelite or run on ONNX Runtime inside the decision service. This avoids a network hop. | Several heavy models, or GPU models, are needed → a separate serving tier (Triton) with its own latency slice. |
+| **Data-privacy boundary (PCI DSS)** | **The fraud system stays outside the cardholder-data environment (CDE).** It only sees the **tokenized card number**, the BIN (first digits) and the last 4 digits, never the full card number. GDPR retention limits are applied to profiles. Every decline carries reason codes. | A feature truly needs the full card number. Then that feature is computed inside the CDE and exported as a derived value, so the whole system never enters PCI scope. |
+| **LLM in the loop** | **N/A on the authorization path.** It can't meet the latency budget or the determinism and explainability requirements. | See §7 (analyst assistant). |
+
+**Sizing assumptions to replace with your numbers:** 2k TPS on average, 10k TPS at peak, and a fraud-decision SLO of **p99 ≤ 50 ms** at the service boundary.
+
+## 3. Walking skeleton (Phase 0)
+
+**The one real request:** a live production authorization from the switch, run in **shadow mode**. The decision is computed, returned and logged, but the switch treats it as "no opinion," so your current fraud logic still decides. Real traffic, no customer impact.
+
+**Tiers it crosses:**
+1. **Switch → ingress adapter.** The adapter converts ISO 8583 into the internal `AuthEvent v0` protobuf, over mTLS.
+2. **Decision service** (Kotlin/JVM or Go), running a single rule written in Google's Common Expression Language (CEL). Example: card-not-present, amount > X, country ≠ home country.
+3. **Response.** The decision, reason code and ruleset version go back to the switch.
+4. **Async log.** The decision event goes to Kafka, then a sink writes it to an append-only decision log (S3 with Object Lock, plus Iceberg tables).
+5. **Dashboards and alerts.**
+
+**Deployment and day-zero visibility:**
+- Infrastructure is defined in Terraform. CI builds an image pinned by digest, and Argo CD deploys it to Kubernetes with 2+ replicas across availability zones.
+- OpenTelemetry traces run from ingress to the Kafka produce step.
+- Prometheus collects request-rate, error and duration metrics, plus a latency histogram and decision counts per outcome.
+- Alerts fire on p99 > 50 ms, error rate > 0.1%, and any shift in how decisions are distributed.
+- A CI test fails the build if a full card number pattern shows up in logs.
+
+**Exit check:** A real production authorization returns a decision within budget. Its trace is visible end to end, and its record appears in the decision log. The latency and decision-count metrics are live on a dashboard, and a deliberately caused timeout returns the fallback response.
+
+## 4. Phases (ordered by dependency; widest blast radius first within each phase)
+
+**Phase 0: Walking skeleton (shadow).** Covered in §3. The tasks in blast-radius order:
+1. Contract with the switch: message fields, timeout slice, response meaning.
+2. `AuthEvent v0` schema.
+3. Tokenization boundary.
+4. Infrastructure-as-code and CI/CD.
+5. Stub service with one rule.
+6. Decision event to the log.
+7. Dashboards.
+
+**Phase 1: Data contracts and event backbone**
+- **Unlocks:** Every downstream consumer (features, training, cases) builds on stable shapes and IDs.
+- **Depends on:** Phase 0's live flow of events.
+- **Tasks:**
+  1. **Entity identity model.** Card token, account, customer, device, merchant and terminal, and how they link. Everything else joins on these keys, so this goes first.
+  2. **Idempotency key and event semantics.** A transaction ID built from the RRN, STAN, acquirer and timestamp. Clear handling of retries, reversals and partial reversals.
+  3. **Event schemas** `AuthEvent`, `DecisionEvent` and `LabelEvent`, in a schema registry with BACKWARD compatibility enforced.
+  4. **Start collecting labels now.** Ingest chargebacks, fraud claims and confirmed-genuine outcomes. Labels take **30–120 days to mature**, so this is the longest-running dependency in the plan.
+  5. Backfill historical authorizations and labels into Iceberg.
+- **Exit check:** Replaying a day of events gives identical decision-log row counts with zero duplicates. Labels arrive daily and join to their decisions with a ≥ 99% match rate.
+
+**Phase 2: Real-time state and features**
+- **Unlocks:** Rules and models can use velocity, behavioral and network-score features.
+- **Depends on:** Phase 1's schemas, entity keys and idempotent event stream.
+- **Tasks:**
+  1. **Feature definitions as one source of code.** The same definition generates both the Flink streaming job and the offline point-in-time SQL. This prevents training and serving from drifting apart, which is the widest risk in this phase.
+  2. Flink jobs that compute per-card, per-merchant and per-device aggregates (counts and sums over 1m, 1h and 24h windows, and new-merchant / new-country flags) and write them to the online store.
+  3. Feature fetch in the decision service: parallel reads with a 15 ms timeout, and a defaults-plus-missing-flag path when the fetch fails.
+  4. An online/offline parity checker.
+- **Exit check:** Parity mismatch < 0.5% on replay. Feature freshness p99 < 2 s. Feature fetch p99 < 10 ms at peak load.
+
+**Phase 3: Rules decision engine (enforcing)**
+- **Unlocks:** Real fraud prevention, without waiting for mature labels.
+- **Depends on:** Proven features from Phase 2 and a trusted decision log for backtesting.
+- **Tasks:**
+  1. **Decision policy and the fail-open/fail-closed fallback** (from §2), applied for real. This decides what happens on every failure, so it goes first.
+  2. **Rules lifecycle.** CEL rules versioned in git and reviewed by a second person. Each rule is backtested on historical data before deploy, ramped as a canary percentage, and has its own kill switch.
+  3. A reason-code catalog that maps every decline to an explainable code.
+  4. A small starter rule set: card testing (many small authorizations), impossible travel, high-risk MCC with a new device.
+  5. Enforcement starts with one portfolio segment.
+- **Exit check:** Rules are enforcing on the canary segment. Decline rate stays within ±X% of the backtest. p99 stays within budget. A synthetic surge in declines triggers automatic rollback.
+
+**Phase 4: Human review and the label loop**
+- **Unlocks:** Post-authorization action (card blocks, contacting the cardholder) and faster, cleaner labels for ML.
+- **Depends on:** Phase 3 producing "approve and alert" and high-risk cases, and Phase 1's label contract.
+- **Tasks:**
+  1. **Disposition taxonomy and label rules.** Fraud vs friendly fraud vs genuine, which label source wins, and labels that can't be changed once written. Every model trained later depends on this.
+  2. Case management service: priority queue, card block and unblock actions, audit trail.
+  3. Cardholder confirmation ("Was this you?" by SMS or push), with replies fed back as labels.
+  4. Analyst interface with masked card numbers.
+- **Exit check:** A high-risk case gets from creation to disposition within the agreed SLA. The disposition shows up as a `LabelEvent` within 1 minute, and blocking actions are fully audited.
+
+**Phase 5: ML scoring**
+- **Unlocks:** Recall and precision beyond rules, plus scores ranked by risk.
+- **Depends on:** Mature labels (Phase 1 collection plus Phase 4 quality), point-in-time features (Phase 2), and rules as the fallback (Phase 3).
+- **Tasks:**
+  1. **Training-data contract.** Point-in-time joins, a label-maturity window, splits by time (no random shuffling), and a cost matrix (value of fraud dollars caught vs cost of a false decline).
+  2. LightGBM training pipeline and MLflow registry with approval gates and a model card.
+  3. In-process serving, with model version and top-feature reason codes logged per decision.
+  4. Run the model in shadow → as a challenger on a few % of traffic → as champion. Rules stay as override guardrails.
+  5. Tune thresholds per segment against the cost matrix.
+- **Exit check:** In shadow, the challenger beats rules alone on net fraud loss plus false-decline cost over ≥ 4 weeks of matured labels. Model p99 < 5 ms. Rolling back is a single config change.
+
+**Phase 6: Harden what proved load-bearing**
+This applies principle 2: harden only the parts that proved stable. It is not a catch-all hardening phase; the cross-cutting work happens in every phase (§5).
+- **Unlocks:** Surviving a regional outage and keeping the model current without manual work.
+- **Depends on:** A stable Phase 5 champion and stable Phase 2 features.
+- **Tasks:**
+  1. Multi-region active-active decision service and online store.
+  2. Drift monitoring that triggers retraining on a schedule.
+  3. Capacity tests at 2× peak.
+  4. Automated retraining with an evaluation gate.
+- **Exit check:** A failover drill keeps p99 within budget with no lost decision events. A drift alert produces a retrained, gated candidate without manual steps.
+
+## 5. Cross-cutting concerns (per phase, from the first commit)
+
+| Phase | Security | Observability | Reproducibility | Resilience |
+|---|---|---|---|---|
+| 0 | mTLS to the switch. Tokenized card number only. Secrets in Vault. Least-privilege IAM. CI blocks full card numbers in logs. | OpenTelemetry traces. Request-rate, error and duration metrics, p99 histogram, decision counts per outcome. Alerts on latency, errors and distribution shift. | Terraform, images pinned by digest, config in git, GitOps deploys. | Hard timeout with fallback response. 2+ replicas across availability zones. Health and readiness probes. |
+| 1 | Personal-data classification tags in the schemas. Field-level encryption for sensitive fields. Write-once (Object Lock) decision log with restricted readers. | Consumer lag, schema-violation count, dead-letter-queue depth, label match rate. | Schema registry with compatibility enforced. Raw events retained so history can be replayed. Versioned backfill jobs. | Kafka replication factor 3 with min in-sync replicas 2. Idempotent writes keyed on transaction ID. Dead-letter queue with redrive. |
+| 2 | Online store on an isolated network and encrypted at rest. TTLs that enforce the retention policy. | Freshness lag and null rate per feature. Online/offline parity metric. Fetch latency. | Feature definitions as versioned code. Point-in-time correct offline generation. State can be rebuilt from Kafka offsets. | Fetch timeout with defaults and missing flags. Flink checkpoints. Store replicas. "Features unavailable" path that drops to rules only. |
+| 3 | Rule changes reviewed by a second person. Signed ruleset bundles. Audit trail of who changed what. CEL is sandboxed (no side effects). Exact thresholds never reach merchants or cardholders. | Hit rate per rule, decline rate per segment, alerts on rule-level anomalies. | Every decision records the ruleset version. Backtests run on a pinned data snapshot. | Kill switch per rule. Canary percentages. Automatic rollback when decline rate jumps. Fail-open/fail-closed policy in place. |
+| 4 | SSO with MFA, role-based access for analysts, masked card numbers, logging of who accessed which record. | Queue depth, time to disposition, agreement between analysts, label lag. | Versioned disposition taxonomy. Labels can't be changed and carry source and timestamp. | Overflow policy: when the queue SLA is breached, low-priority cases are decided automatically. Backpressure on case creation. |
+| 5 | Training in an isolated account. Signed model artifacts. Registry approval gates. Adversarial tests that simulate card-testing probes. | Score and feature drift (PSI), champion vs challenger comparison, model latency, reason-code distribution. | Each model pinned to its data snapshot, code commit and seed. Lineage in MLflow. Model card. | Previous champion kept loaded and ready. Rules-only fallback if the model fails to load or times out. One-flip rollback. |
+| 6 | External penetration test. Red-team card-testing exercise. PCI scope review confirms the system is still outside the CDE. | SLOs per region. Infrastructure cost per 1k transactions. Error-budget burn alerts. | Identical environments across regions. Disaster-recovery runbooks kept in the repo and tested. | Active-active regions. Chaos tests (kill an availability zone, the store, a Kafka broker). Quarterly failover drills. |
+
+## 6. AI layer (translated for an ML scoring system)
+1. **Guardrail defense** (instead of prompt-injection defense). The threat is fraudsters probing the model, not prompt injection. Defenses:
+   - Validate all authorization fields (impossible values, malformed fields).
+   - Treat client-supplied device data as an untrusted signal, not as identity.
+   - Detect card-testing velocity.
+   - Never reveal scores or thresholds outside the system.
+   - Have analysts QA labels so friendly fraud doesn't poison training.
+   - **Exit check:** A simulated probing campaign (amounts stepping up just under a threshold) is flagged, and fake chargeback labels are caught before training.
+2. **Latency and cost budget** (instead of token caps). p99 50 ms total, split as:
+   - parsing: 2 ms
+   - feature fetch: 10 ms
+   - rules: 2 ms
+   - model: 5 ms
+   - policy: 1 ms
+   - slack: the rest
+
+   There is a hard timeout and a fallback, plus a cost target per 1k transactions. **Exit check:** An injected slow store still returns within budget through the fallback path, and the metric records it.
+3. **Human-in-the-loop gating.** Card blocks, account-level actions and large-limit overrides need an analyst or the cardholder to confirm. Single-transaction declines run automatically within the policy. Rule and model promotions need a second approver. **Exit check:** A gated block waits for approval and appears in the audit trail.
+4. **Retrieval → feature store.** **Exit check:** parity < 0.5%.
+5. **Model access → in-process serving behind a swappable interface.** **Exit check:** The champion can be swapped through registry and config without touching the code that calls it.
+6. **Memory → entity profiles** (card, device and merchant history), with TTLs and a write policy (raw card numbers are never stored). **Exit check:** A profile reflects the last 24 h of activity, and expired data is gone.
+7. **Orchestration → one in-process pipeline:** features → rules → model → policy. No multi-agent setup. **Exit check:** Each stage appears as its own span in the decision's trace.
+8. **Routing → risk-tiered paths.** Low-risk card-present chip transactions get a light feature set. Card-not-present and high-risk MCCs get the full set and segment models. **Exit check:** The share of traffic on each path is logged and stays within budget.
+9. **Feedback → labels from chargebacks, analyst decisions and cardholder replies,** feeding retraining and threshold tuning. **Exit check:** A retrained model, gated by evaluation, measurably moves net loss or false-decline rate on matured labels.
+
+## 7. Deliberately deferred
+- **Graph or sequence models (GNNs, transformers):** pull forward if tree-model recall plateaus and fraud rings exceed X% of losses.
+- **Separate model-serving tier (Triton, GPUs):** pull forward if more than about 3 models, or any model, breaks the 5 ms in-process slice.
+- **Managed feature store (Feast or Tecton):** pull forward if there are more than about 200 features or more than 2 teams writing features, or the homegrown parity checks keep failing.
+- **3DS / ACS risk-based authentication** (a second way in for card-not-present step-up): pull forward if card-not-present fraud dominates and the ACS vendor offers a scoring hook.
+- **Online or continual learning:** pull forward if drift outpaces the retraining schedule (PSI alerts between retrains).
+- **Consortium or vendor scores beyond the network scores:** pull forward if a fraud type is under-labeled in your own data.
+- **LLM assistant for analysts** (case summaries), kept off the hot path: pull forward if analyst throughput becomes the bottleneck, and only behind the Phase 4 human gates with masked data.
+- **Splitting rules and model into separate services:** pull forward if separate teams need independent release schedules.
+- **Other payment types (ACH, wallets, P2P):** pull forward once the card pipeline is stable through two retraining cycles.

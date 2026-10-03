@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "28b99ee89b69.probe.sonnet-5.5",
+  "blind_id": "28b99ee89b69",
+  "judge": "sonnet-5.5",
+  "order_index": 34,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.12,
+  "cues": [
+    "Generic, chat-style opener (\"Here's a logical sequence...\") and closing offer (\"Would you like me to dive deeper...\") typical of unstructured default output",
+    "Flat phase-by-phase list of topics with tool name-dropping; no explicit dependencies, critical path, risks, or verification criteria per step",
+    "No stated assumptions, open questions, or success/exit criteria per phase; only a generic \"Key Success Factors\" table",
+    "Mostly waterfall layering (all infra, then pipelines, then onboarding at week 18+) rather than a thin-slice/pilot-first sequence; a first service is not onboarded until late",
+    "Repeated items across phases (security scanning, runbooks, canary) and vague advice like \"Document everything\" suggest no structured planning template"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 339,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3021
+  },
+  "cost_usd": 0.010950499999999998,
+  "latency_s": 21.229,
+  "raw_file": "raw/probe-28b99ee89b69.probe.sonnet-5.5.txt"
+}

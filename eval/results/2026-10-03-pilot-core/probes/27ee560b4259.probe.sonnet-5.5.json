@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "27ee560b4259.probe.sonnet-5.5",
+  "blind_id": "27ee560b4259",
+  "blind_sha256": "f09732ca3596406847c6ebef2dfafa69eebe492d52c5775724d69c75dff24e62",
+  "judge": "sonnet-5.5",
+  "order_index": 6,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Numbered sections follow a fixed template: Summary, Context and Goals, ranked quality attributes, Current State, Assumptions and Open Questions, Architecture, Key Decisions, Build Sequence, First Milestone Task Breakdown, Deferred Work, Next Steps",
+    "Assumptions are tagged [A#] at first use and collected in a table with impact-if-wrong and how/when validated, after it states the workspace was empty and nothing was inspected",
+    "Ranked quality attributes with measurable targets, plus a decisions table with options considered, reversibility and 'revisit if' triggers",
+    "Milestones M1–M5 with exit criteria and dependencies, and a first milestone defined as a thin end-to-end slice with time-boxed spikes that state what would change the plan",
+    "Includes a boilerplate line 'AI-specific concerns: not applicable', a 'Shortcuts taken on purpose' list, and a deferred-work table with triggers, all typical of a prescribed checklist"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 409,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 22490
+  },
+  "cost_usd": 0.060322999999999995,
+  "latency_s": 14.467,
+  "raw_file": "raw/probe-27ee560b4259.probe.sonnet-5.5.txt"
+}

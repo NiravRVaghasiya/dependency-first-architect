@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "3ae5b5c6ccd3.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "3ae5b5c6ccd3",
+  "blind_sha256": "d405da185f7d7dc91ce8251d7285b97af0dae1e3eacd351058dc9667bcb0ac4a",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 428,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Kafka ... RocksDB state store in Flink with a TTL equal to the late-arrival window plus a margin. This gives exactly-once *effect* even though delivery is at-least-once.",
+      "rationale": "Largely accurate on money, SAQ-A, gapless numbering via locked row, outbox, and exactly-once effect; minor issues like treating RLS via SET per transaction, and saying 'void only if unpaid' is fine, but dedup TTL and Redis counters are loosely specified."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "This design targets **(A)** because it covers (B) as well.",
+      "rationale": "Resolves the ambiguity explicitly and covers nearly all core billing capabilities, but the platform scope (50M customers, 1M events/s, e-invoicing) is heavy and exclusions are not explicit."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "The ledger is the source of truth for money. All other money data is either derived from it or a document that points to ledger entries.",
+      "rationale": "Consistent principles honored across flows; minor loose ends like Postgres with Temporal plus Redis counters versus entitlements, and 'ledger entries derived' vs invoices posting."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Property-based tests on the rating and proration functions... Shadow billing for migrations... Chaos tests that kill workers mid-workflow and inject PSP timeouts, then assert the invariants still hold.",
+      "rationale": "Domain-appropriate tests and continuous invariant monitoring, but no measurable acceptance targets, no early load test of the 1M events/s pipeline, and validation of the riskiest assumptions is not sequenced early."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Scale target: about 10k tenants, about 50M end customers, and peaks of about 1M usage events per second.",
+      "rationale": "Picks assumptions and acknowledges A vs B, but scale figures are invented and presented as requirements, with little sensitivity analysis beyond a closing note."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "PSP timeout (\"did it charge?\") | Idempotency key on retry. Query the PSP before re-attempting. Webhooks plus reconciliation settle the truth",
+      "rationale": "Covers duplicates, crashes, tax outage, lag watermark, cross-tenant leaks, bad price config with concrete mitigations; weaker on webhook ordering, disputes and adversarial usage input."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Invariants to monitor continuously, with pages on violation: Ledger debits equal credits.",
+      "rationale": "Good domain invariant monitoring and test clocks, but deployment, rollback, schema migration across cells, on-call ownership and team sizing are largely absent, and the stack (Temporal, Kafka, Flink, ClickHouse, cells) is heavy to operate."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Why not database-per-tenant by default? At 10k tenants it makes migrations, connection pooling and cross-tenant operations painful.",
+      "rationale": "No real cost analysis of infrastructure, PSP/tax fees or people cost; only a brief note to consider buying in case B."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Decisions to make early (they're expensive to change later): Merchant of record... Ledger-first design... Immutable price versions... Cell-based tenancy from day one",
+      "rationale": "Explicitly identifies one-way decisions (ledger, money representation, price versions, MoR, tenancy), isolates PSP and tax behind adapters, and phases reversible items."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Cell-based tenancy from day one, even with a single cell",
+      "rationale": "Kafka/Flink/ClickHouse/Iceberg/Temporal/revrec/e-invoicing and cells from day one is heavy for the request, though phasing mitigates it."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "MVP (one cell, about 3 to 4 months, small team): catalog with versioning, flat and per-seat subscriptions, the invoice state machine, the ledger, a single PSP (Stripe)",
+      "rationale": "Phased build order with concrete decisions, schemas, and flows, but lacks per-phase checkable exit criteria and adaptation triggers."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Store amounts as `BIGINT` minor units plus an ISO currency code... Round **once**, at the line-item level, using a rounding mode configured per tenant."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Finalized financial documents never change. Corrections are made with credit notes and adjustments, never by updating rows."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "Every PSP call carries an idempotency key derived from `(invoice_id, attempt_no)`... dedupe by PSP event ID and process asynchronously."
+    },
+    {
+      "id": "P2-04",
+      "status": 1,
+      "evidence": "Card data never touches your servers. Use PSP-hosted fields or Elements so you stay at SAQ-A"
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "Postgres **Row-Level Security** ... automated tests that try cross-tenant access on every endpoint"
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "Events are accepted for a configurable grace window after period end... Raw lake... used for audits, disputes and re-rating."
+    },
+    {
+      "id": "P2-07",
+      "status": 2,
+      "evidence": "A `PriceVersion` is immutable... Policy is configurable per tenant and per change: `prorate_now`, `prorate_next_invoice` or `no_proration`."
+    },
+    {
+      "id": "P2-08",
+      "status": 2,
+      "evidence": "Use a per-tenant sequence row locked at finalization time, not a DB sequence, because DB sequences leave gaps."
+    },
+    {
+      "id": "P2-09",
+      "status": 2,
+      "evidence": "Retries are scheduled sensibly (for example days 1, 3, 5 and 7...) ... A grace period comes before entitlements are downgraded."
+    },
+    {
+      "id": "P2-10",
+      "status": 1,
+      "evidence": "A **nightly reconciliation job** compares ledger and payments against PSP settlement reports and raises alerts on any mismatch."
+    },
+    {
+      "id": "P2-11",
+      "status": 2,
+      "evidence": "Product code calls it, with local caching and short TTLs, and **never** queries invoices. This decouples product availability from billing outages."
+    },
+    {
+      "id": "P2-12",
+      "status": 1,
+      "evidence": "In case (B), also look hard at buying (Stripe Billing, Orb, Metronome, Chargebee) and building only entitlements and metering."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Never use floats."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Append-only: no UPDATE or DELETE grants on this table."
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "Store raw payloads, dedupe by PSP event ID and process asynchronously."
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "Card data never touches your servers... store only PSP tokens."
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "RLS plus tenant-scoped repositories in code, plus automated tests that try cross-tenant access on every endpoint"
+    }
+  ],
+  "note": "Technically strong, ledger-first billing design with excellent reversibility awareness, but over-scoped for platform scale, with invented scale targets, thin cost and operations coverage, and no measurable acceptance criteria.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2668,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 15576
+  },
+  "cost_usd": 0.0658012,
+  "latency_s": 28.816,
+  "raw_file": "raw/judge-3ae5b5c6ccd3.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

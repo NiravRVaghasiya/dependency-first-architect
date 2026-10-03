@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "7c2cff7a78be.probe.sonnet-5.5",
+  "blind_id": "7c2cff7a78be",
+  "judge": "sonnet-5.5",
+  "order_index": 0,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens by explicitly stating unknowns and that the plan uses stated assumptions, then ends with prioritized open questions. This could be a methodology step (surface assumptions), but it is also common default assistant behavior.",
+    "The structure is a standard numbered outline with goals, architecture, ingestion, and so on. It has no unusual methodology artifacts such as explicit decision logs, verification steps per phase, or named stages.",
+    "It includes concrete, generic best-practice content (hybrid search, rerank, golden set of 150–300, CI regression). This reads like typical unconstrained model output.",
+    "The closing offer to turn the plan into a tech design and to look at a local folder reflects the agent/CWD context. It looks like a natural default and not a methodology-driven ending.",
+    "The plan has a risks section and phased rollout, but no explicit success gates, dependencies or exit criteria per phase. This suggests no rigorous planning template was followed."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 385,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3012
+  },
+  "cost_usd": 0.011388,
+  "latency_s": 32.648,
+  "raw_file": "raw/probe-7c2cff7a78be.probe.sonnet-5.5.txt"
+}

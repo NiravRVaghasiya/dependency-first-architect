@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "14c7ed132dc2.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "14c7ed132dc2",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 46,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "MVP: catalog, flat and per-seat subscriptions, invoicing, one PSP, basic dunning, ledger, pooled tenancy with RLS.",
+      "rationale": "Phases run roughly simple to complex, but tax and multi-currency sit in Phase 3 even though invoicing and the ledger ship in Phase 1, and the ordering is not justified by dependencies."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "MVP: catalog, flat and per-seat subscriptions, invoicing, one PSP, basic dunning, ledger, pooled tenancy with RLS.",
+      "rationale": "The MVP is a broad feature set, not a thin end-to-end slice in production, and there is no Phase 0."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Pooled tenancy is cost-efficient. The cell and silo tiers are the escape hatch for scale and compliance",
+      "rationale": "A trade-offs section exists, but it has no default plus flip condition for irreversible decisions such as the Kafka, Postgres or ledger model, and its revisit triggers are vague."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Composite keys and indexes start with `tenant_id`.",
+      "rationale": "Tenant isolation foundations are described as cross-cutting, but no ordering of work within phases is given."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "CI runs cross-tenant access tests that try to read data from another tenant's context and must fail.",
+      "rationale": "Security is strong (RLS, PCI, encryption, audit), but it is in standalone sections, not tied to phases; only RLS is in the MVP and SOC 2 is in Phase 3."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "OpenTelemetry traces tagged with tenant_id. Per-tenant SLO dashboards.",
+      "rationale": "Observability is a single line in the tech table and is not tied to any phase, including the MVP."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "raw usage plus versioned prices plus a deterministic rating engine means any invoice can be regenerated and compared.",
+      "rationale": "Data and invoice reproducibility and test clocks are strong, but build and environment reproducibility (IaC, pinned builds) is absent and nothing is phased."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Idempotency everywhere: ingestion, API mutations, PSP calls and event consumers (an inbox table keyed by event ID).",
+      "rationale": "Resilience content is detailed (idempotency, reconciliation, DR, fail-open), but it sits in a standalone section and is not mapped to phases."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never says whether an AI layer applies; it is silent on the question, and the rubric gives 0 when it is never addressed."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "4. Advanced: contracts and commitments, prepaid credits, multiple PSPs with routing, smart retries, self-serve pricing experiments.",
+      "rationale": "Later phases imply deferred work, but there are no explicit not-built-yet items with pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is a strong technical architecture for a billing system, but it is weak on phase sequencing: it has no walking skeleton and no explicit gates or deferral triggers. Cross-cutting concerns are not threaded through the phases, and it does not state whether an AI layer applies.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1236,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 6149
+  },
+  "cost_usd": 0.0278535,
+  "latency_s": 34.577,
+  "raw_file": "raw/judge-14c7ed132dc2.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "815bae4abc26.engineering-quality-v1.fable-5.k1",
+  "blind_id": "815bae4abc26",
+  "blind_sha256": "23e9087d7395cd5d881db9821538304b132e3d5c5a9563e763bb23a275c2f486",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 451,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Build once, promote the same digest. Images are immutable and referenced by digest (sha256), never by mutable tag.",
+      "rationale": "Claims about GitHub Actions/ARC, GitOps pull semantics, keyless cosign (Fulcio/Rekor), Kyverno verifyImages, expand/contract migrations and SLSA are all accurate, with reproducibility carefully scoped to 'selected services'."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Phase 4: Fleet onboarding in waves... 50 of 50 services deploy through the platform.",
+      "rationale": "Directly answers the sequencing request with a buildable, dependency-ordered migration of all 50 services, but omits inter-service API/schema contract compatibility checking, an implied need it neither covers nor explicitly excludes."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Git (the GitOps repo) is the single record of which artifact version runs in each environment... CI never holds cluster credentials.",
+      "rationale": "Choices made once (digest-only artifacts, pull-based GitOps, CI without cluster creds, OIDC identity) are honored consistently across every phase and the cross-cutting table with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "A deliberately broken template release is caught and halted in the pilot ring before reaching ring 2.",
+      "rationale": "Each phase has checkable exit criteria tied to the plan's own stated risks (template blast radius, rollback, migrations, unsigned images), riskiest paths are proven in Phase 0/pilots, and validation continues in production via SLOs, drift alerts and a daily golden-path test."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Deploy target (stated, not assumed): Kubernetes (EKS/GKE/AKS), one staging cluster and one prod cluster to start.",
+      "rationale": "Key assumptions are explicit and every default carries a revisit trigger describing what changes if wrong, but team size and expected commit/build volume, which the runner and cost design depend on, are left implicit."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "The platform ships a bad or compromised artifact to many production services at once... from a broken shared template or from stolen CI credentials.",
+      "rationale": "Identifies the domain's hardest failures (fleet-wide template breakage, credential theft, drift, GitHub/registry outages, cache failure, bad migrations) with concrete detection, containment (rollout rings, admission control, untrusted runner pools) and rehearsed recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Platform SLOs and on-call. CI availability at least 99.5%, queue p95, Argo sync lag.",
+      "rationale": "Day-zero monitoring with meaningful signals, tested rollback via git revert, on-call rotation and runbooks, DR drills and the platform itself in Terraform make this operable by a realistic team using managed/OSS components."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "CI minutes cost more than budget, queue p95 stays above 5 minutes... Cost per build-minute controls.",
+      "rationale": "Cost drivers and controls (per-service cost telemetry, chargeback trigger, build-vs-buy gate) are identified, but there is no estimate of compute cost from expected build volume and cost instrumentation is deferred to Phase 6."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Service manifest schema v0... Versioned, with additive changes only.",
+      "rationale": "Every major decision carries a revisit trigger and exit path (push-deploy flip, self-hosted control plane, per-env builds), hard-to-reverse contracts are validated early with pilots, and reversible choices are made quickly as defaults."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Buy/OSS the engines... Build only the glue: templates, service manifest schema, onboarding generator, promotion policy.",
+      "rationale": "Builds only glue atop existing tools, starts with a deliberately plain inline workflow before templating, and defers Backstage, monorepo, preview environments and hermetic builds each behind an explicit need-based trigger."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phases (ordered by dependency; within each phase, widest impact first)",
+      "rationale": "A team could start immediately: Phase 0 is a fully specified first slice, every phase states its dependency rationale and measurable exit checks, tools and contracts are named, and revisit triggers say how the plan adapts."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Fixed stage order: lint → unit test → build → SBOM + scan → sign → push... Teams may override only through declared hooks."
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Each runs in shadow mode first (the new pipeline builds alongside the legacy one), then cuts over... legacy pipeline kept 2 weeks as fallback."
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Build once, promote the same digest. Images are immutable and referenced by digest (sha256), never by mutable tag."
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "GitHub→cloud OIDC with zero static secrets... Separate runner pools for untrusted work (fork PRs) and trusted work."
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Keyless cosign signature and SLSA provenance attestation on every image... Only signed images from our registry, with provenance, are admitted."
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "Expand/contract migrations run as a pre-sync job. Every deploy must be rollback-safe... Automatic rollback on health and SLO signals."
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "breakage from version skew between services keeps recurring → evaluate a monorepo"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "one staging cluster and one prod cluster to start... Flaky-test quarantine."
+    },
+    {
+      "id": "P3-09",
+      "status": 2,
+      "evidence": "BuildKit registry cache plus a remote dependency cache keyed by lockfile hash... Commit → prod-ready artifact p95 is under 15 minutes."
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "self-hosted ephemeral runners on Kubernetes (Actions Runner Controller)... autoscaling, minimum warm capacity."
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Platform SLOs and on-call. CI availability at least 99.5%... DORA dashboard per team."
+    },
+    {
+      "id": "P3-12",
+      "status": 2,
+      "evidence": "A promotion PR to the prod overlay needs one human approval... CODEOWNERS on environment directories... audited break-glass."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Wave A: one representative of each remaining service archetype... Each runs in shadow mode first... legacy pipeline kept 2 weeks as fallback."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Images are immutable and referenced by digest (sha256), never by mutable tag."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "GitHub→cloud OIDC with zero static secrets... Separate runner pools for untrusted work (fork PRs)."
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "CI writes a digest bump to the environment repo, and Argo CD pulls and applies it"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Custom CI orchestration engine | Effectively never. Only if GitHub Actions hits hard limits that no vendor solves."
+    }
+  ],
+  "note": "An exemplary, dependency-sequenced plan that avoids every trap; its only notable gaps are inter-service contract compatibility testing, test data handling, and grounded compute-cost estimation.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 10629,
+    "thinking_tokens": 4868,
+    "cache_read_input_tokens": 14792,
+    "cache_creation_input_tokens": 22590
+  },
+  "cost_usd": 0.828657,
+  "latency_s": 181.015,
+  "raw_file": "raw/judge-815bae4abc26.engineering-quality-v1.fable-5.k1.txt"
+}

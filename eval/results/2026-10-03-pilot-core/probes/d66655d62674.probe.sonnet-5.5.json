@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "d66655d62674.probe.sonnet-5.5",
+  "blind_id": "d66655d62674",
+  "blind_sha256": "ead2b798233e9769df362ae66be4dc407071e092d43e9660d42394066af118f9",
+  "judge": "sonnet-5.5",
+  "order_index": 8,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens with an explicit 'Assumptions (please check these)' section, which is a common trait of structured planning templates",
+    "Closes with 'Questions that would change the plan' and an offer to go deeper, which could come from a methodology or from default assistant behavior",
+    "Clean, numbered sections (architecture, components, reliability, monitoring, rollout, risks) with exit criteria per phase, which is well organized but typical of a strong unprompted answer",
+    "Strong domain depth (train/serve skew, label maturity, selection bias, exploration slice) with no visible methodology scaffolding such as named steps, decision logs, or verification checklists",
+    "Conversational, hedged phrasing ('Later:', 'often the hardest part') and no sign of a rigid prescribed format"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 329,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4281
+  },
+  "cost_usd": 0.014000499999999999,
+  "latency_s": 16.341,
+  "raw_file": "raw/probe-d66655d62674.probe.sonnet-5.5.txt"
+}

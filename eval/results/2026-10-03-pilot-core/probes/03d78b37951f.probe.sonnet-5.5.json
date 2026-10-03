@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "03d78b37951f.probe.sonnet-5.5",
+  "blind_id": "03d78b37951f",
+  "blind_sha256": "c59ad5a02d885e122453ad8949a73874df7d188d87d69e57681c5e44b5750af4",
+  "judge": "sonnet-5.5",
+  "order_index": 94,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Explicit budget table with labels like REQUIREMENT / ASSUMPTION (basis: ...) and a 'Checked by' column tied to validation IDs",
+    "Key decisions table with Reversibility (R2/R3), Default, Assumption, Validated by, Revisit trigger columns, which reads like a prescribed template",
+    "Phase 0 'first end-to-end slice' with deploy, rollback, logging, and 'who can reach it', plus V0 exit check and baseline",
+    "Validation checks table (V0–V3) with Hypothesis / Method / Acceptance threshold / Evidence / Unlocks (and if it fails)",
+    "Fixed section skeleton, including an explicit 'N/A' list, 'AI layer N/A', 'Exceptions: None', 'Deferred' with pull-forward triggers, and a 'Missing inputs' list"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 365,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 6352
+  },
+  "cost_usd": 0.019538,
+  "latency_s": 28.575,
+  "raw_file": "raw/probe-03d78b37951f.probe.sonnet-5.5.txt"
+}

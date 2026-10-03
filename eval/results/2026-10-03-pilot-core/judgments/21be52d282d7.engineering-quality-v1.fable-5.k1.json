@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "21be52d282d7.engineering-quality-v1.fable-5.k1",
+  "blind_id": "21be52d282d7",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 53,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Per-card hot counters are strongly consistent per key (single partition per card, atomic increment in the request path).",
+      "rationale": "Claims about ISO 8583, Kafka durability settings, Flink checkpointing, HMAC tokenization, Treelite/ONNX in-process serving, TreeSHAP and SR 11-7 are all accurate and precise, including the subtle consistency and skew areas."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Scoring happens on the issuer or processor side, inside the existing ISO 8583 authorization flow.",
+      "rationale": "Solves exactly the stated problem (inline real-time scoring), resolves ambiguities with stated assumptions, is credibly buildable in phases, and explicitly defers non-core scope with pull-forward triggers."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Train on features logged at the moment of the decision (\"log-and-wait\"). This removes training/serving skew by design.",
+      "rationale": "Components, contracts and data ownership interlock tightly (decision log is the training set, same feature code for backfill), with consistency, identity and degradation handled uniformly and no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "A game day with Redis killed: the scorer degrades and sets the degraded flag, and authorization is unaffected.",
+      "rationale": "Every phase has checkable exit criteria tied to its specific risks (shadow mode first, replay determinism, feature parity >99.5%, leakage tests, kill-switch drills), and validation continues in production via drift and matured-label monitoring."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Assumptions (confirm these): The scoring happens on the issuer or processor side... Peak volume is a few thousand transactions per second.",
+      "rationale": "Assumptions are explicit and flagged for confirmation, every key decision carries a revisit trigger stating what would change it, and numbers are presented as chosen defaults rather than invented facts."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "anomaly checks on labels from each source (defense against insider label poisoning)",
+      "rationale": "Covers the hard domain failures—scorer outage with fail-open fallback, stale counters, selection bias on declines, reversed chargebacks, adversarial threshold probing, label poisoning, duplicates and late events—each with concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Kill-switch drill: enforcement is off in under 1 minute with zero auth errors.",
+      "rationale": "Deploy/rollback, ramps, kill switches, domain-meaningful signals (decline rate per segment, customer-confirmed FP rate), schema migration and drilled incident responses are designed in from day zero; only explicit on-call ownership is unnamed."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Fewer than about 2 data scientists, or no labeled history. Then buy a vendor platform (Featurespace, Feedzai)",
+      "rationale": "Build-vs-buy trade-offs, fraud-loss-vs-decline cost reasoning and deferral-based cost controls are solid, but there are no order-of-magnitude run-cost estimates or discussion of how infra cost grows with volume."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "plug it in behind the same scoring API contract, so the choice can be reversed.",
+      "rationale": "Every decision has a revisit trigger, hard-to-reverse commitments (tokenization keys, schemas, decision-log contract) are front-loaded and validated first, and vendor or serving swaps are isolated behind stable contracts."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "ML model (the flashy part, built last on purpose)",
+      "rationale": "Starts with the thinnest end-to-end slice (one feature, one rule, shadow mode), defers GNNs, multi-region, commercial feature stores and online learning with explicit triggers, and omits nothing essential."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phases (ordered by dependency; within each phase, widest impact first)",
+      "rationale": "Concrete first steps, dependency-justified ordering, specific implementable decisions (75 ms timeout, CEL rules, Protobuf BACKWARD compat), checkable exit criteria per phase, and explicit adaptation paths if inline scoring or the model disappoints."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "calls the scorer with a hard 75 ms timeout... Alerts: p99 above 50 ms"
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "Fail open to a minimal rules set compiled into the auth host... Never block authorization on the fraud system."
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "Train on features logged at the moment of the decision (\"log-and-wait\"). This removes training/serving skew by design."
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "joins features as logged at decision time to labels known as of a cutoff date. No leakage... time-based splits only"
+    },
+    {
+      "id": "P8-05",
+      "status": 2,
+      "evidence": "value-weighted recall at a fixed decline rate or alert budget, impact on approval rate"
+    },
+    {
+      "id": "P8-06",
+      "status": 2,
+      "evidence": "Actions are APPROVE / DECLINE / STEP_UP / APPROVE_AND_ALERT / QUEUE... rules as code (CEL expressions evaluated in process), versioned"
+    },
+    {
+      "id": "P8-07",
+      "status": 2,
+      "evidence": "an SMS or push \"Was this you?\" that produces labels within days instead of months... Analyst case queue"
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "The full card number never enters the scoring service, feature store, lake or models. Only an HMAC token (key held in an HSM)"
+    },
+    {
+      "id": "P8-09",
+      "status": 2,
+      "evidence": "partition by card token... idempotent producers; dead-letter topics... Exactly-once Flink checkpoints... watermarks for late events"
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "PSI per feature, score distribution, decline-rate alerts per segment... Shadow (2–4 weeks) → canary → ramp"
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "the full feature vector as served, ruleset and model versions, score, action, reason codes, latency and degraded flags"
+    },
+    {
+      "id": "P8-12",
+      "status": 1,
+      "evidence": "Peak volume is a few thousand transactions per second... until then, multi-AZ plus fail-open"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "A system that scores each card authorization inline before the approve/decline decision."
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "Fail open to a minimal rules set compiled into the auth host. If that also fails, fall back to the issuer's existing stand-in limits."
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "value-weighted recall at a fixed decline rate... and time-based splits only... maturity window (90 days for chargebacks"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "the same feature code in Flink batch mode over historical Iceberg data... One feature codebase for streaming and backfill"
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "Only an HMAC token (key held in an HSM) plus BIN and last 4 digits get through."
+    }
+  ],
+  "note": "An exceptionally rigorous plan that avoids every domain trap, with correct inline-scoring design, leakage-free training, PCI scoping and drilled operations; only cost quantification and peak-load capacity testing are thin.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 12075,
+    "thinking_tokens": 6491,
+    "cache_read_input_tokens": 16782,
+    "cache_creation_input_tokens": 24253
+  },
+  "cost_usd": 0.9237345000000001,
+  "latency_s": 163.08,
+  "raw_file": "raw/judge-21be52d282d7.engineering-quality-v1.fable-5.k1.txt"
+}

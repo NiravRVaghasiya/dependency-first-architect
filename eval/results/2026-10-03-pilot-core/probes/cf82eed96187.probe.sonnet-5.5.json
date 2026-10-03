@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "cf82eed96187.probe.sonnet-5.5",
+  "blind_id": "cf82eed96187",
+  "blind_sha256": "c934354fc23c831c453d4b70fa762e3cf8d6d83ca20d429a165f433bfb28ce43",
+  "judge": "sonnet-5.5",
+  "order_index": 131,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.97,
+  "cues": [
+    "Rigid, named-section structure: 'Classification and constraints', 'Key decisions (resolved up front)', 'First end-to-end slice (Phase 0)', 'Exceptions', 'Deferred', with a 'Step 4 read-only rule' reference to a numbered external procedure",
+    "Every budget and threshold is tagged REQUIREMENT / ASSUMPTION / UNKNOWN / BASELINE, with the owner who must supply each UNKNOWN",
+    "Reversibility ratings (R2/R3) on each decision, plus 'Revisit trigger' and 'Validated by' columns",
+    "Validation checks V0–V7 each have hypothesis, method, acceptance threshold, evidence, what it unlocks and what happens on failure, and are tied to phases",
+    "A dependency table using a fixed taxonomy of seven kinds ('All seven kinds appear'), plus a per-phase cross-cutting matrix and a nine-sublayer AI layer table"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 403,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10500
+  },
+  "cost_usd": 0.030288000000000002,
+  "latency_s": 33.098,
+  "raw_file": "raw/probe-cf82eed96187.probe.sonnet-5.5.txt"
+}

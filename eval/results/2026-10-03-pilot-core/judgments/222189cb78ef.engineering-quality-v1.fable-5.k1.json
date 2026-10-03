@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "222189cb78ef.engineering-quality-v1.fable-5.k1",
+  "blind_id": "222189cb78ef",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 109,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Every charge carries an idempotency key, `payment:{invoice_id}:{attempt_no}`, so retries after timeouts can't double-charge.",
+      "rationale": "Technical claims are accurate throughout the subtle areas (idempotency semantics, SAQ-A scope via hosted fields, double-entry ledger postings, gapless numbering in transaction, realistic throughput math) with no material errors."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Assumption: This design is for billing the customer organizations (\"tenants\") of a multi-tenant SaaS product.",
+      "rationale": "It resolves the request's central ambiguity explicitly, covers every core billing capability, and the phased rollout makes it credibly buildable with explicit deferrals."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Billing Core has low volume but needs strong consistency, so it runs on Postgres with ACID transactions.",
+      "rationale": "Clear data ownership, consistent application of tenancy, idempotency and outbox patterns everywhere, with the strong-consistency/eventual-consistency split honored across all flows and no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Shadow billing | When migrating or changing pricing, compute invoices in parallel and compare before cutover",
+      "rationale": "Test clocks, shadow billing, continuous ledger invariant checks and nightly reconciliation target the real risks, but there are no explicit acceptance criteria, load-test plan, or cross-tenant leak tests."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Things that would change this design: whether you're billing your own customers or building a platform for other SaaS companies",
+      "rationale": "Key assumptions are explicit up front, scale figures are labeled rough ranges, fee figures hedged, and a sensitivity list states what would change the design."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Verify signatures, store the raw event, process idempotently by PSP event ID, and handle out-of-order delivery.",
+      "rationale": "Covers duplicates, out-of-order webhooks, late events, tax-service outage fallback, billing-outage containment via entitlements, saga compensation, and corruption recovery via S3 replay and invariant alerts."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Reconciliation job (nightly): match PSP balance transactions against `payments` and ledger entries. Alert on any mismatch.",
+      "rationale": "Domain-meaningful alerts, approval controls and reconciliation exist, but deployment, rollback, schema migration, incident ownership and on-call responsibility are never addressed."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "vendor fees (often 0.5–0.8% of revenue) become significant at scale",
+      "rationale": "The dominant cost trade-off (build vs buy, vendor fees, hidden complexity) and scaling behavior are reasoned about, but infrastructure and engineering-time costs get no estimates or controls."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "The thin \"billing domain\" layer that maps product concepts to the vendor, so you can switch vendors later",
+      "rationale": "One-way decisions get the care: ledger built day one because retrofitting is painful, immutable price versions, vendor exit path via adapter layer, and sharding explicitly deferred."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Billing data per tenant is small, so this can wait.",
+      "rationale": "Heavy pieces (Kafka/ClickHouse usage pipeline, multi-entity, sharding) are each tied to a stated need and deferred into later phases; the MVP starts with the simplest workable core."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "catalog, flat and per-seat subscriptions, Stripe payments, invoices, basic dunning, entitlements, outbox and ledger from day one. A ledger is very painful to retrofit.",
+      "rationale": "Schemas, state machines, flow pseudocode and a dependency-justified build order make it directly actionable, but phases lack explicit exit criteria or adaptation plans if early results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Store amounts as integers in minor units, such as cents, with an explicit currency."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Once an invoice is `open`, it can only be corrected with credit notes."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "Verify signatures, store the raw event, process idempotently by PSP event ID, and handle out-of-order delivery."
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "Card collection uses PSP-hosted elements, so card numbers never reach our systems (PCI SAQ-A). We store only tokens."
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "Postgres row-level security keyed on a session variable set by middleware. This protects data even if application code has a bug."
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "use a keyed state store of `(tenant_id, idempotency_key)` with a TTL longer than the maximum late-arrival window"
+    },
+    {
+      "id": "P2-07",
+      "status": 2,
+      "evidence": "credit the unused time on the old item and charge the remaining time on the new item... never mutate; add new versions"
+    },
+    {
+      "id": "P2-08",
+      "status": 2,
+      "evidence": "gapless numbering per entity, required legal fields, and e-invoicing (PEPPOL, Mexico's CFDI, India's GST e-invoice)"
+    },
+    {
+      "id": "P2-09",
+      "status": 2,
+      "evidence": "Dunning follows a configurable schedule (for example day 0, 3, 5, 7) with smart retry timing based on decline codes."
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "Reconciliation job (nightly): match PSP balance transactions against `payments` and ledger entries. Alert on any mismatch."
+    },
+    {
+      "id": "P2-11",
+      "status": 2,
+      "evidence": "If billing goes down, customers can still use the product; they just can't change plans until it's back."
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Build the full core yourself if pricing is a competitive differentiator... or vendor fees (often 0.5–0.8% of revenue) become significant at scale."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Store amounts as integers in minor units, such as cents, with an explicit currency."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Finalized invoices never change. Corrections go through credit notes."
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "Every charge carries an idempotency key... Verify signatures, store the raw event, process idempotently by PSP event ID"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "tokens only, never PANs"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "Postgres row-level security keyed on a session variable set by middleware"
+    }
+  ],
+  "note": "An expert-level billing architecture that avoids every domain trap and concretely addresses the full checklist; the only notable weaknesses are missing deployment/rollback/incident-ownership planning and the absence of explicit acceptance criteria and cross-tenant isolation tests.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7642,
+    "thinking_tokens": 4984,
+    "cache_read_input_tokens": 929,
+    "cache_creation_input_tokens": 14213
+  },
+  "cost_usd": 0.5607115,
+  "latency_s": 124.541,
+  "raw_file": "raw/judge-222189cb78ef.engineering-quality-v1.fable-5.k1.txt"
+}

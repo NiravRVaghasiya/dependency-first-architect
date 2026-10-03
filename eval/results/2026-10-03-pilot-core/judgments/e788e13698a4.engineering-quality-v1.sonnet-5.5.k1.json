@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e788e13698a4.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "e788e13698a4",
+  "blind_sha256": "bda92257b3d1daeb2a83095c3205df1017c4661e231dfcd0c730f3b0773812ff",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 473,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "keep short-window counters (1m/10m) updated **in the request path** with atomic Redis increments, and use Flink for the longer windows.",
+      "rationale": "Mostly correct and reaches hard parts (freshness gap, calibration after reweighting, selection bias); minor issues like the latency budget's 30 ms headroom and 'exactly-once' claim being unqualified."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Issuer/PSP that scores during authorization",
+      "rationale": "Solves the real inline problem with sensible defaults and phasing; exclusions and some core details (case management, PAN flow) are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "the auth path only reads precomputed state and runs cheap math",
+      "rationale": "Consistent design, though the in-path Redis increments slightly stretch 'read only' and dual writers (request path and Flink) to the store leave ownership somewhat unclear."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "replay backtest → **shadow mode** (score everything, act on nothing, 2–4 weeks) → canary at 1–5% of traffic",
+      "rationale": "Domain-appropriate staged validation, out-of-time splits and post-launch monitoring; latency harness is early, but acceptance criteria are not explicit numbers for go/no-go."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "These choices change the design a lot, so I've stated my defaults",
+      "rationale": "Clear defaults table and open questions; sensitivity to each assumption is only loosely stated and some figures (fraud 0.05–0.2%) are unqualified."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "hard timeout on the scorer, then rules only, then default approve under a capped amount. Every fallback is logged and alerted on.",
+      "rationale": "Covers fallback, duplicates, reversals, selection bias, drift and attacks like card testing, but is brief on recovery, poisoning and adversarial inputs, and fail-open/closed per tier is not differentiated."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Kill switches: per model, per rule, and per segment, with a fast rollback to the previous model version.",
+      "rationale": "Monitoring, rollback and kill switches are present, but ownership, on-call, schema migration and access admin are missing."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "none",
+      "rationale": "Cost is essentially not discussed beyond expected-cost thresholds; no infrastructure, vendor or people cost reasoning."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "define each feature once in a feature platform (Feast, Tecton, or in-house) and log the exact feature vector served",
+      "rationale": "Some isolation via feature platform, versioning and staged rollouts, but one-way decisions (identifiers, schemas, vendor) are not explicitly identified."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "You can add these later: an anomaly or unsupervised score... graph embeddings... sequence model",
+      "rationale": "Starts with GBDT and rules, defers complex models to phase 4; multi-region active-active is somewhat heavy but justified by the assumptions."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Phase 1 | 0–6 | Event logging to Kafka and the lakehouse, label pipeline, rules engine on the auth path, latency harness",
+      "rationale": "Sensible phased order with deliverables, though exit criteria between phases and detailed checkable results are light."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "feature fetch 10 ms, model 3 ms, rules 2 ms, overhead 5 ms, with 30 ms of headroom."
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "a hard timeout on the scorer, then rules only, then default approve under a capped amount."
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "define each feature once in a feature platform (Feast, Tecton, or in-house) and log the exact feature vector served"
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "only train on transactions old enough for labels to have arrived, for example more than 90 days."
+    },
+    {
+      "id": "P8-05",
+      "status": 2,
+      "evidence": "decline if p(fraud) × amount × loss_rate > cost_of_false_decline"
+    },
+    {
+      "id": "P8-06",
+      "status": 2,
+      "evidence": "Rules are versioned, analysts can deploy them in minutes"
+    },
+    {
+      "id": "P8-07",
+      "status": 1,
+      "evidence": "Case management (analyst queue) ──► labels"
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "Tokenize the full card number (PAN) at the edge so the fraud stack sees only tokens."
+    },
+    {
+      "id": "P8-09",
+      "status": 1,
+      "evidence": "Deduplicate on transaction ID, because auth retries and reversals happen."
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "feature null rate and drift (PSI)"
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "keep audit logs of every decision with the model, rule, and feature versions"
+    },
+    {
+      "id": "P8-12",
+      "status": 2,
+      "evidence": "About 5–10k TPS at peak... multi-AZ and active-active across regions."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "SYNCHRONOUS (auth path, ≤50ms)"
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "then rules only, then default approve under a capped amount"
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "out-of-time splits only, never random splits."
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "define each feature once in a feature platform"
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "Tokenize the full card number (PAN) at the edge so the fraud stack sees only tokens."
+    }
+  ],
+  "note": "Strong, domain-aware plan with correct inline architecture, fallback, labels and tokenization; weak on cost, ops ownership, and detailed stream-correctness and case-management handling.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2144,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 10428
+  },
+  "cost_usd": 0.0476912,
+  "latency_s": 25.621,
+  "raw_file": "raw/judge-e788e13698a4.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

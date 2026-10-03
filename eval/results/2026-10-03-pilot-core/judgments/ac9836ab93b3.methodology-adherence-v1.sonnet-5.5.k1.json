@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ac9836ab93b3.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "ac9836ab93b3",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 183,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Wave 0 setup → Wave 1 platform and core modules → Wave 2 the slice → Wave 3 evaluations; \"M3 Depends on M1 go decision, S3 passed\"",
+      "rationale": "Substrate (infra, store, queue, gateways, policy) precedes workers, then evals and gated resolve pilot, with explicit dependencies and go/no-go gates."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Slice exit: labelling a seeded bug issue `agent:resolve` produces a draft PR with passing tests through the deployed dev pipeline",
+      "rationale": "M1 is an end-to-end deployed slice before features, though on a playground repo and dev env rather than real prod."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D5 ... Hard (trust model); D9 Python 3.12 ... Revisit if: The team is mainly TypeScript (A5) → switch before M1 code",
+      "rationale": "Decisions table lists options, reversibility, and revisit triggers, plus assumptions table with impact and validation."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Wave 1: platform and core modules ... Policy Engine, GitHub Gateway, Model Gateway before workers; import-linter rules in T3",
+      "rationale": "Widest-impact shared components (schema, gateways, policy) are built before leaf workers and features."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "T4 Register GitHub App ... no Workflows, Actions or Secrets; T11 Policy Engine; T12 egress tests fail; M3 security review",
+      "rationale": "Security controls appear in every build wave from the first (app permissions, HMAC, policy, sandbox isolation, adversarial cases, CI audit)."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Observability (M1 baseline, dashboards in M2); T15 Add observability: JSON logs with correlation IDs, OTel traces",
+      "rationale": "Observability is in M1 but added as task T15 after the core modules rather than from the first task, with dashboards and alerts deferred to M2."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform the dev env ... remote state; `uv`, Alembic migrations up/down in CI; prompts versioned; eval cases store commit SHAs; weekly image rebuilds",
+      "rationale": "Reproducible infra, dependencies, migrations, sandbox images, prompt/model versions, and eval data are threaded across phases."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "T8 a worker killed mid-job → another worker completes it once; Flow 3 failure; Reconciler; rollback kill switch",
+      "rationale": "Idempotency, leases, retries, fallbacks and reconciler appear in M1 build tasks and in later milestones (env health auto-disable, restore drill)."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Evaluation sets come first (§14) ... Human approval points: the fix trigger ... Model Gateway budgets ... Policy Engine",
+      "rationale": "Policy, budgets, and human approval are built before the model-facing workers, then model gateway, single-call triage, agent loop, and feedback loop; no memory/routing bloat, ordering is mostly right."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Deferred Work table: \"Auto-triggered fixes for high agent_fit issues | Merge rate ≥ 40% and evaluations show agent_fit predicts success\"",
+      "rationale": "Explicit deferred items each with concrete pull-forward triggers, plus non-goals and deliberate shortcuts."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong, well-ordered plan; only observability is slightly late in Phase 0 task order and dashboards/alerts wait for M2.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1346,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 22856
+  },
+  "cost_usd": 0.070721,
+  "latency_s": 33.841,
+  "raw_file": "raw/judge-ac9836ab93b3.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

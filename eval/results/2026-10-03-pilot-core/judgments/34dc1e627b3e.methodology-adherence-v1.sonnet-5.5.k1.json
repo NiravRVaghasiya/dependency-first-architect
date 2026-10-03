@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "34dc1e627b3e.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "34dc1e627b3e",
+  "blind_sha256": "20cc6b39fe36749e8db0a5e798e4136de7cc93e5837e67a374ca8e8a8e65ed1e",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 393,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Evaluation (build this before tuning)",
+      "rationale": "Eval/golden set precedes tuning and phases progress roughly upward, but guardrails/observability/security are not sequenced as substrate before retrieval and generation in Phase 1."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "0. Discovery | 1 wk | Doc inventory, ticket analysis (top intents), golden set v1, metric baselines",
+      "rationale": "Phase 0 is discovery, not a production end-to-end slice; the prototype comes in Phase 1 and isn't deployed to prod."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Store options: pgvector if you already run Postgres. Otherwise OpenSearch/Elasticsearch... Changing the embedding model means a full re-index.",
+      "rationale": "Defaults and conditional choices exist and open questions are listed, but no explicit irreversible-decision list with flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No ordering of work by blast radius within phases; deliverables are listed without widest-impact-first sequencing."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "PII: redact card numbers, SSNs and similar data before logging. Set a log retention policy.",
+      "rationale": "Security content exists (injection, PII, visibility filtering) but in a standalone section, not tied to each phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Observability: trace each request with its query, rewritten query, retrieved chunks with scores, prompt, output, latency and cost.",
+      "rationale": "Detailed observability is in an Operations section, but it's not in Phase 0/1 deliverables; dashboards only appear at beta."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Versioning: version the prompts, embedding model and chunking config.",
+      "rationale": "Versioning and CI eval regression gate exist, but no reproducible environments/infra threaded through phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "An always-visible \"talk to a human\" button, and auto-escalation after 2 failed turns",
+      "rationale": "Failure handling (escalation, fallbacks, freshness alerts) is described but in sections, not threaded per phase."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Evaluation (build this before tuning)",
+      "rationale": "Guardrails, escalation, token budgets and agent-assist HITL exist, and retrieval precedes generation, but defenses are not sequenced before capabilities and memory/routing/feedback ordering is loose."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Non-goals for v1: account-specific actions (refunds, password resets), multi-turn troubleshooting flows... These come later, through tools or APIs.",
+      "rationale": "Non-goals and a v2 phase are explicit, but there are no pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Solid, practical RAG design with good eval and escalation thinking, but it's organized by component rather than by dependency, with no prod walking skeleton and cross-cutting concerns in standalone sections.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1124,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 5203
+  },
+  "cost_usd": 0.0242555,
+  "latency_s": 27.819,
+  "raw_file": "raw/judge-34dc1e627b3e.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "118f14fb7310.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "118f14fb7310",
+  "blind_sha256": "4ad854619696aad0fa57b4f6d6da22afa5774939c14a33bd9b3c0ca2ef5af766",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 330,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Run it as a **GitHub App** rather than with a personal access token. That gives fine-grained permissions, short-lived installation tokens",
+      "rationale": "Mostly accurate; minor issues like contents:write 'on agent branches only' isn't a native GitHub App permission (needs rulesets), and bot-event dropping could block legit cases."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Fix a well-defined subset of issues on its own (bugs it can reproduce, small features, docs, dependency bumps) by opening a pull request (PR) for human review.",
+      "rationale": "Covers triage and resolution with explicit non-goals and buildable milestones; some feasibility leaps (SWE-bench-style on own repos in 6 weeks)."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "use a **deterministic state machine that calls LLM agents at each step**, not one long free-form agent loop.",
+      "rationale": "Coherent with clear roles; small loose ends such as the L4 auto-merge vs non-goal and state storage vs 'Memory store' ownership."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Mine 100–300 closed issues from your own repos that have linked fix PRs. Check out the commit before each fix, run the agent",
+      "rationale": "Offline benchmark, red-team suite, shadow mode, and online metrics tied to risks; thresholds like 85% and 40% are unjustified and not clearly provisional."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "this plan assumes a typical setup: one organization, a handful of repos, a mainstream language with a test suite",
+      "rationale": "States assumptions and lists setup-dependent decisions, but with limited sensitivity detail and unlabeled thresholds."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Symptom patches (e.g., wrapping code in try/except to hide the error). The failing-test gate and the independent reviewer catch these.",
+      "rationale": "Good domain failures (injection, symptom patches, flaky tests, duplicates, spam) with mitigations; weak on partial failures, mid-work edits, and recovery details."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Observability: OpenTelemetry traces per issue, with prompt and response logging.",
+      "rationale": "Metrics, kill switch and dashboards exist, but deployment, rollback, on-call ownership, and alerting are not addressed."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Cap per-issue budgets, retrieve code before reading files, and cache indexes.",
+      "rationale": "Caps, daily spend cap, and cost per resolved issue are named, but no cost estimates, scaling reasoning, or build-vs-buy analysis."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Use a durable workflow engine (Temporal, or a simple Postgres-backed queue) for the state machine.",
+      "rationale": "Autonomy levels are reversible staged rollouts and tech options are flexible, but there's no explicit discussion of one-way decisions like data models or vendor lock-in."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Temporal, or a simple Postgres-backed queue",
+      "rationale": "Mostly proportionate with staged rollout, though four agents plus optional mutation testing/fuzzing and learning loops add some extra."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Week 1–2: GitHub App, webhook gateway, state machine skeleton, audit log, kill switch.",
+      "rationale": "Ordered milestones with sensible dependencies and shadow-mode gates; details like schemas and manifests are deferred and no fallback if results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "L0 Shadow ... L4 (optional) | Auto-merge for narrow classes; Non-Goals: Auto-merging to protected branches"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "Least-privilege GitHub App: `issues:write`, `pull_requests:write`, `contents:write` **on agent branches only**. ... No `workflows` permission."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Treat all issue content as untrusted data. ... Don't let issue text pick which tools are called or which permissions are used."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "Ephemeral sandbox, no credentials inside, egress allowlist, CPU/memory/time limits, destroyed after each run."
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "Gate: no failing test means no automatic fix. ... the new test passes, the existing tests pass, and lint and types are clean."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Build a triage test set from historical issues with their final labels."
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Resolution: PR merge rate, human edits per PR, time to merge, revert/regression rate"
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "A label (`agent:stop`) on an issue or repo, plus a global config flag, halts all actions right away."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "maximum iterations, tokens, wall-clock time, files changed and lines changed. If it exceeds any of them, it stops"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "Write every action (tool call, prompt, diff, comment) to an **immutable audit log**."
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "embeddings over code, issues and docs, plus classic code search (ripgrep, ctags or LSP) for precision."
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "Dedupe by `(issue_id, event_type, updated_at)`. ... Use a polling job as a backup to catch missed webhooks."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "Auto-merge for narrow classes (docs typos, lockfile bumps) when CI passes and 1 human approves"
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "The Fix Agent has no secrets."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Treat all issue content as untrusted data. Put it in clearly delimited fields."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "Resolution: PR merge rate, human edits per PR, time to merge, revert/regression rate, and cost per resolved issue."
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Budget limits: maximum iterations, tokens, wall-clock time, files changed and lines changed."
+    }
+  ],
+  "note": "Solid, security-conscious, well-staged plan with a reproduce-first gate and autonomy ladder; thin on operations, cost quantification, idempotency and concurrency details.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2399,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 12728
+  },
+  "cost_usd": 0.055818000000000006,
+  "latency_s": 23.516,
+  "raw_file": "raw/judge-118f14fb7310.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

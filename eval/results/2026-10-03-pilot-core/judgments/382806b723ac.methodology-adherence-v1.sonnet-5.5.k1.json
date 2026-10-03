@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "382806b723ac.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "382806b723ac",
+  "blind_sha256": "26d8438455ad46cfd4d646d7c5c5f70e990e0b9bef41399fa6ca6542f100ed12",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 276,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Critical path: access/security review → argocd-prod → pilot in prod → golden paths → wave slots agreed → waves → legacy decommission",
+      "rationale": "Phases build from infra/OIDC/registry up through templates, pilots, waves, and enforcement, with spikes proving unknowns before dependent work."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "one real, low-risk production service goes commit → dev → staging → prod through the new platform, with a rollback demonstrated and timed",
+      "rationale": "M1 is a genuine thin end-to-end prod slice with exit criteria of 3 prod deploys and a measured rollback."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Build once, promote the digest | ... | Hard (services need config moved out of the image) | Spike S4 shows > 50% of services bake in config",
+      "rationale": "Decision table lists options, reversibility, and revisit triggers; assumptions table gives impact and check timing."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Wave order by archetype, simplest first ... Templates mature on easy cases before risky ones",
+      "rationale": "Shared infra, OIDC, and templates come before leaf service waves; tier-1 database services are migrated late and paired, and critical-path items are filed day 1."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "OIDC role allowing push only ... Actions pinned by SHA, minimal `permissions:`",
+      "rationale": "M1 has OIDC, SHA pinning, signing, and secret scanning; M2 adds ESO and Kyverno audit; M3 has enforcement and Trivy blocking; M4 has cluster-wide enforcement."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Capture deploy events: Argo CD Notifications sends `on-deployed`/`on-degraded` to the metrics/logging stack ... basic dashboard",
+      "rationale": "Deploy events are in M1, dashboards in M2, DORA in M3, and canary analysis in M4, so observability runs through every phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Build once, promote the same digest ... remote Terraform state with locking; fixture repos; Actions pinned by SHA",
+      "rationale": "Reproducibility is present in every phase through digest promotion, Terraform IaC, pinned versions, semver templates, and GitOps."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Rollback measured at ≤ 5 min ... break-glass runbook ... Timed rollback drill (T12), repeated once per wave",
+      "rationale": "Rollback and break-glass appear in M1, with PreSync failure handling and drills every wave, Kyverno audit-first, and canary auto-abort in M4."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "AI-specific concerns: not applicable, because no AI components are part of this platform.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Per-PR preview environments | Teams report staging contention as a top-3 complaint",
+      "rationale": "The deferred table gives a pull-forward trigger for each item, and the plan lists out-of-scope items per milestone and debt taken on purpose."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan: it has a real prod walking skeleton, explicit decision and revisit tables, security, observability and resilience in every milestone, and an explicit AI-N/A declaration.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 8,
+    "output_tokens": 2434,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 20514,
+    "cache_creation_input_tokens": 20514
+  },
+  "cost_usd": 0.0797438,
+  "latency_s": 44.798,
+  "raw_file": "raw/judge-382806b723ac.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

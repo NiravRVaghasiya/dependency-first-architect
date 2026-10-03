@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "bc088b473ada.probe.sonnet-5.5",
+  "blind_id": "bc088b473ada",
+  "blind_sha256": "d713896ed145231e84ef5e9e8bfa5962e6104579c803a870ba0253c7b904c68e",
+  "judge": "sonnet-5.5",
+  "order_index": 23,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.95,
+  "cues": [
+    "Opens with meta-statement \"following the the plan method\", explicitly referencing a prescribed methodology",
+    "Rigid numbered sections: Classification and constraints, Dependencies, Key decisions, First end-to-end slice, Phases, Validation checks, Cross-cutting concerns, AI layer, Exceptions, Deferred",
+    "Methodology-specific vocabulary: reversibility ratings (R2/R3), 'Revisit trigger', 'Point of no return', 'Missing inputs', 'ASSUMPTION:' labels on budgets",
+    "Phase 0 walking-skeleton with V0 exit check and validation table with hypothesis/method/threshold/evidence/unlocks-if-fails columns",
+    "Boilerplate sections like 'AI layer: N/A' and 'Exceptions: None' plus a per-phase cross-cutting security/observability/reproducibility/resilience table from first commit"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 385,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9569
+  },
+  "cost_usd": 0.0277805,
+  "latency_s": 38.653,
+  "raw_file": "raw/probe-bc088b473ada.probe.sonnet-5.5.txt"
+}

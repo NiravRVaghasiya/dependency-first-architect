@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "653e6f7eb84c.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "653e6f7eb84c",
+  "blind_sha256": "ddbcb8a1dd7c8bf150c5c0b4eaedce378d1c2b6ecdd2aca810c5c4020c6f5c1d",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 56,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Model access (Phase 1 integration) depends on \"Prompt-injection containment + tool allow-list (Phase 0)\"",
+      "rationale": "The dependency map is mostly sound, but there are inconsistencies: Phase 0 already calls the model, multi-repo work appears in Phase 1 before V1 is proven, and Phase 2 has a confused 'point of no return'."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Issue created webhook fires → HMAC-verified → event queued to serverless function... Comment posted... Rollback: Function can be reverted to a no-op",
+      "rationale": "Phase 0 is a real end-to-end slice in a test repo, with deploy, trace, and rollback, and an exit check V0."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Decision | Reversibility | Default (chosen now) | Assumption | Validated by | Flip condition",
+      "rationale": "The plan has an up-front table of irreversible decisions, each with a default, a reversibility class, and a concrete flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Phase 0 lists webhook ingress, injection defense, and allowlist before retrieval and model calls; Phase 1 tasks are not explicitly ordered by impact.",
+      "rationale": "Phases are ordered by blast radius (read-only, then suggest, then auto-label, then auto-merge). The ordering within phases is not explicit, and Phase 1 puts multi-repo scaling alongside leaf work."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: Injection defense... tool allowlist... webhook HMAC validation; Phase 2: token scoped to repo only; Phase 4: safety rails (no auth, payment, delete code)",
+      "rationale": "Every phase has concrete security controls, starting with Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Per-step trace (webhook → function → retrieval → model → tool → GitHub API); log: timestamp, tokens in/out, cost, tool args",
+      "rationale": "Observability is in Phase 0 and gets concrete, phase-specific treatment in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Embedding model version pinned; chunk schema versioned; test set (200 labeled queries) versioned",
+      "rationale": "The cross-cutting table gives concrete reproducibility items for each phase, such as versioned prompts, pinned embeddings, versioned test sets, and CI deploys."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Retrieval timeout: 1 s hard limit (fallback to rule-based triage); GitHub API call retries (exponential backoff, max 3)",
+      "rationale": "Each phase has concrete failure handling: timeouts, fallbacks, retries, and rollbacks."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Prompt-injection / guardrail defense... Cost + latency budget... Human-in-the-loop gating... Retrieval... Model access... Memory... Orchestration... Routing... Feedback",
+      "rationale": "The nine-layer table runs defenses, budgets, and HITL in Phase 0 and then retrieval, model, memory, orchestration, routing, and feedback in order, with minor blemishes such as a basic model interface in Phase 0."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Fine-tuned model — Deferred to Phase 6. Blocks: must first validate that prompt + RAG achieves acceptable triage accuracy",
+      "rationale": "The deferred list is explicit with reasons, but several items are inconsistent with the phases, such as multi-turn fix suggestions deferred to Phase 3 but not scheduled there. Few items have real pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "This is a strong, thorough plan with a real walking skeleton, up-front decision gates, and a per-phase cross-cutting table. Its weaknesses are internal inconsistencies, a weak phase-dependency story, and deferrals that lack real pull-forward triggers.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1433,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 14792
+  },
+  "cost_usd": 0.051318,
+  "latency_s": 24.139,
+  "raw_file": "raw/judge-653e6f7eb84c.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

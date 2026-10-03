@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a4cd5ee227af.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "a4cd5ee227af",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 98,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "M1 (In: ... cited streaming answers; Out: handoff, threshold tuning, abuse controls beyond basic limits)",
+      "rationale": "Mostly substrate→up (ingest→retrieval→eval→safety→pilot), but the M1 slice generates answers before the threshold, defenses and handoff are proven."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Widget on a staging page streaming answers with citations... Pipeline deploys staging from `main`",
+      "rationale": "M1 is a real end-to-end slice with CI and IaC, but it runs in staging, not production; production first appears in M3."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D0 Build ... Revisit if: The vendor bot passes our eval set ... and expected resolutions × price is below about 1.5× the build-and-run cost",
+      "rationale": "Assumptions A1–A9 and decisions D0–D10 give defaults, reversibility and explicit revisit triggers, with spikes stating what would change the plan."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "T1 scaffold → T2 infra/T3 migration → T6 connector; Gateway T4; visibility gate in M1",
+      "rationale": "Shared substrate (schema, gateway, visibility) comes before leaf work, but the plan never frames ordering by blast radius, and some wide items like abuse controls are pushed to M2."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Security (M1 for the basics, M2 for hardening)",
+      "rationale": "M1 has the visibility gate, XSS protection, redaction and secrets, but injection defenses, abuse controls and retention sit in M2, and the treatment is a standalone section rather than per-phase."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "T15 Add basic telemetry: OpenTelemetry traces with per-stage spans, JSON logs with conversation_id, metrics for TTFT, errors and cost",
+      "rationale": "Telemetry is in M1, dashboards and alerts arrive in M2, and cost dashboards and A/B measurement continue in M3 and M4."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "`terraform apply` from CI creates the environment; ... image tagged with the commit SHA; prompts and config in version control; eval datasets in git",
+      "rationale": "IaC, pinned image SHAs, versioned index, config hash, migrations and versioned eval sets make builds and data reproducible from M1 onward."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Gateway: timeouts, one retry, fallback model; per-article transactions, cursor advances only on success; degraded mode; M2 injected provider failure",
+      "rationale": "Failure handling appears in M1 (gateway, idempotent ingestion), M2 (degraded modes, handoff idempotency, restore test), and M3–M4 (flags, rollback)."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "M1 Out: handoff, threshold tuning, abuse controls beyond basic limits; M2 adds 'No-answer threshold and sentinel'",
+      "rationale": "Human-in-the-loop handoff, budgets and injection defenses come in M2, after the M1 generation and retrieval are built; the retrieval→model→feedback order is right, but defenses are not before capabilities."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Account-specific answers ... Trigger to build: Q3 is 'yes' and the ticket mix shows more than 20% are account lookups.",
+      "rationale": "A deferred-work table gives a concrete pull-forward trigger for each item, plus named debt reviewed at M4."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A strong, detailed plan with excellent tradeoff gates, deferrals, observability and resilience. It is weakened by a staging-only first slice and by AI defenses and handoff landing in M2, after the M1 generation path.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1388,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 21407
+  },
+  "cost_usd": 0.0675185,
+  "latency_s": 30.836,
+  "raw_file": "raw/judge-a4cd5ee227af.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

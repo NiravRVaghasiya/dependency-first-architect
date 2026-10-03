@@ -1,0 +1,37 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "7eb41f45cf2b.probe.sonnet-5.5",
+  "blind_id": "7eb41f45cf2b",
+  "blind_sha256": "a0d1b86d171d41d04b152ae9e9c9f4c910b01c7f3cc525bc7866170b811dc286",
+  "judge": "sonnet-5.5",
+  "order_index": 52,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.9,
+  "cues": [
+    "Rigid numbered-section structure (Summary, Context and Goals, Drivers, Current State, Assumptions, Architecture, Decisions, Build Sequence, Rollout, Risks, Deferred Work, Next Steps) that reads like a prescribed template",
+    "Ranked quality attributes with measurable targets and a 'when two conflict, the higher one wins' rule",
+    "Assumptions tagged [A#] in a table with impact-if-wrong and how/when validated, plus open questions with 'default if no answer' and 'needed by'",
+    "Decision table with options considered, rationale against drivers, reversibility, and 'revisit if' triggers",
+    "Spikes that each state 'Changes the plan if:', milestones with exit criteria and depends-on, and a named critical path",
+    "Explicitly notes the workspace was empty and did not stop to ask questions, which fits a methodology that says to proceed on stated defaults",
+    "Includes deferred work and deliberate shortcuts sections plus a glossary of terms up front"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 412,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 22245
+  },
+  "cost_usd": 0.0597405,
+  "latency_s": 28.698,
+  "raw_file": "raw/probe-7eb41f45cf2b.probe.sonnet-5.5.txt"
+}

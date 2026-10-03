@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "951ef4fcb358.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "951ef4fcb358",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 9,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Depends on: Phase 0 exit (ledger, idempotent write and tracing proven in production).\" Phase 6: \"You can't choose a fixer until you can measure one.\"",
+      "rationale": "Each phase names explicit dependencies and a proven exit check, and the order runs substrate, defenses, retrieval, model access, memory, sandbox, orchestration, routing, feedback."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"A real label in production gets the comment within 2 min.\" plus one trace covering webhook → queue → model → GitHub write.",
+      "rationale": "Phase 0 is a real end-to-end production slice with deploy, infrastructure, canary and kill switch, before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"Allow auto-merge for one class of change ... after ≥50 PRs with ≥95% merged unedited, no reverts in 30 days, and maintainer sign-off.\"",
+      "rationale": "The tradeoff table gives a default and a concrete flip condition for every irreversible decision, and it says which ones are fixed from day one."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "\"Action contract ... Widest blast radius: every capability goes through it.\" and \"Widest, because one poisoned memory corrupts every later run.\"",
+      "rationale": "Tasks within each phase are explicitly ordered with the widest-impact item first and leaf items last."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Cross-cutting table Security column: Phase 0 \"Only `issues: write` and `metadata: read`; webhook signature check; keys in secret manager\"; also P1–P8.",
+      "rationale": "Concrete security measures appear in every phase, starting with the skeleton."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"One trace from webhook to GitHub write; tokens and cost per run; alerts; hourly canary; golden-set score on every deploy\"",
+      "rationale": "Phase 0 has full observability, and every later phase adds specific metrics."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"OpenTofu infrastructure; signed, digest-pinned image; prompt hash and model snapshot saved per run\"",
+      "rationale": "Each phase has concrete reproducibility measures, such as pinned versions, frozen eval sets, and index versions."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"Save before returning 202; drop duplicate deliveries; repeatable writes with a hidden marker; reconciler; ignore own events; kill switch\"",
+      "rationale": "Each phase has concrete failure handling, from idempotency and the reconciler in Phase 0 to checkpoints and automatic demotion later."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"Defenses and budgets are stubbed in Phase 0 and completed in Phase 1, before any capability.\"",
+      "rationale": "The order is defenses, budgets and approval, then retrieval (P2), model access (P3), memory (P4), orchestration (P6), routing (P7), and feedback (P8), with concrete exit checks."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Embedding search for code. When text and symbol search miss the real fix's files in more than 30% of localization tasks.\"",
+      "rationale": "The deferred list is explicit, and each item has a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "An excellent, thorough plan that meets every rubric dimension with concrete content; the only visible quirk is that Phase 5 runs in parallel with Phases 2–4, and the plan handles that with an explicit dependency graph.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1299,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 570,
+    "cache_creation_input_tokens": 13242
+  },
+  "cost_usd": 0.046217,
+  "latency_s": 33.39,
+  "raw_file": "raw/judge-951ef4fcb358.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

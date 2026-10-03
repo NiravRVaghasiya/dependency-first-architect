@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "399611752385.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "399611752385",
+  "blind_sha256": "085563c1d4c95ba548e56996fd91f41abea66ba5fbf0d386db53874e313bb500",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 309,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1: Compliance; Phase 2: Cloud Foundation; Phase 3: Data Copying; Phase 4: Integrations; Phase 5: Testing; Phase 6: Cutover",
+      "rationale": "Ordering runs discovery, governance, foundation, data, integrations, test and cutover, which is sensible, but nothing is explicitly proven before the next phase starts and testing comes after integrations."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 0: Discovery (2–4 weeks)",
+      "rationale": "Phase 0 is only discovery, and no thin end-to-end slice runs in production before the full cutover."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Truly zero write pause is only possible if the application was built for it. Plan for near-zero",
+      "rationale": "The plan makes some key decisions explicit (brief write pause, as-is move, rollback window, site phasing), but it has no consolidated list of irreversible decisions with defaults and flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Map every integration. This is usually where the risk is",
+      "rationale": "Some risk-first ordering appears, such as vendor confirmation first and read-only traffic before writes, but blast-radius ordering is not stated within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Sign a Business Associate Agreement (BAA) with the cloud provider",
+      "rationale": "Security is covered in Phases 1, 2 and 5, but Phase 0 and the data and integration phases get little concrete security treatment, and the pen test comes late."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Check continuously: row counts, checksums on key tables (appointments, slots, resources, patients), and replication lag.",
+      "rationale": "Monitoring and central logging appear in Phase 2, and replication and cutover monitoring appear later, but there is nothing in Phase 0 and no per-phase treatment."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Infrastructure as code (Terraform, Bicep, etc.) so environments can be rebuilt the same way every time.",
+      "rationale": "Infrastructure as code and staging rehearsals are mentioned, but reproducibility is not threaded across phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Failure testing: lose an availability zone, lose the connectivity link, and confirm replication recovers.",
+      "rationale": "Resilience appears in Phases 2, 3 (reverse replication), 5, 6 and 7, but it is absent from the early phases and failure testing is late."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never states whether an AI layer applies, so the N/A declaration is missing."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "Don't redesign the app as part of this migration; that adds risk.",
+      "rationale": "The plan has a brief no-redesign note but no explicit deferred-work list and no pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is a competent, practical migration with a good cutover and rollback design, but it is missing a walking skeleton, a decision-gate list, deferred-work tracking, and the explicit AI N/A statement.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1148,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4297
+  },
+  "cost_usd": 0.022230499999999997,
+  "latency_s": 15.793,
+  "raw_file": "raw/judge-399611752385.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

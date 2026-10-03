@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "4c134e8bc12c.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "4c134e8bc12c",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 52,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Depends on: Phase 0 deploy, trace and outbox path proven in prod.\"",
+      "rationale": "Phases go tenancy/ledger → catalog → subscriptions → invoicing → payments → usage → surfaces, each with explicit dependencies and exit checks."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "One live-mode $1.00 charge and its refund complete in prod. A single trace covers every tier",
+      "rationale": "Phase 0 is a real end-to-end production path through edge, API, DB, outbox, worker, PSP, webhook and back, before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Never flip the ledger to AP. If one primary can't keep up with ledger writes (sustained >~3k postings/s or primary CPU >70% at peak), shard by tenant",
+      "rationale": "Irreversible and major decisions are listed up front with defaults and concrete flip conditions, and the interpretation assumption is stated."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Public API shape... This has the widest blast radius because tenants code against it.",
+      "rationale": "Phases explicitly order widest-impact items first (RLS, ledger, API contract, ingestion contract) and leaf items like PDF rendering last."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "RLS on every table, app role without BYPASSRLS, scoped API keys, append-only audit log.",
+      "rationale": "The cross-cutting table gives concrete security treatment in every phase from Phase 0 onward."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "End-to-end OpenTelemetry trace, structured logs with tenant and request IDs, API rate/error/duration metrics, alerts on outbox lag and webhook failures.",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase with specific metrics."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform for all infra, image pinned by digest, dependency lockfiles, versioned migrations.",
+      "rationale": "Reproducibility is addressed concretely in every phase (fixed seeds, test clocks, golden files, replayable raw events, DR rebuild)."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "PITR on and one restore tested. PSP calls happen outside the DB transaction (via the outbox). Webhooks return 2xx only after a durable write.",
+      "rationale": "Failure handling is concrete in every phase from Phase 0, including idempotency, circuit breakers, DLQs and fault injection."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A. There is no AI or agentic component.",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Multi-currency FX conversion and settlement. Pull forward when a tenant needs to invoice in one currency and settle in another.",
+      "rationale": "Deferred items are listed with concrete pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan that meets every rubric dimension with concrete content; no material gaps found.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1134,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 8484
+  },
+  "cost_usd": 0.032671,
+  "latency_s": 24.339,
+  "raw_file": "raw/judge-4c134e8bc12c.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

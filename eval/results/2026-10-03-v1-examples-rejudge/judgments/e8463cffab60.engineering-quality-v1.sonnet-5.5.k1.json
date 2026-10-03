@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e8463cffab60.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "e8463cffab60",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 0,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "actions taken with a GitHub App token do trigger workflows. That means **CI runs with your secrets**. Treat agent PRs like PRs from forks",
+      "rationale": "Accurate on webhook timeouts, non-retried deliveries, PR-in-issues API quirk, App-token workflow triggering, and author_association; minor issues like Contents write enabling pushes to any non-protected branch are handled by branch protection."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "**Out of scope for v1:** merging or approving PRs, closing issues on its own, handling security reports in public",
+      "rationale": "Covers triage and resolution with explicit exclusions, sensible on-request trigger, phased buildable scope, and build-vs-buy path."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Neither can act on GitHub directly; they can only propose specific, predefined actions.",
+      "rationale": "Consistent proposer/policy/actuator separation honored throughout; small loose ends such as the actuator doing rebase and re-verification and Contents write with push ownership."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Prefer issues filed after the model's training cutoff, since public fixes may be in its training data.",
+      "rationale": "Offline triage and fix sets, shadow runs, independent fresh-sandbox verification, online metrics with auto-demotion, phase exit criteria; thresholds are labeled example/tunable."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "**Assumptions:** GitHub.com, one org with one to a few dozen repos, tests that can run in a container, and a hosted frontier LLM.",
+      "rationale": "Assumptions stated and open questions tied to design impact, though sensitivity to each is only partly spelled out."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "a flag on deleted or skipped tests, or edited assertions in existing tests (the usual ways agents \"make tests pass\")",
+      "rationale": "Covers injection, malicious repro steps, CI secret theft, missed webhooks, duplicates, bot loops, spam budget burn, human reversals, data leaks, stale approvals, with concrete handling."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Drop back to shadow mode and alert if any of these rolling numbers crosses its threshold: human reversals, comment volume, cost, or CI failure rate",
+      "rationale": "Kill switches, reconciler, dashboards, tracing, phased rollout and onboarding are addressed; rollback of deployments, migrations and incident ownership are thin."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "**cost per merged PR** (not per attempt)",
+      "rationale": "Per-run budgets, gateway enforcement, cheap triage model, per-repo caps and cost per merged PR are covered; no actual cost estimates or scaling ranges."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Pin versions, and change them only after the offline tests pass.",
+      "rationale": "Build-before-buy path, swappable runtime/sandbox options, per-action autonomy ramp, hidden markers; data model and vendor lock-in not explicitly analyzed."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Automatic triggering comes in a later phase.",
+      "rationale": "Mostly proportionate with phased rollout and on-request fixes, though Temporal, pgvector, reviewer agent, 3x sampling and multiple candidate patches add some weight."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "| 0. Foundations | App, ingress, queue, reconciler, state store, actuator, audit log and tracing, kill switches, event replay, test sets |",
+      "rationale": "Phases ordered by dependency with checkable exit criteria, concrete config schema, permissions, event list, pipeline steps, and stack options."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Each action moves from shadow (logged only) to suggest to act based on measured accuracy, and moves back down automatically when accuracy drops."
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "The App deliberately gets **no Workflows or Administration permission**, so it cannot change `.github/workflows/` or branch rules."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Issue text is untrusted input... safety has to come from limiting what the agent can do, not from careful prompt wording."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "There's no GitHub token and no secrets in it. It reaches the model only through a gateway token issued for that run."
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "The reproduction test must fail before the patch and pass after it. Tests that passed before must still pass."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Move an action to `act` at ≥95% accuracy over ≥200 decisions."
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Merge rate, and the share merged without changes. Review rounds, and reverts or follow-up fixes within 30 days."
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "Rate limits per author and per repo, plus kill switches at the global, repo and issue level."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "budget: { minutes: 45, usd: 5, ci_rounds: 3, review_rounds: 5 }"
+    },
+    {
+      "id": "P4-10",
+      "status": 1,
+      "evidence": "Postgres for state and the audit log... tracing"
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "Narrow down from stack traces and code search to files, then to functions."
+    },
+    {
+      "id": "P4-12",
+      "status": 2,
+      "evidence": "Verify `X-Hub-Signature-256`, drop repeats using `X-GitHub-Delivery`, ignore the bot's own events"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "Auto-merge, even for docs typos, stays off unless phase-4 data makes an overwhelming case for it."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "The resolver can only write inside a sandbox that holds nothing worth stealing."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Issue text is untrusted input. Anyone can file an issue"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "**cost per merged PR** (not per attempt)"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "has budgets (tokens, time, iterations) and ignores events it caused itself."
+    }
+  ],
+  "note": "Exceptionally strong, security-conscious plan with the proposer/policy/actuator split, independent verification and earned autonomy; weak points are missing cost numbers, thin ops/rollback detail and code-index freshness.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2377,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 15466
+  },
+  "cost_usd": 0.06244300000000001,
+  "latency_s": 29.988,
+  "raw_file": "raw/judge-e8463cffab60.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

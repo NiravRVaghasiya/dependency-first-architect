@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "e69e1167634e.probe.sonnet-5.5",
+  "blind_id": "e69e1167634e",
+  "blind_sha256": "d652526b30d9f80d9fbd6cb39c95d1e28bea03f48b42c7a7942cefe8a58951e3",
+  "judge": "sonnet-5.5",
+  "order_index": 148,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.85,
+  "cues": [
+    "Fixed, highly structured section skeleton (Summary, Context and Goals, Drivers, Current State, Assumptions, Architecture, Data Design, Key Flows, Decisions, Cross-Cutting, Build Sequence, Testing, Rollout, Risks, Deferred Work, Next Steps) that looks like a prescribed template",
+    "Explicit [A] assumption-marking convention collected in an Assumptions table with impact-if-wrong and validation timing, plus open questions with owner, default and needed-by",
+    "Decision table with options considered, rationale tied to numbered drivers, reversibility and 'revisit if' triggers (D1–D11)",
+    "Starts by inspecting the workspace (empty README) and labels the 'Current State' accordingly, then ends with a 'Questions that would change the plan most' section",
+    "Milestones with exit criteria and task breakdown with 'Done when' clauses, time-boxed spikes with 'result that changes the plan', and a section on deferred work and deliberate shortcuts"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 417,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 21152
+  },
+  "cost_usd": 0.057058000000000005,
+  "latency_s": 29.497,
+  "raw_file": "raw/probe-e69e1167634e.probe.sonnet-5.5.txt"
+}

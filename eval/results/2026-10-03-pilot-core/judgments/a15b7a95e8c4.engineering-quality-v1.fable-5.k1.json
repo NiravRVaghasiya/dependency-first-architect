@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a15b7a95e8c4.engineering-quality-v1.fable-5.k1",
+  "blind_id": "a15b7a95e8c4",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 156,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "CD is asynchronous and pull-based: Argo CD reconciles from the config repo, so CI never holds prod credentials.",
+      "rationale": "Claims about GitHub Actions OIDC, keyless cosign, Kyverno admission audit/enforce modes, Argo HA/sharding, expand/contract migrations and GitOps semantics are all accurate, including the subtle areas."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Phase 4: Fleet onboarding (5 → 50) ... The whole organization is on one paved path, and the legacy pipelines are retired.",
+      "rationale": "Directly answers the sequencing request and is clearly buildable with explicit deferrals, but omits API/event contract-compatibility checking and test-data handling, implied core needs for 50 microservices."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Consistency for deploy state. Git is the single source of truth for what runs where (GitOps).",
+      "rationale": "The GitOps consistency choice, role split, digest-only artifact model and tiered approvals are honored uniformly across every phase and table with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "A git revert in deploy-config rolls prod back, and that rollback has been demonstrated, not just assumed.",
+      "rationale": "Each phase has checkable exit criteria tied to its specific risks (broken release reverted within 5 minutes, DR restore drill, template rollback proven), with riskiest pieces validated first and DORA metrics continuing post-launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Kubernetes, with one cluster per environment. This is stated as an assumption, not left silent.",
+      "rationale": "Every major decision has an explicit default plus a quantified revisit trigger describing what would change the design if the assumption proves wrong."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "A shared platform multiplies impact, so one bad template or one leaked credential can affect all 50 services.",
+      "rationale": "Covers the hardest domain failures — compromised templates, poisoned runners, platform-down hotfix paths, registry outage, drift, Git-host outage — each with concrete detection, containment and demonstrated recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "An OTel span per pipeline stage. Argo metrics in Prometheus. Deploy annotations on Grafana. Alerts on sync or pipeline failure.",
+      "rationale": "Observability, safe rollback, migrations, break-glass, runbooks, DR drills and onboarding automation are designed in from day zero, with a buy-not-build burden plausible for a small platform team."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Hosted CI minutes cost more than the total cost of running our own runners ... Then move to self-hosted ephemeral runners.",
+      "rationale": "The dominant driver (CI compute) is identified with concrete controls (autoscaling, concurrency limits, cost-per-pipeline reporting) and a build-vs-buy trade-off, but no order-of-magnitude estimate from expected build volume."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "A custom pipeline DSL or orchestrator. Not planned. Pull forward only if GitHub Actions reusable workflows provably can't express a pattern.",
+      "rationale": "Hard-to-reverse commitments (artifact contract, service.yaml schema, repo topology, vendor coupling) are validated early with explicit exit and pull-forward paths, while reversible choices are decided quickly."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Buy or adopt: GitHub Actions (CI), Argo CD (CD) ... Build only the glue: templates, the promotion policy, the service.yaml contract.",
+      "rationale": "Starts with the simplest end-to-end slice, buys instead of building, defers Backstage, previews and hermetic builds with explicit triggers, and justifies the supply-chain machinery by the stated blast-radius constraint."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "If this is wrong, every later phase gets rewired, so it goes first.",
+      "rationale": "A team could start immediately: concrete Phase 0 first steps, dependency-justified ordering, checkable exit criteria per phase, and revisit triggers that say how the plan adapts."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Each service declares owner, tier (1–3), archetype, build entrypoint, test entrypoint, health endpoint and whether it is stateful."
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Pick 5 pilot services that cover at least 3 languages, plus one stateful service and one batch job."
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Build once and promote the same immutable image digest through dev, staging and prod."
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "OIDC federation from CI to the cloud, with no static keys anywhere."
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Every image gets an SBOM (Syft) and SLSA provenance. Every image is cosign-signed."
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "Expand/contract only, so the previous version still runs against the new schema."
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Services with different shapes can onboard without writing platform code."
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Flaky-test detection and quarantine."
+    },
+    {
+      "id": "P3-09",
+      "status": 2,
+      "evidence": "Build caching. Layer cache plus a dependency proxy or mirror. ... p95 commit-to-staging time is under 15 minutes."
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Runner autoscaling with a minimum warm pool. Concurrency limits per repo."
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Argo CD in HA mode ... Runbook for when the platform is down. ... Change-failure rate and MTTR are reported weekly."
+    },
+    {
+      "id": "P3-12",
+      "status": 2,
+      "evidence": "A queryable deploy audit trail (who, which digest, when, which policy decision). ... Tier 1 needs two-person approval."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Onboarding waves. Tier 3 first, then tier 2, then tier 1. ... Delete each old pipeline ... as each service cuts over."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Images are referenced by digest. Tags are informational only."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "Service #1 is rebuilt using only OIDC, and every static CI secret has been deleted."
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Capacity for 50 services × 3 environments (about 150 Argo apps)."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "A custom pipeline DSL or orchestrator. Not planned."
+    }
+  ],
+  "note": "An exemplary, dependency-ordered plan that avoids every trap; only notable gaps are contract-compatibility testing, test-data handling, and quantified compute-cost estimates.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 10006,
+    "thinking_tokens": 7346,
+    "cache_read_input_tokens": 929,
+    "cache_creation_input_tokens": 12857
+  },
+  "cost_usd": 0.6619615,
+  "latency_s": 481.488,
+  "raw_file": "raw/judge-a15b7a95e8c4.engineering-quality-v1.fable-5.k1.txt"
+}

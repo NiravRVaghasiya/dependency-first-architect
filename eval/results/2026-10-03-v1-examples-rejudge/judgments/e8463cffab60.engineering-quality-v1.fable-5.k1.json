@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e8463cffab60.engineering-quality-v1.fable-5.k1",
+  "blind_id": "e8463cffab60",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 20,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "actions taken with a GitHub App token do trigger workflows. That means **CI runs with your secrets**.",
+      "rationale": "Precisely correct on the subtle GitHub mechanics (webhook retry absence, 10s timeout, delivery dedup, author_association imprecision, PRs in issue events, App-token workflow triggering) with no false claims found."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Out of scope for v1: merging or approving PRs, closing issues on its own, handling security reports in public",
+      "rationale": "Covers both triage and resolution as the request implies, resolves ambiguities with stated assumptions and open questions, and exclusions are explicit and justified."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Neither can act on GitHub directly; they can only propose specific, predefined actions.",
+      "rationale": "The propose/policy/actuate separation is stated once and honored consistently everywhere (credentials, sandbox, comment hygiene, verification), with clear component responsibilities and no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Check out the commit just before the fix. Success means the PR's new tests pass and nothing else breaks.",
+      "rationale": "Offline test sets with contamination awareness, shadow runs before acting, phase gates with measurable done-criteria, and continuous online metrics with automatic demotion target the actual risks early and in production."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "the questions at the end are the ones most likely to change the design",
+      "rationale": "Assumptions are stated up front, thresholds are explicitly labeled as examples to tune, and open questions identify which unknowns would change the design and how."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "a flag on deleted or skipped tests, or edited assertions in existing tests (the usual ways agents \"make tests pass\")",
+      "rationale": "Covers the hard domain failures—prompt injection, CI secret theft, bot loops, missed webhooks, reward hacking via weakened tests, environment build failures, spam, and human-conflict—each with concrete detection and containment."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Drop back to shadow mode and alert if any of these rolling numbers crosses its threshold",
+      "rationale": "Kill switches, dashboards, shadow deploys, automatic shutoffs and tracing are concrete, but incident ownership and deployment/rollback of the service itself are not addressed."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Reviewer minutes per PR, and **cost per merged PR** (not per attempt).",
+      "rationale": "The dominant drivers (inference, reviewer time) are identified with concrete per-run budgets and value-based metrics, but no order-of-magnitude estimate of total run cost or how it scales with issue volume."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "A practical path is to try fixes with one of them on your repos first. Then build what they don't provide",
+      "rationale": "Hard-to-reverse commitments (autonomy, auto-merge, community trust) are deferred and gated behind data, buy-before-build gives an exit path, and reversible choices like stack options are left light."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Temporal, or a Postgres queue at small scale",
+      "rationale": "Every component earns its place via the security or reliability need it serves, scale-dependent choices are flagged, and nothing speculative is added while essentials remain."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "A week of live events handled with nothing missed or processed twice (shadow mode only)",
+      "rationale": "The phased roadmap is ordered by dependency and risk with checkable exit criteria per phase, a concrete config schema, specific triggers and limits; only stack picks among listed options remain."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Each action moves from shadow (logged only) to suggest to act based on measured accuracy, and moves back down automatically when accuracy drops."
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "The App deliberately gets **no Workflows or Administration permission**, so it cannot change `.github/workflows/` or branch rules."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Issue text is untrusted input... safety has to come from limiting what the agent can do, not from careful prompt wording."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "A throwaway container or microVM... There's no GitHub token and no secrets in it... Network access is off, or limited to an approved package proxy."
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "The reproduction test must fail before the patch and pass after it. Tests that passed before must still pass."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "About 12 months of past issues, with labels humans applied as the answer key... Plus ~200 issues labeled by hand"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Accuracy: how often humans remove or change the agent's labels within 7 days... Drop back to shadow mode and alert"
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "has budgets (tokens, time, iterations) and ignores events it caused itself... kill switches at the global, repo and issue level"
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "budget: { minutes: 45, usd: 5, ci_rounds: 3, review_rounds: 5 }... cost per merged PR (not per attempt)"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "Postgres for state and the audit log... actuator, audit log and tracing, kill switches, event replay"
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "Localize: Narrow down from stack traces and code search to files, then to functions."
+    },
+    {
+      "id": "P4-12",
+      "status": 2,
+      "evidence": "drop repeats using `X-GitHub-Delivery`... One active run per issue... If a human is assigned or opens a linked PR, the agent steps back."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "A human approves every merge... Auto-merge, even for docs typos, stays off"
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "There's no GitHub token and no secrets in it... Only the actuator holds credentials"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Issue text is untrusted input... all other comments are treated as information, not instructions"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "Merge rate, and the share merged without changes... reverts or follow-up fixes within 30 days"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "has budgets (tokens, time, iterations)... kill switches at the global, repo and issue level"
+    }
+  ],
+  "note": "An exemplary plan: technically precise on GitHub's subtleties, security-first against injection, with earned autonomy and verifiable gates; only gaps are codebase indexing for large repos, service-level ops detail, and total cost estimation.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 5900,
+    "thinking_tokens": 3361,
+    "cache_read_input_tokens": 934,
+    "cache_creation_input_tokens": 14536
+  },
+  "cost_usd": 0.477654,
+  "latency_s": 95.144,
+  "raw_file": "raw/judge-e8463cffab60.engineering-quality-v1.fable-5.k1.txt"
+}

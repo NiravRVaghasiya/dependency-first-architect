@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "cfb88823e0a1.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "cfb88823e0a1",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 89,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Nothing goes into the template until it runs in all three.",
+      "rationale": "Phases build from trust/identity and artifact contract up to template, progressive delivery, fleet and scale, each gated on a proven exit check of the prior phase."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "a merge to `main` in one real, low-risk, stateless service... `/version` endpoint in production returning the new commit SHA.",
+      "rationale": "Phase 0 is a real thin end-to-end slice in production with rollback tested, before any templates or features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Repo topology (very expensive to reverse) | Keep the existing polyrepo... | More than 25% of PRs need coordinated changes across services",
+      "rationale": "Table lists irreversible decisions with defaults and quantified flip conditions, with no silent assumptions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks (widest → narrowest): 1. Trust and identity model... Every later pipeline inherits this.",
+      "rationale": "Each phase explicitly orders tasks widest to narrowest with leaf work last, and the rationale is specific."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "OIDC to registry (no static keys); branch protection on `main`; Argo CD SSO; human-gated prod promotion",
+      "rationale": "Security has concrete content in every phase, starting at Phase 0, through enforcement and CVE remediation."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "one Grafana board shows commit-to-prod lead time and deploy success/failure... Loki... alerts: Argo CD sync failure",
+      "rationale": "Observability is concrete in Phase 0 and in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Image referenced by digest, never `:latest`; desired state lives in Git",
+      "rationale": "Reproducibility such as digest pinning, pinned actions, lockfiles, and replayable migrations appears in every phase."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Rollback by config-repo revert, tested in prod; ephemeral runners (no snowflake build box)",
+      "rationale": "Failure handling appears in every phase: rollback, warm pools, fail-closed scanner, auto-rollback, HA, DR game-day."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A. The system has no model, no retrieval, and no autonomous agent making decisions.",
+      "rationale": "Plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Developer portal (Backstage...): Pull forward when service discovery or ownership questions become a weekly incident-response bottleneck",
+      "rationale": "Ten deferred items each have a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan that meets every dimension with concrete, phase-specific content.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1058,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 7206
+  },
+  "cost_usd": 0.028716,
+  "latency_s": 37.543,
+  "raw_file": "raw/judge-cfb88823e0a1.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "aeb86e5f51f5.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "aeb86e5f51f5",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 50,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Receiver verifies the request, saves it and returns 202 within 10 s (GitHub's webhook timeout).",
+      "rationale": "Mechanisms (HMAC, delivery ID idempotency, installation tokens, no workflows permission) are accurate; minor issues like contents:write limited to agent/* by branch rules and 'approve' flow details are not wrong enough to matter."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Trigger rule: an attempt starts only after a maintainer applies the `agent:attempt` label, or policy marks the category autonomous.",
+      "rationale": "Covers triage and resolution with explicit deferrals and reasons, a buildable phased scope, and sensible ambiguity resolution."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "The model can only propose typed actions; a separate executor holds the GitHub token, checks each action against policy",
+      "rationale": "Consistent ledger/executor/policy design; small loose ends such as label autonomy vs gated comments and sandbox tools vs executor are minor."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Replay eval harness, built first because it is the yardstick for everything else... score with the tests from the real fix, which are hidden",
+      "rationale": "Validation is tied to specific risks (red-team suite, egress tests, shadow mode, replay eval, exit checks per phase), with thresholds labeled as provisional, though post-launch regression monitoring is mostly via scorecards."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Assumptions (none were given): GitHub.com, one org, a mix of private and public repos... If any of these is wrong, re-check gates G1, G6 and G7.",
+      "rationale": "Assumptions and revisit triggers are explicit and thresholds marked as starting targets, but some numbers (50 concurrent jobs, 10k queue depth) are unjustified."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "The reconciler repairs a manually injected half-finished action... cleanup also runs on crash; job resumes from ledger checkpoint",
+      "rationale": "Covers injection, duplicates, partial failures, eval poisoning, memory poisoning, flaky tests, loops, provider outages with concrete handling."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "GitHub Actions builds the image (pinned by digest), runs terraform apply to staging, then to prod after a smoke test",
+      "rationale": "Deployment, monitoring, alerts, kill switches, and reconciler are concrete; ownership/incident response and rollback details are thin."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Resolution: ≤ 40 tool iterations, ≤ $3 per attempt, ≤ 30 min wall clock... Per-repo daily cap and an org-wide monthly cap.",
+      "rationale": "Caps, cost per job tracking, tiered models and buy vs build are covered, but no overall run or build cost estimate and the budget figures are ungrounded."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Ledger schema... Every later capability writes through it, so it is the most expensive thing to get wrong.",
+      "rationale": "Identifies one-way decisions (ledger, triage schema, keying on provider/org/repo), isolates model behind interface, offers revisit triggers and exit paths for buy decisions."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Modular monolith... One forced split: the sandbox executor is a separate, isolated runtime. That split is a security boundary",
+      "rationale": "Mostly proportionate with Postgres queue, single agent loop and explicit deferrals; the six-phase, nine-part AI layer is somewhat heavy for a modest team."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: a real issue in prod gets the comment. One trace shows all five spans... Redelivering the same webhook... produces no second comment.",
+      "rationale": "Dependency-justified ordering, concrete first slice, checkable exit criteria at each phase and adaptation triggers."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Forbidden: merge, close, push to the default branch, workflow or settings changes."
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "No `workflows` permission, so the App cannot change CI at all. Short-lived installation tokens."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "The model can only propose typed actions; the executor checks each one against policy."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "an ephemeral microVM per job. No secrets. Network egress denied except a proxy that allows only package registries"
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "The body contains the reproduction, root-cause summary, test evidence, trace link and an \"AI-generated\" label."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "offline type-label accuracy ≥ 85% top-1. Duplicate precision ≥ 90% at recall ≥ 50%."
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "PR merged / merged-with-edits / closed, review comments... Promote one action class at a time per repo, based on scorecards"
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "A single feature flag that stops all GitHub writes. It exists from commit one."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "≤ 40 tool iterations, ≤ $3 per attempt, ≤ 30 min wall clock"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "full job replay possible from ledger (inputs, model version, prompt hash)"
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "agentic search tools inside the sandbox (`ripgrep`, tree-sitter symbol lookup, file reads)"
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "Duplicate deliveries do nothing. Returns 202."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent never merges, never closes issues and never pushes to default branches."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "The token never enters model context or the sandbox."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "the system prompt states it is never instructions."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "replay resolve rate ≥ 20% (hidden tests pass)"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "a deliberately looping test task is cut off at the iteration cap"
+    }
+  ],
+  "note": "Strong, security-first phased plan with a concrete first slice, policy/ledger boundary and replay evals; weaknesses are thin ops ownership/rollback, ungrounded cost totals, and no explicit index freshness.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2396,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 16018
+  },
+  "cost_usd": 0.064198,
+  "latency_s": 30.797,
+  "raw_file": "raw/judge-aeb86e5f51f5.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

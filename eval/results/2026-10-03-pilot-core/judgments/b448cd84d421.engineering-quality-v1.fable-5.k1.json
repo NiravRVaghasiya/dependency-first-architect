@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "b448cd84d421.engineering-quality-v1.fable-5.k1",
+  "blind_id": "b448cd84d421",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 135,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Applying the same Yjs update twice changes nothing, so duplicate delivery does no harm.",
+      "rationale": "Claims about Yjs idempotence, state vectors, tombstone growth, ProseMirror schema stripping, server inability to validate CRDT semantics, and schema-drop risk for old clients are all accurate and precise, including the subtle areas."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "You asked how to *order* the build, so Sections 12–13 get the most detail",
+      "rationale": "Directly answers the ordering request with milestones and dependencies, covers all implied core capabilities, resolves ambiguities with stated defaults, and excludes scope explicitly with reasons."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The Sync Service owns document content: it holds active documents in memory, relays updates and presence between connections, and is the only writer",
+      "rationale": "Every table has a single declared writer, identity (one JWT) and error propagation are handled uniformly, and decisions made once (e.g., Sync-only writes, schema package) are honored everywhere."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "S1 fuzz: 100 runs × 10k ops, zero divergence between clients and saved state.",
+      "rationale": "Validation targets the exact risks (divergence, authz, load, deploy-under-load), runs before commitment via spikes with go/no-go criteria, labels thresholds provisional, and continues in production via a synthetic canary."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "this is a greenfield plan built on stated defaults, all marked [A] and collected in Section 5",
+      "rationale": "All invented specifics are flagged [A], and the assumptions table states impact-if-wrong and how/when each is confirmed — effectively a sensitivity analysis."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Saves fail. Sync keeps documents in memory, retries with backoff, emits store_failures_total, and an alert fires after 2 minutes.",
+      "rationale": "Crash, DB outage, revocation, hostile editors, duplicates and schema corruption all get concrete handling, but Redis fan-out failure/split-brain between Sync instances in M2 (which could silently lose cross-instance edits via stale full-state overwrites) is not addressed."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Each alert linked to a runbook and fired once in staging.",
+      "rationale": "Domain-meaningful signals, canary-based alerting, graceful drain, rolling deploys with image rollback, additive migrations, restore drills, named owners and a sized on-call model match a 4–6 person team."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "rough figures: RDS about $300, Fargate (2–3 sync, 2 api) about $250, ElastiCache about $80, ALB about $40",
+      "rationale": "Infra costs are itemized as labeled estimates with a budget alert, the possibly-dominant per-user IdP cost is flagged for week-1 verification, and the self-host-vs-managed trade-off (D3) and cost-driven revisit triggers (D4, D8) are explicit."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Fix a versioned editor schema in a shared package. This is the hardest decision to undo.",
+      "rationale": "Every decision carries a reversibility rating with revisit triggers, the hardest-to-undo choices (schema, CRDT format) are validated earliest via spikes, storage sits behind a swappable interface, and the last reversible point for schema rollout is named."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Redis is added in Milestone 2, only to relay messages between Sync Service instances.",
+      "rationale": "Two process types, one region, components deferred until needed, deliberate shortcuts stated, and a trigger-based deferred-work table give the simplest workable design with a clear growth path."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "The critical path is T1 → T4 → T5 → T9.",
+      "rationale": "Thirteen tasks with locations, 'done when' checks, parallel tracks, day-1 steps, and explicit 'changes plan if' conditions mean a team could start immediately and knows how to adapt if spikes disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "Handle concurrent edits with a CRDT (Yjs). We do not write our own OT."
+    },
+    {
+      "id": "P5-02",
+      "status": 2,
+      "evidence": "Define editor schema v1 (the extensions in Section 3) and export SCHEMA_VERSION = 1"
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "S1 fuzz: 100 runs × 10k ops, zero divergence between clients and saved state."
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "If a save fails, it retries with backoff and keeps the document in memory, refusing to unload a document with unsaved changes."
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "Milestone 2 runs two or more with the Hocuspocus Redis extension, so clients connected to different instances see each other's edits."
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Offline means \"survive disconnects and keep editing in an open tab\". Multi-day offline is supported on a best-effort basis."
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "Every Sync instance closes that user's connections to the document with code 4403."
+    },
+    {
+      "id": "P5-08",
+      "status": 2,
+      "evidence": "Undo affects only the user's own changes (the Yjs undo manager does this, and spike S2 verifies it)."
+    },
+    {
+      "id": "P5-09",
+      "status": 2,
+      "evidence": "Presence travels through the Yjs awareness channel and is never saved."
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Critical path: S1/S2 → schema v1 freeze → persistence + authz in Sync → multi-node → 2× load test → beta"
+    },
+    {
+      "id": "P5-11",
+      "status": 2,
+      "evidence": "what are p95 latency, CPU and memory with 50 simulated editors at 2 ops/s on one 1 MB doc"
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "Raise MIN_CLIENT_SCHEMA_VERSION in Sync config, then enable creating the node."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "Handle concurrent edits with a CRDT (Yjs)"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "mature, heavily used library, so we don't write the riskiest algorithm ourselves"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "M1: First end-to-end slice + core risks ... Prove convergence, saving and deploys end to end"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "the debounce window is covered by clients resending their state when they reconnect (Flow 3)"
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "a CRDT can't check edits for meaning on the server side"
+    }
+  ],
+  "note": "Exemplary, risk-first plan with accurate CRDT reasoning, explicit assumptions, early validation of irreversible decisions, and actionable task-level ordering; the only notable gap is unaddressed Redis fan-out failure/split-brain behavior in multi-instance mode.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 11292,
+    "thinking_tokens": 8603,
+    "cache_read_input_tokens": 929,
+    "cache_creation_input_tokens": 21357
+  },
+  "cost_usd": 0.8325115,
+  "latency_s": 185.04,
+  "raw_file": "raw/judge-b448cd84d421.engineering-quality-v1.fable-5.k1.txt"
+}

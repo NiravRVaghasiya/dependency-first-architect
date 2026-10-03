@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "995c8b1aaa15.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "995c8b1aaa15",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 31,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: Phase 1 contracts and tokens, and the replay harness.\"",
+      "rationale": "Each phase names its dependencies and goes substrate → contracts → features → rules → labels → model → feedback, with exit checks proving each before the next."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A real production authorization request (ISO 8583 `0100`) for 1% of traffic, scored in **shadow mode**.",
+      "rationale": "Phase 0 is a real production end-to-end slice across auth host, scorer, Redis, Kafka and the lake, with an exit check."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Fail open to a minimal rules set compiled into the auth host... Loss analysis shows one segment ... loses more while failing open",
+      "rationale": "The table lists irreversible decisions, each with a default and a concrete flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tokenization and privacy boundary... Every key in every store comes from this, so it goes first.",
+      "rationale": "Tasks in each phase are explicitly ordered widest-first (action contract, label policy, integration contract), with leaf work such as individual features and the case queue last."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Token only (no card number in the scorer); mTLS; secrets in Vault; own network segment; CI test that blocks card numbers in logs",
+      "rationale": "Concrete security measures are listed for every phase from Phase 0 through Phase 6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OpenTelemetry traces across auth host → scorer → Redis. Prometheus RED metrics... Alerts: p99 above 50 ms",
+      "rationale": "Phase 0 has full observability, and every later phase adds specific metrics and alerts."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "CI builds an image pinned by digest. Terraform defines the infrastructure.",
+      "rationale": "Reproducibility is concrete in every phase: schemas in git, replay, snapshot IDs, lineage, and the same pipeline for retraining."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Hard client timeout → \"no opinion\"; shadow mode; flag kill switch",
+      "rationale": "Resilience appears concretely in every phase, including game days and rollback drills."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "**N/A as defined.** This system uses predictive ML (a supervised classifier), with no LLM and no agent.",
+      "rationale": "The plan correctly declares the generative/agentic AI layer N/A. It maps the analogous concerns to phases and adds no unrequested AI components. The classifier is predictive ML the request implies."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Graph or GNN features for fraud rings... Pull forward when ring-linked fraud is a material share of losses the GBDT misses.",
+      "rationale": "Each deferred item comes with a specific pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan: it scores well on every dimension. Dimension 9 is judged on a non-generative predictive-ML reading, and the plan explicitly declares the LLM/agent layer N/A.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1146,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 8795
+  },
+  "cost_usd": 0.0335685,
+  "latency_s": 19.159,
+  "raw_file": "raw/judge-995c8b1aaa15.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

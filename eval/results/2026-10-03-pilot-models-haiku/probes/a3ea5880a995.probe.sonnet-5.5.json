@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "a3ea5880a995.probe.sonnet-5.5",
+  "blind_id": "a3ea5880a995",
+  "blind_sha256": "21bc345b17da05ba5441d5598120cd62c9a157caa6afa26fa74f0e876cff47b7",
+  "judge": "sonnet-5.5",
+  "order_index": 10,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.15,
+  "cues": [
+    "Generic comprehensive template structure: architecture diagram, capabilities, roadmap, config, success criteria, with no stated assumptions or open questions",
+    "Emoji checkmarks and a cheerleading closing line ('robust, safe, and effective!') suggest default unstructured model output",
+    "Fixed week-based roadmap (Weeks 1-8) and vanity success metrics (90% satisfaction, 30% velocity) with no justification or baseline",
+    "No explicit risks/unknowns section, no verification steps for the plan itself, no clarifying scope decisions or tradeoff discussion",
+    "Internal inconsistency: auto-resolve limited to docs/typo/config in the config, but the decision matrix allows bug and feature auto-fix, and nothing reconciles the two"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 335,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 5552
+  },
+  "cost_usd": 0.017238,
+  "latency_s": 34.43,
+  "raw_file": "raw/probe-a3ea5880a995.probe.sonnet-5.5.txt"
+}

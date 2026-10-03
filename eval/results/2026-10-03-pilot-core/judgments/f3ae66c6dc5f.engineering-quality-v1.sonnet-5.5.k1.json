@@ -1,0 +1,172 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f3ae66c6dc5f.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "f3ae66c6dc5f",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 103,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Linux: `renameat2(RENAME_NOREPLACE)`, or link + unlink as a fallback; macOS: `renamex_np(RENAME_EXCL)`; Windows: `MoveFileEx` without the replace flag",
+      "rationale": "Correct no-replace primitives, camera-local time, and the mtime risk; minor issues include the exifread/HEIC capability being left to V1 and QuickTime CreateDate UTC being correct but deferred."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Its value over exiftool is safety: preview by default, collisions refused, crash-safe undo.",
+      "rationale": "Covers the core needs and sensibly questions whether to build at all. Sidecars and idempotency are pushed to Phase 2 and templates and OffsetTime are deferred, each with an explicit trigger."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Freeze the plan model and the undo-log format. Undo, resume and \"already renamed\" detection all build on these.",
+      "rationale": "Responsibilities, log ownership and the safety gating are consistent. Small loose ends: the executor runs in CI only, and Phase 1 lists the first-run exit code semantics loosely."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "kill the process at a random log step, 1,000 seeded runs per OS, then `undo` or `resume`",
+      "rationale": "Validation targets the specific risks: V1 compares against exiftool per format, V2 uses property tests, fault injection and several filesystems, and V0 runs early. Gates are checkable and labeled as assumptions. There is little post-launch monitoring, which fits a CLI."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "*My assumption:* you want a tool you'll reuse on every import.",
+      "rationale": "Thresholds are labeled ASSUMPTION, missing inputs are listed with their effect on the design, and each decision has a revisit trigger."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Collisions are checked case-insensitively. Name swaps and loops go through a temporary name.",
+      "rationale": "Covers crashes mid-run, case-insensitive filesystems, swaps, corrupt and unreadable files, crafted paths, symlinks, a stale log and .photoslibrary. Each has concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Rollback means publishing `0.1.1`, then reinstalling the pinned `0.1.0`.",
+      "rationale": "Release, rollback, logs and exit codes are concrete and sized for a single developer. Support and incident ownership for a CLI is thin."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "There are no economic dependencies (no paid services).",
+      "rationale": "Correctly identifies that costs are only developer time and that there are no services. The build-versus-exiftool trade-off is covered, but effort is not estimated."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R2 (changes the install story: pure Python vs needing exiftool installed) ... behind a `DateReader` interface",
+      "rationale": "The plan rates each decision's reversibility, freezes the log format and naming before writes, isolates the EXIF library behind an interface, and gives fallbacks."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Dependabot for `exifread`/Pillow security alerts; time-boxed fuzzing of the EXIF parser; build attestations; TestPyPI release and rollback drill",
+      "rationale": "The core is right-sized, but the release pipeline, attestations, fuzzing, 1,000 fault-injection runs per OS and a mandatory TestPyPI rollback drill are heavy for a small CLI. The idempotency and sidecar essentials are also pushed late."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Freeze the plan model and the undo-log format... Run V1 on the test set... Write a rename that never overwrites, per OS",
+      "rationale": "The ordering follows dependencies, the tasks are specific, each phase has exit checks, and failure of each check has a stated fallback."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 1,
+      "evidence": "Use `DateTimeOriginal`, falling back to `DateTimeDigitized`."
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "Files with no date are skipped and reported. **No silent fallback to the file's modified time**"
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "`_NN` numbers photos taken in the same second, ordered by sub-second time and then by original name."
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "responds with an old → new plan table, a summary (to rename / no date / collision / error)"
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "Renames never overwrite. Name swaps and loops go through a temporary name."
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "Add `photo-rename undo LOG` and `resume LOG`."
+    },
+    {
+      "id": "P7-07",
+      "status": 1,
+      "evidence": "Keep the camera's local time as recorded, with no time-zone conversion."
+    },
+    {
+      "id": "P7-08",
+      "status": 1,
+      "evidence": "Sidecar files with the same base name (`.xmp`, `.aae`, `.thm`) are renamed in the same logged step as their photo."
+    },
+    {
+      "id": "P7-09",
+      "status": 1,
+      "evidence": "`YYYY-MM-DD_HHMMSS[_NN].<original ext>`"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Renames never overwrite."
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "**No silent fallback to the file's modified time**"
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "One installable package, no services, no network"
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "Writing or fixing EXIF dates... a separate, separately gated feature, because it modifies file contents."
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "`YYYY-MM-DD_HHMMSS[_NN].<original ext>`"
+    }
+  ],
+  "note": "Strong, safety-centred plan with rigorous validation and explicit assumptions. It is somewhat over-engineered on release process, and sidecars, idempotency and OffsetTimeOriginal handling are deferred or thin.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2240,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 907,
+    "cache_creation_input_tokens": 12588
+  },
+  "cost_usd": 0.054059399999999994,
+  "latency_s": 32.075,
+  "raw_file": "raw/judge-f3ae66c6dc5f.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

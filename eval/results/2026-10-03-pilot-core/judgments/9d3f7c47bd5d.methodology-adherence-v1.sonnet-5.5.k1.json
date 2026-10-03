@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9d3f7c47bd5d.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "9d3f7c47bd5d",
+  "blind_sha256": "e513f52022226fe9e6f7abee423696a849ca899e9a1da80d8bebbfa7db96aa26",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 468,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 6 \"Depends on: Finalized invoices and the ledger (Phase 5).\" Phase 4 \"Depends on: Subscriptions (Phase 3), which decide the period and price version\"",
+      "rationale": "Each phase names its dependency and proof gate; order goes tenancy/ledger → catalog → subscriptions → usage → invoicing → payments → UI."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "`POST /v1/invoices` with an `Idempotency-Key`... charged through **Stripe live mode**. A nightly job refunds it automatically.",
+      "rationale": "Phase 0 is a real end-to-end production slice crossing all tiers with deployment, exit check and rollback."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Modular monolith... Extract **usage ingestion first**. | Usage ingestion needs to scale on its own (more than ~5k events/s sustained)",
+      "rationale": "Irreversible decisions are tabulated with defaults and concrete flip conditions, including an explicit no-flip for the money model."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Injectable clock... Everything time-dependent touches this, so it comes first. | Internal catalog admin UI (the leaf task).",
+      "rationale": "Within each phase, wide-impact items (RLS, pricing contract, clock, event contract) precede leaf tasks like UI, PDF, reports."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: TLS and WAF. Secrets in AWS Secrets Manager. Hashed API key. Restricted Stripe key. RLS on from the first table.",
+      "rationale": "Per-phase security table has concrete items for every phase 0–7, starting with the first build."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OpenTelemetry traces end to end... Ledger-balance alert. Hourly synthetic check.",
+      "rationale": "Observability is concrete in Phase 0 and each later phase has specific metrics and alerts."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform for all infrastructure. Image tagged by git SHA. Versioned migrations. Pinned dependency lockfiles.",
+      "rationale": "Reproducibility is concretely addressed in every phase (golden tests, deterministic clock, raw event replay, deterministic exports)."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Automatic rollback on failed health check. RDS point-in-time recovery... Outbox dead-letter queue with an alert.",
+      "rationale": "Failure handling appears concretely in every phase, from rollback and PITR in Phase 0 to circuit breakers, resumable runs and webhook replay."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "**N/A.** No model makes or influences any billing decision.",
+      "rationale": "Plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "**Multi-currency and FX.** Pull forward when the first tenant must be billed in more than one currency.",
+      "rationale": "A detailed deferred list where each item carries a specific pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally complete plan: it covers all ten dimensions concretely, with no notable gaps found.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1179,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9162
+  },
+  "cost_usd": 0.034703,
+  "latency_s": 21.069,
+  "raw_file": "raw/judge-9d3f7c47bd5d.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

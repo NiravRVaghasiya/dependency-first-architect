@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "dd5e757da6b1.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "dd5e757da6b1",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 22,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1: \"Unlocks: any outside user. Depends on: V0.\" Phase 2 \"Depends on: V1 before any outside exposure\"",
+      "rationale": "Explicit dependency map and phases each depend on validated predecessors, going from substrate through defenses, retrieval, model access, rollout, feedback."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"widget on a help-center page behind a feature flag → API service → retrieval over about 20 ingested public articles in pgvector → hosted LLM → answer with citations\"",
+      "rationale": "Phase 0 is a real end-to-end deployed slice with CI/CD, rollback and V0 exit check."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"Legal rejects the terms → self-hosted open-weight model behind the same interface\"",
+      "rationale": "Irreversible decisions have reversibility class, default, assumption, validation and flip condition; R1 defaults and N/A items are also listed."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "\"Phase 1: Defenses and budgets ... Injection suite in CI ... Output filter ... PII redaction\"",
+      "rationale": "Phase-level ordering is broad-to-narrow, but within-phase task lists are not explicitly ordered by blast radius."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "\"Phase 0 | SSO allow-list, secrets in a vault, token caps\"",
+      "rationale": "Concrete security measures appear in every phase 0–5 in the cross-cutting table and in phase tasks."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"Each request gets an OpenTelemetry trace with retrieved chunk IDs, tokens, cost and latency.\"",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"Infrastructure as code; model, prompt and embedding versions pinned\"",
+      "rationale": "Reproducibility is addressed concretely per phase: pinned versions, versioned index and eval set, config in repo, rollout config."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"Flag rollback, timeouts\" (Phase 0); \"Fallback model, retries\" (Phase 3); \"Kill switch, staged rollout percentages\"",
+      "rationale": "Failure handling is present in every phase, starting with Phase 0."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"Phase 1: Defenses and budgets\" before \"Phase 2: Retrieval\", then \"Phase 3: Model access and session memory\", routing deferred, Phase 5 Feedback",
+      "rationale": "Defenses, budgets and human-in-the-loop precede retrieval, then model access, memory, orchestration, routing (deferred), feedback, in correct order."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Account actions (order lookup, refunds): comes forward if more than 20% of handoffs need account data.\"",
+      "rationale": "Deferred items are explicit, each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong, well-ordered plan with only within-phase blast-radius ordering left implicit.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1166,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 5548
+  },
+  "cost_usd": 0.025651,
+  "latency_s": 35.257,
+  "raw_file": "raw/judge-dd5e757da6b1.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

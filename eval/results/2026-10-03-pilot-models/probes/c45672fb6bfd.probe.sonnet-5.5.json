@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "c45672fb6bfd.probe.sonnet-5.5",
+  "blind_id": "c45672fb6bfd",
+  "judge": "sonnet-5.5",
+  "order_index": 3,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Rigid templated structure: Classification and constraints, Dependencies, Key decisions, First end-to-end slice (Phase 0), Phases, Validation checks, Cross-cutting concerns, AI layer, Exceptions, Deferred",
+    "Explicit labeling of ASSUMPTION / UNKNOWN / ASSUMED / CONFIRMED / BASELINE / 'design parameter' on nearly every number, which looks like a prescribed epistemic-labeling rule",
+    "Reversibility tiers (R2/R3) for each key decision, with default, assumption, validating check, and revisit trigger columns",
+    "Numbered validation gates V0–V5 with hypothesis, method, acceptance threshold, evidence, and 'unlocks (and if it fails)' columns, plus a per-phase rollback and exit check",
+    "Boilerplate sections such as 'AI layer: N/A', 'Exceptions: None', and a 'Deferred' list with pull-forward triggers, plus a phase-by-cross-cutting-concern matrix and a walking-skeleton Phase 0 slice"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 444,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7290
+  },
+  "cost_usd": 0.022673,
+  "latency_s": 29.789,
+  "raw_file": "raw/probe-c45672fb6bfd.probe.sonnet-5.5.txt"
+}

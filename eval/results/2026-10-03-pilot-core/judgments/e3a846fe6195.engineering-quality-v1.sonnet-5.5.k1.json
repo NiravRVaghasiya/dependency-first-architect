@@ -1,0 +1,172 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e3a846fe6195.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "e3a846fe6195",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 72,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "on Windows `os.rename` already raises if the target exists; on POSIX use `os.link` + `os.unlink`, or check-then-rename where hard links aren't supported (exFAT)",
+      "rationale": "The write-safety mechanics, ExifTool usage and QuickTime UTC note are right; small blemishes are listing CreateDate and DateTimeDigitized as separate tags (same EXIF tag) and ignoring OffsetTimeOriginal."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "If a one-off rename after a backup is all you need, use that and stop.",
+      "rationale": "It solves the real problem with sensible resolved ambiguities and explicit deferrals, but defers a configurable template and offset-aware time and front-loads release work."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Write and fsync the journal, rename each file without overwriting, mark it done. Add `undo <journal>` and resuming an interrupted run.",
+      "rationale": "Planner, journal, writer, undo and reader interface fit together with clear ownership; only minor loose ends like journal location and link+unlink crash window."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Kill injection: SIGKILL / TerminateProcess after a random number of renames, then resume or undo. Run on Windows NTFS, macOS APFS, Linux ext4, and an exFAT image",
+      "rationale": "Validation is tied to the real risks with checkable criteria and early V0/V1 gating, but the date ground truth is ExifTool itself and post-release validation is thin."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "ASSUMPTION: ExifTool in batch mode (one process, `-json`) reads hundreds of files per second... Confirm with the V0 baseline",
+      "rationale": "Assumptions are labeled, each with a check and a stated design consequence if wrong (formats, public vs personal, timezone)."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "property-based tests ... same-second bursts, existing target names, case-only changes, rename cycles, already-renamed files, read-only files, NFC/NFD names, long Windows paths",
+      "rationale": "Covers kills mid-run, collisions, cycles, Unicode/case, truncated files, option-injection names and symlinks with detection and recovery, but never handles bogus dates like 0000:00:00 explicitly."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "for a CLI, \"monitored\" means the outcome is visible to whoever runs it: the summary, exit codes and JSON log.",
+      "rationale": "Release, practised rollback, exit codes, version reporting, journal schema compatibility and a single-maintainer scope are concrete; incident handling is just an issue template."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "No economic dependencies.",
+      "rationale": "Cost is barely treated beyond build-vs-buy and storage doubling in copy mode; there is no build-effort estimate, though little money is involved in this domain."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: an overwrite or a lost name mapping on a user's photos can't be undone",
+      "rationale": "Decisions are explicitly tiered by reversibility, with the name format and journal schema frozen only after validation, a MetadataReader abstraction, and revisit triggers."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "It isn't formally a \"small\" build, for two reasons.",
+      "rationale": "There is no overbuilt runtime machinery, but the process is heavy for a one-developer CLI: TestPyPI pipeline before any rename code, trusted publishing with attestations, a four-filesystem matrix, and a 300-file corpus."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Tasks (the ones that would force the most rework if wrong come first): 1. Draft the name-format spec and journal schema.",
+      "rationale": "Ordered phases with concrete tasks, exit checks and fallback flips make it startable, though the dense jargon leaves details like journal location and CLI flags to settle."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "Date tag order → DateTimeOriginal > CreateDate > DateTimeDigitized. ... Assumed: JPEG, HEIC and common RAW."
+    },
+    {
+      "id": "P7-02",
+      "status": 1,
+      "evidence": "Files with no date are skipped and reported. File modification time is used only with `--fallback mtime`."
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "Same-second photos get `_01`, `_02`… ordered by SubSecTimeOriginal, then by original name, so the result is the same every run"
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "dry-run is the default and `--apply` is opt-in."
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "Handle rename cycles (A→B while B→A) and case-only renames through temporary names. Skip files already at their target name, so a re-run does nothing."
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "Write the journal (JSONL, fsync) before the first rename. ... Add `undo <journal>` and resume"
+    },
+    {
+      "id": "P7-07",
+      "status": 1,
+      "evidence": "Use the recorded wall-clock time as-is. No conversion; ignore OffsetTimeOriginal"
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "Files with the same base name move as a group under the same new name (`IMG_1.CR2`, `IMG_1.xmp`, `IMG_1.JPG`, `IMG_1.MOV`)"
+    },
+    {
+      "id": "P7-09",
+      "status": 1,
+      "evidence": "`YYYY-MM-DD_HH-MM-SS[_NN].<ext unchanged>`. No colons (NTFS forbids them) and it sorts correctly as text."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Each rename refuses to overwrite: on Windows `os.rename` already raises if the target exists; on POSIX use `os.link` + `os.unlink`"
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "Working out dates from file modification time by default: never. It stays opt-in."
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "No services; one outside binary (ExifTool) on PATH"
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "Data integrity | 0 files lost, overwritten or changed in content"
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "No colons (NTFS forbids them) and it sorts correctly as text."
+    }
+  ],
+  "note": "A strong, safety-first plan with correct write-model mechanics, undo journal and crash testing; it falls short on timezone offset handling, bogus-date handling and configurable templates, and its release and validation process is heavy for a small CLI.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 6222,
+    "thinking_tokens": 3795,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 13758
+  },
+  "cost_usd": 0.09662299999999999,
+  "latency_s": 59.794,
+  "raw_file": "raw/judge-e3a846fe6195.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

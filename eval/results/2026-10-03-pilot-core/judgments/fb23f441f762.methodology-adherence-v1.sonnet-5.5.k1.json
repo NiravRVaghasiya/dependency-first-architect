@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "fb23f441f762.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "fb23f441f762",
+  "blind_sha256": "2a930ee5b729caa8529fe395b9d87ef4e20774199e4d3d992eefeec61cf2ca42",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 404,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Depends on: V0\"; Phase 4 \"Depends on: V1 and V2 (data model). Phase 2 (permissions)... V4\"",
+      "rationale": "Phases run from skeleton through data/correctness, auth, scale, features, exposure, with explicit validation gates proving each dependency before dependents are specified."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Phase 0: \"An internal user signs in with SSO and opens a test document... After reloading either browser, the text is still there.\"",
+      "rationale": "A real production end-to-end slice through all tiers with deploy, rollback and alert checks precedes any feature work."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Consistency model: \"Yjs CRDT... Flip condition: V1 finds a divergence that can't be fixed in the binding → Automerge or a server-sequenced OT design\"",
+      "rationale": "Ten decisions each carry reversibility, default, assumption, validator and flip condition, plus listed missing inputs."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1 \"Tasks (widest rework first): 1. Tenancy and identity model... 2. Document data model\"; Phase 4 \"the flashiest come last\"",
+      "rationale": "Within-phase ordering explicitly puts widest-impact items (tenancy, data model, protocol) before leaf features like presence."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0 security: \"SSO allow-list behind a flag; TLS; secrets in a secrets manager; dependency scanning in CI; no real content\"",
+      "rationale": "The per-phase table gives concrete security items in every phase from 0 through 5."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: \"One OpenTelemetry trace runs from the browser through sync to Postgres and back. A dashboard shows WebSocket connections, confirm latency\"",
+      "rationale": "Concrete observability is in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Phase 0: \"Terraform; pinned lockfiles; build the image once and promote it; versioned migrations\"",
+      "rationale": "Each phase has concrete reproducibility items such as replayable fuzz seeds, policy as code, versioned load scripts and signed artifacts."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 1: \"Commit-before-confirm; IndexedDB buffer for unconfirmed edits; point-in-time recovery; checked compaction\"",
+      "rationale": "Failure handling appears in every phase, starting with reconnect and rollback in Phase 0 and carrying through to Phase 5."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"## 8. AI layer N/A — no AI component.\"",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"End-to-end encryption. Pull forward if a contract requires it. The phase order would be re-planned first\"",
+      "rationale": "A list of ten deferred items, each with a concrete pull-forward trigger."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan: it meets all ten dimensions with concrete content, explicit gates, and threaded cross-cutting concerns.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1201,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10560
+  },
+  "cost_usd": 0.038418,
+  "latency_s": 24.447,
+  "raw_file": "raw/judge-fb23f441f762.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

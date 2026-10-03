@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "cf82eed96187.engineering-quality-v1.fable-5.k1",
+  "blind_id": "cf82eed96187",
+  "blind_sha256": "c934354fc23c831c453d4b70fa762e3cf8d6d83ca20d429a165f433bfb28ce43",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 207,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Push only to a bot-owned fork; open draft PRs from it. \"Require approval for fork PR workflows\" is on",
+      "rationale": "Precisely correct on the subtle parts: pull_request_target secret exposure, fork-PR workflow approval, App vs PAT scoping, webhook 10s ack, metadata-endpoint blocking, and even statistically correct confidence intervals (±3.5 pts at n=300)."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "It triages new issues (labels, duplicate detection, requests for a reproduction)... tries a fix in a sandbox and opens a draft PR",
+      "rationale": "Covers both triage and resolution, resolves the autonomy ambiguity conservatively with an explicit, gated path to expand it, and every exclusion is deferred with a stated pull-forward trigger."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The installation token is held only by the tool executor, never by the model or the sandbox",
+      "rationale": "One consistent design: GitHub remains system of record, the executor owns all writes and credentials, policy enforcement is in one place, and no section contradicts another (dry-run PR tier is even reconciled in §9)."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "≥ 200 injection cases planted in issues, comments, repo files, test output, and dependency READMEs, run in CI; red-team session",
+      "rationale": "V0–V7 target the specific risks (injection, secret exfiltration, triage precision, patch acceptability, ROI) with checkable thresholds labeled as assumptions, validated before exposure, and regression-tested in production per wave."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "UNKNOWN: needs the spend ceiling and loaded maintainer hourly cost from the budget owner / engineering manager, before Phase 4",
+      "rationale": "Every number is tagged REQUIREMENT/ASSUMPTION/BASELINE/UNKNOWN, missing inputs state exactly how the plan changes if each assumption fails, and nothing unsupported is stated as fact."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "a comment the agent posts sets off an existing ChatOps or label-triggered workflow",
+      "rationale": "Covers the hardest domain failures—injection-driven secret theft, workflow re-triggering, bot loops, feedback poisoning, flaky tests, missed/duplicate webhooks—each with concrete detection, containment and recovery; only mid-work human collision is thin."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Global kill switch `agent.enabled`, checked by the executor before every write... Last resort: uninstall the App",
+      "rationale": "Deploy/rollback rehearsed as a V0 exit criterion, meaningful alerts (DLQ, caps, policy denials), per-repo kill switches, and the burden explicitly sized to one platform team with business-hours on-call."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Per merged agent PR, inference cost + review time < maintainer time to fix it",
+      "rationale": "Identifies inference and maintainer review time as the dominant drivers, caps spend at every level, gates scale-out on measured ROI (V7), and labels unknown figures rather than inventing them."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: a leaked token or over-broad scope can't be un-leaked",
+      "rationale": "Every key decision carries an explicit reversibility class, irreversible ones (credentials, vendor data exposure, merge autonomy) get the earliest validation or are deferred, and reversible ones get quick defaults with revisit triggers."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Code retrieval → agentic ripgrep / tree-sitter symbol search, no vector index",
+      "rationale": "Starts with one service, one queue, one Postgres and a single agent loop; vector index, multi-agent, routing and fine-tuning are all deferred with concrete pull-forward triggers, and the heavy gating matches the stated risk."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "An allow-listed internal author opens a real issue on the public pilot repo. The agent posts one triage comment",
+      "rationale": "A concrete Phase 0 slice, phases ordered by real dependencies with exit checks, specific implementable decisions (SQS, Fargate, Postgres, action-hash approvals), and a stated fallback for every failed validation."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Comments: approval. Labels: approval until V4. Resolution: maintainer `agent:fix`. Merge: humans only, by ruleset. Close/assign/workflow edits: no permission"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "GitHub App, not a PAT. Least privilege: issues:write, pull_requests:write, contents:read on target repos; no `workflows` permission"
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Whatever untrusted text says, the agent can't leave the tool allow-list, write without policy or approval, emit URLs/images/ChatOps/secrets"
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "Sandbox: an ephemeral Fargate task in a no-egress subnet... deny all except the model gateway and a read-only package-registry mirror"
+    },
+    {
+      "id": "P4-05",
+      "status": 1,
+      "evidence": "push to fork, open a draft PR with linked issue and test log"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Precision ≥ 0.90 per applied label, duplicate precision ≥ 0.85... 300 held-out historical issues + 2 weeks of shadow agreement"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Feedback: merge/reject outcomes and label corrections go through a review queue into the eval set and prompts. Nothing trains automatically"
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "A synthetic runaway loop is cut off at the cap... Global kill switch `agent.enabled`, checked by the executor before every write"
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "AI cost: triage ≤ $0.05 per issue typical, $0.25 hard cap... Hard cap of $5 and 40 tool iterations per attempt"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "One OpenTelemetry trace per issue across all tiers... Prompt, model ID, and tool schemas are versioned in git and stamped on every trace"
+    },
+    {
+      "id": "P4-11",
+      "status": 2,
+      "evidence": "Code retrieval → agentic ripgrep / tree-sitter symbol search, no vector index"
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "at-least-once delivery plus an idempotent executor (key = event ID + action hash)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "Draft PRs only. A human merges, enforced by a ruleset that requires CODEOWNERS approval the bot can't give"
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "The installation token is held only by the tool executor, never by the model or the sandbox"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Issue text sits in a delimited untrusted-data block... Issues, comments, repo files, and tool output are all data"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "Per merged agent PR, inference cost + review time < maintainer time to fix it"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Hard cap of $5 and 40 tool iterations per attempt... Caps stop runaway loops"
+    }
+  ],
+  "note": "An exceptionally rigorous, buildable plan that gates every risky capability behind concrete security and quality validations; the only soft spots are no explicit reproduce-the-issue-as-failing-test step and thin handling of humans working the same issue mid-attempt.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 9669,
+    "thinking_tokens": 6774,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 17978
+  },
+  "cost_usd": 0.7081950000000001,
+  "latency_s": 175.361,
+  "raw_file": "raw/judge-cf82eed96187.engineering-quality-v1.fable-5.k1.txt"
+}

@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "219b9aeae693.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "219b9aeae693",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 54,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1 Prototype: \"Ingestion, hybrid retrieval, basic chat, first eval set\"",
+      "rationale": "Phases run roughly discovery→prototype→beta→launch, but guardrails and handoff come late (phase 3) and eval is built alongside, not before dependencies are proven."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 0. Discovery | 1 week | Doc inventory, ticket analysis for top intents, success metrics, stack decisions",
+      "rationale": "Phase 0 is discovery, not a thin production end-to-end path; the first prototype is offline and prod comes at limited launch."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "\"pgvector + Postgres full-text, OpenSearch, Weaviate or Vespa all work, so pick whatever you already run.\"",
+      "rationale": "Some defaults and open questions exist, but there is no explicit irreversible-decision list with flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Within phases, there is no ordering by blast radius; deliverables are listed flat."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "\"PII: detect and redact card numbers, SSNs and passwords in user input before logging.\"",
+      "rationale": "Security content is good but sits in a standalone section, not tied to each phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "\"Log for every turn (with PII redacted): the query and the rewritten query\"",
+      "rationale": "Detailed observability exists in a standalone section, but dashboards are only listed in phase 3, not from phase 0."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "\"record the model version on each chunk so you can re-embed later.\"",
+      "rationale": "Some reproducibility items (versioned embeddings, eval in CI) exist but no threaded env/build reproducibility per phase."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "\"Run incremental syncs on article update/delete, plus a nightly full reconcile.\"",
+      "rationale": "Failure handling such as confidence gate, handoff and deletion appears, but it isn't threaded through phases and lacks timeouts, fallbacks or outage handling."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "\"Evaluation (build this before launch)\" and \"give the bot no tool access in v1\"",
+      "rationale": "The plan has guardrails, handoff, a retrieval→generation→feedback flow and cost caps, but defenses, budgets and HITL are not sequenced before capabilities, and budgets are weak."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "\"Account-specific actions like refunds, order lookups or password resets... belong in phase 2.\"",
+      "rationale": "Deferred items are named (authenticated tools, multilingual in GA), but there are no pull-forward conditions, and the phase reference is inconsistent."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Solid RAG content, but it is organized by topic rather than by build order. It has no production walking skeleton, no gates with flip conditions, and security, observability and resilience are not threaded per phase.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1125,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 4603
+  },
+  "cost_usd": 0.0228785,
+  "latency_s": 23.284,
+  "raw_file": "raw/judge-219b9aeae693.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

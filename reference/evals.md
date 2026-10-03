@@ -1,7 +1,23 @@
-# Eval harness — rubric, test prompts, protocol
+# Methodology-adherence rubric (v1) — test prompts, interpretation
 
-Measures whether a produced BUILD PLAN actually follows the skill. Score is **/20**:
-10 dimensions, 0–2 points each.
+> **What this rubric measures.** Whether a BUILD PLAN *follows the Dependency-First Architect
+> methodology*. It was written by the skill's author to check exactly the things the skill asks
+> for, so a with-skill plan that scores 20/20 shows the skill was followed. It does **not** show
+> that the architecture is correct, feasible, or better than another plan. Engineering quality is
+> scored separately, with a rubric that does not use the skill's vocabulary
+> ([`eval/rubrics/engineering-quality-v1.json`](../eval/rubrics/engineering-quality-v1.json)),
+> and downstream outcomes by the outcome benchmark ([`eval/outcomes/`](../eval/outcomes/)).
+> See [`eval/README.md`](../eval/README.md).
+>
+> This file is evaluation material for maintainers. The skill does not load it while planning.
+> Through v1.x it did: Step 8 had the model score its own plan against this rubric and revise
+> below 16/20. v2.0.0 removed that self-score, so v1 with-skill plans were written with this
+> rubric in context and v2 plans are not; a v1-vs-v2 comparison on this rubric is confounded by
+> that change.
+
+Score is **/20**: 10 dimensions, 0–2 points each. The text below is unchanged from v1.0.0, so the
+yardstick is the same across versions (the conditions it was applied under are not; see above).
+The judge prompt that applies it, with its scoring rules, is in [`eval/rubrics/methodology-adherence-v1.json`](../eval/rubrics/methodology-adherence-v1.json).
 
 ## Rubric (0–2 per dimension)
 
@@ -22,11 +38,13 @@ Scoring per dimension: **0** = absent, **1** = present but weak/partial, **2** =
    *(Non-AI systems: award 2 if the plan correctly declares the AI layer N/A.)*
 10. **Deferred work made explicit** — what's not built yet, with a pull-forward condition.
 
-**Thresholds:** >=16 ship. 12–15 revise the weak dimensions. <12 re-plan from Step 1.
+**Adherence bands:** ≥16 adherent · 12–15 partially adherent · <12 not adherent. (In v1.0.0
+these were the skill's ship/revise/re-plan thresholds for its self-score.)
 
 ## Fixed test prompts
 
-Run the skill against each; score with the rubric.
+The five prompts of the original eval, verbatim. They are also the first five prompts of
+[`eval/benchmark.json`](../eval/benchmark.json); a test keeps the two in sync.
 
 - **P1 (AI):** "Plan a customer-support RAG chatbot over our help-center docs."
 - **P2 (software):** "Architect a multi-tenant SaaS billing system."
@@ -36,19 +54,15 @@ Run the skill against each; score with the rubric.
 
 ## Protocol
 
-1. Run the plan generator (with the skill) on a prompt.
-2. Score each of the 10 dimensions 0–2; sum to /20.
-3. Record the score and the weakest dimension.
+Plans are generated in isolated sessions, blinded, and scored by independent judge sessions; see
+[`eval/README.md`](../eval/README.md) for the harness and how to run it. The v1.0.0 measurement
+(one run per arm) and its harness are in [`examples/`](../examples/SCORECARD.md).
 
-## With-skill vs without-skill baseline
+## With-skill vs without-skill on this rubric
 
-For the same prompt, compare:
-- **Without skill:** the same model, same prompt, no skill. Measured scores, per dimension, are in
-  [`examples/SCORECARD.md`](../examples/SCORECARD.md). The recurring gaps there: no thin
-  end-to-end slice in production first, reproducible builds and environments mostly missing, and
-  tradeoffs stated without flip conditions.
-- **With skill:** dependency-ordered, skeleton-first, gates up front, cross-cutting threaded.
-  Target **>=16/20**.
-
-The delta (with minus without) is the skill's measured lift on this rubric. A healthy skill
-shows a clear positive delta on every test prompt, especially the AI ones (P1, P4).
+The delta (with minus without) is the skill's measured effect **on adherence to its own
+methodology**. A working skill should show a clear positive delta here; that is a necessary
+condition, not evidence of better engineering. Measured v1.0.0 numbers, per dimension, are in
+[`examples/SCORECARD.md`](../examples/SCORECARD.md). The recurring gaps without the skill there:
+no thin end-to-end slice in production first, reproducible builds and environments mostly
+missing, and tradeoffs stated without flip conditions.

@@ -1,0 +1,172 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "8be8127976c1.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "8be8127976c1",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 14,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "On Windows `os.rename` already refuses to overwrite.",
+      "rationale": "The date-tag precedence, no-replace rename via link+unlink, FAT hard-link limits, QuickTime-UTC vs EXIF-local, and case-insensitive filesystems are all right; the exifread RAW coverage claim is loose but hedged by a fixture gate."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Use `DateTimeOriginal`, then `CreateDate`/`DateTimeDigitized`, then **missing**.",
+      "rationale": "It covers all core needs (dry-run, skip-missing, collisions, undo, companions) and gives reasons for deferrals, but some items it defers, such as configurable templates, are expected in a usable 1.0."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Every later layer consumes this, so it gets fixed first.",
+      "rationale": "Responsibilities and data contracts (typed result, plan record, journal schema) are clear; minor contradictions remain, such as --fallback=mtime and --format being deferred-on-demand yet also scheduled in Phase 4 or pulled forward."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "property tests (`hypothesis`) ... never loses or overwrites a file ... `apply` then `undo` restores the original names exactly.",
+      "rationale": "Validation targets the real risks (fixture corpus gating the build-vs-buy decision, property tests, fault injection, 3-OS CI) and runs early, but post-release checks are limited to a CI smoke run and some thresholds are invented."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "EXIF reads on large network shares run over about 2 minutes per 10k files.",
+      "rationale": "Revisit triggers imply assumptions, but there is no explicit assumptions section, and figures such as 50k files, 2 min/10k and year 1990 are given without basis."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Collision resolution against three sets: files already on disk, other targets in the same batch, and sources not yet renamed (chain and swap cases).",
+      "rationale": "Covers collisions, chains/swaps, interrupts with write-ahead journal, partial failure, hostile EXIF, path injection, FAT, locks, case-insensitivity and companion group rollback, each with a concrete mitigation and recovery path."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "exit codes are a contract from day zero: `0` OK, `1` some files skipped, `2` usage error, `3` run aborted.",
+      "rationale": "Exit codes, structured logs, CI matrix, tag-based publish, and undo as rollback suit a CLI; ownership, support channel and how a bad release is pulled are not stated."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "**Buy:** `exifread` (pure Python, installs with pip ...)",
+      "rationale": "Build-vs-buy and the no-infrastructure/no-telemetry choices imply very low run cost, but build effort, people cost and CI cost are never estimated."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "**Filename contract** (irreversible once users' libraries carry it)",
+      "rationale": "It names the filename format and journal schema as one-way and freezes them with a schema_version, isolates the EXIF library behind an interface, and defers reversible features with triggers."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "**Monolith.** One Python package with one entry point.",
+      "rationale": "It stays a single-process CLI with no database or service, and most machinery is justified by data safety; the service-tier template boilerplate (AI rows, prod/monitored remapping) and hypothesis/fault-injection/trusted-publishing are somewhat heavy."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Tasks (widest first): 1. **A typed extraction result:** `Found(dt, subsec, tag, offset) | Missing | Invalid(reason)`.",
+      "rationale": "Phased by dependency with a thin end-to-end slice first, concrete tasks, checkable exit criteria per phase, and explicit course-change triggers such as adding the exiftool backend."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "Use `DateTimeOriginal`, then `CreateDate`/`DateTimeDigitized`, then **missing**."
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "**Skip and report.** File mtime is never silently used."
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "Same-second bursts get `_01`, `_02` in capture order."
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "**Dry run by default.** Changing files needs `--apply`."
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "Collision resolution against three sets ... (chain and swap cases)."
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "`exifrename undo <journal>` reverses completed entries in reverse order and refuses to overwrite anything."
+    },
+    {
+      "id": "P7-07",
+      "status": 1,
+      "evidence": "Use the **wall-clock time as recorded**, with no conversion. `OffsetTimeOriginal` is logged but ignored."
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "`.xmp`, `.aae` and Live Photo `.MOV` files with the same stem are renamed **as a group** with their photo"
+    },
+    {
+      "id": "P7-09",
+      "status": 1,
+      "evidence": "`YYYY-MM-DD_HH-MM-SS<ext>` ... No colons, because they are illegal on Windows."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "If the target exists and is not the source, skip it with reason `collision`."
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "`ModifyDate` is never used by default, because edits change it."
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "**Monolith.** One Python package with one entry point."
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "`YYYY-MM-DD_HH-MM-SS<ext>`"
+    }
+  ],
+  "note": "A strong, safety-first plan with correct rename and collision mechanics, versioned journal/undo, and a validation-gated build order; it is weak on explicit assumptions and cost, and timezone handling and configurable templates are only partly covered.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4094,
+    "thinking_tokens": 1791,
+    "cache_read_input_tokens": 907,
+    "cache_creation_input_tokens": 12676
+  },
+  "cost_usd": 0.0728194,
+  "latency_s": 48.693,
+  "raw_file": "raw/judge-8be8127976c1.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

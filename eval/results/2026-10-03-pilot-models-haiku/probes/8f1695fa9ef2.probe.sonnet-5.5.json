@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "8f1695fa9ef2.probe.sonnet-5.5",
+  "blind_id": "8f1695fa9ef2",
+  "blind_sha256": "6b8ab72c176315b857ffdb412346facc2de162308e754053be8dbfd449057667",
+  "judge": "sonnet-5.5",
+  "order_index": 20,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.1,
+  "cues": [
+    "Opens with 'I'll architect... Let me create a detailed design document' – conversational, no structured preamble",
+    "Dumps extensive code, SQL, and API samples immediately with no clarifying questions, assumptions, or scoping section",
+    "No explicit trade-off analysis, alternatives considered, risks, or open questions – rationale is just a bullet list",
+    "Internal inconsistencies (database-per-tenant vs RLS in shared DB, typo 'Meteringv', undefined variables in handlers) suggest unreviewed single-pass generation",
+    "Ends with self-congratulatory 'production-ready' summary rather than phased milestones, verification steps, or success criteria"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 300,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 22763
+  },
+  "cost_usd": 0.0599155,
+  "latency_s": 36.703,
+  "raw_file": "raw/probe-8f1695fa9ef2.probe.sonnet-5.5.txt"
+}

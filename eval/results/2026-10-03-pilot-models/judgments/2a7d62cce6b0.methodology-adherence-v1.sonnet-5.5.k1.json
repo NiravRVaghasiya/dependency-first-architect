@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "2a7d62cce6b0.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "2a7d62cce6b0",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 68,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1 — Guarding Controls & Observability (1–2 weeks; post V0) ... Depends on: V0 (skeleton works).",
+      "rationale": "Gated chain V0→V4 is clear, but guardrails and token security come after Phase 0 already calls the LLM with untrusted input, and retrieval is placed in Phase 3 while duplicate detection appears in Phase 4."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Test issue created on private test repository (or behind feature flag `TRIAGE_AGENT_ENABLED=false` on prod repo).",
+      "rationale": "A real end-to-end slice (webhook→LLM→label→log) exists, but it runs on a test repo or disabled, not really in production, and is explicitly unhardened."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Hosted API ... Validated by Spike ... Flip condition: Self-hosted passes spike at same cost + better latency, OR hosted API cost hits $0.01/issue consistently",
+      "rationale": "Five irreversible/costly decisions each have default, reversibility tier, validation, and concrete flip conditions, plus a list of missing inputs and assumptions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Rework (prompt refinement) runs widest first (Phase 2); exposure (canary → prod) runs smallest first (Phase 3 → Phase 5).",
+      "rationale": "Exposure is staged smallest-first and some ordering exists, but within-phase task lists are not ordered by blast radius (e.g., Phase 1 puts idempotency last, Phase 4 puts close before approval audit)."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Phase 0: No secrets in code; GitHub token in env (test only). ... Phase 2: No new changes.",
+      "rationale": "Security is tabulated for each phase, but Phase 0 defers sanitization and Phase 2 has none, so it is not concretely threaded in every phase."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: Trace ID per issue; log LLM input/output; measure latency + cost baseline.",
+      "rationale": "Observability starts in Phase 0 and each later phase adds concrete metrics (accuracy, close/reopen, drift alerts)."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Phase 0: Save LLM prompt + full issue input for each decision. ... replay issue + saved prompt = same label.",
+      "rationale": "Decision logging and dataset publication are threaded, but there's no environment/build/infra reproducibility (IaC, pinned deps, containers), and later phases are mostly documentation."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Phase 0: No retry; webhook failure is silent. LLM failure = no label. ... Phase 2: No new changes.",
+      "rationale": "Resilience is deferred to Phase 1 with Phase 0 explicitly silent on failure and Phase 2 having nothing, so it is partial though present across later phases."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Guardrails + budget + human-in-loop come FIRST (Phase 1, V1). Model access + cost/latency baseline (Phase 0).",
+      "rationale": "The AI layers are enumerated with phases, but model access (Phase 0) precedes defenses, and retrieval precedes memory yet orchestration/retrieval placement and the human-in-loop 'enforced' in Phase 1 are loosely defined and partly contradictory."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Multi-repository / organization-wide rollout | Phase 5 completes with ≥99.5% uptime and <1 complaint/week; org approves expansion.",
+      "rationale": "Six deferred items each have explicit, concrete pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Well-structured gated plan with strong tradeoffs and deferral, but defenses, security and resilience come after an unhardened Phase 0 and some threading is thin.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1415,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 13740
+  },
+  "cost_usd": 0.048621,
+  "latency_s": 38.675,
+  "raw_file": "raw/judge-2a7d62cce6b0.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

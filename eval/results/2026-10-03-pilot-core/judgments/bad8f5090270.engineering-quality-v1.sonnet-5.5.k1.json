@@ -1,0 +1,173 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "bad8f5090270.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "bad8f5090270",
+  "blind_sha256": "d3dc83f184db31005a43e85af7315652c9ef9ae3de9578218ab2899e6070cb4c",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 324,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "On Windows, `os.rename` already refuses to replace an existing file. On POSIX, use `os.link` + `os.unlink`",
+      "rationale": "Rename semantics, the ExifTool CVE fix version, case-insensitive filesystems and the FAT hard-link limit are all correct; the only loose spots are the unexplained UTC conversion for video and the unapplied offset."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Skip them and report them. File modification time is never used silently, since it is often the copy date",
+      "rationale": "It covers the core needs (dates, collisions, dry run, undo, sidecars) and has explicit deferrals with reasons, but the dry-run preview is only polished in Phase 4 and the offset is handled thinly."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "One package, two internal modules: `core` (pure logic) and `cli` (I/O and arguments), kept apart from day one.",
+      "rationale": "Responsibilities and data ownership are clear (planner, executor, journal, CaptureDate contract), with small loose ends: video UTC conversion against 'no conversion', and the exit-2 refusal against the idempotent no-op."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "a fault-injection test kills the process at a random rename step 100 times. After each kill, both `undo` and resume produce a set of `(name, sha256)` pairs",
+      "rationale": "Validation targets the real risks (collisions, crashes, dry-run and apply parity, cross-OS installed artifact) with checkable criteria and an early slice, but there is no post-release signal by design and some thresholds are arbitrary."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Reading 10k files takes more than 30s on a reference SSD. Then parallelize the reads only.",
+      "rationale": "Defaults and revisit triggers are explicit and reasonable, but the thresholds (200k files, 30s, before 1990) are unjustified and the user and workload assumptions are never stated outright."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "No two targets match after case-folding (APFS and NTFS ignore case). ... Cycles and swaps (a→b, b→a) are found and marked for two-phase renaming.",
+      "rationale": "It covers the domain failures with concrete handling: crash and power loss via the fsynced journal, resume and undo, collisions, swaps, locked files, bad dates, ExifTool crash and CVE, Ctrl-C, path injection and symlinks."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Clear exit codes: 0 = ok, 1 = some files skipped, 2 = stopped, nothing changed, 3 = partial run, see journal.",
+      "rationale": "Exit codes, logs, a doctor command, CI release smoke tests on all three OSes and undo as the recovery path suit a CLI, though release yanking or rollback and support ownership are not described."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "There is no telemetry on purpose, because photo metadata contains GPS and personal data.",
+      "rationale": "A local CLI has almost no run cost, and the plan weighs build-versus-buy for ExifTool and the dependency trade-off, but it never discusses engineering effort or cost explicitly."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Name format (permanent: changing it means renaming everything again)",
+      "rationale": "It flags the permanent choices (name format, time semantics, CaptureDate contract, JSON schema) and isolates the metadata backend behind `core`, but the persisted journal format is not versioned."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Fixture collection committed via Git LFS with a SHA-256 list that CI checks. ... Signed releases via PyPI Trusted Publishing and Sigstore.",
+      "rationale": "There is no database, GUI or service, and the journal is justified, but reproducible wheels, Sigstore, Scoop/Homebrew, 10k-folder property tests and three-OS CI are heavy for a small CLI."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phase 2 ... Depends on: the Phase 1 `CaptureDate` contract. ... Exit check: property-based tests (Hypothesis) show the plan never maps two files to one name",
+      "rationale": "The plan has a concrete end-to-end first slice, dependency-ordered phases with checkable exit criteria and specific decisions, plus revisit triggers for adapting."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "Tag priority: `DateTimeOriginal` → `CreateDate` → `QuickTime:CreateDate` for video."
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "`0000:00:00 00:00:00`, empty strings, dates before 1990 or after now+1 day, and unparseable text all become an explicit `Undated(reason)`."
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "Otherwise files get `_01`, `_02`… ordered by (sub-second, original name), so the same input always gives the same output."
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "Dry run. Nothing is renamed without `--apply`."
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "Cycles and swaps (a→b, b→a) are found and marked for two-phase renaming."
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "`photoname undo <journal>` and automatic resume after Ctrl-C, a crash or power loss."
+    },
+    {
+      "id": "P7-07",
+      "status": 1,
+      "evidence": "Use the camera's local wall-clock time exactly as recorded (`DateTimeOriginal`). No time-zone conversion. `OffsetTimeOriginal` is logged but not applied."
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "`.xmp`, `.aae` and Live Photo `.MOV` files with the same name stem are renamed together with their photo."
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "It sorts correctly, contains no colons (so it is safe on Windows) and keeps the original extension's case."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Executor: write the journal first, then do a **no-overwrite rename**."
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "File modification time is never used silently, since it is often the copy date rather than the capture date."
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "No server, no network and no AI."
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "`exiftool -json -DateTimeOriginal` call (read-only metadata)"
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "`YYYY-MM-DD_HHMMSS[_NN].<original ext>`. It sorts correctly, contains no colons"
+    }
+  ],
+  "note": "Strong, safety-first plan with correct rename semantics, a journal with undo, and sound validation; it loses points for some over-engineering in release and distribution machinery, thin cost discussion and only partial OffsetTimeOriginal handling.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 5835,
+    "thinking_tokens": 3339,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 13264
+  },
+  "cost_usd": 0.091518,
+  "latency_s": 55.255,
+  "raw_file": "raw/judge-bad8f5090270.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

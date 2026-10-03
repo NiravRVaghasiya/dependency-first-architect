@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f8d97bc78699.engineering-quality-v1.fable-5.k1",
+  "blind_id": "f8d97bc78699",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 102,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "OT (operational transformation, as Google Docs does): needs a central server that puts edits in order. It's harder to get right yourself.",
+      "rationale": "All claims about CRDT/OT behavior, proven bindings and server requirements are accurate; the plan just does not reach the subtlest limits (rich-text intent preservation, CRDT metadata overhead) needed for a 4."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Steps 1–11 plus server-side permission checks from step 14 give you a working, safe collaborative editor.",
+      "rationale": "Addresses the ordering request directly, covers the implied core capabilities, separates an MVP from later phases, and is credibly buildable; gaps (collaborative undo semantics, protocol compatibility) are real but minor."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Editor UI for one user: editing, formatting, undo/redo, all against the shared document model from step 2.",
+      "rationale": "One decision (the merge approach) is honored consistently across editor, storage, sync and testing, with no contradictions; only loose end is undo/redo defined in the single-user phase without noting its collaborative adjustment."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "fuzz tests that apply edits concurrently in random orders and check that every copy ends up identical.",
+      "rationale": "Validation targets the real risk (divergence) with a checkable criterion, runs continuously, precedes offline support, and continues via chaos tests and divergence alerts, though explicit acceptance targets are absent."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "I read this as a request to put the build steps in order, so this is a dependency-ordered plan.",
+      "rationale": "States its interpretation, defers unspecified constraints (scope, offline, platforms) as explicit Phase 0 decisions, invents no figures, and flags which decision a rewrite hinges on, though deeper sensitivity analysis is missing."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Load and chaos testing: network splits, slow clients and server restarts while people are editing.",
+      "rationale": "Divergence, log growth, malicious updates and reconnection are covered concretely, but durability of acknowledged edits across a crash and revocation on live connections are missing or vague, and recovery paths are thin."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Monitoring: sync delay, conflict and error rates, and alerts when copies stop matching.",
+      "rationale": "Domain-meaningful health signals and scaling are named, but deployment, rollback, schema/data migration and incident ownership are absent."
+    },
+    {
+      "dim": 8,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No mention of money, infrastructure, vendor or engineering costs anywhere, so cost drivers and scaling of spend are entirely ignored."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "decide how edits merge before you build anything else. That decision touches every later step, and changing it later usually means a rewrite.",
+      "rationale": "Correctly identifies the hardest-to-reverse decisions (merge algorithm, document schema), front-loads them and uses proven libraries to avoid custom lock-in, though persisted-format and protocol migration paths are not given."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Everything after that improves it step by step.",
+      "rationale": "Lean, phased design with an explicit smallest useful release and no speculative machinery, but some essentials (durability-before-ack semantics, protocol versioning) are left out rather than deferred deliberately."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Saving (6) comes before the live connection (8), because you need a reliable copy to sync from.",
+      "rationale": "Numbered steps with justified dependencies, specific library choices and checkable intermediate results (continuous convergence tests, MVP) let a team start, with only later-phase items left terse."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "CRDT (Yjs, Automerge): works offline and doesn't strictly need a central server. Use this unless you have a reason not to."
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Document schema: which blocks and formatting marks are allowed, and how embedded content works."
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "fuzz tests that apply edits concurrently in random orders and check that every copy ends up identical. Run these continuously from here on."
+    },
+    {
+      "id": "P5-04",
+      "status": 1,
+      "evidence": "save and load snapshots plus the log of updates ... take snapshots so update logs don't grow without limit."
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "route each document to a specific server (sticky routing), or broadcast updates between servers through Redis or NATS."
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Offline support: a local store (IndexedDB), queued edits and a merge when the user reconnects."
+    },
+    {
+      "id": "P5-07",
+      "status": 1,
+      "evidence": "owner, editor, commenter and viewer roles, enforced on the server for every incoming update, not just in the UI."
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Version history: named versions, viewing differences and restoring an older version."
+    },
+    {
+      "id": "P5-09",
+      "status": 2,
+      "evidence": "These are temporary and are not saved with the document."
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Convergence tests (10) come before offline support (12), because offline makes merge bugs much more likely."
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "large documents, many users in one document, lazy loading and limits on how fast clients can send updates."
+    },
+    {
+      "id": "P5-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "How concurrent edits merge. This is the most important decision."
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Pick one with a proven binding to your merge approach, such as `y-prosemirror`."
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "editing, formatting, undo/redo, all against the shared document model from step 2."
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "Saving (6) comes before the live connection (8), because you need a reliable copy to sync from."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "none"
+    }
+  ],
+  "note": "A lean, technically sound, correctly ordered plan built on proven CRDT tooling that avoids every classic trap; its gaps are durability-before-ack, live permission revocation, collaborative undo, protocol/version compatibility, and a complete absence of cost reasoning.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8363,
+    "thinking_tokens": 6042,
+    "cache_read_input_tokens": 929,
+    "cache_creation_input_tokens": 8664
+  },
+  "cost_usd": 0.5273990000000001,
+  "latency_s": 122.922,
+  "raw_file": "raw/judge-f8d97bc78699.engineering-quality-v1.fable-5.k1.txt"
+}

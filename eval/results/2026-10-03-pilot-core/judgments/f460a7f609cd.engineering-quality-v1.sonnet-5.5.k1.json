@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f460a7f609cd.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "f460a7f609cd",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 197,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Once a newer-version primary is live, older replicas can't sync back from it, so the fail-back path would be silently lost.",
+      "rationale": "Distributed AG mechanics, sync-before-failover, TDE/TLS on the private link and time-zone pitfalls are accurate; only minor imprecision (e.g., stateless claim vs in-memory session, MI link hedge)."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "\"Without downtime\" means: an announced interruption of 5 minutes or less in the quietest hour, no data loss",
+      "rationale": "Solves the real problem, honestly redefines zero downtime, and is buildable, though portal/reminder/reporting interfaces are thin and excluded without much reason."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Single-runner rule: background services run in exactly one pool.",
+      "rationale": "Clear ownership and single-writer principle applied consistently; small loose ends such as 'stateless' tier with possible in-memory sessions and 15-minute vs 5-minute fail-back figures."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Changes the plan if: pause over 5 minutes (needs more automation or A6 renegotiation), fail-back fails (revisit D2)",
+      "rationale": "Riskiest items (failover, fail-back, latency, dependencies) are spiked early with checkable criteria and post-launch synthetic monitoring, but shadow/parallel read and HL7 comparison and reminder-batch load are limited and thresholds are provisional."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "A2 | SQL Server 2016 or later, Enterprise edition | Below 2016, distributed AG isn't available, so on-prem must be upgraded first",
+      "rationale": "Assumptions are tagged, each with impact if wrong and when/how validated, plus defaults for open questions; invented numbers are labeled as assumptions."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "the on-prem sender sends a message but dies before marking it sent. That row then replicates as \"unsent\" and the cloud sender sends it again.",
+      "rationale": "Covers split-brain, HL7 duplicates, WAN loss, time zone, ransomware with detection and mitigation; weaker on adversarial input and clinical downtime procedure detail."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Hospital IT infrastructure owns the platform. The DBA team owns SchedDB. The applications team owns SchedApp.",
+      "rationale": "Ownership, alerts tied to runbooks, rollback, hypercare and schema freeze are concrete and sized to a 5-person team; incident response detail is moderate."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "about $6k–$15k a month ... Biggest swing factor: SQL Enterprise licences.",
+      "rationale": "Identifies licensing as dominant driver, dual-running cost, controls and reserved-instance timing; estimate basis is thin but labeled rough."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Point of no return | The on-prem replica is removed (end of M4), or any change the on-prem side can't accept",
+      "rationale": "Decision table rates reversibility, isolates the hard choices with 30-day fail-back, version lock and early spikes; cloud lock-in is only lightly addressed."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "rehost first, modernise later. The same application build and the same SQL Server version move onto Azure VMs",
+      "rationale": "Avoids rewrite and defers PaaS; a fair amount of ceremony and infrastructure but mostly justified by the domain."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T14 | Spike: hybrid failover and fail-back (5–8 days). Question: can we fail over and back with RPO 0",
+      "rationale": "Ordered tasks with dependencies, done-when checks, repo layout and explicit plan-change triggers let a team start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "Run a HIPAA security risk assessment ... approved before any PHI is replicated"
+    },
+    {
+      "id": "P6-02",
+      "status": 1,
+      "evidence": "The HL7 integration engine stays on-prem ... channels repointed"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "row counts and checksums on Appointment and Slot by date, max IDs, HL7 counts per hour"
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "Only one writable database at any moment. No dual writes and no active-active setup"
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "on-prem stays as an asynchronous copy for 30 days so you can switch back"
+    },
+    {
+      "id": "P6-06",
+      "status": 2,
+      "evidence": "ExpressRoute (primary) plus site-to-site VPN (backup); T15 p95 over 150% of baseline"
+    },
+    {
+      "id": "P6-07",
+      "status": 1,
+      "evidence": "Hybrid Link outage (including when to invoke downtime procedures)"
+    },
+    {
+      "id": "P6-08",
+      "status": 1,
+      "evidence": "Separate cloud admin accounts with Privileged Identity Management ... Break-glass accounts."
+    },
+    {
+      "id": "P6-09",
+      "status": 1,
+      "evidence": "Load test at 2× measured peak in preprod (M2) and in rehearsals."
+    },
+    {
+      "id": "P6-10",
+      "status": 2,
+      "evidence": "Release and schema freeze starts. CAB approves. Staff are told about the \"≤5-minute pause, Sunday 02:00\""
+    },
+    {
+      "id": "P6-11",
+      "status": 1,
+      "evidence": "At day 60, wipe and retire the hardware per hospital media-sanitisation policy."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "Shadow (M2): prod is replicating to the cloud, with no user traffic."
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "No dual writes and no active-active setup, because either could cause double-bookings."
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "Pre-production uses synthetic data only."
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "HL7 traffic keeps flowing: ADT in, SIU out."
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "Non-goals: Redesigning or rewriting the application."
+    }
+  ],
+  "note": "Strong, honest rehost plan with a distributed-AG single-writer cutover and rehearsed fail-back; weaker on per-interface cutover, clinical downtime procedures, break-glass and parallel validation.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4495,
+    "thinking_tokens": 2156,
+    "cache_read_input_tokens": 919,
+    "cache_creation_input_tokens": 28485
+  },
+  "cost_usd": 0.1163543,
+  "latency_s": 46.098,
+  "raw_file": "raw/judge-f460a7f609cd.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

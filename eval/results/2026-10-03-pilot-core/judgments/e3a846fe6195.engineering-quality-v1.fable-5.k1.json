@@ -1,0 +1,173 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e3a846fe6195.engineering-quality-v1.fable-5.k1",
+  "blind_id": "e3a846fe6195",
+  "blind_sha256": "e72df4f802e38244c60b75120379edc36ce7a5b048515d1aa7e3b30b2b3505aa",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 314,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "on Windows `os.rename` already raises if the target exists; on POSIX use `os.link` + `os.unlink`, or check-then-rename where hard links aren't supported (exFAT)",
+      "rationale": "Platform rename semantics, exFAT hard-link limits, NFC/NFD normalization, APFS case-insensitivity, QuickTime-UTC caveat and the ExifTool invocation are all accurate; only trivial redundancy (CreateDate equals DateTimeDigitized)."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "a local command-line tool. It reads each photo's capture date from EXIF and renames the files in one folder to a sortable date-based name",
+      "rationale": "Solves exactly the stated problem, resolves every ambiguity (formats, recursion, sidecars, OS targets) with stated assumptions, and defers out-of-scope items explicitly with reasons."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "argument parsing → folder scan → ExifTool batch read → planner (name format, same-second suffixes) → output and log",
+      "rationale": "Clean plan-then-write separation, a MetadataReader seam, journal ownership and the no-write-until-V1 rule are honored consistently across every section with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Property-based tests ... Kill injection: SIGKILL / TerminateProcess after a random number of renames, then resume or undo",
+      "rationale": "V1/V2 target the exact loss and wrong-date risks with checkable thresholds before any apply code ships, invented counts are labeled design choices, and post-release checks continue via exit checks and redacted logs."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "ASSUMPTION: ExifTool in batch mode (one process, `-json`) reads hundreds of files per second ... Confirm with the V0 baseline",
+      "rationale": "Assumptions are explicitly labeled, missing inputs are enumerated with what each would change, and the plan names which two answers would most alter the design."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "The usual causes are two burst shots in the same second, an existing file with the target name, or a run killed halfway through",
+      "rationale": "Covers the hardest domain failures — overwrite, interrupted runs, burst collisions, case/Unicode traps, rename cycles, orphaned sidecars, GPS leakage, cloud-sync interference — each with concrete detection and recovery (journal, undo, resume)."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Rollback means `pipx install photo-rename==<previous>`, practised once ... Name format and journal schema frozen at v1 and versioned",
+      "rationale": "Deploy, rollback, CLI-appropriate observability (exit codes, JSON log), schema migration compatibility ('any 1.x can undo earlier journals') and single-maintainer sizing are all concrete."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "ExifTool alone ... already renames without overwriting. If a one-off rename after a backup is all you need, use that and stop.",
+      "rationale": "Build-vs-buy and the zero-run-cost local design are reasoned, and there are no monetary drivers to miss, but engineering effort — the dominant cost — gets no estimate or range."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Write model | R3: an overwrite or a lost name mapping on a user's photos can't be undone",
+      "rationale": "Decisions carry explicit reversibility grades, the irreversible ones (write model, privacy) get the earliest validation, and every default has a named revisit trigger and exit path."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "If personal, Phase 2 shrinks to tagging a release ... N/A: consistency vs availability, monolith vs services",
+      "rationale": "The heavy testing is justified by unrecoverable photo loss, no speculative infrastructure exists, non-applicable concerns are explicitly dismissed, and a shrink path for the personal-tool case is stated."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Tasks (the ones that would force the most rework if wrong come first): 1. Draft the name-format spec and journal schema.",
+      "rationale": "Ordered by rework risk with concrete first steps, exact commands, checkable exit criteria per phase, and explicit contingencies for every validation failure (backend flip, copy-mode fallback)."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "Date tag order → DateTimeOriginal > CreateDate > DateTimeDigitized ... Metadata backend → ExifTool `-json` in batch mode ... Assumed: JPEG, HEIC and common RAW"
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "Files with no date are skipped and reported. File modification time is used only with `--fallback mtime`."
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "Same-second photos get `_01`, `_02`… ordered by SubSecTimeOriginal, then by original name ... Each rename refuses to overwrite"
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "dry-run is the default and `--apply` is opt-in ... It prints an `old → new` plan, the skipped files with reasons"
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "on POSIX use `os.link` + `os.unlink` ... Handle rename cycles (A→B while B→A) ... Skip files already at their target name, so a re-run does nothing"
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "Write the journal (JSONL, fsync) before the first rename ... Add `undo <journal>` and resume"
+    },
+    {
+      "id": "P7-07",
+      "status": 2,
+      "evidence": "Use the recorded wall-clock time as-is. No conversion; ignore OffsetTimeOriginal ... Users merge cameras across zones → add `--shift` / `--tz`"
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "Files with the same base name move as a group under the same new name (`IMG_1.CR2`, `IMG_1.xmp`, `IMG_1.JPG`, `IMG_1.MOV`)"
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "`YYYY-MM-DD_HH-MM-SS[_NN].<ext unchanged>`. No colons (NTFS forbids them) and it sorts correctly as text"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Each rename refuses to overwrite: on Windows `os.rename` already raises if the target exists; on POSIX use `os.link` + `os.unlink`"
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "Date tag order → DateTimeOriginal > CreateDate > DateTimeDigitized ... File modification time is used only with `--fallback mtime`"
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "No services; one outside binary (ExifTool) on PATH"
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "Every photo must survive with its content unchanged and end up with the right name."
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "No colons (NTFS forbids them) and it sorts correctly as text"
+    }
+  ],
+  "note": "An exemplary plan: technically precise on the subtle filesystem and EXIF traps, validates write-safety before any destructive code exists, and avoids every listed trap; only engineering-effort estimation is thin.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7141,
+    "thinking_tokens": 4435,
+    "cache_read_input_tokens": 852,
+    "cache_creation_input_tokens": 12917
+  },
+  "cost_usd": 0.5193845,
+  "latency_s": 97.806,
+  "raw_file": "raw/judge-e3a846fe6195.engineering-quality-v1.fable-5.k1.txt"
+}

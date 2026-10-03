@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0b78c5c75913.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "0b78c5c75913",
+  "blind_sha256": "050ecdcc6f9664c39498b3a2ca3dfeea560ddf4811e6ba03f06637eee8c1136f",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 271,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Renaming (`--apply`) on any real folder | V2 | risk/security | exposed",
+      "rationale": "Dependency table and phase gating ensure V1 and V2 are proven before the write path is exposed, and the undo-log format is frozen before undo/resume are built."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Pushing a tag makes CI build the wheel and publish `0.1.0` to TestPyPI. You install it with `pipx install`, as a user would.",
+      "rationale": "Phase 0 is a real released, installable end-to-end preview path with rollback, before features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "V2 fails on an OS or file system → in-place renaming is disabled there and `--copy-to DIR` is the only way to write",
+      "rationale": "Irreversible decisions are listed with reversibility, default, assumption, validation and flip condition, and missing inputs are labeled as assumptions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Freeze the plan model and the undo-log format. Undo, resume and \"already renamed\" detection all build on these.",
+      "rationale": "Within Phase 1, the shared formats and the V1 library choice come first, then the write path, then checks, with the widest-impact foundations ahead of leaf features like sidecars and JSON output."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "No network I/O, enforced in tests with `pytest-socket`. Real folders are read-only. ... Dependencies are pinned with hashes.",
+      "rationale": "Concrete security measures are given for Phase 0, 1 and 2 in the per-phase table."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Plan table, summary counts by outcome, exit codes 0/1/2, `--log` JSONL with GPS, serial numbers and maker notes left out",
+      "rationale": "Observability is concrete from Phase 0 onward and in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Lockfile; wheel built from the tag in CI; output sorted in a fixed order; synthetic test images (made with `piexif`) committed",
+      "rationale": "Reproducibility is addressed in every phase, including seeds, manifests and a reproducible-wheel check."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Errors stay per file: a corrupt or unreadable file is skipped and the run continues.",
+      "rationale": "Resilience is treated concretely in Phase 0 (per-file errors, fault injection), Phase 1 (crash-safe log, resume) and Phase 2 (idempotence)."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "## 8. AI layer N/A: no AI component.",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Recursive mode. *Pulled forward when* your import folders are nested.",
+      "rationale": "The deferred list is explicit, and each item has a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is strong across all ten dimensions. It has a real walking skeleton, explicit gates with flip conditions, threaded cross-cutting concerns, and a declared AI N/A.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1148,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7324
+  },
+  "cost_usd": 0.029797999999999998,
+  "latency_s": 17.056,
+  "raw_file": "raw/judge-0b78c5c75913.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

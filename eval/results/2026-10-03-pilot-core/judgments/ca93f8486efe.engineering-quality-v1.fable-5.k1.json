@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ca93f8486efe.engineering-quality-v1.fable-5.k1",
+  "blind_id": "ca93f8486efe",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 111,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Exactly-once effects come from idempotency keys plus unique constraints plus the inbox/outbox pattern. Don't rely on exactly-once delivery.",
+      "rationale": "Technical claims are accurate throughout, including subtle areas like month-end anchor clamping, event-time billing, SAQ A scope via hosted fields, and double-entry ledger invariants."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "\"Multi-tenant billing\" can mean two things... This design covers A and notes where B adds work.",
+      "rationale": "Explicitly resolves the request's core ambiguity, covers all implied billing capabilities, and is credibly buildable via a phased rollout with explicit deferrals."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The ledger is the source of truth for balances... Balances are derived from it and can be cached, but they are always rebuildable.",
+      "rationale": "Components, data ownership and flows connect cleanly; identity, idempotency and immutability choices are applied consistently across every section with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "before a pricing migration, re-rate the last period in shadow mode and diff the invoices",
+      "rationale": "Test clocks, shadow re-rating and daily reconciliation with alerting target the real risks, but acceptance criteria are mostly unquantified and cross-tenant leak testing is absent."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "The detailed design changes depending on a few things: whether you're in Model A or B, your pricing model... expected scale",
+      "rationale": "Key sensitivities are named and most figures carry 'e.g.' qualifiers, but targets like 10k events/sec and p99 < 10 ms appear as requirements without being labeled assumptions."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Kill switches: pause auto-charging globally or per tenant, and pause invoice finalization during an incident.",
+      "rationale": "Duplicates, late events, out-of-order webhooks, decline handling and reconciliation are concretely handled, but disputes/chargebacks, inbound webhook signature verification and DR/backup are missing or vague."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "SLOs: ingestion durability (no lost events), invoice finalization within N minutes of period end, and entitlement p99 latency.",
+      "rationale": "Monitoring signals, kill switches and audit logging are concrete, but deployment, rollback, schema migrations and incident ownership are never addressed."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Billing looks simple and isn't. Proration, tax, dunning, revenue recognition and reconciliation each take serious effort.",
+      "rationale": "Build-vs-buy weighs engineering cost concretely, but PSP/tax vendor fees, infrastructure cost scaling and any estimates or controls are absent."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Abstract this behind a tenant→cell routing table from day one.",
+      "rationale": "The hard-to-reverse choices (tenancy model, price versioning, PSP coupling via adapter, build-vs-buy) are identified and isolated, though exit paths from bought components are not detailed."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "MVP: catalog with versioning, flat/seat subscriptions, PSP integration with webhook inbox, invoices, basic dunning, ledger, entitlements.",
+      "rationale": "Heavy pieces (Kafka, ClickHouse, cells) are tied to stated volume needs and deferred to later phases, while the MVP is the simplest workable core; buy is recommended where building is unjustified."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Sharded workers poll with `SELECT … FOR UPDATE SKIP LOCKED WHERE next_action_at <= now()`",
+      "rationale": "Decisions are specific down to schema sketches and key formats with a dependency-sensible phase order, though phases lack checkable exit criteria and some choices (e.g. Temporal vs. polling) are left open."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Money is stored as integer minor units plus an ISO currency code. Never use floats."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Finalized invoices are immutable. Corrections are made with credit notes or a new invoice, never by editing."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "Inbox pattern for PSP webhooks: dedupe on event ID and process in order per object, so out-of-order delivery is handled."
+    },
+    {
+      "id": "P2-04",
+      "status": 1,
+      "evidence": "collect cards with the PSP's hosted fields or elements and store only tokens"
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "enforced with Postgres Row-Level Security plus a tenant-scoped DB session (`SET app.tenant_id`)"
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "Allow a configurable late-arrival window (e.g. 24–72 hours) before the period is finalized."
+    },
+    {
+      "id": "P2-07",
+      "status": 2,
+      "evidence": "Price versions are immutable. Changing a price creates a new version... Grandfathering then works by default."
+    },
+    {
+      "id": "P2-08",
+      "status": 2,
+      "evidence": "assign a sequential invoice number (gapless per tenant/legal entity where law requires it)"
+    },
+    {
+      "id": "P2-09",
+      "status": 2,
+      "evidence": "configurable retry schedule (e.g. days 1, 3, 5, 7). Retry smartly by decline code: never retry hard declines"
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "Reconciliation jobs (daily): ledger vs. PSP balance transactions and payouts... Alert on any non-zero difference."
+    },
+    {
+      "id": "P2-11",
+      "status": 2,
+      "evidence": "The product never calls billing synchronously... reads from the Entitlements service, which is fed by subscription events and cached"
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Build the core (catalog, subscriptions, rating, ledger) and buy the edges (PSP, tax, RevRec)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Money is stored as integer minor units plus an ISO currency code. Never use floats."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Corrections are made with credit notes or a new invoice, never by editing."
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "PaymentIntent (idempotency key = invoice_id + attempt_no)... Inbox table (unique on psp_event_id)"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "PaymentMethod (PSP token only, never raw PAN)"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "enforced with Postgres Row-Level Security plus a tenant-scoped DB session... also enforce it in the repository layer"
+    }
+  ],
+  "note": "An unusually precise, internally consistent billing architecture that avoids all classic traps; its main gaps are deployment/rollback operations, dispute and inbound webhook-signature handling, and grounded cost reasoning.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 9736,
+    "thinking_tokens": 4520,
+    "cache_read_input_tokens": 15293,
+    "cache_creation_input_tokens": 20616
+  },
+  "cost_usd": 0.7598330000000001,
+  "latency_s": 156.778,
+  "raw_file": "raw/judge-ca93f8486efe.engineering-quality-v1.fable-5.k1.txt"
+}

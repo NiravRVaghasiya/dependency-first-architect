@@ -1,0 +1,173 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "63fbfcfe20a5.engineering-quality-v1.fable-5.k1",
+  "blind_id": "63fbfcfe20a5",
+  "blind_sha256": "bb9bad35afbee0bc1c9dcf0f6d4468177ac3082f938f12cca5d37168a4ab11a2",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 364,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "QuickTime:CreateDate: videos only. This is stored in UTC, so convert it to local time using OffsetTime* or the system timezone.",
+      "rationale": "Technical claims are correct including the subtle areas: QuickTime UTC semantics, ModifyDate being rewritten by editors, batched ExifTool performance, case-insensitive filesystem renames, and two-pass chain-safe renaming."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Rename every photo in a folder to a name based on when it was taken... Be safe: it never overwrites a file",
+      "rationale": "Fits the request precisely, resolves ambiguities (fallbacks, videos, sidecars) sensibly, states explicit non-goals with reasons, and even questions whether a new tool is needed at all."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "planner.py is pure. It takes metadata and returns a plan, without touching the disk.",
+      "rationale": "Clear pipeline (scan → metadata → plan → check → apply → log), each module has one responsibility, and safety choices (preview default, exclusive rename, undo log) are honored consistently across sections."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Crash test: kill the process between the two passes and confirm --undo recovers.",
+      "rationale": "Tests target the plan's specific risks (zero dates, UTC conversion, collisions, case-only renames, idempotent re-run, byte-for-byte undo) with cross-platform CI, validating the riskiest mechanics before commitment."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "A separate tool is only worth building if you want what that command doesn't give you easily... The plan below assumes you do want those.",
+      "rationale": "The core assumption (features beyond the exiftool one-liner) is explicit, estimates are hedged ('roughly 100× slower'), and open decisions are listed as questions rather than invented facts."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Write it before pass 2 and update it as renames happen, so a crash halfway through can still be undone.",
+      "rationale": "Covers the hard domain failures concretely: timestamp collisions, chain/case renames, bogus dates, mid-run crashes, Ctrl-C, symlink escape, and undo preconditions, each with detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "At startup, check that exiftool is on PATH and print install instructions if it isn't.",
+      "rationale": "For a CLI, dependency checks, exit codes, --json reporting, and cross-platform CI are appropriate operations, but how the tool itself is packaged, versioned and distributed is left unaddressed."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "ExifTool can already do the basic rename in one line",
+      "rationale": "The build-vs-buy tradeoff (the dominant cost question here) is addressed head-on and the batch-call performance cost is grounded, but no effort estimate for the milestones is given."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Questions to settle before building... Default name format... Undo log location",
+      "rationale": "The genuinely irreversible act (renaming user photos) is protected by preview-default, exclusive rename and undo, while hard-to-change choices like the naming template are explicitly deferred until decided."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Check first: do you need a new tool?",
+      "rationale": "Starts from the simplest workable option, scopes a lean v1 with explicit non-goals and a growth path (--into v2), and adds complexity (two-pass rename, grouping) only where the domain demands it."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "MVP: JPEG/HEIC, DateTimeOriginal only, preview and apply, suffix on collision, undo log.",
+      "rationale": "A team could start immediately: concrete CLI spec, module layout, specific algorithms, risk-ordered milestones, checkable test outcomes, and remaining decisions enumerated with a stated next step."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "EXIF:DateTimeOriginal: when the shutter fired. This is the one you want. 2. EXIF:CreateDate (DateTimeDigitized)"
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "Treat 0000:00:00 00:00:00, empty strings, and years before 1990 or in the future as missing."
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "handle collisions: -2, -3, … checked against both files already on disk and other names in this run"
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "Preview is the default. Nothing changes without --apply."
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "Use an exclusive rename that fails if the target exists, rather than os.replace... Rename in two passes"
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "Save photodate-undo-<timestamp>.json in the folder... listing each {old, new, date_source}... --undo LOGFILE Reverse an earlier run"
+    },
+    {
+      "id": "P7-07",
+      "status": 1,
+      "evidence": "This is stored in UTC, so convert it to local time using OffsetTime* or the system timezone"
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "Files with the same stem (IMG_4021.HEIC, .MOV, .AAE, .xmp) form a group. The photo's date names the whole group"
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "default \"{date:%Y-%m-%d_%H%M%S}\"... remove characters Windows doesn't allow (: * ? \" < > |)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Never overwrite a file. Use an exclusive rename that fails if the target exists, rather than os.replace."
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "Do not use EXIF:ModifyDate (IFD0 DateTime). Editing software rewrites it."
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "Non-goals (v1)... Finding duplicates... A GUI"
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "Non-goals (v1)... Editing EXIF data"
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "2024-07-14_183205 (easy to read, sorts correctly)"
+    }
+  ],
+  "note": "An exemplary plan for the task: technically precise on the subtle EXIF/rename pitfalls, proportionate, safety-first, and immediately actionable; only tool-distribution/packaging and effort estimates are thin.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6875,
+    "thinking_tokens": 4435,
+    "cache_read_input_tokens": 852,
+    "cache_creation_input_tokens": 10421
+  },
+  "cost_usd": 0.47488450000000004,
+  "latency_s": 135.665,
+  "raw_file": "raw/judge-63fbfcfe20a5.engineering-quality-v1.fable-5.k1.txt"
+}

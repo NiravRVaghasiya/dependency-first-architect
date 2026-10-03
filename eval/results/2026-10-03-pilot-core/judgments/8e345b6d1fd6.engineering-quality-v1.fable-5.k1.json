@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "8e345b6d1fd6.engineering-quality-v1.fable-5.k1",
+  "blind_id": "8e345b6d1fd6",
+  "blind_sha256": "f90116eee77bad9665ad9bc197de059628ac21dc8b67de8523ba2b1fde55fe2b",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 221,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Every client edits locally and all copies converge. The server relays and saves edits but does not decide between them",
+      "rationale": "Claims about Yjs/CRDT behavior, state-vector resync, OT fallback, and durability semantics are accurate, and the plan states real limits (encoded-size overhead of deleted text, GC tuning, server cannot reject individual edits)."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Several users edit the same document at once, see each other's changes live, and every document is saved permanently",
+      "rationale": "Covers live co-editing, persistence, sharing, presence and version history with explicit, justified deferrals and realistic sequencing, but never mentions undo (a core editor capability) and version history is view-only with restore unaddressed."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The server writes the edit to the Postgres edit log before confirming it. Peers receive the edit right away",
+      "rationale": "Responsibilities and data ownership are clear (API vs collaboration server vs Postgres), and decisions like save-before-confirm, workspace-ID seam, and schema versioning are honored consistently across budgets, phases and validation."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Property-based fuzz test: 2–10 simulated clients doing random text, formatting and structure edits, 10,000 seeded runs nightly",
+      "rationale": "Each risky decision has a named validation (V1 convergence before format commit, V3 chaos before real content, V5 before exposure), thresholds are labeled assumptions, and production checks (drift detector, synthetic two-client probe, SLO) continue after launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "ASSUMPTION: a commonly cited point where edits feel live; product owner to confirm",
+      "rationale": "Every number is labeled ASSUMPTION or UNKNOWN with an owner to confirm it, and the 'Missing inputs' section states exactly which assumptions would change the phase order and how."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Chaos test: 20 bot editors for 30 min, kill -9 the collaboration server about every 2 min, one managed database failover",
+      "rationale": "Covers the hard domain failures concretely: silent divergence (drift detector), lost confirmed edits, compaction corruption (replay comparison), live-session permission bypass, forged/revoked tokens, hostile pasted HTML, flooding, Redis and login-provider outages."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "A deploy and a rollback both succeed through the pipeline. Killing the database connection fires the save-failure alert",
+      "rationale": "Deploy/rollback, add-only then add-then-remove migrations, connection draining, restore drills, meaningful alerts, runbooks and an on-call load review are all specified and explicitly sized to a 4–8 person team."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Hosting cost per connection is recorded at the Phase 4 exit.",
+      "rationale": "Identifies the drivers (connections/hosting, on-call people cost), has concrete controls (editor caps, flood limits) and a build-vs-buy trade-off, but gives no order-of-magnitude estimates for build or run cost, deferring everything to measurement."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: the saved format and sync protocol depend on it; once real documents exist, switching means converting every document",
+      "rationale": "Explicitly classifies each decision's reversibility, validates the one-way choices (merge model, saved format, IDs, tenancy) before data becomes permanent, keeps data disposable until V3, and names exit paths including a tested export."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "One codebase, two deployables (HTTP API and WebSocket collaboration server), one Postgres",
+      "rationale": "Starts with the minimum viable topology, adds Redis and multi-server only after V4 proves the need, defers offline, search, export and E2EE with named triggers, and omits nothing essential to correctness or security."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "If copies differ: fix or report upstream, else switch to server-ordered edits (OT). If too slow: tune Yjs garbage collection or split documents",
+      "rationale": "Phases have dependency-justified ordering, specific tasks, checkable exit criteria, and every validation states what it unlocks and the concrete fallback if it fails, so a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "Merge-by-design shared data type (CRDT: Yjs + y-prosemirror)... Do not build our own merge engine"
+    },
+    {
+      "id": "P5-02",
+      "status": 2,
+      "evidence": "Minimal ProseMirror schema v1 (paragraphs, headings, lists, bold/italic/link). Every snapshot is stamped with its schema and format version"
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "converges under concurrent, cut-off, reordered and duplicated delivery... 10,000 seeded runs nightly"
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "Compact the edit log into snapshots: decode each snapshot and compare it with a replay of the log before deleting log entries"
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "several servers sharing edits through Redis (Hocuspocus Redis extension)... Cap editors per document and slow down senders who flood it"
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Survive short disconnects only (unsent edits buffered in memory, resync on reconnect)"
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "Checked on the server when a connection opens and on every edit (viewers' edits rejected). Revoking access disconnects live sessions"
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "version-history view built from the snapshots"
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "live cursors and presence (temporary, never saved)"
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Phase 1: Convergence, document model, identity... Then the lower-risk features, each one schema-evolved through the V2 suite"
+    },
+    {
+      "id": "P5-11",
+      "status": 2,
+      "evidence": "Benchmark on a 1 MB document with a simulated year of history... p95 < 200 ms, p99 < 500 ms at 50 editors"
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "a v1 and a v2 client on one document. The v2 client adds a new kind of content (node or mark); the old client edits around it"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "Every client edits locally and all copies converge"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Do not build our own merge engine, and do not use a hosted collaboration vendor"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "An allow-listed staff member signs in, creates a document, and types \"hello\". A second browser session sees it"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "The server writes the edit to the Postgres edit log before confirming it"
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "Yjs converges for this schema and is fast enough at the target document size [ASSUMPTION... Validated by V1]"
+    }
+  ],
+  "note": "An exceptionally rigorous, correctly sequenced CRDT-based plan with labeled assumptions and risk-first validation; its only notable gaps are collaborative undo/restore semantics and the absence of any cost estimates.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 9734,
+    "thinking_tokens": 6975,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 15943
+  },
+  "cost_usd": 0.6868774999999999,
+  "latency_s": 131.81,
+  "raw_file": "raw/judge-8e345b6d1fd6.engineering-quality-v1.fable-5.k1.txt"
+}

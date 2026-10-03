@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "8dbb7b52aadc.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "8dbb7b52aadc",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 34,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Catalog, subscriptions (flat/per-seat), invoicing, a single gateway, basic dunning and the ledger.",
+      "rationale": "Phases go MVP→usage→enterprise→advanced, which is roughly upward, but the ledger (the financial substrate) is bundled with invoicing in MVP with no proven-before-next ordering."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "MVP: Catalog, subscriptions (flat/per-seat), invoicing, a single gateway, basic dunning and the ledger.",
+      "rationale": "MVP is a feature bundle, not a thin end-to-end production skeleton delivered before features."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Hybrid (\"pooled with escape hatch\") model: Default (pooled)... Enterprise tier (siloed)",
+      "rationale": "Some decisions have defaults and an escape path (tenancy, build vs buy), but there is no explicit list of irreversible decisions with flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No ordering within phases by blast radius; items are listed as flat bundles."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Pooled tenancy with RLS.",
+      "rationale": "Security is detailed in section 8 and MVP mentions RLS, but phases do not thread security concretely (e.g., audit, cross-tenant tests, residency placed in sections or enterprise phase)."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Financial invariants run as continuous checks",
+      "rationale": "Observability is a standalone section not tied to Phase 0 or each phase."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "Test clocks: simulated time per sandbox tenant",
+      "rationale": "No reproducible builds/envs/IaC threaded through phases; only sandbox and test clocks, immutable event log for replay are tangential."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Transactional outbox: each service writes its state change and its outgoing event in one database transaction.",
+      "rationale": "Resilience patterns are strong but in a standalone section, not tied to phases."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "ML-based smart retries, pricing experiments.",
+      "rationale": "The plan never declares the AI layer N/A and even adds ML-based smart retries in Phase 4."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Advanced: Prepaid credits/wallets, marketplace payouts, ML-based smart retries, pricing experiments.",
+      "rationale": "Later phases imply deferred work, but there are no pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong technical architecture reference, but the delivery plan is a thin four-bullet feature phasing with no walking skeleton, no gates or triggers, and cross-cutting concerns kept in standalone sections.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1038,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 6171
+  },
+  "cost_usd": 0.0259285,
+  "latency_s": 36.701,
+  "raw_file": "raw/judge-8dbb7b52aadc.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

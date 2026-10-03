@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a11a3e36061c.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "a11a3e36061c",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 5,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1 MVP: \"Ingestion, hybrid retrieval, rerank, grounded answers with citations, basic guardrails, eval harness.\"",
+      "rationale": "Roughly sensible flow (discovery → ingestion → retrieval → beta → actions), but phases bundle many layers at once and don't prove dependencies before building on them."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Phase 1 MVP (internal): \"Support agents test it as an assistant\"",
+      "rationale": "Phase 0 is discovery only, and the first build is a full-feature internal MVP, not a thin production end-to-end slice."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "\"use one embedding model throughout and store the model version with each vector. Re-embed everything whenever the model changes.\"",
+      "rationale": "Some choices are stated with defaults (chunk size, embedding), and open questions are listed, but there is no explicit irreversible-decision list with flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Nothing addresses ordering of work by blast radius within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "\"security/privacy review at phases 1 and 2.\"",
+      "rationale": "Guardrails, PII redaction and visibility filtering are detailed, but security is a standalone section with review only at phases 1–2, not threaded in every phase (Phase 0 and 3 have none)."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "\"Observability: trace each conversation turn (rewritten query, retrieved IDs and scores, prompt version, model, latency, tokens, cost).\"",
+      "rationale": "Good tracing detail, but it is in a standalone Operations section; the phase table shows dashboards only in Phase 2, not from day zero."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "\"prompts, chunking settings, and model choices live in config with version IDs, so you can A/B test and roll back.\"",
+      "rationale": "Versioned config, embedding version storage and CI regression gate exist, but no reproducible environments or builds, and not tied to each phase."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "\"Availability: if the LLM fails, show plain search results and offer escalation.\"",
+      "rationale": "Fallbacks and escalation exist (LLM failure, low confidence, off-hours), but mostly in standalone sections and not phase by phase."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "\"If the top rerank score falls below a calibrated threshold, skip generation and go to the clarify-or-escalate path.\"",
+      "rationale": "Defenses, human escalation and cost controls are strong, but the roadmap builds retrieval and generation together with only 'basic guardrails'; budgets are weak and the defenses-first ordering isn't explicit."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "\"Later, optional: resolved tickets, mined into an FAQ that a human reviews.\"",
+      "rationale": "Deferred items (personalization, multilingual, actions, ticket mining) are mentioned and placed in later phases, but without explicit pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Competent, detailed RAG design with good guardrails, escalation and evaluation, but it is organized as a feature roadmap. It has no production walking skeleton, no decision gates with flip conditions, and security, observability and resilience are not threaded through each phase.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1229,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 5116
+  },
+  "cost_usd": 0.025201,
+  "latency_s": 40.539,
+  "raw_file": "raw/judge-a11a3e36061c.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

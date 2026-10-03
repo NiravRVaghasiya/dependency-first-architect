@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "13bcc48d9f64.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "13bcc48d9f64",
+  "blind_sha256": "262c122547ff8806bba57dc0d37908dbed06f33d5441910a4893467d6b1a3ee9",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 281,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "The CRDT content format is the hardest thing to reverse, so M1 builds directly on it and stress-tests it before any features depend on it.",
+      "rationale": "Order runs substrate (monorepo, DB, schema, token, collab) up to features, with spikes proving the format before dependents and a frozen format gating M2."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Two users on staging co-edit and converge, checked by an automated Playwright test after every deploy.",
+      "rationale": "M1 is a thin end-to-end slice with CI/CD, auth, persistence and a chaos test, before features. Staging rather than prod is a minor gap, but a production environment follows in M2."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D1 ... Hard: stored content format | Revisit if: S1 finds non-convergence we can't fix",
+      "rationale": "The plan lists irreversible decisions with options, reversibility and revisit triggers, and labels assumptions with impact and validation."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "The CRDT content format is the hardest thing to reverse, so M1 builds directly on it ... Ordering: T1 → (T2, T3, T4, T5...)",
+      "rationale": "Widest-impact items (repo, schema, migrations, content format, token contract) precede leaf features like comments and search, and the critical path is explicit."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Resource exhaustion | Message/doc size caps, connection limits per user, API rate limits | M3",
+      "rationale": "Security has concrete items in M1 and M2, but M3 is mainly the pen test and limits, and M4 and M5 have only thin coverage, so it is not threaded in every phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "From M1: structured JSON logs (pino) ... OpenTelemetry metrics ... From M3: a synthetic probe",
+      "rationale": "Observability starts in M1 (T13) and grows in M3, but M2, M4 and M5 have little explicit observability work."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform for all infrastructure, GitHub Actions CI; migrations against a Postgres 16 service container; terraform plan shows no drift",
+      "rationale": "IaC, pinned CI, migrations with up/down, rollback, seedable fuzz tests and synthetic test data are used from M1 onward. M2 to M5 carry this through release and rollback practices."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Chaos script kills Collab during scripted edits: 0 acknowledged edits lost over 20 runs.",
+      "rationale": "Failure handling is in every milestone: durability chaos in M1, offline reconnect in M2, instance-kill and restore drill in M3, restore tested with live editors in M4."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "AI-specific concerns. Not applicable. There are no AI components in scope.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Tables, embeds, math | Beta demand. Needs a dedicated convergence spike",
+      "rationale": "A deferred-work table gives explicit triggers, and the plan also lists non-goals and deliberate debt with payback milestones."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A strong, risk-first plan with a real walking skeleton, explicit decision gates and N/A AI handling. Security and observability are uneven across later milestones.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1241,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 19428
+  },
+  "cost_usd": 0.060988,
+  "latency_s": 21.809,
+  "raw_file": "raw/judge-13bcc48d9f64.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

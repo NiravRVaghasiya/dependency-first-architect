@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "adea17f212c2.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "adea17f212c2",
+  "blind_sha256": "47f847ac6e90c864e2b928a77d47788aedd37bd12d920578e9254bd7e70c960f",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 417,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Put on-prem database in **read-only**; app queues writes ... Promote cloud database to primary; switch app, load balancer and DNS",
+      "rationale": "Mechanisms (CDC, read-only freeze, promote, reverse replication) are correct; minor issues like 15-second lag check and DMS reverse replication feasibility and DNS caching are glossed."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Writes pause for under 60 seconds at cutover, during the quietest hour.",
+      "rationale": "Sensibly redefines no downtime, covers core needs, and is buildable; the plan leaves gaps on vendor licensing and app queuing feasibility (noted as an assumption)."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Set up the interface engine so it can send to either environment, controlled by a configuration switch.",
+      "rationale": "Consistent single-writer design with clear phases; minor loose ends such as who owns write queueing and the 'reads never stop' claim while on-prem is read-only."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Rehearse the full cutover and rollback at least twice in a staging environment, and time each step.",
+      "rationale": "Reconciliation, load at 1.5x peak, failover tests, and rehearsals target main risks, but criteria like rollback thresholds are unquantified and there is little post-launch validation beyond hypercare."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "The plan assumes the system is a standalone app (vendor-built or in-house) with its own database, connected to the EHR through HL7.",
+      "rationale": "Assumptions and sensitivity questions are explicit; some figures like 60s and 1.5x are unjustified, and effects are only briefly explained."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Rollback triggers: errors above threshold, HL7 messages backing up, data mismatch, or response time worse than baseline.",
+      "rationale": "Covers double-booking, hidden integrations, and rollback, but lacks handling of duplicate or lost HL7 messages, replication divergence, queued-write failures, and adversarial inputs."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Hypercare (2–4 weeks): IT staff on site at scheduling centers, dashboards for errors, response time, and HL7 queue depth.",
+      "rationale": "Hypercare, dashboards and a command center are present, but ongoing monitoring, incident ownership, access admin and schema or deployment practices are thin."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Consider keeping on-prem as a warm standby for the first 30–90 days.",
+      "rationale": "Cost is essentially not discussed beyond the dual-running period; no drivers, estimates or controls."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Rehost or lightly replatform first ... Leave redesigning the application for after the move; don't change the code and the location at the same time.",
+      "rationale": "Avoids re-architecture and keeps rollback, but the lock-in, data model and identifier choices and exit paths are little discussed."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "True zero write-pause needs two-way replication with conflict handling. I don't recommend it for scheduling",
+      "rationale": "Picks the simpler one-way sync with a brief write freeze; components are justified, though some optional items such as a pilot clinic and the WAF add minor overhead."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "| T-0 | Put on-prem database in **read-only**; app queues writes |",
+      "rationale": "Phased timeline and a timed runbook give concrete sequencing and checkpoints, though tool choices and go/no-go thresholds are left open."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 1,
+      "evidence": "Business Associate Agreement (BAA) signed with the cloud provider. Use only services covered by it."
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "Interface engine | Rhapsody, Cloverleaf, Mirth, etc.: all endpoints, IP/firewall rules, hard-coded hostnames"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "Reconcile data every day: appointment counts per day, provider, and location, plus checksums on key tables."
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "Writes go to one database only; brief write freeze"
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "Start reverse replication cloud → on-prem, which keeps rollback possible"
+    },
+    {
+      "id": "P6-06",
+      "status": 2,
+      "evidence": "dedicated private link (AWS Direct Connect or Azure ExpressRoute) ... with a site-to-site VPN as backup. Test latency from every clinic site."
+    },
+    {
+      "id": "P6-07",
+      "status": 1,
+      "evidence": "set target recovery times and data-loss limits. Consider keeping on-prem as a warm standby"
+    },
+    {
+      "id": "P6-08",
+      "status": 1,
+      "evidence": "Identity | Active Directory/LDAP, SSO, service accounts"
+    },
+    {
+      "id": "P6-09",
+      "status": 1,
+      "evidence": "Load tests: at least 1.5× historical peak."
+    },
+    {
+      "id": "P6-10",
+      "status": 2,
+      "evidence": "Hypercare (2–4 weeks): IT staff on site at scheduling centers"
+    },
+    {
+      "id": "P6-11",
+      "status": 2,
+      "evidence": "Wipe disks securely, with certificates of destruction."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "Load an initial database copy, then turn on continuous change replication from on-prem to the cloud."
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "Two databases taking bookings at once can cause double-booked slots"
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "no public database endpoints, a web application firewall in front of the patient portal"
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "Integrations are where hospital migrations usually fail, so map all of them"
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "don't change the code and the location at the same time."
+    }
+  ],
+  "note": "A sound single-writer, replicate-then-switch plan with a rehearsed rollback and a good integration inventory. It is weak on cost, break-glass access, clinical downtime procedures, the shadow validation of interface messages, and ongoing operations.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2233,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11133
+  },
+  "cost_usd": 0.05017050000000001,
+  "latency_s": 24.339,
+  "raw_file": "raw/judge-adea17f212c2.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

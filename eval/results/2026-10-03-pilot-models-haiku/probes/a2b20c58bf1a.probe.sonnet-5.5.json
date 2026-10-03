@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "a2b20c58bf1a.probe.sonnet-5.5",
+  "blind_id": "a2b20c58bf1a",
+  "blind_sha256": "e6e468bb175716c5e7ecbef3acb43016cd3f00a44b58896c47e06f568ec0e71f",
+  "judge": "sonnet-5.5",
+  "order_index": 14,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.12,
+  "cues": [
+    "Jumps straight into a large architecture dump with ASCII diagrams and code, with no clarifying questions, assumptions, or scoping section",
+    "No explicit discussion of alternatives, trade-offs, risks, or open questions. It lists options such as 'Node.js, Go, Python' and 'Stripe, Adyen, Zuora' without choosing",
+    "No phased plan, milestones, verification steps, or success criteria. It is a design and code sample, not a structured plan",
+    "Opens with a generic line, 'I'll architect a comprehensive, scalable billing system... Let me break this down', which is typical unstructured model output",
+    "It has code bugs and gaps, such as 'payment' referenced out of scope in catch, a tiered charge stub, and a metered charge that returns null. This suggests one-pass generation without a review or checklist step"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 352,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 15707
+  },
+  "cost_usd": 0.0427955,
+  "latency_s": 33.301,
+  "raw_file": "raw/probe-a2b20c58bf1a.probe.sonnet-5.5.txt"
+}

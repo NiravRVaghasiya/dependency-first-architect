@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "92b9f1934c8d.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "92b9f1934c8d",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 49,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "The sandbox has no secrets and no outbound network, so a hijacked agent has nothing to exfiltrate and nowhere to send it.",
+      "rationale": "Mostly correct (GitHub App, idempotency, fail-then-pass test), but it says the sandbox has no network while also allowing package mirrors, and it overclaims that nothing can be exfiltrated. The model's context still holds issue text and repo code."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Opening pull requests for fixes it can make confidently: small bugs, docs, dependency bumps, test gaps, simple features",
+      "rationale": "It covers triage, reproduction, fixing and PRs, and sets out a clear scope and exclusions. It is credibly buildable with a sensible MVP."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Deterministic code (not the LLM) that approves every outgoing write: label, comment, push, or PR.",
+      "rationale": "Responsibilities and the state machine fit together. There are minor loose ends: the state machine lists MERGED, and the index freshness and ownership of state are not covered."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Shadow mode (2–4 weeks): The agent triages and drafts fixes privately. Humans compare its output with what actually happened",
+      "rationale": "It has offline benchmarks on history, a regression gate, shadow mode and online metrics. It gives no per-action precision thresholds for triage and does not say how the SWE-bench-style measures apply to triage."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Shadow test it on one well-tested repo with clear `AGENT.md` build instructions",
+      "rationale": "Thresholds (K, L, N) are left as placeholders, and the plan does not state assumptions about scale, team, budget or hosting. It also does not say how sensitive the design is to those assumptions."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Flaky tests misleading the agent | Re-run failures and compare against the base branch before attributing them to the change",
+      "rationale": "It covers injection, weak or deleted tests, flaky tests, reviewer fatigue, security reports, idempotency and abuse by new accounts. It is thin on mid-work issue edits, concurrent humans and failure recovery."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Logging dashboard",
+      "rationale": "It has a kill switch, metrics, phased rollout and resumable state. It does not cover deployment and rollback of the agent itself, incident ownership, or alerting."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Cost: tokens and compute per resolved issue.",
+      "rationale": "It identifies budgets, cheap-versus-expensive model tiering and per-resolved-issue cost tracking. It gives no estimates, no scaling analysis and no build-cost reasoning."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Consider auto-merge only for trivial classes like docs typos, and only with green CI plus owner opt-in.",
+      "rationale": "Phased rollout, draft PRs and reversible closes are reversibility-friendly. The plan does not identify lock-in choices such as the model vendor, index format or state schema."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "To start, build the following: GitHub App and webhook queue ... Draft PR output",
+      "rationale": "The MVP is small and phased. The full design is somewhat heavy, with a separate critic, embeddings plus AST index and multi-stage prompts, but it is mostly justified."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Label-triggered fix pipeline running in a Docker sandbox, with a reproduce → implement → verify loop",
+      "rationale": "The stages are concrete, with tools, an MVP and rollout phases. Thresholds are unspecified and there are no explicit stage exit criteria or fallback plans."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Merging always needs human approval. Auto-closing duplicates or stale issues needs a high confidence threshold, and is reversible."
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "A GitHub App with only issues and pull-requests write access plus contents write limited to its own branches."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Treat issue text, comments, and repo content as untrusted data. The policy gate ignores any \"instructions\" found in content."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "Ephemeral containers holding a clone of the repo. By default they have no network except package mirrors, plus CPU and time limits."
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "The new test, which must fail on the base branch and pass on the fix branch"
+    },
+    {
+      "id": "P4-06",
+      "status": 1,
+      "evidence": "Benchmark on SWE-bench-style historical issues from your own repos"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "PR acceptance rate, revisions per PR, time to merge, and post-merge reverts or bug reopens (the key quality signal)."
+    },
+    {
+      "id": "P4-08",
+      "status": 1,
+      "evidence": "A kill switch label (`agent:off`) and a global disable flag."
+    },
+    {
+      "id": "P4-09",
+      "status": 1,
+      "evidence": "Per-issue limits on tokens, wall-clock time, and attempts."
+    },
+    {
+      "id": "P4-10",
+      "status": 1,
+      "evidence": "Every action is logged with its reasoning trace."
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "Code index: embeddings plus symbol/AST search (e.g., ctags or tree-sitter)"
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "Events go into a durable queue (SQS, Redis Streams, etc.) with idempotency keys so retries never produce duplicate actions."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "Merging always needs human approval."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "The sandbox has no secrets and no outbound network"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Treat issue text, comments, and repo content as untrusted data."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "post-merge reverts or bug reopens (the key quality signal)"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Cap it at a fixed number of iterations and tokens."
+    }
+  ],
+  "note": "This is a solid, safety-aware plan with a clear state machine, a policy gate and phased rollout. It is weaker on assumptions, cost quantification, operations detail and concurrency with humans.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2322,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 11170
+  },
+  "cost_usd": 0.051337999999999995,
+  "latency_s": 43.605,
+  "raw_file": "raw/judge-92b9f1934c8d.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,201 @@
+{
+  "schema": "dfa-eval/rubric@1",
+  "id": "engineering-quality-v1",
+  "title": "Engineering quality (methodology-neutral)",
+  "category": "engineering-quality",
+  "measures": "Engineering properties of a plan that are not defined by the Dependency-First Architect skill: correctness, feasibility, coherence, validation, assumptions, failure modes, operations, cost, reversibility, proportionality, actionability; plus coverage of a per-request domain checklist and domain traps.",
+  "does_not_measure": "Whether the system, once built, works. Scores are judgments of a written plan by language-model judges, not outcomes.",
+  "scale": {
+    "min": 0,
+    "max": 4
+  },
+  "dimensions": [
+    {
+      "id": 1,
+      "key": "technical-correctness",
+      "name": "Technical correctness",
+      "definition": "How accurate the plan's technical claims, mechanisms and described component behaviors are for the technologies and domain involved.",
+      "look_for": "Claims about how technologies, protocols, algorithms and services actually behave (consistency guarantees, delivery semantics, security properties, library or vendor capabilities). Check whether domain concepts are used correctly, and whether the parts the design depends on would work as described. Weigh each error by its consequence, not by how many errors there are. Flag confident statements that are false or that misstate guarantees.",
+      "anchors": {
+        "0": "The core approach rests on a false premise, or the plan has several errors that would make the system not work, lose data or money, or be insecure.",
+        "1": "Several material errors, or one error in a component the design depends on. Correct statements are mostly generic and do not reach the hard parts.",
+        "2": "Mostly correct, but one or two material inaccuracies or misstated guarantees in secondary areas that a competent engineer would catch and fix.",
+        "3": "Correct on everything the design depends on. Only minor imprecision with no design consequence.",
+        "4": "Correct and precise throughout, including the subtle areas where plans commonly go wrong. States the real limits and guarantees of the chosen technologies accurately."
+      },
+      "overlaps_methodology": false
+    },
+    {
+      "id": 2,
+      "key": "requirement-fit",
+      "name": "Requirement fit and feasibility",
+      "definition": "How well the plan addresses what the request actually asks, interprets its ambiguities sensibly, and proposes something that a realistic team could build.",
+      "look_for": "Whether the plan solves the stated problem rather than an easier or adjacent one. Whether it covers the core capabilities the request implies and separates essential needs from optional ones. Whether scope, sequencing and dependencies are achievable without heroic assumptions. Whether any scope it excludes is excluded explicitly and with a reason.",
+      "anchors": {
+        "0": "Answers a different problem, or proposes something that could not realistically be built.",
+        "1": "Addresses the request only partly: core capabilities are missing, or feasibility depends on unrealistic resources or unproven breakthroughs.",
+        "2": "Addresses the main request and is broadly buildable, but misses at least one implied core need or contains a questionable feasibility leap.",
+        "3": "Covers the core needs the request implies, separates essential from optional, and is credibly buildable. Gaps are minor.",
+        "4": "Fits the request precisely and resolves its ambiguities sensibly. It is clearly buildable, and exclusions or deferrals are explicit and justified."
+      },
+      "overlaps_methodology": false
+    },
+    {
+      "id": 3,
+      "key": "architectural-coherence",
+      "name": "Architectural coherence",
+      "definition": "How well the components, data flows, responsibilities and decisions fit together into one consistent design with no internal contradictions.",
+      "look_for": "Clear responsibility for each component and clear ownership of each piece of data. Interfaces and data flows that connect. Choices made in one place that are honored everywhere else. Penalize contradictions, for example calling a component stateless while storing session state in it, promising strong consistency on top of an eventually consistent store, or giving a requirement to two components with conflicting behavior.",
+      "anchors": {
+        "0": "No discernible overall design, or contradictions so basic that the parts cannot work together.",
+        "1": "Components are listed but their relationships are unclear, or there are significant contradictions between sections.",
+        "2": "A recognizable, mostly consistent design with some unclear boundaries, unowned data, or a contradiction outside the parts the design depends on.",
+        "3": "A consistent design with clear responsibilities and data ownership. Choices are applied consistently, with at most trivial loose ends.",
+        "4": "Fully consistent, with tight reasoning about how the parts interact. Cross-cutting concerns such as identity, consistency and error propagation are handled the same way everywhere."
+      },
+      "overlaps_methodology": false
+    },
+    {
+      "id": 4,
+      "key": "validation-quality",
+      "name": "Validation quality",
+      "definition": "How convincingly the plan shows how it will establish that the system and its riskiest decisions actually work, before and after it commits to them.",
+      "look_for": "Checks tied to the plan's specific risks rather than generic statements such as 'write unit tests'. Validation methods that suit the domain. Acceptance criteria that can be measured, with targets that are justified or clearly labeled provisional. Risky assumptions tested early, before the plan is heavily committed to them. Validation that continues after launch. Penalize invented thresholds presented as known requirements.",
+      "anchors": {
+        "0": "No meaningful validation, or only empty statements that testing will happen.",
+        "1": "Generic testing mentioned, not linked to the system's actual risks. Nothing tests the riskiest assumptions.",
+        "2": "Some domain-appropriate validation, but it misses at least one major risk, comes too late to change course, or lacks criteria that could be checked.",
+        "3": "Validation targets the main risks with domain-appropriate methods and checkable criteria, and the riskiest parts are validated early.",
+        "4": "Validation is designed around the specific failure risks, happens before major commitments, uses well-grounded criteria, and continues in production to catch regressions."
+      },
+      "overlaps_methodology": true,
+      "overlap_note": "v2 of the skill explicitly instructs validation gates (hypothesis, method, threshold, evidence)"
+    },
+    {
+      "id": 5,
+      "key": "assumption-quality",
+      "name": "Assumption quality",
+      "definition": "How clearly and reasonably the plan states what it assumes about unspecified constraints, separates assumptions from facts, and explains what would change if they were wrong.",
+      "look_for": "Unstated constraints the plan identifies and resolves with reasonable defaults, such as scale, team size, existing stack, compliance needs and budget. Numbers clearly marked as estimates or assumptions. Notes on which assumptions the design is sensitive to. Penalize specific figures, constraints or certainty that the request does not support but that are presented as given facts.",
+      "anchors": {
+        "0": "Invented specifics are presented as facts throughout, or the design depends on unstated assumptions that are clearly unreasonable.",
+        "1": "Important assumptions are left implicit, and several unsupported numbers or certainties are stated as fact.",
+        "2": "Some key assumptions are stated, but others the design depends on are implicit, or some unsupported figures appear without qualification.",
+        "3": "The assumptions the design depends on are stated and reasonable, and estimates are marked as such. Some sensitivity analysis is missing.",
+        "4": "All assumptions the design depends on are explicit and reasonable. The plan says which assumptions would change the design if they were wrong, how, and how they will be confirmed. It never states unsupported certainty."
+      },
+      "overlaps_methodology": false
+    },
+    {
+      "id": 6,
+      "key": "failure-mode-coverage",
+      "name": "Failure-mode coverage",
+      "definition": "How well the plan identifies the realistic ways this particular system can fail, whether technical, data, security, abuse or human failures, and how it detects, contains and recovers from them.",
+      "look_for": "Failures specific to the domain rather than generic 'the server may go down' statements. Concrete detection, mitigation and recovery for each. Attention to how far a failure spreads, to partial failures, retries and duplicates, and to malicious inputs. Whether the hardest failure modes for this kind of system are present.",
+      "anchors": {
+        "0": "Failure modes are absent, or only generic platitudes appear.",
+        "1": "A few failures are named, mostly generic, with little or no concrete handling. The most dangerous domain failures are missing.",
+        "2": "Several relevant failure modes are covered with some concrete handling, but at least one major failure mode for this domain is missing or handled vaguely.",
+        "3": "The major domain failure modes are covered, each with concrete detection and mitigation. Recovery paths are mostly specified.",
+        "4": "Thorough, domain-specific coverage that includes subtle failures such as partial failures, duplicates, adversarial input and data corruption, with concrete detection, containment and recovery."
+      },
+      "overlaps_methodology": false
+    },
+    {
+      "id": 7,
+      "key": "operational-feasibility",
+      "name": "Operational feasibility",
+      "definition": "Whether a realistic team could deploy, monitor, operate, change and support the system once it is live.",
+      "look_for": "How the system is observed (which signals show it is healthy or degrading), how it is deployed and rolled back, how data or schemas are migrated, who owns and responds to incidents, and how access is administered. Whether the operational burden matches the likely team. Penalize designs that only work if someone watches them constantly or that have no path for changing them safely.",
+      "anchors": {
+        "0": "Running the system is ignored, or the design cannot practically be operated.",
+        "1": "Operations are mentioned only in passing. There is no workable plan for monitoring, deployment, rollback or incident handling.",
+        "2": "Basic deployment and monitoring are covered, but there are notable gaps (for example rollback, migrations, ownership, or alerting on the signals that matter), or the burden is unrealistic for a likely team.",
+        "3": "Deployment, rollback, monitoring of meaningful signals and ownership are addressed concretely, and the burden is plausible for a realistic team.",
+        "4": "Operations are designed in from the start: domain-meaningful health signals, safe change and rollback, migration paths, clear ownership and incident response, all sized to a realistic team."
+      },
+      "overlaps_methodology": false
+    },
+    {
+      "id": 8,
+      "key": "cost-realism",
+      "name": "Cost realism",
+      "definition": "How well the plan accounts for the money, compute, vendor and people costs of building and running the system, and how well its cost claims are grounded.",
+      "look_for": "The main cost drivers for this domain, such as model inference, compute minutes, storage, vendor fees and engineering time. How costs grow with usage. Concrete cost controls. Estimates given as ranges or orders of magnitude with a stated basis. Penalize ignoring the dominant cost driver, and penalize precise figures that have no basis.",
+      "anchors": {
+        "0": "Costs are ignored, or the design implies costs that are clearly prohibitive and goes unremarked.",
+        "1": "Costs are mentioned only generically. The dominant cost driver is missed, or unsupported precise figures are presented as fact.",
+        "2": "The main cost drivers are identified, but how costs grow with usage or how they are controlled is thin, or some estimates lack a basis.",
+        "3": "The dominant cost drivers, their scaling behavior and concrete controls are covered, and estimates are grounded or clearly labeled.",
+        "4": "Clear, well-grounded cost reasoning that covers build and run costs, scaling, controls, and the cost trade-offs behind major choices such as building versus buying."
+      },
+      "overlaps_methodology": false
+    },
+    {
+      "id": 9,
+      "key": "decision-reversibility",
+      "name": "Decision reversibility",
+      "definition": "How well the plan distinguishes hard-to-reverse decisions from easily changed ones, puts the most care into the hard ones, and avoids unnecessary lock-in.",
+      "look_for": "Recognition of the decisions that are expensive to undo in this domain, such as data models, identifier schemes, persisted formats, public interfaces, tenancy models and deep vendor coupling. More scrutiny and earlier validation for those. Deferring or isolating commitments where possible. Exit or migration paths. Penalize locking in irreversible choices casually or early without justification.",
+      "anchors": {
+        "0": "Makes several irreversible commitments casually and shows no awareness of what would be costly to undo.",
+        "1": "Little distinction between reversible and irreversible decisions. At least one major lock-in or one-way choice goes unexamined.",
+        "2": "Some hard-to-reverse decisions are recognized, but others are missed, or protections and exit paths are vague.",
+        "3": "The major one-way decisions are identified and justified, with reasonable isolation or migration paths. Easily reversed choices are not over-analyzed.",
+        "4": "Effort is clearly concentrated on the hard-to-reverse decisions: they are validated early, commitments are isolated or deferred where sensible, exit paths are explicit, and reversible choices are made quickly."
+      },
+      "overlaps_methodology": true,
+      "overlap_note": "v2 of the skill explicitly instructs reversibility tiers (R1/R2/R3)"
+    },
+    {
+      "id": 10,
+      "key": "proportionality",
+      "name": "Proportionality (absence of unnecessary complexity)",
+      "definition": "How well the plan's scope, components and process overhead match the request; a higher score means less unnecessary complexity without leaving out what is needed.",
+      "look_for": "Whether each component, technology and process step is justified by a stated or reasonably inferred need. Speculative scale, gold-plating, extra infrastructure, or ceremony that adds overhead without benefit. Whether the plan starts from the simplest workable design and has a path to grow. Also penalize under-building that leaves out essentials, which is not the same as simplicity.",
+      "anchors": {
+        "0": "Grossly mismatched to the request: heavy machinery for a simple need, or so stripped down that essential parts are missing.",
+        "1": "Substantial unjustified complexity, such as many speculative components, premature scale or heavy process, or significant essentials omitted.",
+        "2": "Mostly proportionate, with some unjustified components or overhead, or some under-scoping.",
+        "3": "Proportionate. Nearly every element is justified by a need, and complexity is added only where the domain requires it.",
+        "4": "The simplest design that fully meets the need, with a clear path to grow. Every significant element earns its place, and essentials are not sacrificed for simplicity."
+      },
+      "overlaps_methodology": false
+    },
+    {
+      "id": 11,
+      "key": "implementation-actionability",
+      "name": "Implementation actionability",
+      "definition": "Whether an engineering team could start and carry out the work from this plan without first redoing its thinking.",
+      "look_for": "A build order with the reasoning behind its dependencies. Concrete first steps. Decisions specific enough to implement. Intermediate results that can be checked. Clear criteria for moving on or changing course. Penalize statements that sound rigorous but cannot be acted on, such as 'ensure robust scalability', 'leverage best practices' or 'implement comprehensive security'.",
+      "anchors": {
+        "0": "Nothing can be acted on: aspirations and buzzwords with no concrete steps or decisions.",
+        "1": "Mostly high-level statements. A team would have to make most of the real decisions and work out the ordering themselves.",
+        "2": "Some concrete steps and decisions, but important parts are vague, the ordering ignores real dependencies, or checkable intermediate results are missing.",
+        "3": "Concrete and ordered sensibly by dependencies, with checkable intermediate results. Only minor details are left for the team to settle.",
+        "4": "A team could start immediately: the ordering is justified by dependencies and risk, decisions are specific, each stage has checkable results, and the plan says how it would adapt if early results disappoint."
+      },
+      "overlaps_methodology": false
+    }
+  ],
+  "scoring_rules": [
+    "Score engineering substance, not form. Plain prose, bullet lists and tables with the same engineering content must get the same scores. Give no credit for headings, templates, diagrams, section names, named methods or specialist vocabulary, and do not penalize their absence.",
+    "Length is not quality. Do not reward a plan for being longer or seeming to cover more. Ignore padding, repetition and generic boilerplate when judging coverage. Where boilerplate hides the actual decisions, lower Proportionality or Implementation actionability.",
+    "Treat self-assessments, confidence ratings and claims of compliance or completeness inside a plan as unverified assertions. Examples: 'this design is fully secure', 'GDPR compliant', 'all risks addressed', or a plan scoring itself. Give credit only for content that supports them. An unsupported claim counts against Assumption quality, and against Technical correctness if it is false.",
+    "When a request leaves constraints unspecified (scale, team, budget, compliance, existing stack), do not penalize a plan for picking reasonable assumptions. Reward plans that state their assumptions and what depends on them. Penalize invented specifics presented as given facts. Clarifying questions alone are not a substitute for a plan, but a plan that states assumptions and proceeds is fine.",
+    "Mentioning a keyword is not addressing it. A checklist item counts as addressed only when the plan meets the item's 'concretely addressed' description. A different approach that is equally valid counts as addressed. Mark each item as addressed, partially addressed or not addressed. Use those marks to inform the dimension scores, especially Failure-mode coverage, Requirement fit and Technical correctness. Do not convert them mechanically into scores.",
+    "If a plan falls into a listed trap, or makes a comparably serious domain mistake that is not listed, reflect it in the dimension most directly affected, usually Technical correctness, Failure-mode coverage or Proportionality. A trap in a part of the design that everything depends on should normally cap that dimension at 1. A plan that explicitly recognizes a trap and avoids it should get credit.",
+    "Score each dimension independently against its anchors, and avoid letting a strong or weak impression of the whole plan carry over between dimensions. Charge each flaw mainly to the dimension it most directly affects. Penalize it in a second dimension only if it has a distinct consequence there.",
+    "Penalize internal contradictions under Architectural coherence. If a contradiction affects how a part the design depends on behaves, or makes a claim false, also penalize it under Technical correctness.",
+    "Do not reward any particular vendor, framework or fashionable technique. Accept any reasonable technology choice that fits the stated or assumed need and is justified. Penalize a choice only when it is wrong, unjustified, or out of proportion to the need.",
+    "When a plan falls between two anchors, choose the lower score unless it fully meets the lower anchor and clearly meets part of the higher one. Give 4 only when you cannot name a significant improvement within that dimension."
+  ],
+  "uses_checklists": true,
+  "judge_template": "You are an independent principal engineer reviewing ONE architecture and build plan. Score it against the engineering-quality rubric below. Judge only what is written in the plan.\n\nThe plan answers this request: \"{request}\"\n\nRUBRIC: 11 dimensions, each scored 0 to 4 against its anchors.\n{dimensions}\n\nSCORING RULES\n{rules}\n\nDOMAIN CHECKLIST for this request. Mark each item 2 = concretely addressed (meets its description), 1 = partially addressed or only mentioned, 0 = not addressed. An equally valid alternative approach counts as addressed.\n{items}\n\nTRAPS for this request. Mark each present = true if the plan falls into it, otherwise false.\n{traps}\n\nFor each dimension return the score, a short verbatim quote (25 words max) from the plan that best supports it (\"none\" if absent), and a one-sentence rationale. For each checklist item return its mark and a short verbatim quote (\"none\" if absent). For each trap return whether it is present and a short verbatim quote (\"none\" if absent). Then give a one-line overall note.\n\nThe plan, in full, between the markers:\n<<<PLAN\n{plan}\nPLAN>>>",
+  "provenance": {
+    "dimension_names": "chosen by the maintainer (the list in the v2 task brief); everything else blind-authored",
+    "authoring_record": "eval/rubrics/authoring/eq-rubric-and-checklists-p1-p5.json",
+    "blind_to_skill": true,
+    "notes": "Authored in an isolated claude --bare session that had no access to SKILL.md, reference/, examples/ or adapters/. The judge_template was written by the maintainer and contains no methodology vocabulary."
+  }
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "92a508efd6a9.engineering-quality-v1.fable-5.k1",
+  "blind_id": "92a508efd6a9",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 136,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Signing: a cloud KMS key, not public Rekor, which would publish private repo names",
+      "rationale": "GitOps/Argo mechanics, OIDC federation, cosign/Kyverno admission behavior, expand/contract migrations and the Rekor privacy subtlety are all stated accurately, including real limits (policy controller as pod-creation SPOF)."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "one shared build, test and deploy platform that 50 existing services move onto, with each service's current pipeline kept as a fallback",
+      "rationale": "Directly answers the sequencing request with a buildable, well-ordered plan; the one gap is cross-service API/contract compatibility checking, which is implied for 50 microservices but never addressed or explicitly deferred."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "CI only writes image-version bumps to a `deploy-config` repo and holds no cluster credentials",
+      "rationale": "The pull-based trust boundary is honored consistently across every phase, cross-cutting table and validation check, with clear ownership of data (Git as the single deploy record) and no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "red-team run from a PR job on a branch and a fork. It attempts to: (a) get production cloud credentials",
+      "rationale": "V0–V6 tie checks to the plan's named worst failures, run the riskiest ones (V3, V4) before expansion, label thresholds as ASSUMPTION/BASELINE, and continue validation in production via per-wave V5 and burn-rate alerts."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "All items are ASSUMED until the Phase 0 inventory confirms them",
+      "rationale": "A1–A4 state what the design depends on and how it re-sequences if each is wrong; every number is labeled ASSUMPTION, BASELINE or UNKNOWN with a stated confirmation path."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "someone gets into the pipeline, or a bad shared template ships, and an unverified artifact reaches production for many services at once",
+      "rationale": "Covers the domain's hardest failures — supply-chain compromise, credential leak, bad shared template blast radius, admission-controller outage, cross-team config writes, registry loss — each with concrete detection, containment and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "A platform on-call rotation and runbooks, including break-glass",
+      "rationale": "SLOs with burn-rate alerts, DR drills, per-phase rollback paths, audited break-glass and an explicit page budget sized to a stated 3–5 person team make operations designed in from day one."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "UNKNOWN: needs a monthly CI budget from engineering leadership or finance; obtained in Phase 1, needed for V2",
+      "rationale": "Runner compute as the dominant driver, build-vs-buy trade-off, load-replay cost projection and deferred showback are covered, but no order-of-magnitude estimate is attempted and the people cost of migrating 50 pipelines is uncosted."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Point of no return: step 6, guarded by V6. Until then, rollback means re-enabling the old credentials",
+      "rationale": "Every decision carries an explicit reversibility rating, R3 choices (trust boundary, admission, config layout) are validated earliest, old pipelines are disabled not deleted, and each decision has a revisit trigger with a named fallback."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "≤ 5 self-run components; ≤ 2 platform pages per week",
+      "rationale": "Buys rather than builds, caps self-run components, justifies the security machinery by the stated dominant constraint, and defers eight nice-to-haves each with an explicit trigger for bringing them forward."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "V5 must pass before each next wave. ... If it fails: pause, roll the failing services back to the old CI, fix",
+      "rationale": "A team could start immediately: Phase 0 is a fully specified end-to-end slice, ordering is justified by dependencies and risk, every phase has a checkable exit, and each validation states what happens on failure."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Build template families for the tech stacks found in the inventory... one template family per stack, plus a documented escape hatch"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "The new CI first runs in shadow on PRs for one week... deploy authority switches, one service at a time... V5 must pass before each next wave"
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Build each image once and promote the same version through every environment... managed (ECR or GAR) with immutable tags"
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "Cloud access uses short-lived OIDC tokens scoped per repo and environment... removal of all static CI secrets... red-team run from a PR job on a branch and a fork"
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Every image is signed (cosign with a cloud KMS key) and carries an SBOM and build provenance... Templates versioned and pinned"
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "expand/contract migrations, run as an Argo pre-sync job... Argo Rollouts canary for tier-1 services... every service's rollback drill takes ≤ 15 min"
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Monolith vs services, and data consistency, for the 50 services themselves: their architecture is out of scope"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Tests use synthetic fixtures... Merge queue and flaky-test quarantine: feedback p90 goes over 10 min because of retries"
+    },
+    {
+      "id": "P3-09",
+      "status": 2,
+      "evidence": "Queue p95 ≤ 2 min; feedback p90 ≤ 10 min... Runner autoscaling, a warm pool, and build caches... Add test caching"
+    },
+    {
+      "id": "P3-10",
+      "status": 2,
+      "evidence": "Self-hosted, throwaway runners (one job per pod)... Replay 2× the Phase 0 peak job mix for 2 h... projected monthly cost ≤ budget"
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Platform service-level targets with burn-rate alerts... dashboard per service for lead time, deploy frequency, change failure rate and time to restore"
+    },
+    {
+      "id": "P3-12",
+      "status": 2,
+      "evidence": "approval and separation-of-duties steps go into the shared pipeline templates in Phase 2... Audit logs for credential use, policy violations, and cross-folder writes"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Wave 1: 10 low-risk services. Wave 2: 15. Wave 3: the remaining 20... the old pipeline kept as fallback"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Build each image once and promote the same version through every environment... managed (ECR or GAR) with immutable tags"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "removal of all static CI secrets... short-lived OIDC tokens scoped per repo and environment"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "deploy authority switches, one service at a time. Only one pipeline may deploy a service at any moment"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Buy and adopt: GitHub Actions, ARC runners, Argo CD and Rollouts, Kyverno, a managed registry. No in-house orchestrator"
+    }
+  ],
+  "note": "Near-reference quality: a correct GitOps trust boundary, labeled assumptions, risk-first validation and reversible wave migration; only gaps are cross-service contract testing, deferred flaky-test quarantine, and the absence of any cost estimate.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8916,
+    "thinking_tokens": 6059,
+    "cache_read_input_tokens": 929,
+    "cache_creation_input_tokens": 16285
+  },
+  "cost_usd": 0.6503115,
+  "latency_s": 161.068,
+  "raw_file": "raw/judge-92a508efd6a9.engineering-quality-v1.fable-5.k1.txt"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "8be8127976c1.probe.sonnet-5.5",
+  "blind_id": "8be8127976c1",
+  "blind_sha256": "3f6665dbbdcb59bbde92dbf6cd319130bdea0258a3d80573e99d53c76a7c6e2d",
+  "judge": "sonnet-5.5",
+  "order_index": 33,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Explicit \"Adaptation note: this skill's template assumes a server\" — refers to following a skill/template, and reinterprets 'prod' and 'monitored' for a CLI",
+    "Rigid section structure: Classification (type, dominant constraint, worst failure) → Key decisions table with 'Default' and 'Revisit trigger' columns → first end-to-end slice (Phase 0) → dependency-ordered phases",
+    "Template-driven leftovers that don't fit a CLI: '(AI) prompt+RAG vs fine-tune' and '(AI) hosted API vs self-host' rows marked N/A, plus a dedicated 'AI layer: N/A' section",
+    "Phase 0 'thinnest end-to-end slice' with 'Tiers crossed', Deployed/Logged/Monitored, and an 'Exit check' for every phase; phases say 'Unlocks/Depends on' and 'widest impact first'",
+    "Per-phase cross-cutting table (Security, Observability, Reproducibility, Resilience) 'from the first commit', and a Deferred list where each item has a 'pulled forward by' trigger"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 455,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 6461
+  },
+  "cost_usd": 0.0207105,
+  "latency_s": 27.092,
+  "raw_file": "raw/probe-8be8127976c1.probe.sonnet-5.5.txt"
+}

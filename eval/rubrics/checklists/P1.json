@@ -1,0 +1,101 @@
+{
+  "schema": "dfa-eval/checklist@1",
+  "prompt_id": "P1",
+  "request": "Plan a customer-support RAG chatbot over our help-center docs.",
+  "provenance": "eval/rubrics/authoring/eq-rubric-and-checklists-p1-p5.json (blind-authored; see eval/rubrics/AUTHORING.md)",
+  "items": [
+    {
+      "id": "P1-01",
+      "title": "Ingestion with updates and deletions",
+      "addressed_means": "The plan describes how help-center content is pulled into the index, how it is updated incrementally, and how edited, retracted or deleted articles are re-indexed or removed within a defined time window, so the bot does not cite stale or withdrawn content.",
+      "category": "data"
+    },
+    {
+      "id": "P1-02",
+      "title": "Structure-aware chunking and metadata",
+      "addressed_means": "Articles are split along their own structure (titles, sections, steps), and each chunk keeps metadata such as source URL, product, version, locale and visibility that is used for filtering and citation.",
+      "category": "correctness"
+    },
+    {
+      "id": "P1-03",
+      "title": "Retrieval and answer evaluation set",
+      "addressed_means": "A representative set of questions drawn from real tickets or search logs, with expected source articles, is used to measure retrieval quality and answer faithfulness before launch and again after every change to prompts, models, embeddings or chunking.",
+      "category": "correctness"
+    },
+    {
+      "id": "P1-04",
+      "title": "Grounding, citations and declining to answer",
+      "addressed_means": "Answers are restricted to retrieved content and cite their sources, and the bot has a defined behavior for low retrieval confidence or out-of-scope questions (say it doesn't know, or hand off) instead of answering from the model's general knowledge.",
+      "category": "correctness"
+    },
+    {
+      "id": "P1-05",
+      "title": "Escalation to a human",
+      "addressed_means": "Specific triggers for escalation are defined, such as the user asking, low confidence, repeated failure, or sensitive topics like refunds, legal or account security, and the conversation context is passed to the human agent.",
+      "category": "product"
+    },
+    {
+      "id": "P1-06",
+      "title": "Prompt-injection resistance",
+      "addressed_means": "User messages and retrieved content, especially any user-generated content such as community posts, are treated as untrusted. The bot has no privileged actions an injected instruction could trigger, and its safety does not rely on the system prompt alone.",
+      "category": "security"
+    },
+    {
+      "id": "P1-07",
+      "title": "Document visibility enforced at retrieval",
+      "addressed_means": "Internal-only, plan-specific or customer-specific articles are filtered at retrieval time using the authenticated user's entitlements, not by telling the model what it may reveal.",
+      "category": "security"
+    },
+    {
+      "id": "P1-08",
+      "title": "Personal data handling and retention",
+      "addressed_means": "The plan covers customers pasting personal or account data: redaction in logs, a retention period, the LLM provider's data-use and processing terms, and any regional data requirements.",
+      "category": "compliance"
+    },
+    {
+      "id": "P1-09",
+      "title": "Boundary for account-specific questions",
+      "addressed_means": "The plan explicitly decides whether the bot handles account-specific questions (orders, billing status). If it does, it uses authenticated, read-only, narrowly scoped tool calls. If it does not, it says so and routes those questions elsewhere.",
+      "category": "product"
+    },
+    {
+      "id": "P1-10",
+      "title": "Production monitoring and feedback loop",
+      "addressed_means": "Queries, retrieved chunks, answers, user feedback and escalations are logged, and someone reviews them. Unanswered questions are fed back as documentation gaps. Resolution and escalation rates are tracked alongside customer satisfaction, not just deflection.",
+      "category": "operations"
+    },
+    {
+      "id": "P1-11",
+      "title": "Inference cost and latency controls",
+      "addressed_means": "The plan estimates cost per conversation on a stated basis and applies controls such as limits on context size, caching, choice of model tier, rate limiting against abuse, and streaming or other latency targets.",
+      "category": "cost"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "title": "Ungrounded answers presented as authoritative",
+      "recognize": "Nothing makes the bot cite sources or decline to answer. The plan assumes the model will 'answer customer questions' in general, which lets it invent policies, prices or refund terms that can create liability."
+    },
+    {
+      "id": "P1-T2",
+      "title": "Access control left to the prompt",
+      "recognize": "Internal or restricted documents share an index with public ones, and the only safeguard is telling the model not to reveal them. There is no retrieval-time filter tied to the user's identity."
+    },
+    {
+      "id": "P1-T3",
+      "title": "Fine-tuning or one-time indexing as the knowledge mechanism",
+      "recognize": "The plan proposes fine-tuning the model on help-center docs as the main way it learns their content, or indexes the docs once with no way to update or delete them. Either way, answers go stale and cannot be traced to a source."
+    },
+    {
+      "id": "P1-T4",
+      "title": "Launch on demos without regression evaluation",
+      "recognize": "Quality is judged from a handful of manual trial conversations, and prompt, model or chunking changes ship without a repeatable evaluation against a fixed question set."
+    },
+    {
+      "id": "P1-T5",
+      "title": "Overbuilt pipeline before a baseline exists",
+      "recognize": "Multi-agent orchestration, knowledge graphs, custom-trained embeddings or complex query rewriting are proposed from day one, before a simple retrieval baseline has been measured and found inadequate."
+    }
+  ]
+}

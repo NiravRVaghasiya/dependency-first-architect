@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "5c25fa5c212e.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "5c25fa5c212e",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 61,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "the App is registered **without** the `workflows` permission, and GitHub refuses App pushes that change `.github/workflows/`.",
+      "rationale": "GitHub App permissions, OIDC claim binding, the lack of webhook retries and Actions behaviour are all stated correctly, but the plan misses that the App-pushed PR branch triggers same-repo CI with secrets and that a command allowlist does not stop test code from exfiltrating over open egress."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "\"Resolve\" means a draft PR for human review, not auto-merge",
+      "rationale": "It covers triage and resolution with explicit non-goals and a sensible reading of 'resolve', but repo-scale code retrieval is missing and the 4–6 week M1 scope for 2 engineers is optimistic."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "The model reads untrusted issue text but never holds write credentials. Every GitHub write goes through one gateway",
+      "rationale": "Responsibilities, single-writer data ownership and the trusted/untrusted split are consistent throughout, with only small loose ends such as the 30 s vs 60 s kill-switch numbers."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "S1, Spike: fix quality (time box 5 days)... Changes the plan if: < 15% → narrow L3 to named issue classes",
+      "rationale": "Validation is tied to the specific risks (fix quality, sandbox feasibility, injection) with early spikes, release-blocking adversarial suites, labeled provisional thresholds and production sampling after launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "| A10 | Pilot repository tests run on GitHub-hosted runners in < 15 min without private network access | Need self-hosted runners... (adds 3–6 weeks) | Spike S2, weeks 2–3 |",
+      "rationale": "Each assumption carries its impact if wrong and when it will be validated, targets are flagged as provisional, and the open questions come with defaults."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "A run that never registers within 15 minutes of dispatch is marked `FAILED(dispatch_lost)`.",
+      "rationale": "It covers duplicates, missed webhooks, provider outage, injection, validator bypass, budget runaway and crash-replay with concrete detection and recovery, but it has no explicit bot-to-bot loop guard, no handling of edits during a run, and no handling of CI-with-secrets on agent PRs."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "`admin halt` stops all writes in ≤ 30 s... Redeploy the previous image tag. (4) `admin cleanup-comments`",
+      "rationale": "The plan gives concrete deploy, rollback, alerts, runbook, backup and restore testing and ownership sized for a 2-person business-hours team, though on-call and incident response are thin."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Controls: per-attempt cap ($8), per-repo daily attempt quota, global daily cap with a hard stop, and cost on every PR body.",
+      "rationale": "It identifies model inference as the main driver, gives estimates with a stated basis and concrete caps, but says little about engineering cost or how cost grows across repositories."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "| Reversibility | Revisit if |",
+      "rationale": "Each key decision has a stated reversibility and a revisit trigger, and the Resolver contract isolates the harness and sandbox, but the effort is not clearly concentrated on the few one-way choices."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "All controller parts are **modules in one deployable** with two process types",
+      "rationale": "It uses a single service, a Postgres queue, an in-house gateway and a staged autonomy ladder, with deferrals listed explicitly, though two Apps, OTel and five autonomy levels are a little heavy for the pilot."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T7: ... *Done when* a test with 2 concurrent workers processes 200 tasks exactly once, and a test that kills a worker mid-step shows the task resumes.",
+      "rationale": "It gives a dependency-ordered task list with done-when criteria, week-by-week order, a critical path and explicit plan-change triggers for the spikes."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "| 3 | Fix on request | L2, plus fix attempts when a write-access user applies `agent:fix` | ... | 4 | Auto-fix |"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "Not granted: Workflows, Administration, Members write... Runner auth uses GitHub OIDC with no stored secrets."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "The **real** defence is that the output is a closed schema that cannot express \"do X\"."
+    },
+    {
+      "id": "P4-04",
+      "status": 1,
+      "evidence": "Its weakness is **open internet egress**, partly mitigated by the command allowed list, no secrets and private-repo-only scope."
+    },
+    {
+      "id": "P4-05",
+      "status": 1,
+      "evidence": "The harness investigates, writes a failing test, fixes the code, and runs `uv run pytest`: 1 new test passes, 0 regressions."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Triage quality | Triage evaluation suite (≥ 100 → 200 cases) | **Blocks merge**... L0 (shadow, ≥ 1 week, compare with human labels)"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Feedback Collector: maps `issues.labeled/unlabeled` by humans on agent-labelled issues, `pull_request.closed` (merged or not)... to `feedback` rows."
+    },
+    {
+      "id": "P4-08",
+      "status": 1,
+      "evidence": "Max 2 attempts per issue... Max 60 tool calls, 40 minutes wall-clock... `agent:stop` label... global `agent_settings.enabled`"
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "a per-task USD budget from token counts and published prices... a global daily cap (alert at 80%, hard stop at 100%)"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "every write appends to `action_audit` (task_id, action, args, response code, config version) before returning."
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "tools are file read, search, edit, and a shell that only runs the configured `setup`/`test` commands"
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "`INSERT … ON CONFLICT (delivery_id) DO NOTHING`... When the author comments, triage re-runs once and edits the same comment."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "People merge, always. The agent opens draft PRs and never merges, closes, or touches workflow files."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "No secrets are passed... a task token that only works against our Model Gateway, with a $8 cap and a 60-minute expiry."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Prompting is not a defence. Capabilities and validation have to be."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "Agent draft PRs merged, with or without edits | ≥ 40%"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Max 60 tool calls, 40 minutes wall-clock, and $8 enforced **in the Model Gateway**"
+    }
+  ],
+  "note": "Strong, well-grounded plan with safety-by-construction and spike-driven validation. The gaps are open-egress sandboxing, no repo-scale code retrieval, no explicit bot-loop guard or human-claim handling, and CI running on agent branches.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 5646,
+    "thinking_tokens": 2913,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 30276
+  },
+  "cost_usd": 0.132343,
+  "latency_s": 64.179,
+  "raw_file": "raw/judge-5c25fa5c212e.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

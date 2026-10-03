@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "53e1509201a2.probe.sonnet-5.5",
+  "blind_id": "53e1509201a2",
+  "blind_sha256": "783523fa2a4d6f339e6e65784c4e7580834a70b940bbc676b61feb70330a2861",
+  "judge": "sonnet-5.5",
+  "order_index": 60,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.88,
+  "cues": [
+    "Opening note on workspace state (empty README) and explicit handling of a one-line brief with defaults tagged [A#] and consolidated in an assumptions table with impact-if-wrong and validation timing",
+    "Rigid, numbered section structure (Context/Goals, ranked quality attributes with measurable targets, Current State, Assumptions/Open Questions, Decisions table with options, reversibility, 'revisit if')",
+    "Milestones with explicit exit criteria, go/no-go rule, critical path marking, and spikes that state 'Changes the plan if'",
+    "Task breakdown with 'Done when' acceptance checks per task, plus deferred-work table with build-when triggers and rollout/rollback by severity",
+    "Open questions ranked by plan impact with default-if-no-answer and needed-by date; closing questions section emphasizing which would change the plan most"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 360,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 27146
+  },
+  "cost_usd": 0.071473,
+  "latency_s": 30.173,
+  "raw_file": "raw/probe-53e1509201a2.probe.sonnet-5.5.txt"
+}

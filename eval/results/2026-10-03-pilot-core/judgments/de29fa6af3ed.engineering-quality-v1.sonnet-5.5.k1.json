@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "de29fa6af3ed.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "de29fa6af3ed",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 123,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Switching *back* through MI link needs on-prem **SQL Server 2022**.",
+      "rationale": "Mostly accurate on MI link, UTC defaults, sync/async, NIST 800-88; minor imprecisions (e.g. 10 ms sync claim, 'book pause ≤60s' with MI link failover, readable replica claim) have limited consequence."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Booking pauses **once, for ≤60 s**, at the database switchover, covered by automatic retry or a \"saving…\" banner.",
+      "rationale": "Sensibly interprets zero downtime, covers core needs with fallback; gaps on vendor licensing and a cost/people view."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "One database accepts bookings at any moment; the copy replicates in one direction.",
+      "rationale": "Single-writer principle is honored across phases; minor loose ends such as reads from replica vs reads moved before writes, and 5s stale read claim."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Two clean rehearsals in a row, each with booking pause ≤60 s and zero data mismatches.",
+      "rationale": "Risk-targeted, early slice, measurable exits, production monitoring; thresholds are not labeled provisional and post-launch validation is modest."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "I don't know your stack yet, so I've planned for the most common hospital setup",
+      "rationale": "Stack assumptions and revisit triggers are explicit; numeric targets (60s, 5s, 10ms) are not marked as assumptions and RPO/RTO are unspecified."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "a config switch that stops cloud servers sending HL7 appointment messages, SMS/phone reminders, email and fax, on by default until cutover.",
+      "rationale": "Covers duplicate messages, job ownership, time-zone shift, split-brain, retry test; less on adversarial input and detailed rollback triggers."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "War-room dashboard: copy delay, pause length, message counts, error rate",
+      "rationale": "IaC pipeline, dashboards, alerts, rehearsals, switch-back, hypercare; incident ownership and on-call are thin."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Cost baseline.",
+      "rationale": "Cost is only a late baseline task and deferred optimisation; ExpressRoute, dual-running costs, and SQL MI costs are not estimated."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Switching *back* through MI link needs on-prem **SQL Server 2022**.",
+      "rationale": "Identifies one-way decisions (DB platform, switch-back, interface engine location), rehearses switch-back, network-name layer isolates endpoints; vendor lock-in discussion is light."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "**Keep the monolith.** A migration is not the time to redesign.",
+      "rationale": "Move-first, deferred items explicit; seven phases with 30-day soak are heavy-ish but justified for a hospital."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Write the cutover steps as a script (database switch, network-name changes, outgoing-message block lifted, job ownership moved).",
+      "rationale": "Ordered by dependency with exit checks and concrete steps; minor details like adaptation on failures are partial."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "BAA signed, private endpoints only, hospital-held encryption keys, Defender for Cloud, logs kept free of PHI"
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "List every connection: HL7 feeds, patient portal, SMS/phone reminders, billing, kiosks, printers, fax, reports, fixed IP addresses in config."
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "Nightly data check: row counts plus checksums per table, and a field-by-field comparison of next-30-days appointments."
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "One database accepts bookings at any moment; the copy replicates in one direction."
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "Start the reverse copy to on-prem. ... A switch-back completed in ≤15 minutes."
+    },
+    {
+      "id": "P6-06",
+      "status": 1,
+      "evidence": "ExpressRoute (private line to Azure, with a VPN backup)"
+    },
+    {
+      "id": "P6-07",
+      "status": 1,
+      "evidence": "Cloud DR test passes the agreed recovery targets."
+    },
+    {
+      "id": "P6-08",
+      "status": 1,
+      "evidence": "Emergency \"break-glass\" accounts tested, access review, change-board approval"
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "Load test at 2× the busiest real hour (for example Monday 08:00)."
+    },
+    {
+      "id": "P6-10",
+      "status": 1,
+      "evidence": "quiet time (for example Sunday 02:00, outside flu surge and month-end)."
+    },
+    {
+      "id": "P6-11",
+      "status": 1,
+      "evidence": "Retire on-prem, with NIST 800-88 disk wiping."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "Full dress rehearsal on a production-sized copy ... Switch-back rehearsal to on-prem."
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "No setup where both sites accept bookings during the migration."
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "no PHI in dev/test without de-identification"
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "Interface engine to cloud connections over secure channels, tested by replaying captured incoming patient-admission messages."
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "Move first, improve later. Same app build."
+    }
+  ],
+  "note": "Strong, coherent single-writer migration plan with rehearsed switch-back and side-effect control; weak on cost, vendor licensing, RPO/RTO and clinical cutover communication.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2141,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 919,
+    "cache_creation_input_tokens": 13372
+  },
+  "cost_usd": 0.055031800000000006,
+  "latency_s": 45.878,
+  "raw_file": "raw/judge-de29fa6af3ed.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

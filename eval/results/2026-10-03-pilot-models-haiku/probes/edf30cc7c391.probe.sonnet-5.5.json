@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "edf30cc7c391.probe.sonnet-5.5",
+  "blind_id": "edf30cc7c391",
+  "blind_sha256": "404fd46c835db088c144e2805870ccbebdaed42101f5bf2475270495de38d950",
+  "judge": "sonnet-5.5",
+  "order_index": 13,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.15,
+  "cues": [
+    "Does not produce a plan; only asks clarifying questions and defers planning",
+    "Generic friendly opener ('I'd be happy to help') typical of default assistant behavior",
+    "Emoji checkmark bullet list of promised sections rather than a structured methodology output",
+    "Asks the user for file paths instead of exploring the working directory, which a methodology would likely require",
+    "No evidence of specific phases, assumptions, risks, or verification steps that a planning methodology would impose"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 230,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1187
+  },
+  "cost_usd": 0.0052755,
+  "latency_s": 31.871,
+  "raw_file": "raw/probe-edf30cc7c391.probe.sonnet-5.5.txt"
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ff17acc9fc2a.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "ff17acc9fc2a",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 53,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Pull-based GitOps (Argo CD)... cluster credentials never leave the cluster",
+      "rationale": "Signing, OIDC, admission, pull-based deploy and canary mechanisms are described accurately, with the external transparency-log caveat; the hard parts are correct and only minor imprecision remains."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Replatform in waves. Each service has exactly one active deploy path, set by a per-service flag.",
+      "rationale": "Covers the core migration, trust and deploy needs with explicit deferrals, but contract compatibility, test environments and flaky-test handling are missing."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Before the flip, the old pipeline is the system of record for what is deployed; after it, the config repo and cluster are.",
+      "rationale": "Data ownership, fail-closed policy and rollback are consistent across sections, with only minor loose ends such as the missing V5."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "100% of ≥ 10 negative cases rejected; 0 false rejects in the 20 (design parameters)",
+      "rationale": "Validation targets the main risks (admission bypass, runner capacity, rollback) early with checkable, labeled-provisional thresholds, but it has nothing for flakiness or contract breakage and only limited production validation."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "UNKNOWN: needs what engineering leadership commits for hotfix capability; required before Phase 2",
+      "rationale": "Assumptions and unknowns are labeled, each has an owner and a needed-by phase, and revisit triggers say how the design would change."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Worst failure: A compromised or misconfigured pipeline pushes an untrusted or broken artifact to many services at once.",
+      "rationale": "Covers token theft, forked PRs, replayed signatures, template bugs, false rollbacks, platform outage via break-glass and decommission risk with detection and recovery, but not flaky tests or migration data corruption."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Platform SLIs, SLOs and burn-rate alerts. Break-glass path with audit, and a drill.",
+      "rationale": "Deployment, rollback, monitoring, backup and drills are concrete, but there is no named owner or on-call and team sizing is unknown."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "CI monthly spend ceiling | No number | UNKNOWN: needs the engineering manager/finance",
+      "rationale": "The plan picks self-hosted ephemeral runners and plans a load-replay cost projection, but it gives no estimate from build volume and few concrete cost controls."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3 (trust boundary; a mistake exposes prod, and changing the root means re-signing everything)",
+      "rationale": "Decisions carry reversibility ratings, early validation and revisit triggers, the KMS fallback gives an exit path, and the Phase 4 point of no return is flagged."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Buy: Git host's native CI with self-hosted ephemeral autoscaling runners. No bespoke orchestrator.",
+      "rationale": "Off-the-shelf components are justified by need and gold-plating is explicitly deferred, though Sigstore, Kyverno, Argo Rollouts and Argo CD together are a lot for a small team."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Wave A: 3 low-tier services across different stacks. Wave B: about 12 services.",
+      "rationale": "Phases are ordered by dependency and risk with exit checks and fail paths, but the CI engine is unnamed and wave membership and inventory details are left to the team."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "Service inventory: pipelines, manual steps, cron/batch jobs and shared credentials per service"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Rollback is flipping the flag back. ... Wave A: 3 low-tier services across different stacks."
+    },
+    {
+      "id": "P3-03",
+      "status": 1,
+      "evidence": "registry → existing cloud registry with immutable tags"
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "OIDC workload identity with per-service scoped deploy rights, replacing any shared credentials."
+    },
+    {
+      "id": "P3-05",
+      "status": 1,
+      "evidence": "Kubernetes admission policy (Kyverno) verifies it."
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "Argo Rollouts canary with automated metric analysis and auto-rollback"
+    },
+    {
+      "id": "P3-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "test stages use synthetic data, ASSUMED"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Ephemeral autoscaling runner fleet with caches."
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Replay recorded peak merge load at 2× concurrency across all 50 services"
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "Platform SLIs, SLOs and burn-rate alerts."
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "Break-glass path with audit, and a drill."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Old pipelines are untouched until Phase 4."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "registry → existing cloud registry with immutable tags"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "No long-lived deploy secrets."
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Each service has exactly one active deploy path, set by a per-service flag."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Buy: Git host's native CI ... No bespoke orchestrator."
+    }
+  ],
+  "note": "Strong, assumption-aware migration and trust-model plan with a pilot, waves and reversibility analysis. It is weak on contract testing, test environments and flaky tests, and on cost estimation.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4386,
+    "thinking_tokens": 2184,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 13081
+  },
+  "cost_usd": 0.0767555,
+  "latency_s": 70.147,
+  "raw_file": "raw/judge-ff17acc9fc2a.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

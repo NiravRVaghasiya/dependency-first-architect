@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "002459306ee2.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "002459306ee2",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 113,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Webhook API, which enqueues it... idempotency keys on the delivery ID (at-least-once, duplicate-safe writes).",
+      "rationale": "Mechanisms (webhook ack, delivery ID idempotency, App scoping, egress proxy) are accurate; minor imprecision, e.g. contents write scoped to branch prefix isn't natively supported by GitHub App permissions (though the plan flags a fallback), and reliance on branch protection."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Resolution runs only on issues a maintainer labels `agent-ok`. An issue's author can't trigger code execution.",
+      "rationale": "Covers triage, duplicates, info requests and draft-PR resolution with explicit deferrals, though reproduction-first and comment/edit handling are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "The executor enforces it, not the model, and logs it.",
+      "rationale": "Consistent responsibilities and seams; minor loose ends such as 'contents write limited to agent/* branches' vs. actual GitHub capability, and duplicate closes approval vs. Phase 0 scope."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Replay ≈200 maintainer-labeled historical issues (≥ 30 duplicate pairs) plus 2 weeks of shadow on the pilot repo",
+      "rationale": "Validation checks are tied to specific risks (injection, sandbox, egress, triage quality, PR acceptance), sequenced before commitments, thresholds labeled as assumptions, with canary and ongoing per-repo monitoring."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Missing inputs (none changes the phase order, so I'm proceeding on the assumptions below)",
+      "rationale": "Assumptions and unknowns are explicitly labeled with owners and fallback consequences when they fail."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Timeouts and caps cut off runaway loops with a partial-result comment; branch cleanup",
+      "rationale": "Injection, sandbox escape, exfiltration, runaway loops, feedback poisoning covered with containment; bot-to-bot loops, edits/comments mid-run, and claim/yield collisions are not covered."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Rollback redeploys the previous image. A feature flag or kill switch disables the agent without a deploy. Both are exercised once.",
+      "rationale": "Deploy, rollback, alerts, kill switch and ownership via named reviewers are concrete; incident response and on-call are thin."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Hard cap during the pilot: $20/day for the whole org... Per accepted draft PR ≤ $5.",
+      "rationale": "Token and cost caps, per-outcome tracking, build-vs-buy check and conditional routing; figures are labeled assumptions, though scaling with volume and people costs are thin."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3 (trust boundary; a bad merge is harm that can't be undone)",
+      "rationale": "Decisions are rated by reversibility with revisit triggers, exit paths (self-host, bot fork), pinned embedding versions, provider abstraction, and effort concentrated on the R3 choices."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "the simplest workable shape is a single agent loop of plan, edit, run tests in the sandbox",
+      "rationale": "Starts simple with explicit deferrals of memory, multi-agent and routing; the heavy validation and process overhead is somewhat elaborate for a pilot but justified by the risk."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Tool executor with a tool allow-list and argument validation... Approval binding: a write runs only with an approval bound to that exact action.",
+      "rationale": "Phased, dependency-ordered with checkable exit criteria and a concrete first slice; some details (reproduction step, retrieval indexing) remain for the team to decide."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "The agent only comments, labels, and opens draft PRs on `agent/*` branches. A human merges."
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "A GitHub App with least privilege... No PATs and no Actions-with-secrets."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Executor allow-list, approval binding... Injection cannot cause out-of-scope action or exfiltration"
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "Ephemeral microVM or gVisor container per run. Egress only through an allow-listed package proxy. No agent or GitHub credentials inside."
+    },
+    {
+      "id": "P4-05",
+      "status": 1,
+      "evidence": "a single agent loop of plan, edit, run tests in the sandbox, and iterate"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Replay ≈200 maintainer-labeled historical issues (≥ 30 duplicate pairs)... Label agreement with maintainers ≥ 85%; duplicate flag precision ≥ 90%"
+    },
+    {
+      "id": "P4-07",
+      "status": 1,
+      "evidence": "maintainer accept and reject signals enter the eval sets through review, not directly into prompts."
+    },
+    {
+      "id": "P4-08",
+      "status": 1,
+      "evidence": "Per-run iteration limits and a per-repo kill switch."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Per triaged issue ≤ $0.10. Per accepted draft PR ≤ $5."
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "Every tool call and approval logged with the actor"
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "Retrieval: issue-history duplicate search and code search. Pin the embedding model in the index version."
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "idempotency keys on the delivery ID (at-least-once, duplicate-safe writes)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "Auto-merge of agent PRs: pulled forward only after a sustained V5 history, an explicit risk acceptance"
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "No agent or GitHub credentials inside."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Untrusted text fenced as data, executor allow-list, closed egress, sandbox, author trust tiers"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "Cost per accepted PR ≤ $5 (ASSUMPTION); accepted-with-minor-edits rate ≥ 30% of attempts"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Per-run token cap and the $20/day org cap"
+    }
+  ],
+  "note": "Strong security-first, reversibility-aware plan with well-targeted validation; weaker on reproduce-first verification, index freshness, loop/collision handling with humans and bots, and outcome metrics like reverts.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2458,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 14712
+  },
+  "cost_usd": 0.061553000000000004,
+  "latency_s": 31.732,
+  "raw_file": "raw/judge-002459306ee2.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

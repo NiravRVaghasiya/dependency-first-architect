@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "fec361d053b8.engineering-quality-v1.fable-5.k1",
+  "blind_id": "fec361d053b8",
+  "blind_sha256": "4760a3ad3393b50ef18014dfd482a726fcbe46d9857511b7fa645373ad5b7cc8",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 264,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Pull: Argo CD in each cluster syncs from an environment repo. CI only pushes signed images and opens PRs. No prod credentials in CI",
+      "rationale": "Claims about OIDC federation, keyless cosign/SLSA, admission policy audit-vs-enforce modes, Pact contract tests and GitOps break-glass drift write-back are all accurate, including subtle areas like admission HA for rollback."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "A shared build, test, sign and deploy path (golden path) that 50 existing services move onto in waves",
+      "rationale": "Precisely answers the sequencing request with phases, gates and dependencies, resolves ambiguities as labeled assumptions, and defers scope (Backstage, ephemeral envs) explicitly with triggers."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The system of record for \"what's deployed\" is the old pipeline until cutover, then the environment repo",
+      "rationale": "The trust-boundary, Git-as-only-deploy-path and template decisions are honored consistently across phases, validation and cross-cutting tables, with data ownership (system of record) explicit at every transition."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Red-team test of 5 attacks: fork PR deploy; CI token writing to the prod cluster or prod environment paths; unsigned or outside image applied",
+      "rationale": "V0–V6 tie checkable thresholds to specific risks, test the riskiest decision (trust boundary) before exposure, label thresholds ASSUMPTION/UNKNOWN, and continue post-cutover via per-wave scorecards."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Assumptions this plan rests on. If any is wrong, the phase order changes, so please confirm",
+      "rationale": "Every design-bearing assumption is explicit with its consequence if wrong, numbers are tagged BASELINE/ASSUMPTION/UNKNOWN with confirmation owners, and missing inputs are listed with when they are needed."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "The platform becomes the way an unreviewed or malicious artifact reaches production across many services",
+      "rationale": "Supply-chain compromise, fleet-wide template bugs, platform outages and bad deploys get concrete detection and recovery, but rollback-safe database schema migrations and flaky-test erosion are not handled despite rollback being central."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Self-run components ≤ 3 (Argo CD, policy controller, External Secrets); everything else managed",
+      "rationale": "On-call paging, delivery dashboards, rehearsed break-glass, game days, DR rebuild test and an explicit operational-complexity cap sized to a stated ~4-person team make operation realistic."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Replay 2× the measured peak concurrency as synthetic jobs for 2 h; project monthly cost from the bills",
+      "rationale": "The dominant driver (runner compute) is identified, cost is projected from measured load before fleet commitment, budget is honestly marked UNKNOWN with an owner, and build-vs-buy and showback controls have triggers."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: once exposed, a compromise can't be undone",
+      "rationale": "Decisions are explicitly classified by reversibility, the R3 trust/secrets choices get the earliest validation, the only irreversible step (deleting old CI) is gated by V6, and every default has a revisit trigger."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "GitHub Actions on GitHub-hosted runners, managed registry, Argo CD. Build only the templates and policy",
+      "rationale": "Builds only templates and policy on managed tooling, caps self-run components, and defers Backstage, ephemeral environments, merge queues and multi-region behind concrete pull-forward triggers."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Wave 2 and fleet scale-up. If it fails: ARC self-hosted runners",
+      "rationale": "A concrete day-zero slice, dependency-justified phase order, numbered tasks, checkable exit gates and pre-decided fallback branches for each failed validation let a team start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Inventory all 50 services: stack, deploy target, secrets, tier, owner... One shared golden path (versioned reusable workflows plus Argo CD), with a documented escape hatch"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "new pipeline run in shadow next to the old one for 1 week with matching test results... wave 1 = 5 low-criticality services"
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "pushed to the registry by digest... the same digest is promoted by an environment-repo PR; build once, promote the same digest"
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "OIDC from CI to the cloud; remove every long-lived credential... Fork PRs get no secrets"
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Keyless cosign signing plus SLSA provenance. Admission policy enforced in prod... CODEOWNERS and required reviews on workflow files"
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Rolling deploy with automatic health checks for all. Argo Rollouts canary with automated analysis for tier-1"
+    },
+    {
+      "id": "P3-07",
+      "status": 2,
+      "evidence": "checked with consumer-driven contract tests (Pact), not lockstep releases in a shared environment"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "PR checks run synchronously (≤ 15 min). Long suites run after merge, before prod... No prod data in CI; tests use synthetic data"
+    },
+    {
+      "id": "P3-09",
+      "status": 2,
+      "evidence": "PR p90 < 15 min... container build with BuildKit and registry cache... lockfile-keyed caches"
+    },
+    {
+      "id": "P3-10",
+      "status": 2,
+      "evidence": "Hosted runners meet queue time within budget... Replay 2× the measured peak concurrency... project monthly cost from the bills"
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "CI: 99.5% in business hours... Per-service lead time, deploy frequency, failure rate and restore-time dashboards... page the platform on-call"
+    },
+    {
+      "id": "P3-12",
+      "status": 2,
+      "evidence": "CODEOWNERS on each team's environment-repo paths... break-glass events go to the SIEM... Template repo owned by platform and security"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "wave 1 = 5 low-criticality services; wave 2 = about 20; wave 3 = the rest, tier-1 last... The old pipeline is frozen, not deleted"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "the same digest is promoted by an environment-repo PR and synced to prod"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "0 long-lived cloud credentials in CI... Fork PRs get no secrets"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "consumer-driven contract tests (Pact), not lockstep releases in a shared environment... One Argo CD project per team"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "GitHub Actions on GitHub-hosted runners, managed registry, Argo CD. Build only the templates and policy"
+    }
+  ],
+  "note": "An exemplary, gate-driven migration plan with precise technical choices and labeled assumptions; the only notable gaps are rollback-compatible database migrations and flaky-test handling.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6679,
+    "thinking_tokens": 3866,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 15759
+  },
+  "cost_usd": 0.5309575,
+  "latency_s": 108.321,
+  "raw_file": "raw/judge-fec361d053b8.engineering-quality-v1.fable-5.k1.txt"
+}

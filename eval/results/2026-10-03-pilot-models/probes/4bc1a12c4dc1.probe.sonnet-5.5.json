@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "4bc1a12c4dc1.probe.sonnet-5.5",
+  "blind_id": "4bc1a12c4dc1",
+  "judge": "sonnet-5.5",
+  "order_index": 4,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.97,
+  "cues": [
+    "Opens with \"I don't have access to read those reference files... proceed with the The plan method based on the detailed specification you've provided\" – explicit reference to an external methodology/spec",
+    "Reversibility tiers R1/R2/R3 for decisions, each with default, assumption, validated-by, and revisit trigger columns",
+    "Numbered validation gates V0–V4 with hypothesis/method/acceptance threshold/evidence/unlocks fields, and budgets labeled REQUIREMENT/ASSUMPTION/BASELINE/UNKNOWN",
+    "Mandatory Phase 0 'first end-to-end slice' plus fixed sections: Exceptions, Deferred with pull-forward conditions, AI Layer N/A, Cross-Cutting Concerns matrix",
+    "Closing Self-Check with checkmarks restating principles (rework widest first, exposure smallest first, dependency-ordered), and dependency classification by kind (Structural/Runtime/Decision/Validation/Organizational/Economic)"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 419,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 19529
+  },
+  "cost_usd": 0.053020500000000005,
+  "latency_s": 26.479,
+  "raw_file": "raw/probe-4bc1a12c4dc1.probe.sonnet-5.5.txt"
+}

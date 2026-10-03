@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ca0d951878de.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "ca0d951878de",
+  "blind_sha256": "aa959d7c33a9956375d17727a47811c70ed35f6f6b7c43fb9e9c16645e7c0f07",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 4,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Tenancy & isolation (V1) → artifact registry built and tested → supply-chain signing (V3) → pilot on-boarding (Phase 2).",
+      "rationale": "Phases build registry/logging, then runners/signing, then deploy, canary, scale, cutover, each gated by prior validation exits and an explicit dependency map."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A developer pushes a commit to the `main` branch... builds a container image, pushes it to the registry, and deploys to a staging namespace",
+      "rationale": "Phase 0 is a real end-to-end slice with rollback and alerting, though it targets staging rather than production, which is a minor weakness."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Centralized vs federated platform | R3 | Default... | Flip condition: Adoption < 50% or persistent performance isolation needs",
+      "rationale": "Irreversible decisions are tabulated with reversibility, default, assumption, validation, and flip condition, and R1 defaults and N/A items are also listed."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Tenancy & isolation design (Decision V1)... Cluster credential model (Decision V5)",
+      "rationale": "Broad foundational decisions come first in phases 1 and 3, but task ordering within phases is not explicitly justified by blast radius, and some leaf tasks like runbooks sit alongside wide ones."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Webhook authed via GitHub signature; staging cluster NetworkPolicy allows traffic only from build runners and dev machines; no prod credentials in skeleton build",
+      "rationale": "Concrete security measures appear in every phase from 0 through 8 in the cross-cutting table and in phase tasks."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "All build steps logged... trace ID correlates all steps; dashboard shows one build end-to-end",
+      "rationale": "Observability is concrete in Phase 0 (logs, metrics, alerts, dashboard) and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Build command and image Dockerfile committed to Git; build runs in Docker; one checkout commit → one image digest",
+      "rationale": "Reproducibility is concretely addressed per phase, including digest parity checks and configs in Git."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Staging cluster has pod disruption budgets; readiness probes gate traffic; manual rollback tested; skeleton survives one runner node failure",
+      "rationale": "Failure handling, rollbacks and kill-switches are concrete in each phase, starting at Phase 0."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A — no AI component. The platform does not use generative models, no untrusted prompts, no inference cost.",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Pull forward when teams request guaranteed latency isolation... Trigger: any team experiences > 50% queue-time increase for 2 consecutive weeks.",
+      "rationale": "Six deferred items are each listed with a concrete pull-forward trigger."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A strong, thorough plan. It is weakened mainly by a staging-only skeleton and by blast-radius ordering that is implicit rather than explicit within phases.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1209,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 18362
+  },
+  "cost_usd": 0.058003,
+  "latency_s": 28.796,
+  "raw_file": "raw/judge-ca0d951878de.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

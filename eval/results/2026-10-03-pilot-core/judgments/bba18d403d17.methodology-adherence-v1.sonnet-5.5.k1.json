@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "bba18d403d17.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "bba18d403d17",
+  "blind_sha256": "050681c546e8369d9c2a44336e4a3644fa3d616685b78af3c4d63b164836ebf8",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 395,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Defenses and budgets\" depends on V0; Phase 2 \"Depends on: V1, V2, the org-owner install approval.\"",
+      "rationale": "Phases go skeleton → defenses → retrieval → triage canary → fix loop → routing → public, with each gated by the validation it depends on."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A team member opens the issue \"Typo in README\"... The agent applies `type:docs` and opens a draft PR from the forks org",
+      "rationale": "Phase 0 is a real production end-to-end slice across 9 tiers with deploy, rollback, and traces."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Flip condition: \"A comment class reaches ≥ 95% approval as written over 200 comments (ASSUMPTION) → that class may run on its own\"",
+      "rationale": "Nine tradeoff rows give reversibility, default, assumption, validation and flip condition, and the R1 defaults are listed."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks, widest rework first: 1. Per-job scoped tokens (row 1). 2. A tool executor with an allow-list",
+      "rationale": "Within Phase 1, credential and executor work comes before leaf controls, and the plan states this ordering explicitly."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"HMAC-verified webhooks; one-repo allow-list; issue text treated as data; kill switch\"",
+      "rationale": "Every phase from 0 to 7 has concrete security controls."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: \"One trace across every tier; ledger; alerts on dead-letter jobs and cost\"",
+      "rationale": "Observability starts in Phase 0, and every later phase has specific dashboards, metrics or logs."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform; image signed and pinned by digest; model and prompt version stored on every job",
+      "rationale": "Reproducibility is addressed in every phase, covering infrastructure, images, index and eval versions, and agent version."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: \"Idempotency keys; issue lock; dead-letter queue; rollback by digest\"",
+      "rationale": "Each phase has concrete failure handling and rollback, from the first phase that builds anything."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Phase 1 \"Defenses and budgets\" precedes Phase 2 retrieval/model access, Phase 4 memory/orchestration, Phase 6 routing/feedback",
+      "rationale": "Defenses, budgets and human-in-the-loop come first, followed by retrieval, model access, memory, orchestration, routing and feedback in the required order."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Autonomous merging. Pull forward when stakeholders require it and at least 6 months of agent PRs show a revert rate below a threshold",
+      "rationale": "The deferred list is explicit, and most items carry a pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan that meets every dimension with concrete content; the only weakness is that a few thresholds are left as assumptions or UNKNOWNs, and those are labeled as such.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1182,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 12378
+  },
+  "cost_usd": 0.042773,
+  "latency_s": 14.665,
+  "raw_file": "raw/judge-bba18d403d17.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

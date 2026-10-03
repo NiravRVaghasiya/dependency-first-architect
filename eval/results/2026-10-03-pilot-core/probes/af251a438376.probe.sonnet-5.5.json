@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "af251a438376.probe.sonnet-5.5",
+  "blind_id": "af251a438376",
+  "blind_sha256": "c59426cd423ef490a7477a4c8245a4e3ccc8fbf904dcca6d5f8161551c3e85ec",
+  "judge": "sonnet-5.5",
+  "order_index": 37,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.9,
+  "cues": [
+    "Opens with a 'How I wrote this' note: workspace empty, defaults chosen for each unknown and tagged [A#], with the five most shape-changing ones listed at the end. This looks like a prescribed procedure for handling missing context.",
+    "Rigid section structure: Summary, Context and Goals, ranked quality attributes with measurable targets, Current State, Assumptions table with 'impact if wrong / validate how', Decisions table with options, reversibility and 'revisit if'. A template appears to prescribe this.",
+    "Decision records (D1–D10) each list alternatives, rationale tied to the ranked drivers, reversibility and a revisit trigger. Spikes include 'Changes plan if' thresholds.",
+    "Milestones have fixed columns (goal/risk cleared, scope, exit criteria, depends on, size). There is a first-milestone task breakdown with IDs and 'done when' criteria. Deferred work has triggers, and the plan ends with a Next Steps section and open questions.",
+    "Explicitly inspects the workspace (README.md) and reports it under 'Current State'. Has a 'Deliberate shortcuts' list and a trade-off rule ('shorten what the system computes before you let it miss the deadline'). This systematic rigor is more than a default unguided plan usually has."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 507,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 24900
+  },
+  "cost_usd": 0.067328,
+  "latency_s": 28.239,
+  "raw_file": "raw/probe-af251a438376.probe.sonnet-5.5.txt"
+}

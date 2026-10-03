@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "a3afdb2791f5.probe.sonnet-5.5",
+  "blind_id": "a3afdb2791f5",
+  "blind_sha256": "7e442e4fd97735270bdf4bcfd5a7e890dd50e76ee70eb5963f50b4d031ecf424",
+  "judge": "sonnet-5.5",
+  "order_index": 55,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.9,
+  "cues": [
+    "Explicit labelled assumptions [A1]–[A11] with impact-if-wrong and validation timing, plus an open-questions table with owner, default and needed-by",
+    "Fixed, template-like section structure: Summary, Context/Goals/Non-goals, ranked quality attributes with measurable targets, Current State, Key Decisions table with options considered, rationale, reversibility and revisit triggers",
+    "Opens with a note that the workspace is empty and that defaults were chosen instead of asking questions, then closes with the five questions that would change the plan most",
+    "Milestones have goal/risk cleared, in/out scope, exit criteria and dependencies; task breakdown has 'Done when' columns; spikes list 'Changes plan if' conditions",
+    "Dedicated sections for deferred work with triggers, deliberate shortcuts, a risks table with early-warning signs and owners, and a rollout with a stated point of no return"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 380,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 24606
+  },
+  "cost_usd": 0.065323,
+  "latency_s": 31.045,
+  "raw_file": "raw/probe-a3afdb2791f5.probe.sonnet-5.5.txt"
+}

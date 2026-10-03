@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "815bae4abc26.probe.sonnet-5.5",
+  "blind_id": "815bae4abc26",
+  "blind_sha256": "23e9087d7395cd5d881db9821538304b132e3d5c5a9563e763bb23a275c2f486",
+  "judge": "sonnet-5.5",
+  "order_index": 126,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Section 2 'Key decisions (resolved up front)' table with Default and Revisit trigger columns, including rows for '(AI) prompt+RAG vs fine-tune' marked N/A",
+    "Explicit 'First end-to-end slice (Phase 0)' defined as one real request/response, tiers crossed, what's deployed/logged/monitored on day zero",
+    "Phase structure 'ordered by dependency; within each phase, widest impact first' with Unlocks/Depends on/Exit check in every phase",
+    "Cross-cutting concerns matrix (security, observability, reproducibility, resilience) per phase 'from the first commit'",
+    "Explicit Classification section ('Not AI', dominant constraint, worst failure) plus a Deferred table with pull-forward triggers and a stated-not-assumed deploy target"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 350,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7300
+  },
+  "cost_usd": 0.021758,
+  "latency_s": 26.765,
+  "raw_file": "raw/probe-815bae4abc26.probe.sonnet-5.5.txt"
+}

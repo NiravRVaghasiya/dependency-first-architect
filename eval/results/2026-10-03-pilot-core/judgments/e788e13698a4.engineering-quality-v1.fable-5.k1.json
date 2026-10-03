@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e788e13698a4.engineering-quality-v1.fable-5.k1",
+  "blind_id": "e788e13698a4",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 96,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Use class weighting or downsampling, then recalibrate so the probabilities are true again (isotonic or Platt scaling).",
+      "rationale": "Technical claims are accurate including the subtle ones (calibration after resampling, selection bias on declines, GBDT latency, exactly-once checkpointed state, tokenization reducing PCI scope)."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "the auth path only reads precomputed state and runs cheap math. Anything heavy ... runs off the path.",
+      "rationale": "Solves exactly the stated problem (synchronous real-time scoring), resolves ambiguities with stated defaults, phases scope realistically, and defers extras explicitly."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "SYNCHRONOUS (auth path, ≤50ms) ... ASYNCHRONOUS (streaming)",
+      "rationale": "Clean sync/async split with clear ownership of features, labels, and decisions; choices (latency budget, logged feature vectors, fallback) are honored consistently across sections."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "replay backtest → shadow mode (score everything, act on nothing, 2–4 weeks) → canary at 1–5% of traffic",
+      "rationale": "Riskiest assumptions are tested early (latency harness in phase 1, shadow before action), criteria are measurable, and validation continues post-launch via delayed precision/recall and decline-rate anomaly alerts."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "These choices change the design a lot, so I've stated my defaults",
+      "rationale": "Design-critical assumptions (role, TPS, latency budget, fail-open policy) are explicit in a table with defaults, estimates are hedged, and open questions flag what would change the design."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "card-testing bursts happen faster than that. Fix: keep short-window counters (1m/10m) updated in the request path",
+      "rationale": "Covers the hard domain failures — scorer outage fallback, duplicates/reversals, feature-freshness attacks, drift, broken-model decline spikes — each with concrete detection and recovery (kill switches, rollback)."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Kill switches: per model, per rule, and per segment, with a fast rollback to the previous model version.",
+      "rationale": "Monitoring signals, rollback, and safe change paths are concrete and plausibly sized, but incident ownership and on-call responsibility are never assigned."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "cost_of_false_decline (lost interchange + churn risk)",
+      "rationale": "Business cost of decisions is modeled well, but build-and-run costs — streaming/online-store infrastructure, build-vs-buy for the feature platform, engineering effort — are entirely unaddressed."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "What do you already run (Kafka/Flink vs Kinesas, cloud provider, any existing rules engine)?",
+      "rationale": "Model changes are heavily guarded (shadow/canary/rollback) and vendor choices are deferred pending stack answers, but persisted formats, token scheme, and Kafka/Flink lock-in get no explicit exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "a gradient-boosted tree model (LightGBM or XGBoost) as the main model ... You can add these later",
+      "rationale": "Starts with rules plus a simple GBDT and defers graph/sequence/anomaly models to later phases; every component maps to a stated need with no gold-plating."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phase 1 | 0–6 | Event logging to Kafka and the lakehouse, label pipeline, rules engine on the auth path, latency harness",
+      "rationale": "Dependency-justified build order (data and rules before models), specific technology and policy decisions, and checkable gates (shadow metrics, canary percentage) let a team start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P8-01",
+      "status": 2,
+      "evidence": "Latency budget (p99): feature fetch 10 ms, model 3 ms, rules 2 ms, overhead 5 ms, with 30 ms of headroom."
+    },
+    {
+      "id": "P8-02",
+      "status": 2,
+      "evidence": "a hard timeout on the scorer, then rules only, then default approve under a capped amount. Every fallback is logged and alerted on."
+    },
+    {
+      "id": "P8-03",
+      "status": 2,
+      "evidence": "define each feature once in a feature platform (Feast, Tecton, or in-house) and log the exact feature vector served with every decision"
+    },
+    {
+      "id": "P8-04",
+      "status": 2,
+      "evidence": "only train on transactions old enough for labels to have arrived, for example more than 90 days ... out-of-time splits only, never random splits"
+    },
+    {
+      "id": "P8-05",
+      "status": 2,
+      "evidence": "decline if p(fraud) × amount × loss_rate > cost_of_false_decline ... PR-AUC, recall at a fixed decline rate"
+    },
+    {
+      "id": "P8-06",
+      "status": 2,
+      "evidence": "Rules are versioned, analysts can deploy them in minutes ... approve / decline / step-up (3DS/OTP) / review"
+    },
+    {
+      "id": "P8-07",
+      "status": 2,
+      "evidence": "Case management (analyst queue) ──► labels ... cardholder fraud claims (faster), and analyst decisions"
+    },
+    {
+      "id": "P8-08",
+      "status": 2,
+      "evidence": "Tokenize the full card number (PAN) at the edge so the fraud stack sees only tokens. This keeps most of the stack out of PCI scope."
+    },
+    {
+      "id": "P8-09",
+      "status": 2,
+      "evidence": "use watermarks and handle late or out-of-order events. Deduplicate on transaction ID, because auth retries and reversals happen."
+    },
+    {
+      "id": "P8-10",
+      "status": 2,
+      "evidence": "shadow mode (score everything, act on nothing, 2–4 weeks) → canary at 1–5% of traffic → champion/challenger ... feature null rate and drift (PSI)"
+    },
+    {
+      "id": "P8-11",
+      "status": 2,
+      "evidence": "keep audit logs of every decision with the model, rule, and feature versions ... SHAP-based reason codes for each decline"
+    },
+    {
+      "id": "P8-12",
+      "status": 2,
+      "evidence": "About 5–10k TPS at peak ... multi-AZ and active-active across regions. The online store is replicated."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P8-T1",
+      "present": false,
+      "evidence": "SYNCHRONOUS (auth path, ≤50ms) ... Fraud Decision Service ──► approve / decline / step-up"
+    },
+    {
+      "id": "P8-T2",
+      "present": false,
+      "evidence": "a hard timeout on the scorer, then rules only, then default approve under a capped amount"
+    },
+    {
+      "id": "P8-T3",
+      "present": false,
+      "evidence": "out-of-time splits only, never random splits ... PR-AUC, recall at a fixed decline rate"
+    },
+    {
+      "id": "P8-T4",
+      "present": false,
+      "evidence": "define each feature once in a feature platform ... keep short-window counters (1m/10m) updated in the request path"
+    },
+    {
+      "id": "P8-T5",
+      "present": false,
+      "evidence": "Tokenize the full card number (PAN) at the edge so the fraud stack sees only tokens"
+    }
+  ],
+  "note": "An expert-level plan that nails the hard fraud-domain problems (latency budget, fallback policy, train/serve skew, delayed labels, selection bias, PCI scope) and avoids all traps; its only real gaps are infrastructure/engineering cost reasoning and explicit operational ownership.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 5970,
+    "thinking_tokens": 3332,
+    "cache_read_input_tokens": 929,
+    "cache_creation_input_tokens": 10362
+  },
+  "cost_usd": 0.428974,
+  "latency_s": 441.837,
+  "raw_file": "raw/judge-e788e13698a4.engineering-quality-v1.fable-5.k1.txt"
+}

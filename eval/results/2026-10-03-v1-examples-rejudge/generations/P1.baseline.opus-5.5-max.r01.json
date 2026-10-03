@@ -1,0 +1,85 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P1.baseline.opus-5.5-max.r01",
+  "prompt_id": "P1",
+  "condition": "baseline",
+  "generator": "opus-5.5-max",
+  "run_index": 1,
+  "seed": null,
+  "seed_honored": false,
+  "request": "Plan a customer-support RAG chatbot over our help-center docs.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P1.baseline.opus-5.5-max.r01.md",
+  "output_sha256": "cc14fa58721b9b287c748d1839b35e505a28154a11c5b76b2a5d5e809c0da940",
+  "metrics": {
+    "words": 2397,
+    "chars": 14365,
+    "visible_tokens_est": 3592
+  },
+  "turns": 11,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "w07",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w07/README.md",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w07/package.json",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w07/pyproject.toml",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w07/requirements.txt",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w07/docs",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w07/help-center",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w07/src",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w07/data",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w07/.git",
+      "ok": false
+    }
+  ],
+  "skills_available": null,
+  "instructions_loaded": null,
+  "started_at": null,
+  "finished_at": null,
+  "provider": "imported",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [],
+  "model_mismatch": false,
+  "usage": null,
+  "cost_usd": null,
+  "latency_s": null,
+  "raw_file": null
+}

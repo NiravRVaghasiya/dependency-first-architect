@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e2d76ae054ab.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "e2d76ae054ab",
+  "blind_sha256": "9e7612005986868bfa6ad97b514e00c885275f32690c30a7c00718c410551877",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 18,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1 \"Ledger schema and tenancy model hardening\"; Phase 2 \"Depends on: Phase 1; V1 passes\"",
+      "rationale": "Mostly substrate-upward with explicit dependency map and gates, but some ordering flaws (backup/audit in Phase 2 after ledger, V1 benchmark starts after schema, V2 100K-tenant batch test precedes PCI/Stripe) and inconsistencies like Phase 0 using tenancy before Phase 1 hardening."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "\"Deploy to staging via CI pipeline (git push → container build → database migration → helm install).\"",
+      "rationale": "Phase 0 is a real end-to-end slice with CI, rollback and alert, but it runs in staging on internal IP with mocks and no auth, not production."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"Strong ACID ... | Flip condition: V1 fails and writes/s exceeds limits: move to sharded primaries with quorum commit\"",
+      "rationale": "Irreversible decisions are tabulated with reversibility, default, assumption, validation, and flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "\"Design and migrate schema ... Add Postgres RLS policy\" before provisioning and posting rules",
+      "rationale": "Within phases wide-impact items (schema, RLS, backup) come first in places, but ordering is not explicitly reasoned and later phases mix leaf work like onboarding checklist with wide work."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"Test tenant only; no production credentials; mock Stripe; API endpoint behind allow-list (internal IP).\"",
+      "rationale": "Cross-cutting table gives concrete security content in every phase from Phase 0, though Phase 0 has no auth."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"Observability (logs, metrics, trace): every API call, ledger posting, invoice state transition, and error logged with tenant_id\"",
+      "rationale": "Observability is concrete in Phase 0 and every subsequent phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"CI builds container with pinned Dockerfile base image; helm chart version tagged; DB migrations versioned.\"",
+      "rationale": "Reproducibility has concrete per-phase treatment from Phase 0 through 5."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"Payment capture failures are retried 3× with exponential backoff; webhook failures are re-queued; circuit breaker on Stripe API rate limits.\"",
+      "rationale": "Resilience (rollback, backup, idempotency, retries, kill-switch, failback) appears in every phase with specifics."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"N/A — no AI component.\"",
+      "rationale": "Plan explicitly declares AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Micro-services refactor ... Condition: Phase 4 monolith throughput or on-call complexity exceeds team budget (on-call incidents > 2/week OR services to run > 5).\"",
+      "rationale": "Deferred items are listed with concrete pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, thorough plan with concrete gates and threaded cross-cutting concerns; weaknesses are a staging-only skeleton and some ordering inconsistencies.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1252,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 13853
+  },
+  "cost_usd": 0.0471605,
+  "latency_s": 23.52,
+  "raw_file": "raw/judge-e2d76ae054ab.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

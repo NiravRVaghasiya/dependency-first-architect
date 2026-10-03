@@ -1,0 +1,100 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P7.dfa.opus-5.5.r05",
+  "prompt_id": "P7",
+  "condition": "dfa",
+  "generator": "opus-5.5",
+  "run_index": 5,
+  "seed": 2915574642,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Plan a command-line tool that renames a folder of photos by their EXIF capture date.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P7.dfa.opus-5.5.r05.md",
+  "output_sha256": "380a56d96ef440a993a9b838b3955565b55c4f9aa38d1d5933cb4f80b359c460",
+  "metrics": {
+    "words": 2512,
+    "chars": 15204,
+    "visible_tokens_est": 3801
+  },
+  "turns": 2,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "dependency-first-architect:dependency-first-architect",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "reference/plan-template.md",
+      "sha256": "95ccaec942bf8a640ff4d830daada167a340b6b652242e2ed41aec6d24605c2a",
+      "words": 1257
+    }
+  ],
+  "started_at": "2026-10-03T00:16:50+00:00",
+  "finished_at": "2026-10-03T00:20:25+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [
+    "claude-opus-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 14400,
+    "thinking_tokens": 8324,
+    "cache_read_input_tokens": 7083,
+    "cache_creation_input_tokens": 8880
+  },
+  "cost_usd": 0.3338406,
+  "latency_s": 214.542,
+  "raw_file": "raw/gen-P7.dfa.opus-5.5.r05.txt"
+}

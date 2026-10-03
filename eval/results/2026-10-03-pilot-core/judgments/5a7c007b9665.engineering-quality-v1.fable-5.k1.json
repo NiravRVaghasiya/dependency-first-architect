@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "5a7c007b9665.engineering-quality-v1.fable-5.k1",
+  "blind_id": "5a7c007b9665",
+  "blind_sha256": "8ad9e9bc3f413989fa90877d4b5df1a8e91079ddc98356946d343bc1e9916597",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 245,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "our PCI DSS scope stays at SAQ A (reduced, not zero)",
+      "rationale": "Mechanisms (RLS via per-transaction tenant context, transactional outbox/inbox, PSP idempotency keys derived from attempt IDs, at-least-once signed webhooks, gapless numbering at finalization) are described accurately, including the real limits of each guarantee."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "each tenant (a SaaS company) uses it to bill its own end customers for subscriptions and usage",
+      "rationale": "The platform-vs-module ambiguity is resolved explicitly and core billing capabilities are phased credibly, but trials, dunning specifics and end-customer entitlement continuity are thin or only deferred."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Strong (serializable or row-locked transactions on one primary) for ledger, invoice finalization and payment attempts",
+      "rationale": "Responsibilities, data ownership and consistency choices are stated once and honored everywhere (RLS from Phase 0, outbox/inbox on every async path, adapters for all vendors), with no contradictions found."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "0 duplicates and 0 amount mismatches across ≥ 10k fault scenarios; 0 unexplained reconciliation breaks over 2 cycles",
+      "rationale": "V0–V8 tie each check to a specific risk with measurable thresholds labeled as assumptions, run the riskiest checks before commitment (V1 before dependents, V4/V5 before live charges), and continue in production via reconciliation and SLOs."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "UNKNOWN: needs tenant count, end customers, invoices/month and peak usage events/s at 12 months",
+      "rationale": "Assumptions (a)–(c) and every budget are explicitly labeled ASSUMPTION or UNKNOWN with a named supplier and confirmation path, and each decision row states what changes if the assumption fails."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "crashes between the PSP call and commit",
+      "rationale": "Covers the hardest domain failures — duplicate charges, out-of-order webhooks, lost usage events, ledger imbalance, cross-tenant leaks — each with concrete detection (reconciliation, balance monitor, dedup) and containment (kill switches, DLQ, shadow mode)."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Rollback is redeploying the previous image. Migrations only add things.",
+      "rationale": "Deployment, rehearsed rollback, expand-then-contract migrations, domain-meaningful alerts (outbox lag, reconciliation breaks, invoice-run dashboard), on-call, DR drills and an explicit operational-complexity budget sized to a 5–8 person team."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Unit-cost dashboard against the target take rate",
+      "rationale": "Cost drivers are named (PSP platform fees, tax-engine calls, infra), unit cost is measured from Phase 3 and gated at GA, but cost scaling with usage and the build-cost side of the build-vs-buy trade are not quantified."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "contract includes a token-portability clause",
+      "rationale": "Every decision is classified R2/R3 with revisit triggers, irreversible points (first live charge, legacy decommissioning) are gated by validations, and exit paths (silo cells, Adyen via the same adapter, TigerBeetle, Kinesis flip) are explicit."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Modular monolith (billing core) plus a separate usage-ingest service",
+      "rationale": "Starts with two deployables, Postgres-backed queue and managed services, defers Temporal, streaming stores, multi-region and cells behind named triggers, with no component lacking a stated need."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Killing the worker between commit and outbox dispatch produces neither a lost nor a duplicated event.",
+      "rationale": "Phases have dependency-justified order, a concrete first slice, checkable exit criteria, specific technology decisions, and every validation row states what happens if it fails."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Money is `bigint` minor units plus ISO 4217 currency."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "A finalized invoice never changes; corrections go through credit notes"
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "Payment attempts whose PSP idempotency key is derived from `payment_attempt_id`"
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "Payment-method capture through PSP-hosted fields only"
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "Postgres Row-Level Security reads `app.tenant_id`, which is set per transaction from the authenticated context"
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "Dedup on (`tenant_id`, `event_id`). Late-event policy: events accepted until invoice finalization, then credited to the next period"
+    },
+    {
+      "id": "P2-07",
+      "status": 1,
+      "evidence": "Subscription lifecycle: create, upgrade or downgrade with proration, pause, cancel"
+    },
+    {
+      "id": "P2-08",
+      "status": 2,
+      "evidence": "Buy tax: Stripe Tax or Avalara behind a `TaxEngine` adapter"
+    },
+    {
+      "id": "P2-09",
+      "status": 1,
+      "evidence": "Dunning schedule; refunds; disputes"
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "Daily reconciliation: every PSP balance transaction ↔ a ledger entry"
+    },
+    {
+      "id": "P2-11",
+      "status": 1,
+      "evidence": "Prepaid credits, wallets, entitlements service, quotes/CPQ: pull forward when design partners need them"
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Build the billing core (it is the product). Buy the PSP: Stripe Connect behind a `PaymentProvider` adapter"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Money is `bigint` minor units plus ISO 4217 currency"
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Append-only double-entry ledger is the system of record for balances"
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "Inbound PSP webhooks go through an inbox dedup table"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "Card data never touches our systems (PSP-hosted fields)"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "Automated cross-tenant test suite (V2, part 1)"
+    }
+  ],
+  "note": "An exceptionally rigorous, technically precise plan that avoids all five traps and gates every irreversible step; the few gaps are trials/time-zone detail, dunning specifics, end-customer entitlement continuity, and cost-scaling quantification.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 14184,
+    "thinking_tokens": 6393,
+    "cache_read_input_tokens": 45478,
+    "cache_creation_input_tokens": 27850
+  },
+  "cost_usd": 1.102863,
+  "latency_s": 208.905,
+  "raw_file": "raw/judge-5a7c007b9665.engineering-quality-v1.fable-5.k1.txt"
+}

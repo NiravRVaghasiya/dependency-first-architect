@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0b8733db7ffe.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "0b8733db7ffe",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 7,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 — Tenancy, identity, and ledger core ... Exit check: V1 and V2 pass. Phase 2 \"Depends on: Phase 1; V1, V2.\"",
+      "rationale": "Phases go from isolation and ledger substrate up to invoicing, metering, payments and live exposure, each gated on validated dependencies and a dependency map."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "POST /v1/usage-events ... → GET /v1/invoices/draft returns a draft invoice containing one rated line and a $0 total.",
+      "rationale": "Phase 0 is a real production end-to-end slice across all tiers, with deploy, rollback, alerting and a V0 exit check."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Tenancy and isolation | R3 ... Default: Shared Postgres, tenant_id on every row, RLS ... Flip condition: V1 fails, or a contract requires a dedicated DB",
+      "rationale": "Irreversible decisions have reversibility class, default, assumption, validation and flip condition, and unknowns are labelled."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1 — Tenancy, identity, and ledger core (widest blast radius first); Phase 5 — Single-tenant live-money canary (smallest exposure first)",
+      "rationale": "Widest-impact isolation and ledger work precedes leaf features, and exposure widens from one tenant to cohorts."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: Allow-listed access, secrets in a manager, least-privilege IAM, WAF ... Phase 3: Per-tenant quotas, rate limits, payload validation",
+      "rationale": "The security column has concrete items for every phase from 0 to 6, with V1 and V4 as gates."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Structured logs and one trace per request with tenant_id and opaque IDs only... Dashboards for RED metrics and outbox lag. One synthetic probe runs every minute.",
+      "rationale": "Observability is concrete in Phase 0 and in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Phase 0: IaC, immutable images, pinned dependencies; Phase 3: Replayable event log, load-test harness in repo",
+      "rationale": "Reproducibility measures (IaC, fixtures, golden files, replay, test-mode fixtures) appear in every phase."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 1: Expand/contract migrations, PITR enabled; Phase 3: Backpressure, dead-letter queue, replay; Phase 5: Instant charge kill-switch",
+      "rationale": "Failure handling appears concretely in every phase, including rollback and idempotency, and is not left to the end."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "## 8. AI layer N/A — no AI component.",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Multi-currency and FX: pulled forward when the first tenant needs a second currency (the ledger stores currency from day one).",
+      "rationale": "Eight deferred items each have an explicit pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan that meets every rubric dimension with concrete content; the only soft spot is that several budget inputs are marked UNKNOWN, but they are labelled honestly and have owners.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1246,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 8806
+  },
+  "cost_usd": 0.034596,
+  "latency_s": 28.398,
+  "raw_file": "raw/judge-0b8733db7ffe.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

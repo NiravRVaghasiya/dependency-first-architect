@@ -1,0 +1,45 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P2.dfa-v1.opus-5.5-max.r01",
+  "prompt_id": "P2",
+  "condition": "dfa-v1",
+  "generator": "opus-5.5-max",
+  "run_index": 1,
+  "seed": null,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Architect a multi-tenant SaaS billing system.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P2.dfa-v1.opus-5.5-max.r01.md",
+  "output_sha256": "0c4ba343d03173f7437519d705e6abfa001db345d8689a42e2c69cc036886e02",
+  "metrics": {
+    "words": 6235,
+    "chars": 39315,
+    "visible_tokens_est": 9829
+  },
+  "turns": 3,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugin/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugin/skills/dependency-first-architect/reference/evals.md",
+      "ok": true
+    }
+  ],
+  "skills_available": null,
+  "instructions_loaded": null,
+  "started_at": null,
+  "finished_at": null,
+  "provider": "imported",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [],
+  "model_mismatch": false,
+  "usage": null,
+  "cost_usd": null,
+  "latency_s": null,
+  "raw_file": null
+}

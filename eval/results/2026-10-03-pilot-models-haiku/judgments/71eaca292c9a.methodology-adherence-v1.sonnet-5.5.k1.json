@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "71eaca292c9a.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "71eaca292c9a",
+  "blind_sha256": "9980bf97ecf9263f285dbb9f43f44353efc45ec1df20a12aa9d0b04496543c32",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 26,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Depends on: V0 passes\"; \"Phase 2 Depends on: Phase 1 exit check and V1 pass\"",
+      "rationale": "Phases run substrate (skeleton, build infra, secrets, observability) to deployment safety to onboarding to scale, each gated by a validation; the dependency map is somewhat muddled but the ordering holds."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"One real microservice (canary service) ... passes through the new platform from commit to production within the latency targets, with a rollback verified.\"",
+      "rationale": "Phase 0 is a real end-to-end commit-to-production path with rollback, observability and a concrete exit check."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"If p95 latency > 8 min, split fast and slow test tiers\"; build-vs-buy default with R3 reversibility and flip conditions",
+      "rationale": "A table of irreversible decisions gives defaults, assumptions, validation and flip conditions, and assumptions are labeled."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "\"Orchestration platform baseline (widest rework if wrong)\"; \"Onboard 3 lowest-risk services\" then larger waves",
+      "rationale": "Tasks are explicitly ordered with the widest-impact work first in each phase, and exposure grows from small to large."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "\"webhook from GitHub uses HMAC-SHA256 signature verification\"; per-phase security column through Phase 4",
+      "rationale": "Concrete security work appears in every phase from Phase 0 (secret injection, webhook verification, access limits) onward."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"All platform and service logs routed to central log aggregator ... searchable within 2 s\"",
+      "rationale": "Phase 0 has concrete logging, dashboards and alerts, and every later phase extends them."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"immutable base image (digest pinned, not tag); build cache versioned with Dockerfile\"",
+      "rationale": "Reproducibility measures (digest pinning, content addressing, version-controlled manifests, commit-mapped deploys) appear in every phase."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"Automated: if service error rate > 5% ... kill canary traffic and revert to previous image.\"",
+      "rationale": "Rollback is in Phase 0, and backup/restore, DR drills, fallback pipelines and incident drills follow in later phases."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"N/A — no AI component. This is a traditional CI/CD orchestration platform, not an agentic system.\"",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Multi-region deployment: Deferred to Phase 4. Condition: trigger if a) single-region outage > 4 hours observed...\"",
+      "rationale": "A deferred-work list gives explicit triggers for each item, though a couple of triggers are vague."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A strong, well-threaded plan with a real Phase 0 skeleton, explicit gates and deferrals, and the AI layer correctly marked N/A. Minor flaws are a muddled dependency map, Phase 0 running on hardened-later defaults, and some inconsistencies.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1229,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 18115
+  },
+  "cost_usd": 0.0575855,
+  "latency_s": 24.663,
+  "raw_file": "raw/judge-71eaca292c9a.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

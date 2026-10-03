@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "50ccf73c3c10.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "50ccf73c3c10",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 31,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Depends on: V0\"; Phase 2 \"Depends on: Phase 1 and the health-metrics dependency\"; Phase 3 \"V1 and V2 before wave 1; V3 before wave 2; V4 before wave 3\"",
+      "rationale": "Each phase names its dependency and gates on validation proof before dependents proceed, going from substrate to contracts to delivery to migration to decommission."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "One real commit to a low-risk, stateless internal service with a willing team. The response is that service running the new version in production.",
+      "rationale": "Phase 0 is a real end-to-end prod path with deploy, observe and rollback before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Default | Assumption | Validated by | Flip condition — e.g. \"Pull (GitOps with Argo CD)... Flip: Targets are not Kubernetes\"",
+      "rationale": "Irreversible decisions are tabulated with reversibility class, default, assumption, validation and flip condition, plus missing inputs listed."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks, widest rework first: 1. Freeze the artifact contract... Phase 3 (smallest exposure first)",
+      "rationale": "Phase 1 orders the widest-impact contract and template work before leaf dry-runs, and migration waves are ordered by exposure."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "0: OIDC identity for one namespace; secret masking in logs | 1: Signing plus admission enforce; scans | 4: Rotate every legacy secret",
+      "rationale": "Concrete security work appears in every phase starting with Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Pipeline events and Argo sync events go into the central log and trace system (OpenTelemetry), tagged with commit SHA.",
+      "rationale": "Observability is built in Phase 0 and has specific content in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Pipeline-as-code; pinned runner image | Versioned templates; digest-pinned images; SBOM | All deploy state in the GitOps repo",
+      "rationale": "Reproducibility has concrete treatment in every phase."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Old pipeline kept as fallback; git-revert rollback | Template version pinning | Automatic rollback | Per-service fallback | Restore rehearsed",
+      "rationale": "Failure handling and rollback are specified in every phase, with break-glass and per-phase rollback entries."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: no AI component.",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Merge queue: when main-branch breakages exceed 2 per week on any shared repo.",
+      "rationale": "Deferred items are listed with concrete pull-forward triggers."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan that meets every rubric dimension with concrete content, with no significant gaps.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1119,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 5820
+  },
+  "cost_usd": 0.025861,
+  "latency_s": 43.2,
+  "raw_file": "raw/judge-50ccf73c3c10.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

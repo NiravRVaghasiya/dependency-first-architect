@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "005ae017490c.probe.sonnet-5.5",
+  "blind_id": "005ae017490c",
+  "blind_sha256": "b68f002e6b5e5c3cbcd8c797716b5120d3c0643b8cdcb50b6e215c3e3d04f5b6",
+  "judge": "sonnet-5.5",
+  "order_index": 101,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Opens with a 'How this plan was produced' note: workspace checked, found empty, so all claims are marked as numbered assumptions [A#] and collected in a table",
+    "Fixed, numbered section skeleton (Summary, Context and Goals, Drivers, Current State, Assumptions and Open Questions, Architecture, Component Details, Data Design, Key Flows, Key Decisions, Cross-Cutting, Build Sequence, Testing, Rollout/Rollback, Risks, Deferred Work, Next Steps). This reads like a prescribed template.",
+    "Decision table with options considered, rationale tied to ranked quality attributes, reversibility, and a 'Revisit if' trigger. Also a ranked attribute table with measurable targets.",
+    "Milestones have explicit exit criteria, with a thin-slice first milestone, time-boxed spikes that each state what would change the plan, and a task breakdown with 'Done when' and file locations",
+    "Template-like boilerplate: 'AI-specific concerns: not applicable', a Deferred Work table with triggers, 'Shortcuts taken on purpose', and a per-step rollback table"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 458,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 21591
+  },
+  "cost_usd": 0.0585655,
+  "latency_s": 30.149,
+  "raw_file": "raw/probe-005ae017490c.probe.sonnet-5.5.txt"
+}

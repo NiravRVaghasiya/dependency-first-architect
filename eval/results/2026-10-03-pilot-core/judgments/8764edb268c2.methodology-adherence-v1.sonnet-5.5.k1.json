@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "8764edb268c2.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "8764edb268c2",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 29,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Depends on: Phase 1. A wrong date is only recoverable because of the journal and undo, so the safety substrate must come first.",
+      "rationale": "Phases explicitly state dependencies and proceed from skeleton to safety substrate to dates to groups to scale to hardening."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "pushing a tag makes GitHub Actions build the wheel and publish 0.0.1 to TestPyPI. A release job then runs `pipx install` on clean Windows, macOS and Linux runners",
+      "rationale": "Phase 0 is a real end-to-end slice through all tiers, installed and run on clean runners with a no-overwrite rename."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Missing-date policy | Skip the file and report it. Never fall back to mtime silently | Users ask for it explicitly. Then add opt-in `--fallback=mtime`",
+      "rationale": "A table lists irreversible decisions, including the naming contract and time semantics, each with a default and a flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks (widest first): 1. Plan schema v1 as data... Everything downstream depends on this.",
+      "rationale": "Tasks in every phase are ordered widest first, and the schema and collision work precede leaf items like the printer."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "No `shell=True`. Paths go to ExifTool through an `-@` argfile, so a filename starting with `-` can't be read as an option.",
+      "rationale": "The cross-cutting table gives concrete security treatment in every phase from 0 to 5."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "one structured line per file on stderr (`src`, `dst`, `tag_used`, `action`), with `--log-format json` for machines.",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase, and the plan explains why there is no telemetry."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "`uv.lock`, pinned Python 3.12, ExifTool version pinned in CI, three-OS matrix.",
+      "rationale": "Every phase has reproducibility measures: locks, golden tests, checksummed fixtures, TZ variation, a seeded corpus and reproducible wheels."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "No-replace rename from the first commit. Missing ExifTool fails closed with exit 4.",
+      "rationale": "Failure handling appears in every phase: the journal, skipping corrupt files, group rollback, continue-on-error and kill-mid-run tests."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: there is no AI or agentic component. Dates come from metadata, not from inferring them out of image content.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "`--normalize-tz` using `OffsetTimeOriginal`. Pull forward on reports that multi-timezone or multi-camera ordering is wrong.",
+      "rationale": "A dedicated deferred section lists each item with a pull-forward condition, and includes one item that is explicitly not planned."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "An exceptionally thorough plan that meets every rubric dimension with concrete content. The only small weakness is that Phase 0 is relatively heavy.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1199,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 7083
+  },
+  "cost_usd": 0.0298185,
+  "latency_s": 25.7,
+  "raw_file": "raw/judge-8764edb268c2.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

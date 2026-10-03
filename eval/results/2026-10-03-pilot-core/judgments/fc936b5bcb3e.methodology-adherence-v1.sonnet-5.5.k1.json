@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "fc936b5bcb3e.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "fc936b5bcb3e",
+  "blind_sha256": "31f3fe93b64c45b2f82932cf921dc76ffec9f64ab29ca9b1b8a72d25cbc395a0",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 472,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Critical path: core schema and ledger (M1) → rating and proration (M2) → ≥ 2 real month-end shadow cycles → cohort cutovers at each tenant's period boundary (M4).",
+      "rationale": "Milestones and tasks build substrate (infra, money, schema, ledger) before rating, payments, enterprise and cutover, with each gated by exit criteria."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "M1: Thin slice + spikes — Prove the full money path end to end... The nightly e2e test (T24) passes 5 nights in a row in staging.",
+      "rationale": "M1 is a genuine thin end-to-end slice, though in staging/Stripe test mode rather than production, which is a minor shortfall but substantively a walking skeleton."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D1 ... Hard | Week-1 gate: if Q2 says no usage or enterprise pricing within 12 months, choose (a)... Revisit if column",
+      "rationale": "Twelve decisions list options, reversibility and revisit triggers, and assumptions and open questions carry defaults and deadlines."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Order: T0–T3, T22, and T23 start in week 1. T5–T8 next... T12–T14 → T16 → T17. T18–T21 run in parallel",
+      "rationale": "Task order generally puts foundational work (infra, money, schema) before leaf work, but blast-radius ordering is not explicit and observability (T21) and auth come late in M1."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Security (built in M1, with the full threat review in M3) ... Staff use OIDC SSO with the roles above (M2).",
+      "rationale": "Security has concrete items in M1 (RLS, JWT, secrets, scanning), M2 and M3, but M4 cutover gets little and the treatment is mostly a standalone section."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Observability (baseline in M1, dashboards and runbooks in M3)",
+      "rationale": "Baseline is in M1 (T21), but it comes late in M1 (week 4–5) and M2/M4 have no explicit observability work beyond shadow diffs."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Terraform the staging baseline ... remote state with locking; `terraform plan` shows no changes after apply",
+      "rationale": "Terraform, migrations, CI, injectable clocks and synthetic data give reproducibility, but it is not explicitly tracked per phase (e.g. image pinning, data reproducibility in M4)."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Flow 2 tax outage retry, idempotency keys in T17, DLQ redrive in T10, restore drill in M3, rollback per tenant in M4",
+      "rationale": "Failure handling appears concretely from M1 (idempotency, retries, DLQ, rollback) through M2 dunning, M3 DR and M4 rollback."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "AI-specific concerns: not applicable. The system has no model components.",
+      "rationale": "Plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Deferred | Trigger to build — e.g. HTTPS usage ingestion | External or non-AWS producers (D9)",
+      "rationale": "Section 17 lists deferred items each with a concrete pull-forward trigger, plus extension points and deliberate shortcuts."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, concrete plan with a real thin slice, decisions with flip conditions, and explicit deferrals. Security, observability and reproducibility are only partly threaded across phases, and blast-radius ordering is implicit.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1338,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 26004
+  },
+  "cost_usd": 0.078398,
+  "latency_s": 24.562,
+  "raw_file": "raw/judge-fc936b5bcb3e.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

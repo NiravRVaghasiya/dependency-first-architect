@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "87a3870903b9.probe.sonnet-5.5",
+  "blind_id": "87a3870903b9",
+  "blind_sha256": "ba7200a6e390396cad5125ab48cef56ac4f331f4e9135ff05ddd4962b44b0980",
+  "judge": "sonnet-5.5",
+  "order_index": 18,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Fixed template sections: Classification (with dominant constraint and worst failure), Key decisions table with 'Default' and 'Revisit trigger' columns, first end-to-end slice (Phase 0), phases, cross-cutting, deferred",
+    "Decision table includes template-like rows irrelevant to the task, e.g. '(AI) Prompt+RAG vs fine-tune: N/A' and a dedicated '6. AI layer: N/A as defined' section",
+    "Phase 0 is a thin walking-skeleton slice through all tiers with an explicit 'Exit check', and each phase has 'Unlocks / Depends on / Exit check' fields",
+    "Within-phase ordering rule stated ('widest impact first', bolded widest task, 'leaf work' labels), suggesting a prescribed dependency-ordering method",
+    "Per-phase cross-cutting matrix (Security/Observability/Reproducibility/Resilience 'from the first commit') and a Deferred list with pull-forward triggers"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 411,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7692
+  },
+  "cost_usd": 0.023348,
+  "latency_s": 28.085,
+  "raw_file": "raw/probe-87a3870903b9.probe.sonnet-5.5.txt"
+}

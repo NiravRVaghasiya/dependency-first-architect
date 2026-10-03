@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "2519f538447b.engineering-quality-v1.fable-5.k1",
+  "blind_id": "2519f538447b",
+  "blind_sha256": "20cc6b39fe36749e8db0a5e798e4136de7cc93e5837e67a374ca8e8a8e65ed1e",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 247,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Keyword search matters for error codes, feature names and SKUs, which embeddings handle poorly.",
+      "rationale": "Technical claims (hybrid search rationale, pgvector adequacy at <10k articles, embedding-change-forces-reindex, cross-encoder reranking) are accurate and precisely state real limits."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Non-goals for v1: account-specific actions (refunds, password resets), multi-turn troubleshooting flows, and anything that needs the customer's own data.",
+      "rationale": "Covers all core implied capabilities, resolves ambiguities with stated assumptions and open questions, and explicitly justifies exclusions with a realistic phased path."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Store metadata per article: article_id, title, url, section/category, product, plan_tier, locale, updated_at, visibility",
+      "rationale": "Data flows connect end-to-end (metadata captured at ingestion is used for filtering, citation and conflict resolution), error paths route consistently to escalation, with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Regression gate: run the eval in CI for any change to prompts, chunking, models or the index. Block a release if a metric drops.",
+      "rationale": "Eval set built before tuning from real tickets, targets labeled as starting points, adversarial cases included, calibrated LLM-judge, agent-assist pilot before customers, and continuing online metrics."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "I don't know your stack, doc platform or volume yet, so this plan is vendor-neutral and lists its assumptions.",
+      "rationale": "Assumptions and estimates are explicitly flagged, baselines are measured before targets, and the open questions state which answers change which concrete choices."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Made-up policies or prices | Strict grounding prompt, grounding check, always escalating on billing or legal topics",
+      "rationale": "The major domain failures (hallucination, stale docs, bot loops, injection, wrong plan/version) have concrete detection and mitigation, but LLM-provider outages, retries and partial pipeline failures are unaddressed."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "monitor ingestion lag and alert if an updated article isn't re-indexed within N minutes",
+      "rationale": "Observability, freshness alerting, versioning and a weekly review loop are concrete and team-sized, but deployment/rollback mechanics are implicit and operational ownership is left as an open question."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "cache answers to frequent questions (invalidate when the source article changes), set token budgets, and rate-limit per session",
+      "rationale": "Inference as the cost driver is implicitly recognized with concrete controls and model-tier trade-offs, but there is no per-conversation cost estimate or discussion of how costs scale with traffic."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "version the prompts, embedding model and chunking config. Changing the embedding model means a full re-index.",
+      "rationale": "The costly-to-reverse choices (embedding model, index, prompts) are versioned and validated early via the eval gate, and vendor neutrality limits lock-in, though explicit exit paths are thin."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "For help-center scale (usually under 10k articles), pgvector or OpenSearch is plenty.",
+      "rationale": "Simplest workable design with speculative additions explicitly marked optional, scale sized to the actual domain, and nothing essential omitted; complexity like reranking is justified by need."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "0. Discovery | 1 wk | Doc inventory, ticket analysis (top intents), golden set v1, metric baselines",
+      "rationale": "Phased build order with dependency-justified sequencing (eval before tuning, agent-assist before customers), checkable gates per phase, and decisions specific enough to start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "use a CMS webhook on publish, update or delete, plus a nightly full reconciliation. Deletes must remove chunks from the index."
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Chunk by document structure (H2/H3 sections)... Store metadata per article: article_id, title, url, section/category, product, plan_tier, locale, updated_at, visibility"
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "Golden dataset (200–500 questions): take them from real historical tickets and chat logs... run the eval in CI for any change"
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "Answer only from the provided context. Cite article URLs. If the context doesn't contain the answer, say so and offer escalation."
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "create a ticket with the full transcript, the retrieved articles, and the bot's draft answer, so agents don't start from zero"
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "treat retrieved text and user text as data, not instructions. The bot should have no tools that can take actions in v1."
+    },
+    {
+      "id": "P1-07",
+      "status": 2,
+      "evidence": "Exclude internal-only articles, drafts... Filter on article visibility metadata... Metadata filters: locale, product, and plan tier (if known from the session)"
+    },
+    {
+      "id": "P1-08",
+      "status": 1,
+      "evidence": "redact card numbers, SSNs and similar data before logging. Set a log retention policy."
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Non-goals for v1: account-specific actions (refunds, password resets)... These come later, through tools or APIs."
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "Weekly review: sample about 50 conversations, look at failures, and fix the cause. Most fixes will be doc gaps"
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "cache answers to frequent questions (invalidate when the source article changes), set token budgets, and rate-limit per session"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Answer only from the provided context. Cite article URLs. If the context doesn't contain the answer, say so and offer escalation."
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Exclude internal-only articles, drafts, and anything with agent-only notes. Filter on article visibility metadata."
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "use a CMS webhook on publish, update or delete, plus a nightly full reconciliation. Deletes must remove chunks from the index."
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "run the eval in CI for any change to prompts, chunking, models or the index. Block a release if a metric drops."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "For help-center scale (usually under 10k articles), pgvector or OpenSearch is plenty."
+    }
+  ],
+  "note": "A near-exemplary RAG plan that avoids all the classic traps with eval-first discipline and proportionate design; its only notable gaps are missing cost-per-conversation quantification, thin PII/retention/provider-terms specifics, and unaddressed provider-outage handling.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7182,
+    "thinking_tokens": 4556,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11811
+  },
+  "cost_usd": 0.5067575,
+  "latency_s": 116.957,
+  "raw_file": "raw/judge-2519f538447b.engineering-quality-v1.fable-5.k1.txt"
+}

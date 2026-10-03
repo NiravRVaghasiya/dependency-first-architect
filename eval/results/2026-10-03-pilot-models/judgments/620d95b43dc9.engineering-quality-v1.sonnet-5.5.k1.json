@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "620d95b43dc9.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "620d95b43dc9",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 108,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Default to **Yjs**. It has offline support, mature editor bindings, and no central transform server.",
+      "rationale": "Mostly accurate (Yjs undo manager, relative positions, awareness), but durability and auth claims are thin and \"stateless-ish\" server with Postgres/S3 persistence glosses over Yjs server needs."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Decide what v1 includes: rich text, cursors/presence, comments, version history, permissions.",
+      "rationale": "Covers the main collaborative editor capabilities and is buildable, but defers scope decisions and does not state exclusions with reasons or address large-doc limits."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Scaling comes late, but keep the server stateless-ish from the start so it stays possible.",
+      "rationale": "Recognizable design but data ownership is unclear and the single-user-first phase conflicts with the stated sync-first risk reasoning."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Two-client convergence tests. Add randomized and fuzz tests here, before anything else is built on top.",
+      "rationale": "Convergence fuzzing and load tests are named and early, but no measurable criteria, no network fault injection detail, and no production validation beyond observability."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "If you give me your stack, team size, and deadline, I can turn this into a task breakdown with estimates.",
+      "rationale": "Mentions missing information but states almost no assumptions about scale, team or compliance; week estimates are given without basis."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Rate limiting, payload limits, and audit logging.",
+      "rationale": "Few failure modes are named (reconnect, rate limits) with little concrete detection or recovery; crashes, permission revocation, corrupt updates and schema migration are missing."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Observability: sync latency, connection drops, and error tracking.",
+      "rationale": "Only a one-line observability item; no deployment, rollback, migration, ownership or incident handling."
+    },
+    {
+      "dim": 8,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Costs are not discussed at all, including storage growth, connection servers, or build-vs-buy."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Phase 0: Decisions that shape everything (days)",
+      "rationale": "Recognizes the concurrency and editor framework decisions as foundational and weighs OT vs CRDT, but no exit paths, schema versioning or isolation."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Default to **Yjs**... Tiptap plus Yjs is the fastest route for rich text.",
+      "rationale": "Uses proven off-the-shelf libraries and defers polish, roughly proportionate, though some phases are listed without justification."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Permissions come before presence and comments because retrofitting access control into a running sync layer is painful.",
+      "rationale": "Ordered, concrete phases with named tools and a rationale for ordering, but checkable exit criteria and adaptation on poor results are limited."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "CRDT (Yjs or Automerge) or OT (ShareDB...). Default to **Yjs**... Choose OT only if you need strict server-authoritative ordering."
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Document schema (paragraphs, headings, lists, marks)."
+    },
+    {
+      "id": "P5-03",
+      "status": 1,
+      "evidence": "Add randomized and fuzz tests here, before anything else is built on top."
+    },
+    {
+      "id": "P5-04",
+      "status": 1,
+      "evidence": "Server-side persistence of document state (snapshots plus incremental updates in Postgres or S3)."
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "Use sticky routing by document ID, or a Redis pub/sub between server nodes."
+    },
+    {
+      "id": "P5-06",
+      "status": 1,
+      "evidence": "Reconnect and offline handling, with resync on reconnect."
+    },
+    {
+      "id": "P5-07",
+      "status": 1,
+      "evidence": "Per-document permissions (owner, editor, commenter, viewer), enforced in the WebSocket handshake."
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Use the CRDT's undo manager, not the browser's."
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "Awareness: live cursors, selections, and user colors."
+    },
+    {
+      "id": "P5-10",
+      "status": 1,
+      "evidence": "Phase 1: Single-user editor (week 1–2)"
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "Load tests, for example 50+ editors in one document and thousands of concurrent documents."
+    },
+    {
+      "id": "P5-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Default to **Yjs**."
+    },
+    {
+      "id": "P5-T3",
+      "present": true,
+      "evidence": "Phase 1: Single-user editor (week 1–2)... Build this first so you can tell editor bugs from sync bugs later."
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "Server-side persistence of document state (snapshots plus incremental updates in Postgres or S3)."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "none"
+    }
+  ],
+  "note": "Reasonable, library-based build order with early convergence fuzzing, but thin on failure handling, ops, cost, assumptions, and versioning, and it starts with a single-user editor.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1991,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 8517
+  },
+  "cost_usd": 0.0413955,
+  "latency_s": 29.25,
+  "raw_file": "raw/judge-620d95b43dc9.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

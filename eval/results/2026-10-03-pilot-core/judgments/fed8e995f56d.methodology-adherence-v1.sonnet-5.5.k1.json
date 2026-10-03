@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "fed8e995f56d.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "fed8e995f56d",
+  "blind_sha256": "c66675290ef0fc43a31ea1713d6620a4653003b1ba8a0501b31c2022fece9d25",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 338,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Depends on: Phase 0 proving that CDC, the network and the proxy work.",
+      "rationale": "Phases run substrate → replication → reads → integrations → cutover → retire, each explicitly gated on proof from the prior phase."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "a read-only \"provider's day schedule\" for one pilot clinic's waiting-room display board... It's a real production consumer with real PHI.",
+      "rationale": "Phase 0 is a thin end-to-end production path through all tiers with a 7-day exit check and tested fallback."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Clinical leadership requires literally no write pause → active-active with conflict resolution.",
+      "rationale": "A table lists irreversible decisions each with a default and a concrete flip condition, including quantified thresholds."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phases (ordered by dependency; widest blast radius first within each)",
+      "rationale": "Within phases wide-impact items come first (client connection discovery, BAA, landing zone before leaf; schema freeze and all-table CDC before consumer moves; display boards before scheduler views)."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Cutover actions limited to named people, logged and approved by two. Break-glass access tested beforehand.",
+      "rationale": "Security has concrete entries in every phase from 0 through 5 in the cross-cutting table."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Replication lag, alert at more than 5 seconds. Shadow-diff rate... Alert on any difference.",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "All cloud resources are defined in Terraform... Nothing is changed by hand in the cloud console.",
+      "rationale": "Terraform, versioned migrations, scripted load tests, and staging rebuilt from code appear in every phase."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Proxy falls back to on-prem on lag or error, tested by force.",
+      "rationale": "Resilience is concrete in every phase, from redundant links and fallback to abort rules, rollback, and DR failover."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "**N/A.** The system has no AI or agent components, so this layer is omitted.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Active-active multi-region | Clinical leadership requires recovery under 1 hour, or the zero-write-pause gate flips.",
+      "rationale": "A dedicated table lists deferred items, each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "An exceptionally thorough plan that meets every rubric dimension with concrete, phase-specific content; I found no material gaps.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1034,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8373
+  },
+  "cost_usd": 0.0312805,
+  "latency_s": 22.044,
+  "raw_file": "raw/judge-fed8e995f56d.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

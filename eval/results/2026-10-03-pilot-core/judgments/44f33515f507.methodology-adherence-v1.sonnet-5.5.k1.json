@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "44f33515f507.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "44f33515f507",
+  "blind_sha256": "01573081a91d9c2479ec6aac9c3b543b1023b277c124ad7415c02d328355dbf5",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 458,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Discovery → Foundations → Pilot CI → Pilot CD → Templates → Waves 1→4 → Enforce policies",
+      "rationale": "Phases go from identity/registry/runners up through CI, CD, templates, migration, with each phase's done-when gating the next (hello world proven before pilots)."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "a \"hello world\" service can be built, stored in the registry and deployed to dev using only platform components, with no manual credentials",
+      "rationale": "A hello-world slice exists in Phase 1 but only to dev; prod path arrives in Phase 3 after discovery and foundations, not Phase 0."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Make the decisions that are hard to undo, and write each one down with its reasoning:",
+      "rationale": "Irreversible decisions are listed up front, but without defaults or flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "move services that others depend on (upstream) before the services that call them.",
+      "rationale": "Foundations are ordered identity first and waves go low-risk first, but ordering by blast radius is partial and low-risk-first is the opposite in places."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Identity and access: SSO, service accounts, and short-lived credentials for CI (for example, OIDC to your cloud) instead of stored keys.",
+      "rationale": "Security appears in Phases 1 and 2 (scans report-only), but blocking enforcement is deferred to Phase 6 and Phase 0 has no security content."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Platform observability: logs, metrics and alerts for the pipelines themselves.",
+      "rationale": "Observability starts in Phase 1 (listed last) and appears again in Phase 6 health metrics and DORA, but is absent from Phases 2–5 and Phase 0 besides the baseline."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "tagged (immutable and tied to the commit SHA)",
+      "rationale": "Immutable artifacts, IaC environments, build once, and versioned templates appear in several phases, but there are no reproducible builds or hermetic environments threaded throughout."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Make rollback a single action and test it on purpose.",
+      "rationale": "Rollback, side-by-side runs, and template staged rollouts appear from Phase 3 on, but not in Foundations or Phase 2 (runner failure, etc.)."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Ephemeral preview environments for each PR, where it's affordable.",
+      "rationale": "Later-phase items such as progressive delivery and previews are deferred into Phase 6, but there are no explicit pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Solid, well-ordered migration plan, but it lacks a prod walking skeleton in Phase 0, flip conditions for decisions, and a threaded security, observability or resilience treatment, and it never addresses the AI layer.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1134,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4643
+  },
+  "cost_usd": 0.0229555,
+  "latency_s": 20.019,
+  "raw_file": "raw/judge-44f33515f507.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

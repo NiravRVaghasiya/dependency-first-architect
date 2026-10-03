@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "34308256e88c.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "34308256e88c",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 53,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Webhook → durable queue → workers | 10 s acknowledgement REQUIREMENT",
+      "rationale": "Correct on HMAC, 10s timeout, installation tokens, at-least-once dedup by delivery ID, microVM isolation; minor imprecision such as egress to the model API from the sandbox versus 'no outbound channel'."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "\"Resolve\" means opening a PR for human review, never merging.",
+      "rationale": "Covers triage, duplicates, clarifying questions, and PR fixes with sensible interpretation and explicit deferrals, though closing/stale handling is not addressed."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "A narrowly scoped token for pushes lives outside the sandbox.",
+      "rationale": "Consistent design with clear trust boundary; minor loose ends such as where the model loop runs relative to the sandbox and egress to the model API."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Injection suite planted in issue bodies, comments, repo files and tool output; sandbox egress and secret-read probes; security reviewer red team",
+      "rationale": "V0–V4 tied to specific risks, early gating, measurable thresholds labeled as assumptions, and a feedback eval set after launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Throughput | UNKNOWN: issue volume per repo, from repo owners, needed by Phase 4",
+      "rationale": "Every budget labeled requirement/assumption/unknown, missing inputs listed, revisit triggers stated for assumptions."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Caps and kill switch, run timeout",
+      "rationale": "Covers injection, egress, runaway loops, dedup, fallback, dead-letter; weaker on concurrent human edits, bot loops, and partial failures like orphan branches."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Rollback means redeploying the previous image.",
+      "rationale": "Deployment, per-phase rollback, traces, alerts, dashboards and flags are covered; incident ownership and on-call are thin."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "triage ≤$0.10; fix ≤$5 per attempt, hard cap $10",
+      "rationale": "Per-run and monthly caps, cost per merged PR tracked, model routing, figures labeled assumptions; sandbox compute and people costs not estimated."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Write authority (trust boundary) | R3: a bad merge or a secret leak can't be undone",
+      "rationale": "Explicit reversibility ratings, provider seam, pinned versions, revisit triggers and fallbacks concentrate care on irreversible choices."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "3 deployables (receiver, worker, sandbox pool)",
+      "rationale": "Modular monolith, single-agent loop, justified deferrals; some table ceremony but complexity is mostly domain-justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phase 1 ... Depends on: V0. Tasks: 1. Tool allow-list with an argument validator in the executor",
+      "rationale": "Phases ordered by dependencies with concrete tasks, exit checks, rollbacks and failure fallbacks; a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 1,
+      "evidence": "fix attempts run only after a maintainer applies the `agent-fix` label"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "Least-privilege App; PRs only, from `agent/*` branches; branch protection and human review required; no merge permission"
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Untrusted text treated as data; executor allow-list; no outbound channel"
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "Ephemeral gVisor/Firecracker microVM per run; no secrets inside; egress allowed only to model API and package mirror"
+    },
+    {
+      "id": "P4-05",
+      "status": 1,
+      "evidence": "reproduce → locate → patch → run tests → self-review → open PR with trace link"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Shadow run on 200 closed issues from the canary repo | ≥85% label agreement, ≥80% duplicate precision"
+    },
+    {
+      "id": "P4-07",
+      "status": 1,
+      "evidence": "merged, edited or closed PR outcomes and label corrections feed a reviewed eval set"
+    },
+    {
+      "id": "P4-08",
+      "status": 1,
+      "evidence": "Per-run token, iteration and wall-clock caps, plus a monthly spend kill switch."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "triage ≤$0.10; fix ≤$5 per attempt, hard cap $10"
+    },
+    {
+      "id": "P4-10",
+      "status": 1,
+      "evidence": "Audit log of every tool call and approval"
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "duplicate search over past issues with a pinned embedding version"
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "at-least-once delivery, deduplicated by the delivery ID as an idempotency key."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "no merge permission"
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "A narrowly scoped token for pushes lives outside the sandbox."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Untrusted text treated as data; executor allow-list"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "≥30% of PRs merged without major rework; ≤$15 per merged PR"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Per-run token, iteration and wall-clock caps, plus a monthly spend kill switch."
+    }
+  ],
+  "note": "Strong, risk-ordered plan with explicit assumptions, gating validations, and PR-only trust boundary; gaps are human-collision handling, bot-loop protection, code indexing detail, and formal autonomy expansion tiers.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 4456,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 13874,
+    "cache_creation_input_tokens": 14417
+  },
+  "cost_usd": 0.0833893,
+  "latency_s": 60.145,
+  "raw_file": "raw/judge-34308256e88c.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "6355c31c870d.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "6355c31c870d",
+  "blind_sha256": "12d14272848a91b55934a085baf2abb3d03ea9ef80c24f65893f1a60063fc04a",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 27,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 0,
+      "evidence": "backend infrastructure → real-time sync engine → frontend UI → collaboration features",
+      "rationale": "Only a passing example of ordering inside a clarifying question; no actual phased plan with dependency proofs."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No Phase 0 or end-to-end production slice is defined."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No irreversible decisions (e.g., CRDT vs OT) or defaults/flip conditions are listed."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No phases or ordering within phases exists."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Security is not mentioned anywhere."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No observability content."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No reproducibility of builds or environments is addressed."
+    },
+    {
+      "dim": 8,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No failure handling or resilience content."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so N/A is not declared."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No deferred work or pull-forward conditions are stated."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The response is a clarifying question with no build plan, so it scores 0 on every dimension.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 582,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 1910
+  },
+  "cost_usd": 0.010603000000000001,
+  "latency_s": 28.939,
+  "raw_file": "raw/judge-6355c31c870d.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

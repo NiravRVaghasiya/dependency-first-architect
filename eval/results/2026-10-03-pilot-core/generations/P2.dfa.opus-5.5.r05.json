@@ -1,0 +1,100 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P2.dfa.opus-5.5.r05",
+  "prompt_id": "P2",
+  "condition": "dfa",
+  "generator": "opus-5.5",
+  "run_index": 5,
+  "seed": 749837521,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Architect a multi-tenant SaaS billing system.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P2.dfa.opus-5.5.r05.md",
+  "output_sha256": "56189db5f29b9a157cb5b1852a72554a2ab1b489206cbfffacbcafcdcf0bee89",
+  "metrics": {
+    "words": 4031,
+    "chars": 24772,
+    "visible_tokens_est": 6193
+  },
+  "turns": 2,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "dependency-first-architect:dependency-first-architect",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "reference/plan-template.md",
+      "sha256": "95ccaec942bf8a640ff4d830daada167a340b6b652242e2ed41aec6d24605c2a",
+      "words": 1257
+    }
+  ],
+  "started_at": "2026-10-02T23:32:21+00:00",
+  "finished_at": "2026-10-02T23:37:18+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [
+    "claude-opus-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 22033,
+    "thinking_tokens": 12082,
+    "cache_read_input_tokens": 7063,
+    "cache_creation_input_tokens": 8865
+  },
+  "cost_usd": 0.4864216,
+  "latency_s": 297.325,
+  "raw_file": "raw/gen-P2.dfa.opus-5.5.r05.txt"
+}

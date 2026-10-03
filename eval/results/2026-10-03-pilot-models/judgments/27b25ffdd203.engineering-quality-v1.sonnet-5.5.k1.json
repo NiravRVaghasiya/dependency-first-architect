@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "27b25ffdd203.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "27b25ffdd203",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 24,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Input sanitization stops ~80% of naive injection; token cap + fail-closed + opaque prompts stop the rest.",
+      "rationale": "Confidence is defined as average similarity score and used as the answer-quality gate, the injection defense is overstated, and the 'hallucination mitigation' row says 'changing strategy requires retraining'. There is also a 'gpt-4o-turbo-mini' model and 'Forbid I don't know'."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Support agent or internal user submits a query... No customer access until Phase 2.",
+      "rationale": "It gives a buildable phased RAG with escalation, but it mostly targets internal agents, handles deletion and visibility weakly, and treats the customer-facing need as an afterthought."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Forbid \"I don't know\" — redirect to human support.",
+      "rationale": "That contradicts the later prompt line 'If the help-center does not cover the topic, say so'. Help-center docs are called internal and non-PII, yet customers get access. Phase labels for customer exposure also conflict (Phase 2 vs Phase 3 vs Phase 4)."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Create 300 held-out queries... Acceptance: <5% hallucination, >95% source accuracy.",
+      "rationale": "Early gates (V0–V3) are tied to the risks with checkable thresholds and a canary. However, thresholds are invented, there is no regression eval rerun on every change (only Phase 5 mentions it), and sample sizes are small."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Missing inputs (pull forward early): Help-center doc volume and format... Customer data in help-center docs",
+      "rationale": "Assumptions are labelled and missing inputs are listed, but some figures are presented as fact (p50 ~1s, cost ~$0.008, 80% injection stop rate), and the 'docs are internal' claim is asserted."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Circuit breaker: if LLM API fails >5% of the time in a 5-min window, fall back to manual support",
+      "rationale": "Covers LLM outages, timeouts, retries, idempotent ingestion and injection tests. It misses stale or deleted content handling, retrieval-time access control, and indirect injection from content, and its injection handling is weak."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Feature flag `enable_support_chatbot: false` (default off)... Pod drain, old image revert",
+      "rationale": "Covers canary, rollback, alerts, on-call, runbooks and cost alerts. It is somewhat heavy for the team (Kubernetes, Helm, multi-region, chaos engineering) and ownership is partly vague."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Starting assumption: 2–10 USD/1M tokens; 500–2k tokens per query. Accept <$0.01 cost per answer.",
+      "rationale": "It identifies inference as the main driver, with token caps, budget gates, alerts and a model-swap path. Some of the numbers are inconsistent (<$0.01 vs <$0.02) and unsupported, and caching and rate limiting are thin."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Reversibility | R3 ... Configurable model endpoint (allow swap to Claude, Llama, etc.)",
+      "rationale": "Decisions carry reversibility tags, a spike to choose the backend, and an abstraction for the model. The R1/R2/R3 labels are inconsistent, and the schema and metadata model are not treated as one-way."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Multi-region failover (optional... Chaos engineering... Prometheus or CloudWatch; Kubernetes pod... Helm chart",
+      "rationale": "The core pipeline is simple and linear, and the plan defers multi-turn, self-hosting and other extras. There is boilerplate in the cross-cutting sections and the AI-layer table, and the five-phase cadence is heavy, while essentials like access control and deletion are under-built."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Chunk docs (500 token window, 50 token overlap)... Run 100 end-to-end queries... Acceptance: p99 latency <5s",
+      "rationale": "The build order is concrete and gated with checkable results and failure fallbacks. There are leftover inconsistencies and some leaked template text, such as 'Principle 7' and 'The plan method'."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 1,
+      "evidence": "Each update triggers re-ingestion (automated job, weekly or on-demand)."
+    },
+    {
+      "id": "P1-02",
+      "status": 1,
+      "evidence": "Chunk docs (500 token window, 50 token overlap)... Add metadata: {doc_id, title, source_url, chunk_index}."
+    },
+    {
+      "id": "P1-03",
+      "status": 1,
+      "evidence": "Create 300 held-out queries (not used in retrieval tuning) from help-center docs."
+    },
+    {
+      "id": "P1-04",
+      "status": 1,
+      "evidence": "If the help-center does not cover the topic, say so and suggest contacting support."
+    },
+    {
+      "id": "P1-05",
+      "status": 1,
+      "evidence": "Route escalation to support queue (Zendesk, Slack, etc.). Log reason: \"low confidence\", \"out of scope\", \"LLM error\"."
+    },
+    {
+      "id": "P1-06",
+      "status": 1,
+      "evidence": "Hard token cap... input sanitization... No tool call or code execution."
+    },
+    {
+      "id": "P1-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P1-08",
+      "status": 1,
+      "evidence": "Redaction / masking of PII/secrets in help-center docs before ingestion"
+    },
+    {
+      "id": "P1-09",
+      "status": 1,
+      "evidence": "Build regex/pattern list (e.g., \"billing\" → not in help-center docs; escalate immediately)."
+    },
+    {
+      "id": "P1-10",
+      "status": 1,
+      "evidence": "Weekly: analyze thumbs-down responses; identify patterns (e.g., \"docs are outdated\""
+    },
+    {
+      "id": "P1-11",
+      "status": 2,
+      "evidence": "Hard token cap (1500 output tokens)... alert if p95 latency >5s or daily cost >$50"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Cite source always + human review flag for low-confidence answers"
+    },
+    {
+      "id": "P1-T2",
+      "present": true,
+      "evidence": "Confirm: help-center docs contain no customer PII, no credentials, no sensitive product details that should not be in public chat."
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "RAG + hosted API: no fine-tune, easier to iterate"
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Model evaluation suite (benchmark new models vs. incumbent on standard test set before promotion)"
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "Simple linear: sanitize → embed → retrieve → prompt → LLM → response → log."
+    }
+  ],
+  "note": "The plan is a well-gated phased RAG rollout with real validation gates, cost and ops controls, but it is weak on document visibility, deletion handling, structure-aware chunking, PII and provider terms, and regression evals. It also contradicts itself on declining to answer.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2559,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 919,
+    "cache_creation_input_tokens": 24916
+  },
+  "cost_usd": 0.0880718,
+  "latency_s": 34.247,
+  "raw_file": "raw/judge-27b25ffdd203.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f460a7f609cd.engineering-quality-v1.fable-5.k1",
+  "blind_id": "f460a7f609cd",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 65,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "The Hybrid Link is private but not encrypted by itself, so TLS on SQL connections is required.",
+      "rationale": "Distributed AG mechanics (async-to-sync before planned failover, backup-restore seeding, version compatibility blocking fail-back), MLLP/MSH-10 semantics, Azure VM UTC default, and MI-link SQL 2022 caveat are all accurate, with real limits stated honestly."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "\"Without downtime\" means: an announced interruption of 5 minutes or less in the quietest hour, no data loss",
+      "rationale": "Solves the actual problem, resolves the zero-downtime ambiguity explicitly with clinical sign-off (A6/T17) plus a costed path to true zero, and all exclusions are explicit and justified."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Background services (HL7 sender, reminder export, batch letters) run in exactly one pool.",
+      "rationale": "Single-writer and single-runner principles are honored consistently across flows, cutover, pilot, rollback and schema-freeze rules; component ownership and data ownership are explicit with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "run draft Invoke-Cutover.ps1 and Invoke-Failback.ps1 3 times each, and watch how the app reconnects",
+      "rationale": "The riskiest assumptions (failover pause, fail-back, WAN latency, hidden dependencies) are spiked in M1 before commitment, with measurable exit criteria, 'changes the plan if' clauses, and production validation via synthetic monitoring and quarterly restore tests."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Every fact below about the current system is an assumption, marked with [A#] and listed in Section 5.",
+      "rationale": "All load-bearing assumptions are explicit with impact-if-wrong and a validation task/date, defaults are given for open questions, and estimates are consistently labeled rough."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "the on-prem sender sends a message but dies before marking it sent... The EHR receives two SIU^S12 messages",
+      "rationale": "Covers the hard domain failures — duplicate/lost HL7, split-brain, double-booking, time-zone shift, WAN loss, ransomware, audit tampering — each with concrete detection, containment and rehearsed recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Run by the existing IT ops team with no new 24/7 rota... each links to a runbook in runbooks/",
+      "rationale": "Ownership, symptom-based alerts tied to runbooks, deployment via existing packaging plus Terraform CI, patching and incident paths are all sized to the stated 5-person team."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Without Hybrid Benefit, 16 vCores of pay-as-you-go Enterprise can add roughly $10k+ a month.",
+      "rationale": "Identifies the dominant drivers (SQL licensing, dual-site running, ExpressRoute, log ingestion), gives labeled ranges with a validation step, concrete controls, and cost trade-offs behind D2/D6/D12-style choices."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Point of no return: The on-prem replica is removed (end of M4), or any change the on-prem side can't accept",
+      "rationale": "Every decision carries a reversibility rating, the one-way commitments (SQL version, schema changes, replica removal) are explicitly guarded and deferred, and fail-back is rehearsed before go-live."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "rehost first, modernise later... Moving to PaaS during the migration doubles the number of changes in one step.",
+      "rationale": "The simplest design that meets the need: rehost with no rewrite, PaaS/second-region DR/second circuit explicitly deferred with triggers, and every component justified against a driver."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Today: raise the T1 long-lead requests, especially the ExpressRoute order and the HIPAA risk assessment.",
+      "rationale": "T1–T17 have done-when criteria, dependency-ordered parallel tracks, day-one actions on the critical path, and explicit adaptation rules if spikes disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "security risk assessment approved before PHI reaches the cloud... Confirm the BAA covers the services used"
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "ADT feed from the EHR into the scheduling app, and SIU feed out to the EHR, RIS and billing"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "row counts and checksums on Appointment and Slot by date, max IDs, HL7 counts per hour"
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "Only one writable database at any moment. No dual writes and no active-active setup"
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "on-prem stays as an async secondary... Fail-back is rehearsed in M1 (T14) and in both rehearsals"
+    },
+    {
+      "id": "P6-06",
+      "status": 2,
+      "evidence": "ExpressRoute (primary) plus site-to-site VPN (backup)... Spike: WAN latency tolerance"
+    },
+    {
+      "id": "P6-07",
+      "status": 2,
+      "evidence": "Zone failure: automatic failover inside AG-AZURE, RTO under 1 minute, RPO 0... downtime-procedure runbook"
+    },
+    {
+      "id": "P6-08",
+      "status": 2,
+      "evidence": "2 domain controllers in the hub... PIM plus MFA... Break-glass accounts... SQL Audit sent to immutable storage"
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "Load test at 2x measured peak... Shadow (M2): prod is replicating to the cloud, with no user traffic"
+    },
+    {
+      "id": "P6-10",
+      "status": 2,
+      "evidence": "5-minute pause, Sunday 02:00... Release and schema freeze starts... Hypercare runs for 2 weeks"
+    },
+    {
+      "id": "P6-11",
+      "status": 2,
+      "evidence": "ask the vendor for a cloud support statement... wipe and retire the hardware per hospital media-sanitisation policy"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "The database copies itself continuously to the cloud... The move itself is one planned, lossless failover."
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "No dual writes and no active-active setup, because either could cause double-bookings."
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "Pre-production uses synthetic data only... No public IPs (enforced by policy)."
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "HL7 traffic keeps flowing: ADT in, SIU out... channels repointed"
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "rehost first, modernise later... Redesigning or rewriting the application [is a non-goal]"
+    }
+  ],
+  "note": "An exemplary migration plan: technically precise on the mechanisms it depends on, honest about the zero-downtime limit, risk-driven with early spikes and rehearsed fail-back, and free of all five traps.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 9677,
+    "thinking_tokens": 6395,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 66323
+  },
+  "cost_usd": 1.3129275,
+  "latency_s": 787.927,
+  "raw_file": "raw/judge-f460a7f609cd.engineering-quality-v1.fable-5.k1.txt"
+}

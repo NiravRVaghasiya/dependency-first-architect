@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "fb1f662333b3.probe.sonnet-5.5",
+  "blind_id": "fb1f662333b3",
+  "blind_sha256": "34fc5264c36a3f79dac3423d94fc53e10bf190790febf6f528d7c1cb0bd353f8",
+  "judge": "sonnet-5.5",
+  "order_index": 80,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Rigid templated structure: numbered sections for Classification and constraints, Dependencies, Key decisions, First end-to-end slice (Phase 0), Phases, Validation checks, Cross-cutting concerns, AI layer, Exceptions, Deferred. This looks like a prescribed methodology template.",
+    "Every budget and claim is labelled REQUIREMENT, ASSUMPTION, BASELINE or UNKNOWN. Items are marked CONFIRMED or ASSUMED, with an owner and a 'confirm before Phase X' note.",
+    "Decisions carry reversibility grades (R1/R2/R3), a default, an assumption, a 'validated by' column and a revisit trigger. Dependencies are classified into 'seven dependency kinds'.",
+    "A numbered validation table (V0–V7) gives hypothesis, method, acceptance threshold, evidence and 'unlocks/if fails' for each check. Each phase has its own rollback and exit check.",
+    "Boilerplate sections appear even where they don't apply: 'AI layer: N/A', 'Exceptions: None', 'Not applicable' list, and a walking-skeleton Phase 0 with a 'thin end-to-end slice'. A plan written without a methodology would rarely include these."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 500,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10396
+  },
+  "cost_usd": 0.030998000000000005,
+  "latency_s": 22.09,
+  "raw_file": "raw/probe-fb1f662333b3.probe.sonnet-5.5.txt"
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "04c23650f8d5.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "04c23650f8d5",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 19,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Yjs CRDT with the y-prosemirror binding. The server relays and stores edits but does not decide their order",
+      "rationale": "Accurate on Yjs, relative positions, awareness, UndoManager and commit-before-confirm; minor imprecision such as Yjs snapshot+log equality checks and unproven claims about old clients deleting unknown nodes, no major errors."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "50 concurrent editors, 500 viewers",
+      "rationale": "Covers core sync, persistence, authz, scale, and features with explicit deferrals; rich-text merge edge semantics and offline are only thinly addressed."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Permissions and metadata favour consistency: Postgres is the source of truth",
+      "rationale": "Consistent ownership and choices; slight tension between Redis pub/sub multi-node and in-memory per-doc state and the revocation push path is lightly specified."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "0 divergent final states over 10,000 sessions ... 0 confirmed edits lost over 1,000 injected faults",
+      "rationale": "Validation is tied to the riskiest assumptions, run first (V1/V2 before real content), labeled as assumptions, and continues in production via state hashes and V5."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Each one changes the phase order if it is false",
+      "rationale": "Assumptions are labeled, unknowns are flagged with owners and deadlines, and the plan says what changes if each is wrong."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Fault-injection durability suite ... Revocation pushed to the sync nodes, which disconnect or downgrade the user",
+      "rationale": "Covers crashes, failover, divergence, tenant leaks, old clients, noisy tenants, Redis loss and content leakage with detection and recovery; adversarial CRDT payloads and malformed updates are less detailed."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "A GitHub Actions pipeline builds each container image once and moves it from staging to production ... Redeploy the previous image",
+      "rationale": "Deployment, rollback, SLO burn-rate alerts, on-call, DR drills and migrations are covered; incident ownership details and team size are somewhat thin."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Cost per active editor per month | UNKNOWN. Product/finance supplies it",
+      "rationale": "Identifies cost measurement and build-vs-buy, storage bound and cost checks, but offers no estimate of drivers (memory per doc, connections, Redis fan-out) and defers cost to an unknown."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: every stored doc and the wire protocol take this format",
+      "rationale": "Explicit reversibility ratings per decision, points of no return, early validation of the hard ones, and stated fallback and exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "≤ 4 runtime components (web/API, sync, Postgres, Redis) plus object storage, with one on-call rotation",
+      "rationale": "Mostly proportionate with an explicit complexity budget; a formal pen-test gate, many phases and a separate dependency-kind taxonomy add some ceremony."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Tasks (widest rework first) ... Exit check: V1 and V2 pass",
+      "rationale": "Concrete phased tasks, dependency-driven ordering, checkable exit criteria, a thin first slice, and explicit fallback/re-plan actions when checks fail."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "Yjs CRDT with the y-prosemirror binding ... V1 finds a divergence ... → Automerge or a server-sequenced OT design"
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Minimal ProseMirror schema v1 ... schema_version"
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "Seeded fuzz harness: 2–20 simulated clients making random edits, with reordering, duplication, delay, partitions and offline/reconnect"
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "Append-only Yjs update log plus compacted snapshots in Postgres ... confirms an edit only after the commit"
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "Hocuspocus Redis extension (pub/sub): any node can serve any doc ... jittered backoff"
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "The client keeps unconfirmed edits in IndexedDB and resends them on reconnect"
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "checks permissions when the connection opens and on every message ... Revoked users disconnected within 5 s"
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Per-user undo (Y.UndoManager) ... A restore is applied as a new edit, so history only moves forward"
+    },
+    {
+      "id": "P5-09",
+      "status": 2,
+      "evidence": "Yjs awareness, temporary and never stored"
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Phase 1: Data contracts and the correctness core ... Phase 4: Collaboration features"
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "50 concurrent editors, 500 viewers ... Evict idle docs from memory; batch commits per doc"
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "The protocol version and the minimum client version are checked when the connection opens; clients below it are read-only"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Adopt open source and run it ourselves: Yjs, TipTap/ProseMirror, Hocuspocus"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Phase 1: Data contracts and the correctness core"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "The server confirms an edit only after the commit."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "Customers accept that a revoked user keeps the copy already synced to their device"
+    }
+  ],
+  "note": "Strong, risk-ordered plan that proves the CRDT sync core and durability first and names its decisions and unknowns; weaker on rich-text merge semantics, undo and large-doc detail, and cost estimation.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2279,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 16230
+  },
+  "cost_usd": 0.063558,
+  "latency_s": 25.898,
+  "raw_file": "raw/judge-04c23650f8d5.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

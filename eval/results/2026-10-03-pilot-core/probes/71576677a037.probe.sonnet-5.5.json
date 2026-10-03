@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "71576677a037.probe.sonnet-5.5",
+  "blind_id": "71576677a037",
+  "blind_sha256": "7a40f664ae5320bd78543959d3b59e445c6203e08adfa161432f6b31199dfea0",
+  "judge": "sonnet-5.5",
+  "order_index": 29,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.97,
+  "cues": [
+    "Explicit labeled uncertainty tags (ASSUMPTION / UNKNOWN / BASELINE / REQUIREMENT / CONFIRMED / ASSUMED) applied systematically to budgets and dependencies",
+    "Numbered validation gates V0–V7 with hypothesis, method, acceptance threshold, evidence, and 'unlocks (and if it fails)' columns",
+    "Reversibility ratings (R2/R3) and 'Key decisions resolved up front' table with defaults, revisit triggers, and 'minor defaults'/'N/A' lists",
+    "Phase 0 'first end-to-end slice' crossing all tiers with day-zero ops and exit check, plus a formal Exceptions table (E1 bypassing 'Principle 7')",
+    "Mapped 'AI layer' sublayers table (guardrail, routing, memory, etc.) forced onto a non-LLM system, plus a Deferred list with 'pull forward when' triggers"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 402,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10628
+  },
+  "cost_usd": 0.030598,
+  "latency_s": 24.792,
+  "raw_file": "raw/probe-71576677a037.probe.sonnet-5.5.txt"
+}

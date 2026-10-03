@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "85f7cddd8e93.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "85f7cddd8e93",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 22,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Keyword search catches error codes, button labels and feature names. Vector (meaning-based) search catches rephrasings",
+      "rationale": "Technically sound on hybrid retrieval, RRF, rerank, citation validation, pgvector; minor issue: a DPA guaranteeing no storage is overstated (abuse-monitoring retention), and streaming citation stripping vs post-hoc commitment check tension is not addressed."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Label about 200 recent tickets as *answerable from current docs*, *needs account data or an action*, or *missing from the docs*.",
+      "rationale": "Precisely fits the request, resolves ambiguities with stated assumptions, has coverage audit, build-vs-buy, and explicit v1 exclusions with reasons."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Hand off immediately when the user asks or the topic is sensitive",
+      "rationale": "Consistent pipeline with clear responsibilities; minor loose ends, e.g. commitment check after streaming has already shown text, and visibility filter vs. unauthenticated users is loose."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Run the tests automatically on every change to prompts, models, chunking or embeddings, and block changes that make scores worse.",
+      "rationale": "Tests early (week 1), retrieval scored separately, LLM grader calibrated to human labels, shadow agent-assist phase, A/B control, weekly production review; thresholds labeled starting targets."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "100–5,000 articles on a help-center platform with an API (Zendesk, Intercom, Freshdesk…) or Markdown files in git.",
+      "rationale": "Assumptions are explicit and questions say what would change the plan, but sensitivity is only partly explained and some numbers (most articles under 2k) are unqualified."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "The nightly check also **removes** archived or unpublished articles. Old articles left in the index lead to confident wrong answers.",
+      "rationale": "Covers stale content, leaks, injection via forum posts, commitments, hallucinated citations, abuse and frustration loops, but lacks webhook-failure detection and explicit partial-failure/outage handling of LLM or vendor."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Keep prompts in version control. For every conversation turn, log the rewritten query, the retrieved IDs and scores",
+      "rationale": "Logging, tracing, eval gating and review cadence exist, but no concrete deployment, rollback, index re-embedding migration, alerting, or incident ownership."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "each message uses about 5–10k input tokens and about 300 output tokens. That's a few cents per conversation",
+      "rationale": "Identifies token cost, caching, model tiering, spending caps and build-vs-buy, but the estimate is thin, lacks per-conversation basis and scaling, and omits engineering and vendor costs."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Orchestration | Your own thin code (easiest to debug) | LlamaIndex, LangGraph, Haystack",
+      "rationale": "Avoids heavy frameworks, uses Postgres rather than separate vector DB, swap-friendly stack, build-vs-buy; but embedding model/chunk ID scheme lock-in and re-index migration are not explicitly discussed."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Use a fixed pipeline in v1: always retrieve, then answer. It's predictable, cheap and easy to test.",
+      "rationale": "Simple baseline with escalation path (contextual retrieval, agentic only if tests fail), vision deferred, forum excluded; a router and rewriter plus rerank are modestly extra but justified."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Right article in the top 5 for ≥ 90% of answerable questions",
+      "rationale": "Phased plan with checkable exit criteria and sensible dependency ordering (test set first, shadow mode before beta); some details like adaptation on failure are only partly given."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "Sync on publish events plus a nightly full check. ... The nightly check also removes archived or unpublished articles."
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Split articles at H2/H3 headings ... Never split a numbered procedure or a table. ... store its ID, URL, section anchors, category, labels, locale"
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "Build a test set of 200–300 cases from real tickets ... Run the tests automatically on every change to prompts, models, chunking or embeddings"
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "Answer only from the provided docs. If they don't cover the question, say so plainly and offer a human."
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "The ticket includes the transcript, a two-line summary, what the user wanted, the articles shown and the user's plan"
+    },
+    {
+      "id": "P1-06",
+      "status": 1,
+      "evidence": "Leave community-forum posts out of v1. ... Rules 1–2 and the final check cover that."
+    },
+    {
+      "id": "P1-07",
+      "status": 1,
+      "evidence": "Index only public articles, or store the permissions and filter on them."
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "Mask emails, phone numbers and card numbers before anything is logged ... Set how long transcripts are kept (e.g. 30–90 days)."
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Version 1 answers questions from the docs only. It can't look up or change customer accounts."
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "Each week, review about 50 random conversations plus every thumbs-down ... Missing-docs report"
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "That's a few cents per conversation with a mid-size model, and less with prompt caching."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Never fill gaps from general knowledge, especially prices, limits, timelines or policies."
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Index only public articles, or store the permissions and filter on them."
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Sync on publish events plus a nightly full check."
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "block changes that make scores worse"
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "Use a fixed pipeline in v1: always retrieve, then answer."
+    }
+  ],
+  "note": "Strong, well-scoped docs-only RAG plan with early evaluation and shadow rollout; weaker on operations/rollback, cost basis, and authenticated entitlement filtering.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2405,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 924,
+    "cache_creation_input_tokens": 12391
+  },
+  "cost_usd": 0.0552203,
+  "latency_s": 29.805,
+  "raw_file": "raw/judge-85f7cddd8e93.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

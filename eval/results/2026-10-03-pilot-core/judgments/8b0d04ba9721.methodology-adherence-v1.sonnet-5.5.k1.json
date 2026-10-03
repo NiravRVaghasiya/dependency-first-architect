@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "8b0d04ba9721.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "8b0d04ba9721",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 158,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "T4 \"Define frozen dataclasses...\" \"T5–T8 import them\"; \"T6 ... doesn't need the spikes\"; M1 before M2 formats, M3 release",
+      "rationale": "Model → reader/planner/scanner → executor → undo → CLI, with spikes gating format support before M2."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "M1: Full JPEG path: scan → read → plan → dry run → apply → journal → undo, plus CI on 3 operating systems.",
+      "rationale": "M1 is a real end-to-end slice with E2E test and CI, before formats and features; though it is a local CLI with no production deploy, the slice is genuine."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Key Decisions table with \"Reversibility\" and \"Revisit if\" columns, e.g. \"Spike A finds <99.5% coverage on user formats... → ExifToolReader\"",
+      "rationale": "Decisions list options, defaults, reversibility and explicit flip conditions, plus an assumptions table."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "T4 model first; \"T6... This is the core logic\"; T1 scaffold first, spikes in parallel",
+      "rationale": "Shared model and planner precede leaf work like scanner and reporter, but blast-radius ordering is not stated explicitly within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Security (M1): \"New names are built only from parsed integers, so EXIF text can't reach a path\"; \"CI runs pip-audit (M3).\"",
+      "rationale": "Security is strong in M1 but it is in a cross-cutting section, M2 has little explicit security content, and pip-audit comes late."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Observability (M1, M2): \"The summary always prints counts plus skip reasons. --verbose logs each file's chosen tag and value.\"",
+      "rationale": "Reporting and verbose output exist from M1, but M3 has none and the treatment is thin, not tied to each phase."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "\"CI matrix (windows/macos/ubuntu × 3.11/3.13)\"; \"Synthetic JPEGs generated with piexif, committed as generator code.\"",
+      "rationale": "CI matrix, generated test data and deterministic planning give reproducibility, but there is no lockfile or pinned-dependency treatment and it is not threaded by phase."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "M1: fsync'd journal, undo, stop-on-error, fault-injection test in T8; M2: \"Interrupted-run hardening\"; M3 rollback via pipx pin",
+      "rationale": "Failure handling is concrete from the first phase (per-file exception catching, journal, undo) and continues through M2 and rollback."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "AI-specific: not applicable. There are no model components.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Deferred, with triggers: \"--recursive: when users ask.\" \"--shift/--utc: for clock-correction requests.\"",
+      "rationale": "The plan lists deferred items with pull-forward triggers, plus non-goals and deliberate debt."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, well-ordered plan with a real M1 slice, explicit decision gates and resilience throughout; security, observability and reproducibility are present but uneven across phases.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1269,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 11163
+  },
+  "cost_usd": 0.0407185,
+  "latency_s": 34.119,
+  "raw_file": "raw/judge-8b0d04ba9721.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

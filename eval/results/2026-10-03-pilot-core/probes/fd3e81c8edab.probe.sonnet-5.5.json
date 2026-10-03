@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "fd3e81c8edab.probe.sonnet-5.5",
+  "blind_id": "fd3e81c8edab",
+  "blind_sha256": "db09beb4ff47207c9d9cf2f48c698ddafa1bf6c8f96d14235dde24f6b7a11623",
+  "judge": "sonnet-5.5",
+  "order_index": 109,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Explicit reference to \"The skill's AI layer is written for LLM agents\" and mapping it onto ML equivalents, which shows a prescribed written methodology template",
+    "Fixed structure: Classification, Key decisions with 'Revisit trigger' column, first end-to-end slice (Phase 0), phases each with Unlocks/Depends on/Exit check",
+    "Rows labeled '(AI) prompt+RAG vs fine-tune → reframed' and '(AI) hosted API vs self-host', which are template decision rows adapted to a non-LLM system",
+    "Phase-by-security/observability/reproducibility/resilience cross-cutting matrix and a 'Deliberate deviation' note about ordering, which indicates compliance with a prescribed layering",
+    "Closing 'Deferred' section with pull-forward triggers, and 'widest task' ordering of tasks, which are methodology-style conventions"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 379,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7253
+  },
+  "cost_usd": 0.0219305,
+  "latency_s": 27.682,
+  "raw_file": "raw/probe-fd3e81c8edab.probe.sonnet-5.5.txt"
+}

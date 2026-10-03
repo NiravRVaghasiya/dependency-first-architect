@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "610c531839b1.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "610c531839b1",
+  "blind_sha256": "5f0d7cd2f3fb0bec9485e614b1f4c01c476dd88dc8fee5f851f774c3064f3405",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 406,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Database switch (Phase 4) | Dual, diverse private circuits installed...; V4, V5, V6, V7 passed",
+      "rationale": "Phases flow from skeleton to discovery, replica, app tier, then DB switch and decommission, each gated by validation proven beforehand."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Phase 0 is the thinnest real path through every target tier, run once in production with test data before anything else is built.",
+      "rationale": "A real end-to-end production booking with trace, deploy, rollback and alerts is Phase 0."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Exactly one writable primary database at all times... Flip condition: V6 fails on the pause... re-plan with the app holding writes in a durable queue",
+      "rationale": "Irreversible decisions have reversibility class, default, assumption, validation and flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Move read-only consumers to the cloud replica one at a time, lowest-risk first... IT, then one low-volume clinic, then groups of clinics, then the call center last.",
+      "rationale": "Within-phase ordering is deliberate: foundational items like circuits, inventory, and fencing precede leaf work, with waves ordered by risk."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0 | BAA signed; landing-zone policy blocks public IPs; allow-list plus MFA; secrets in a key vault",
+      "rationale": "Security has concrete content in every phase 0–5 of the cross-cutting table and in phase tasks."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "A synthetic test-patient booking runs every 5 minutes. Alerts on link status, replication lag and errors on the app node.",
+      "rationale": "Observability is in Phase 0 and specific in every subsequent phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "All infrastructure in Terraform, deployed by the pipeline; app image from the release build",
+      "rationale": "Reproducibility is concretely treated in each phase, including versioned scripts, same build versions, and scripted runbooks."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "On-prem path untouched; rollback = remove from the pool",
+      "rationale": "Failure handling and rollback appear in every phase, from Phase 0 through failback, fencing, and DR tests."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: there is no AI component.",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Cross-region disaster recovery: pulled forward if the RTO set in Phase 1 requires surviving the loss of a whole region.",
+      "rationale": "Deferred items are listed with explicit pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan that meets every rubric dimension with concrete content; no meaningful weaknesses found.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1063,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10716
+  },
+  "cost_usd": 0.037428,
+  "latency_s": 18.706,
+  "raw_file": "raw/judge-610c531839b1.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

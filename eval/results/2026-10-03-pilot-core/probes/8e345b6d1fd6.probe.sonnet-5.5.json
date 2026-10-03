@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "8e345b6d1fd6.probe.sonnet-5.5",
+  "blind_id": "8e345b6d1fd6",
+  "blind_sha256": "f90116eee77bad9665ad9bc197de059628ac21dc8b67de8523ba2b1fde55fe2b",
+  "judge": "sonnet-5.5",
+  "order_index": 124,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Explicit reversibility ratings (R2/R3) on every key decision plus 'Revisit trigger' column, a structured methodology artifact",
+    "Numbered validation checks V0–V7 with hypothesis/method/acceptance threshold/evidence/unlocks-if-fails columns, cross-referenced throughout",
+    "Budgets labeled ASSUMPTION/UNKNOWN with 'Missing inputs' section and named owners, systematic uncertainty labeling",
+    "Phase 0 'first end-to-end slice' walking skeleton with tiers, logged, monitored, rolled back, and exit check V0",
+    "Fixed template sections including 'AI layer: N/A', 'Exceptions: None', 'Deferred' with pull-forward triggers, and a per-phase cross-cutting concerns matrix"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 350,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9258
+  },
+  "cost_usd": 0.026653000000000003,
+  "latency_s": 25.828,
+  "raw_file": "raw/probe-8e345b6d1fd6.probe.sonnet-5.5.txt"
+}

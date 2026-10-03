@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a86457e0d194.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "a86457e0d194",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 70,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Keyword search matters for error codes and feature names.",
+      "rationale": "Hybrid BM25+dense with RRF, reranker, and pgvector claims are accurate; minor imprecision like a raw rerank-score threshold not being calibrated and LLM-as-judge caveats are handled."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Refuse or escalate for billing disputes, legal, security incidents, and account-specific actions.",
+      "rationale": "Covers core RAG support bot needs with sensible phasing and deferral of actions, though exclusions are not all explicitly reasoned and auth/entitlement needs are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Filter by product, plan, or version when the user's account context is known.",
+      "rationale": "Pipeline is consistent and components are clear, but data ownership and identity flow (authenticated user to filters) are loosely specified."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Regression gate: run the suite in CI on any change to the prompt, chunking, embedding model, or LLM.",
+      "rationale": "Golden set from real tickets, retrieval and generation metrics, judge calibrated to humans, CI gate, and online review; thresholds are unspecified and early risk tests are limited, and no explicit acceptance targets."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "I don't know your stack, doc volume, or support channels yet, so this plan makes assumptions, listed at the end.",
+      "rationale": "Admits unknowns and asks questions but the 'assumptions' are really questions, with no stated defaults or sensitivity, and durations/latency targets are unjustified."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Deletions must propagate, or the bot will cite retired articles.",
+      "rationale": "Covers stale docs, hallucination, injection, over-deflection, version confusion briefly, but handling is terse and lacks detection and recovery detail, e.g., abuse, provider outage, injection containment."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "trace each request (query, rewrite, retrieved chunks, scores, answer, latency, tokens). Tools like Langfuse or LangSmith work.",
+      "rationale": "Tracing, weekly review and dashboards exist, but no deployment/rollback, alerting, ownership, or incident handling."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "cache frequent questions, use a smaller model for query rewriting, and cap context size.",
+      "rationale": "Controls are listed and cost per conversation is a metric, but there is no estimate, basis, or scaling analysis."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "pgvector, if you already run Postgres, is enough for most help centers. Use Qdrant, Weaviate, or OpenSearch",
+      "rationale": "Vector store alternatives are mentioned and phasing defers actions, but one-way decisions like chunk metadata schema, embedding model re-index, and vendor coupling are not explicitly discussed."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "pgvector, if you already run Postgres, is enough for most help centers.",
+      "rationale": "Starts with a prototype baseline and a simple store, though hybrid plus reranker plus query rewriting are included from the start without baseline justification."
+    },
+    {
+      "dim": 11,
+      "score": 2,
+      "evidence": "Prototype | 2 weeks | Ingestion, hybrid retrieval, basic answers with citations. Offline eval baseline.",
+      "rationale": "Phased with deliverables and durations, but decisions are mostly options and lack checkable exit criteria or adaptation rules."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 1,
+      "evidence": "Sync: webhook or nightly incremental re-index. Deletions must propagate, or the bot will cite retired articles."
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "split by heading structure, about 300–600 tokens, with the title and breadcrumb prepended to each chunk."
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "150–300 real questions from past tickets and search logs. Each has a reference answer and the correct source articles."
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "if the top rerank score is below a threshold, don't answer. Offer handoff or suggest related articles."
+    },
+    {
+      "id": "P1-05",
+      "status": 1,
+      "evidence": "create a ticket with the conversation transcript, retrieved articles, and the bot's attempted answer"
+    },
+    {
+      "id": "P1-06",
+      "status": 1,
+      "evidence": "Resist prompt injection, since docs and user input are untrusted."
+    },
+    {
+      "id": "P1-07",
+      "status": 1,
+      "evidence": "tenant isolation if there is private content"
+    },
+    {
+      "id": "P1-08",
+      "status": 1,
+      "evidence": "Redact PII in logs."
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Actions (later): authenticated tools such as order status, each with explicit permissions and confirmation."
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "report unanswered questions and low-confidence topics to the docs team as a gap list."
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "cache frequent questions, use a smaller model for query rewriting, and cap context size."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Say \"I don't know\" when the context is insufficient."
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "tenant isolation if there is private content"
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "webhook or nightly incremental re-index"
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "run the suite in CI on any change to the prompt, chunking, embedding model, or LLM."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "BM25 plus dense embeddings, merged with reciprocal rank fusion."
+    }
+  ],
+  "note": "Solid, competent generic RAG support-bot plan with good eval and grounding, but thin on access control, privacy specifics, cost numbers, ops/rollback and explicit assumptions.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2140,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 919,
+    "cache_creation_input_tokens": 9469
+  },
+  "cost_usd": 0.0452643,
+  "latency_s": 48.448,
+  "raw_file": "raw/judge-a86457e0d194.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

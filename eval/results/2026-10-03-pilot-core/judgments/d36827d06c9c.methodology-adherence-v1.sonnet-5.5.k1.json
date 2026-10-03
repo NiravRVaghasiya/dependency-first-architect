@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "d36827d06c9c.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "d36827d06c9c",
+  "blind_sha256": "c329ac50d5563ccd95b153f98f715b9e681a77ab118f2e7e3bf39966e17d6596",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 286,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Depends on: Phase 2, V2; PSP platform approval.",
+      "rationale": "Phases run tenancy/ledger → catalog/invoicing → payments → usage → exposure, with each phase explicitly listing dependencies and validation gates that must pass first."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "POST /v1/customers ... finalize ... PaymentIntent in the PSP sandbox ... GET /v1/invoices/{id} returns status: paid with balanced ledger lines.",
+      "rationale": "Phase 0 is a real end-to-end slice deployed to production AWS with deploy, rollback and alerting, gated by V0."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Tenancy... Default (chosen now) Pooled... Flip condition: V1 fails; a contract requires dedicated storage; or V9 shows a noisy neighbor",
+      "rationale": "A full table lists reversibility, default, assumption, validation and flip condition for each irreversible decision, with unknowns labelled."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "It comes first because it guards the worst failure and its gates have the longest outside lead time.",
+      "rationale": "Widest-impact work (tenancy, RLS, ledger) comes first, payments before usage, and customer-visible portal last, with the ordering justified."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Fail-closed RLS plus the V1 suite in CI; IdP with required MFA; hashed, scoped API keys; append-only audit log",
+      "rationale": "The cross-cutting table has concrete security controls in every phase from 0 to 6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OTel traces; structured logs with tenant_id and personal data redacted; alerts on balance invariant and outbox lag",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase, with phase-specific metrics."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform; lockfiles; signed images; migrations versioned in the repo",
+      "rationale": "Each phase has specific reproducibility measures such as seeds, golden suites, replay from S3 and the Terraform DR environment."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Multi-AZ Postgres; PITR on; outbox retries; image rollback",
+      "rationale": "Failure handling is concrete in every phase, including idempotency, resumable bill runs, circuit breakers and the DR drill."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: no AI component.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Revenue recognition schedules (ASC 606 / IFRS 15): pull forward when a tenant needs them for an audit, or 3+ tenants ask.",
+      "rationale": "Each deferred item has a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "An exceptionally thorough plan that meets every rubric dimension with concrete content, including validation gates and explicit labels for unknowns.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1112,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 13017
+  },
+  "cost_usd": 0.0436705,
+  "latency_s": 16.423,
+  "raw_file": "raw/judge-d36827d06c9c.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

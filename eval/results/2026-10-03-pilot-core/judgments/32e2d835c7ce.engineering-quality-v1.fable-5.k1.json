@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "32e2d835c7ce.engineering-quality-v1.fable-5.k1",
+  "blind_id": "32e2d835c7ce",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 114,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "In practice the switchover may need a short write freeze (seconds to a few minutes).",
+      "rationale": "Technical claims about CDC (Always On, DMS, Debezium), DNS TTL, interface-engine queuing and HIPAA retention are accurate, and the plan honestly states the real limit of 'zero downtime'."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "\"Zero downtime\" means users never see an outage.",
+      "rationale": "Directly solves the stated problem, resolves the zero-downtime ambiguity sensibly, states assumptions, and is clearly buildable with modernization explicitly deferred."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Only one system accepts bookings at any moment.",
+      "rationale": "The single-write-authority principle, interface-engine as the HL7 switch, and reverse replication for rollback are applied consistently across every phase with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "run the full switchover **at least twice** in a pre-production copy, including the rollback. Time each step.",
+      "rationale": "Validation targets the specific risks (shadow reads, peak replay, failover drills, continuous data checks, rehearsed rollback) before commitment and continues post-cutover with dashboards and daily reconciliation."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "It assumes a US hospital (HIPAA), a scheduling app backed by a relational database, and connections to the EHR",
+      "rationale": "Assumptions are stated up front, the timeline is labeled rough, the approach table shows how answers would change the design, and clarifying questions identify sensitivities."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Double-booking or lost appointments | One system takes bookings at a time, continuous data checks, queued messages",
+      "rationale": "The major domain failures (double-booking, broken interfaces, latency, ransomware, data mismatch) have concrete detection and recovery, but duplicate/out-of-order HL7 messages on queue replay are not addressed."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Dashboards: response time, error rates, HL7 queue depth and acknowledgment failures, reminder delivery rates, booking volume against the usual baseline",
+      "rationale": "Domain-meaningful health signals, command center, hypercare, IaC, rollback path, runbook updates and clear clinical ownership make this operable by a realistic hospital IT team."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Later improvements: cost tuning, managed services, a FHIR scheduling API, autoscaling.",
+      "rationale": "Costs are essentially ignored: no cost drivers (dual-running infrastructure, Direct Connect, licensing, engineering effort), no estimates or controls beyond a passing 'cost tuning' mention."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Have a way back at every step... Keep the on-prem system **warm for 30–60 days** as a rollback option",
+      "rationale": "The one-way cutover decision gets the most scrutiny with reverse replication and rehearsed rollback, modernization is deferred to avoid compounding risk, and reversible choices are made quickly."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Don't change the platform and the app at the same time.",
+      "rationale": "Recommends the simplest workable approach (lift and shift with CDC), explicitly rejects simultaneous re-architecting, and every component is justified by the no-downtime and safety needs."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Put the old system in **read-only/maintenance mode**... Wait until the copy has fully caught up, then run the final data check.",
+      "rationale": "Dependency-ordered phases with week ranges, a numbered switchover runbook, explicit rollback triggers, and checkable intermediate results let a team start immediately; remaining tool choices depend only on acknowledged unknowns."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "A **Business Associate Agreement (BAA)** with the cloud provider is required before any patient data moves."
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "HL7 v2 feeds with the EHR... Patient portal... Reminder systems... Billing... Reports and data warehouse feeds... check-in kiosks"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "row counts, checksums per table, and business-level checks (appointments per provider per day, open slots, waitlists)"
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "Only one system accepts bookings at any moment... aim for under 5 minutes of write freeze"
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "run the full switchover **at least twice** in a pre-production copy, including the rollback"
+    },
+    {
+      "id": "P6-06",
+      "status": 2,
+      "evidence": "a dedicated private link (Direct Connect, ExpressRoute) with a VPN backup. Test latency from clinic workstations"
+    },
+    {
+      "id": "P6-07",
+      "status": 2,
+      "evidence": "spread across multiple availability zones... Backups: automated, immutable, and restore-tested... print the next 72 hours of schedules as a backup"
+    },
+    {
+      "id": "P6-08",
+      "status": 1,
+      "evidence": "connect to existing AD and single sign-on. Least-privilege access, multi-factor authentication for admins"
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "replay peak-hour load, plus a margin... send copies of real read traffic (or replay recorded traffic) to the cloud and compare responses"
+    },
+    {
+      "id": "P6-10",
+      "status": 2,
+      "evidence": "target a low-volume window, e.g., Sunday early morning... Change freeze... Brief staff... IT staff on site at large clinics"
+    },
+    {
+      "id": "P6-11",
+      "status": 2,
+      "evidence": "Get written vendor approval for cloud hosting before Phase 2... Securely wipe old storage according to NIST 800-88"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "Continuous copying (CDC) from on-prem to cloud... run the full switchover at least twice in a pre-production copy, including the rollback"
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "Old and new systems must never both take writes. Copy data one way, then switch over once."
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "Test every connection from start to finish in the cloud test environment with realistic (de-identified) messages."
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "If you have an interface engine (Rhapsody, Cloverleaf, Mirth, Corepoint), use it to send messages to old or new."
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "Modernize after the move is stable. Don't change the platform and the app at the same time."
+    }
+  ],
+  "note": "An exemplary, trap-free migration plan with correct single-write-authority cutover, rehearsed rollback, and full interface coverage; its only material weaknesses are near-total silence on cost, missing break-glass access, and unaddressed duplicate-message handling on queue replay.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6728,
+    "thinking_tokens": 4168,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11979
+  },
+  "cost_usd": 0.4861575,
+  "latency_s": 126.032,
+  "raw_file": "raw/judge-32e2d835c7ce.engineering-quality-v1.fable-5.k1.txt"
+}

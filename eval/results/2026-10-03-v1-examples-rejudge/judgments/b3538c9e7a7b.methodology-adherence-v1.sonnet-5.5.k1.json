@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "b3538c9e7a7b.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "b3538c9e7a7b",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 15,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 0 Foundations: \"App, ingress, queue, reconciler, state store, actuator, audit log and tracing, kill switches, event replay, test sets\"",
+      "rationale": "Roadmap goes substrate → triage shadow → act → fixes → expand, with sensible dependencies, but gateway/policy engine/sandbox placement is not clearly proven before use and the ordering is loosely stated."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Done when: \"A week of live events handled with nothing missed or processed twice (shadow mode only)\"",
+      "rationale": "Phase 0 is a live, end-to-end event path in shadow mode, but it produces no real triage output and so is not a true thin production slice."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "\"Auto-merge, even for docs typos, stays off unless phase-4 data makes an overwhelming case for it.\"",
+      "rationale": "Some defaults with triggers exist (Temporal vs Postgres queue, auto-merge off, promotion thresholds), but there is no consolidated list of irreversible decisions with flip conditions; several are left as open questions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Phase 0 puts \"actuator, audit log and tracing, kill switches\" before triage logic; widest-impact pieces first.",
+      "rationale": "Phase-level ordering puts foundational and widest-blast components first, but within-phase ordering is not explicit."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "\"Only the actuator holds credentials\"; Phase 0 includes kill switches; shadow mode, security screen in Phase 1, protected paths and independent verification in Phase 3.",
+      "rationale": "Security controls (signature verification, credential isolation, shadow mode, security screen, sandbox, protected paths) appear in every phase from the start."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"audit log and tracing, kill switches, event replay\" in Phase 0; \"decision dashboard\" Phase 1; automatic shutoffs on rolling metrics Phase 2.",
+      "rationale": "Tracing and audit log start in Phase 0, with dashboards, metrics and alerts in later phases."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "\"built from the repo's devcontainer or Dockerfile and cached by lockfile hash\"; \"Pin versions\"",
+      "rationale": "Reproducibility covers sandboxes, model pinning and event replay, but it is not threaded through each phase and there is no explicit environment/IaC setup in Phase 0."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"Reconciler (sweeps for missed events)\"; dedupe via X-GitHub-Delivery; budgets; auto-demotion; CI/review round caps; ATTEMPT_FAILED path.",
+      "rationale": "Failure handling runs through every phase: retries, idempotency and reconciler in Phase 0, shutoffs in Phase 2, failure handling in Phase 3."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "\"Each action moves from shadow (logged only) to suggest to act based on measured accuracy\"; LLM gateway enforces per-run budget.",
+      "rationale": "Defenses, budgets and HITL are built into the design and the shadow-first rollout, but the roadmap doesn't sequence retrieval → model access → memory → orchestration → routing → feedback, and the gateway and policy engine are not explicit Phase 0 items."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "\"Out of scope for v1: merging or approving PRs, closing issues on its own...\"; \"Automatic triggering comes in a later phase.\"",
+      "rationale": "Deferrals are listed and put in Phase 4, but pull-forward conditions are mostly implicit."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong security, resilience and observability design with a shadow→suggest→act rollout, but weak on explicit decision gates, layer ordering for the AI stack, and pull-forward conditions.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1443,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 570,
+    "cache_creation_input_tokens": 8356
+  },
+  "cost_usd": 0.035442,
+  "latency_s": 25.904,
+  "raw_file": "raw/judge-b3538c9e7a7b.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "9b628afd1392.probe.sonnet-5.5",
+  "blind_id": "9b628afd1392",
+  "blind_sha256": "6405f227155fff79a1de0c5722bbf9e64445f1a14663d7f0069526a822f711e8",
+  "judge": "sonnet-5.5",
+  "order_index": 10,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens with an explicit assumption disclaimer ('I haven't seen your docs or stack... common defaults') and ends with targeted clarifying questions, which fits a generic good-practice plan as well as a methodology",
+    "Comprehensive but conventional structure (goals, architecture, pipeline, eval, rollout, risks) with no unusual methodology artifacts such as labeled stages, explicit assumptions registers, or decision logs",
+    "Metrics table has 'Starting target' values and 'Measure the baseline' hedges rather than committed numbers, which suggests default model behavior",
+    "Risk table and phased rollout table are typical of unconstrained strong-model output",
+    "Closing offer ('If you point me to the docs export...') is a typical conversational chat ending, not a methodology template"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 335,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4192
+  },
+  "cost_usd": 0.013838000000000001,
+  "latency_s": 16.686,
+  "raw_file": "raw/probe-9b628afd1392.probe.sonnet-5.5.txt"
+}

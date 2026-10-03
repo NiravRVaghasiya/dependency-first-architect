@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "be98f49ff73d.probe.sonnet-5.5",
+  "blind_id": "be98f49ff73d",
+  "blind_sha256": "974a1c5481440e1e4b7c027afca4c9886c10c829923f9fab2abb4e42e107725f",
+  "judge": "sonnet-5.5",
+  "order_index": 46,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.35,
+  "cues": [
+    "Highly polished, comprehensive structure (goals, architecture, state machine, pipelines, safety, eval, rollout, risks) typical of a strong default LLM answer too",
+    "Ends with 'Open questions' and an offer to turn into a spec — common conversational default rather than a rigid methodology template",
+    "No explicit methodology artifacts (e.g., assumptions log, numbered decision records, verification checklist, alternatives considered)",
+    "Rollout phases with exit criteria and a risk/mitigation table show thoroughness but fit a generic good-plan pattern",
+    "Mixed formatting (ASCII diagrams, tables, bold lead-ins) without consistent prescribed section labels suggests unconstrained writing"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 316,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4676
+  },
+  "cost_usd": 0.014858,
+  "latency_s": 29.237,
+  "raw_file": "raw/probe-be98f49ff73d.probe.sonnet-5.5.txt"
+}

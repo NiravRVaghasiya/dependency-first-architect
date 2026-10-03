@@ -1,0 +1,115 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P4.generic-control.opus-5.5.r02",
+  "prompt_id": "P4",
+  "condition": "generic-control",
+  "generator": "opus-5.5",
+  "run_index": 2,
+  "seed": 929551656,
+  "seed_honored": false,
+  "request": "/architecture-planner Plan an autonomous agent that triages and resolves GitHub issues.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P4.generic-control.opus-5.5.r02.md",
+  "output_sha256": "b32e5a0f1f9433877932f78f571dcd6ecb7d8e7bb1a034117faf657a51419f13",
+  "metrics": {
+    "words": 9320,
+    "chars": 59230,
+    "visible_tokens_est": 14808
+  },
+  "turns": 4,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p2ab33809/skills/architecture-planner/reference/document-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p2ab33809/skills/architecture-planner/reference/guidance.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "w00f8ea59/README.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "architecture-planner:architecture-planner",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "eval/conditions/generic-architect/reference/document-template.md",
+      "sha256": "517670de5932f7ab0ecf24b9552eef0898f2878615236f7a28d2df41ea230c02",
+      "words": 1195
+    },
+    {
+      "path": "eval/conditions/generic-architect/reference/guidance.md",
+      "sha256": "a1221cbaa4130a04df554c6ee69526c259863c4ac6c0c5975970a4bbb636b6ad",
+      "words": 2023
+    }
+  ],
+  "started_at": "2026-10-02T23:55:37+00:00",
+  "finished_at": "2026-10-03T00:04:40+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [
+    "claude-opus-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 40950,
+    "thinking_tokens": 17528,
+    "cache_read_input_tokens": 5812,
+    "cache_creation_input_tokens": 12377
+  },
+  "cost_usd": 0.8820714,
+  "latency_s": 542.397,
+  "raw_file": "raw/gen-P4.generic-control.opus-5.5.r02.txt"
+}

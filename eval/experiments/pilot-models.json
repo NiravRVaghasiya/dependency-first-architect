@@ -1,0 +1,109 @@
+{
+  "schema": "dfa-eval/config@1",
+  "name": "pilot-models",
+  "description": "Pilot, part 3 of 3: other generator models. P1-P5 x {bare request, v2 skill} x 3 runs on Sonnet 5.5 (effort high) and Haiku 4.5, judged blind by Sonnet 5.5 on both rubrics (so Sonnet also judges its own plans), plus a leakage probe.",
+  "seed": 20261005,
+  "prompts": [
+    {
+      "id": "P1",
+      "title": "RAG support chatbot",
+      "kind": "AI",
+      "request": "Plan a customer-support RAG chatbot over our help-center docs.",
+      "checklist": "eval/rubrics/checklists/P1.json"
+    },
+    {
+      "id": "P2",
+      "title": "Multi-tenant SaaS billing",
+      "kind": "non-AI",
+      "request": "Architect a multi-tenant SaaS billing system.",
+      "checklist": "eval/rubrics/checklists/P2.json"
+    },
+    {
+      "id": "P3",
+      "title": "CI/CD for 50 microservices",
+      "kind": "non-AI",
+      "request": "Sequence building a CI/CD platform for 50 microservices.",
+      "checklist": "eval/rubrics/checklists/P3.json"
+    },
+    {
+      "id": "P4",
+      "title": "GitHub issue agent",
+      "kind": "AI",
+      "request": "Plan an autonomous agent that triages and resolves GitHub issues.",
+      "checklist": "eval/rubrics/checklists/P4.json"
+    },
+    {
+      "id": "P5",
+      "title": "Collaborative doc editor",
+      "kind": "non-AI",
+      "request": "Order the build of a real-time collaborative document editor.",
+      "checklist": "eval/rubrics/checklists/P5.json"
+    }
+  ],
+  "conditions": {
+    "baseline": {
+      "kind": "plain",
+      "description": "The request alone, no planning instructions."
+    },
+    "dfa": {
+      "kind": "skill",
+      "description": "The Dependency-First Architect skill (SKILL.md and the reference files it names, without reference/evals.md), invoked as /dependency-first-architect.",
+      "skill_dir": ".",
+      "skill_name": "dependency-first-architect"
+    }
+  },
+  "generators": [
+    {
+      "id": "sonnet-5.5",
+      "provider": "claude-cli",
+      "model": "claude-sonnet-5-5",
+      "effort": "high"
+    },
+    {
+      "id": "haiku-4.5",
+      "provider": "claude-cli",
+      "model": "claude-haiku-4-5-20251001",
+      "effort": null
+    }
+  ],
+  "judges": [
+    {
+      "id": "sonnet-5.5",
+      "provider": "claude-cli",
+      "model": "claude-sonnet-5-5",
+      "effort": "high"
+    }
+  ],
+  "runs_per_cell": 3,
+  "contrasts": [
+    {
+      "treatment": "dfa",
+      "control": "baseline"
+    }
+  ],
+  "rubrics": [
+    "methodology-adherence-v1",
+    "engineering-quality-v1"
+  ],
+  "judge_repeats": 1,
+  "blinding": {
+    "strip_self_score": true,
+    "neutralize_terms_for": [
+      "engineering-quality-v1"
+    ]
+  },
+  "probe": {
+    "enabled": true,
+    "judges": [
+      "sonnet-5.5"
+    ]
+  },
+  "workspace": {
+    "readme": "eval/conditions/neutral-workspace-README.md"
+  },
+  "limits": {
+    "max_cost_usd": 60,
+    "jobs": 8,
+    "timeout_s": 3600
+  }
+}

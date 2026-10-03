@@ -1,0 +1,489 @@
+{
+  "schema": "dfa-eval/blind-key@1",
+  "salt": "1bf9a4534d232a05",
+  "neutralize_terms_for": [
+    "engineering-quality-v1"
+  ],
+  "entries": [
+    {
+      "blind_id": "03f90f8a94a0",
+      "gen_id": "P4.dfa-capped.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "b0719f35e559f612dee696c06a2d68d845a001d3a120384662d9628dc9a65723",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "05abd8b7903c",
+      "gen_id": "P4.dfa-capped.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "84b21971474048c3b87fdbfac09dee041312ea85277c60317ea09d3e3f997d74",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0bdea440d885",
+      "gen_id": "P5.dfa-capped.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "28fe45873ee7efbdc049612eb0a332efc6c5edfc1e7bd5212344d7f7fa8435c9",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "14c7ed132dc2",
+      "gen_id": "P2.baseline-capped.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "da91d34bc53e28425f51da44c72e30ad6e7b3af34e7003fafa2b89c9a998b526",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "184798b59715",
+      "gen_id": "P5.dfa-capped.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "4f9902973e30853192c443e7aa12efba050cd4f66ae1a5c9358588ebd234162f",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "1a796ca60468",
+      "gen_id": "P1.baseline-capped.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "936129e756228b4b3ecdae65ed5a266d05a663450510530b01c0a43327d42c0e",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "1b72c603b12b",
+      "gen_id": "P4.baseline-capped.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "46bd670c0fe4a823fcb31c081856a7d826a2f2ff93e210a9f1b41697a7088509",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "1f7a60fd9495",
+      "gen_id": "P3.baseline-capped.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "20d9101432f846c919023c6a8546a1e2b0c6123bcb40dda219efd5e8f22520dd",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "242b280aa42e",
+      "gen_id": "P2.dfa-capped.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "ac0d948c031bc960a60bb9d60bdcb28df918ba55fbd80eca7105d0c89d0610bf",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "32911a8b53e3",
+      "gen_id": "P4.baseline-capped.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "f6ac3eed87ad69a1e08a551d04157fe2d61746bbf2e98f674863e9cdbb1812cc",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "34308256e88c",
+      "gen_id": "P4.dfa-capped.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "6d70260fc56a24b899b77f3ac1e90b9c238fb1d3f59a03dc72add7df4be30745",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "36ec2c02184d",
+      "gen_id": "P2.baseline-capped.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "a98e29abe0a9b4425875059fd577a0ea8133a6a1c04e973a29bf6bca39dcfd77",
+      "replacements": 1,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "390e00f5dc63",
+      "gen_id": "P5.baseline-capped.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "713c97ee6cb8d12144797637efe13a9b6830e9eb36c0025f3642699741d1bd6a",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3981a58f7755",
+      "gen_id": "P3.dfa-capped.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "e42cc0ea2a4ae5bd0468c6ef41725c003ec08a073a19ca8c3e5640b4fba506b0",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "463c66b70298",
+      "gen_id": "P3.baseline-capped.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "e2dfd37f40baf9d7807d954f9a16c71a4b235851d67df1ead6cfeb25e7b68a9e",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "465b2742a12a",
+      "gen_id": "P2.baseline-capped.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "b0621c6023d33c7919ed1e05d7f4883d4a1a87bad7583cc6a78013ad1c1c39b3",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "50ccf73c3c10",
+      "gen_id": "P3.dfa-capped.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "bb0494b688a8d58c7e0a9c79526154bb6292d8c6c1df265f8a31166141e308f8",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "52b4079f487c",
+      "gen_id": "P2.baseline-capped.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "b0621c6023d33c7919ed1e05d7f4883d4a1a87bad7583cc6a78013ad1c1c39b3",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "58491bfe12c3",
+      "gen_id": "P4.dfa-capped.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "f7db40afe2516ca5c3d756e248e6dad08dcc08919a70a2c6d03f629fbde1179f",
+      "replacements": 10,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5cd2e791dc62",
+      "gen_id": "P3.dfa-capped.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "a10ac42e2967f5e02f53d98305afa111fe114b90c8500106e65ee833910bfc2c",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5d77fc8652af",
+      "gen_id": "P4.dfa-capped.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "5d6461d9c4e2ec9560c45379074c12d4c8fcbb18bf3580573f2e01ec6f87a0bc",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "60fcbf493c93",
+      "gen_id": "P1.dfa-capped.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "57e90c055ae05221d50ceca6c05660cea3e09147aa78cd427dd03f19afe04422",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "65bf0f9bba70",
+      "gen_id": "P3.baseline-capped.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "e2dfd37f40baf9d7807d954f9a16c71a4b235851d67df1ead6cfeb25e7b68a9e",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "6eba33d6e87c",
+      "gen_id": "P3.dfa-capped.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "aaaf419561d843a14d8eaf050984bebc78f0ac212cdfc6aa67472ff53917406d",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "718157f46fa9",
+      "gen_id": "P5.dfa-capped.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "84f01d1cafcb7550da304f3fec35d10357b8e00b3473788ca94f8f7438e748cb",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "777205f9dd06",
+      "gen_id": "P3.baseline-capped.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "6b909458ddfbc3ff7f8d053b58f7ac645b18d59fa138b122fd362d6da8d1ec30",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "803685291a96",
+      "gen_id": "P1.baseline-capped.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "e3a4bfb6f8a35bc4d75eb0c4f45599e2fb2d72e66b604ec3c84fce337f4e6e23",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "80be327a02ea",
+      "gen_id": "P4.baseline-capped.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "d38ee5b28fc49f88facdea98307b4319e2c06a16ba80066adec095a42febb110",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "85aacbd77cee",
+      "gen_id": "P1.baseline-capped.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "936129e756228b4b3ecdae65ed5a266d05a663450510530b01c0a43327d42c0e",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8755c34da34c",
+      "gen_id": "P5.dfa-capped.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "37a5c28a857900de2c9bc616083989a5aa6586d18e7526a6d34202c2979bfe55",
+      "replacements": 10,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8db676b31c33",
+      "gen_id": "P2.baseline-capped.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "6879417f6fcf7f13b61956d514364f39797e9ba4a1f2aa10486574538cc91c55",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8dbb7b52aadc",
+      "gen_id": "P2.baseline-capped.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "6879417f6fcf7f13b61956d514364f39797e9ba4a1f2aa10486574538cc91c55",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "924b32ee1d06",
+      "gen_id": "P5.baseline-capped.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "08a848d0b48c2d92d0d90697d65c3ca70009b7ee4fdbd52bdaa00d2f70f20666",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "92b9f1934c8d",
+      "gen_id": "P4.baseline-capped.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "9842490f13b99588f0eda71686e64afe2b0ca20f3d7570b0c6be7c5124ea0633",
+      "replacements": 1,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "93aceea9415a",
+      "gen_id": "P4.baseline-capped.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "d38ee5b28fc49f88facdea98307b4319e2c06a16ba80066adec095a42febb110",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9681f7565136",
+      "gen_id": "P5.baseline-capped.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "713c97ee6cb8d12144797637efe13a9b6830e9eb36c0025f3642699741d1bd6a",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "97eaecf7b240",
+      "gen_id": "P1.dfa-capped.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "4624c61782e2d05c28f211b836a9873d631ad6362836a0c036cdc7837c0a5248",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9d69736937f9",
+      "gen_id": "P5.baseline-capped.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "08a848d0b48c2d92d0d90697d65c3ca70009b7ee4fdbd52bdaa00d2f70f20666",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9dbce0c4ce87",
+      "gen_id": "P2.dfa-capped.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "472f84743708bf5948309f05177414f2776a766cac8c9e8f4ce9f023db5716fb",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a11a3e36061c",
+      "gen_id": "P1.baseline-capped.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "7e6496557648d082e1458500ed3fcf9ca1ee5a924564c5647b80cf2ab16683dc",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a519f32db900",
+      "gen_id": "P2.dfa-capped.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "b11bc8267058536f758c5b4f83670b26f07f36aaaa4df6269b2bf452f1d0b2a0",
+      "replacements": 11,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a9f3e7f038a1",
+      "gen_id": "P3.dfa-capped.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "be80b3100baad8c98d8fbd4bfcc69db0552ba5b906faa10e2a65ebac9ac6101c",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "acf5526f8f09",
+      "gen_id": "P1.baseline-capped.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "e3a4bfb6f8a35bc4d75eb0c4f45599e2fb2d72e66b604ec3c84fce337f4e6e23",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "b32ec30e1b76",
+      "gen_id": "P5.dfa-capped.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "04413318ce80ae65df0fb617e57f613e59316cd2da65e61915448d9c9a2cbcc4",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "b950bc68261e",
+      "gen_id": "P1.dfa-capped.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "0a8bcc925c05bed234d11af3b67935b71d7cc0304873cf36ee4c5e342392bba5",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ba589115caf7",
+      "gen_id": "P1.baseline-capped.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "7e6496557648d082e1458500ed3fcf9ca1ee5a924564c5647b80cf2ab16683dc",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "c1bf90746cad",
+      "gen_id": "P2.dfa-capped.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "27e8f1afc47f60584c76e405644978f0378f384157bed9d0c9b8b55644f51467",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "c763e48afe8a",
+      "gen_id": "P3.dfa-capped.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "dea7f919ab522e9cb8e551c254afb0607a6ba7dbabf16bf4ec4487572bfb8b3a",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ceba01ecf3fa",
+      "gen_id": "P2.dfa-capped.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "dbb8a3420919bd224a5489f21452052b5620cec46c588738614f4eea5006d900",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "d3f06128d2ce",
+      "gen_id": "P2.dfa-capped.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "cf53b29bb3cd4947e8f14442fde6117e8f8ed5787d0a451365d9c566c6db15ef",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "daa61d5ccfc0",
+      "gen_id": "P5.baseline-capped.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "63a0f0c3515722f7d41ae754aff20395723f416b8992a3b6e64e923d4e82d3b0",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "dd5e757da6b1",
+      "gen_id": "P1.dfa-capped.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "f7b5feaf867b9b7fa808a4ca0bc5fd2098aad920e60abab24c738f4544cf9f77",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "dfb3b50af1ab",
+      "gen_id": "P1.dfa-capped.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "25a313550005831283f901f3ab978a649d82149859eb37f51983878ecc3764db",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ec73a2747e76",
+      "gen_id": "P3.baseline-capped.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "20d9101432f846c919023c6a8546a1e2b0c6123bcb40dda219efd5e8f22520dd",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f191c8bc4c9e",
+      "gen_id": "P4.baseline-capped.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "46bd670c0fe4a823fcb31c081856a7d826a2f2ff93e210a9f1b41697a7088509",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f27748412ae0",
+      "gen_id": "P4.dfa-capped.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "9129249cc280a5fa04fe36adec8852752780a4bda0cf25e726f893cd9de8bdeb",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f4236f60668f",
+      "gen_id": "P5.baseline-capped.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "63a0f0c3515722f7d41ae754aff20395723f416b8992a3b6e64e923d4e82d3b0",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f42f6e02046f",
+      "gen_id": "P1.dfa-capped.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "fee96dacb422b49dea11640fc43973fe2fc256ba085ad42196557a82e4822d3b",
+      "replacements": 10,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f71723043607",
+      "gen_id": "P3.baseline-capped.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "6b909458ddfbc3ff7f8d053b58f7ac645b18d59fa138b122fd362d6da8d1ec30",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f7345c4074f2",
+      "gen_id": "P5.dfa-capped.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "4f5791e3a2928b1a084985f6b5e5ec58e8a038abce1c5753e059646fe6fbe48c",
+      "replacements": 0,
+      "self_score_removed": false
+    }
+  ]
+}

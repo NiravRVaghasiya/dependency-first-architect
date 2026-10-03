@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e0467deb7edc.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "e0467deb7edc",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 155,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "`BACKUP LOG ... WITH NORECOVERY` (final \"tail\" backup). This leaves the old database in a restoring state, ready to receive changes back later.",
+      "rationale": "The core mechanics (tail-log backup, reverse log shipping, Basic AG limits, ExpressRoute not encrypted, MACsec needs ExpressRoute Direct) are accurate, with only minor imprecision such as weak BINARY_CHECKSUM reconciliation and log-shipping reconfiguration after AG failover."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "A database that only one place can write to can't switch locations with literally zero interruption.",
+      "rationale": "It covers migration, interfaces, network, DR and decommissioning and is buildable, but it reinterprets 'no downtime' as a ≤15 min pause that needs sign-off, and the pause is really a full app stop."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "The migration keeps exactly **one writable copy at any moment**. That rule is why we use one-way log shipping and an ordered cutover",
+      "rationale": "Ownership and write authority are consistent throughout, with small loose ends: 'saving paused' versus stopping the app pools, and a 1-minute versus 5-minute sync lag."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "2 rehearsals in a row: pause ≤15 min, reconciliation passes, rollback ≤10 min. Load test at 2× peak meets p95 targets.",
+      "rationale": "Validation targets the specific risks, with early spikes, timed rehearsals and a production probe, but shadow or parallel validation of live traffic is thin and some thresholds are provisional."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "| A10 | Clinical leadership accepts one save pause of ≤15 minutes ... | If literally zero is required, the app must be changed to queue writes, adding about 2–3 months | **Ask now.**",
+      "rationale": "The plan states 14 assumptions, each with its impact if wrong, a validation step and timing, and open questions have defaults."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "**The same job runs in both places** (for example, reminders sent twice): prevented by the step 2 and step 5 lists.",
+      "rationale": "The plan covers domain failures with concrete handling: HL7 duplicates, jobs running twice, time zone, link loss and cutover rollback. Data corruption and adversarial input are handled less deeply."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "**Alerts, each with a runbook in `runbooks/`:** Probe failure ... HL7 queue backing up ... Sync falling behind",
+      "rationale": "Monitoring, runbooks, named owners, rollback windows and IaC pipelines are concrete and sized for a small team, though hypercare on-call and staffing detail are light."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Production runs at about **$5k–15k/month**: 2 SQL VMs (8 vCPU), 2 app VMs (4 vCPU) ... SQL licensing (close to zero with Hybrid Benefit, A12)",
+      "rationale": "It names the main cost drivers, dual-running cost and controls, with labeled ranges, but gives no one-time build or people cost estimate."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "| D2 | ... | Easy | S1 shows the DB step of cutover takes more than 5 min **and** the hospital is on Enterprise edition: switch to a distributed availability group |",
+      "rationale": "The decision table rates reversibility and gives revisit triggers, a rehost-first approach, a 30-day failback and an explicit point of no return, and it spikes the riskiest choices early."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Non-goals: Rewriting the app, changing the database schema, upgrading the app version or changing the user interface during the move.",
+      "rationale": "It is a minimal-change rehost where nearly everything is justified, though a second-region DR milestone, PIM and a hub with two domain controllers add some weight."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "| T10 | Build a SQL VM matching the on-site test SQL version. Set up log shipping on-site test → cloud. | ... | Restore lag under 5 min for 72 hours |",
+      "rationale": "The plan has ordered tasks with locations and checkable done-when criteria, time-boxed spikes that state what would change the plan, and a clear critical path."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "Legal confirms the HIPAA BAA covers every service used. Security completes the HIPAA risk analysis before any PHI enters Azure"
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "Inventory ... engine channels, outbound vendor endpoints ... Each item marked migrate / repoint / retire."
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "Per table: row counts, plus `CHECKSUM_AGG(BINARY_CHECKSUM(*))` over the key tables ... Sync falling behind: restore lag over 10 min"
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "The migration keeps exactly **one writable copy at any moment**. That rule is why we use one-way log shipping and an ordered cutover"
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "Start reverse log shipping, cloud → old on-site DB, every 5 min ... 2 rehearsals in a row within the pause and rollback targets"
+    },
+    {
+      "id": "P6-06",
+      "status": 2,
+      "evidence": "ExpressRoute: 1 Gbps ... Site-to-site IPsec VPN on a **different ISP** ... S2 ... measure ExpressRoute/VPN round-trip time"
+    },
+    {
+      "id": "P6-07",
+      "status": 2,
+      "evidence": "Data loss (RPO): ≤5 min. Recovery within the region (RTO): ≤1 h ... Every 15 min, puts the next 72 hours of appointments on an on-site share"
+    },
+    {
+      "id": "P6-08",
+      "status": 1,
+      "evidence": "Entra ID with MFA, plus PIM ... Two break-glass accounts (emergency-only admin accounts)."
+    },
+    {
+      "id": "P6-09",
+      "status": 1,
+      "evidence": "Replay recorded user journeys at 2× peak against a production-sized copy"
+    },
+    {
+      "id": "P6-10",
+      "status": 2,
+      "evidence": "App releases are frozen from 2 weeks before cutover to 2 weeks after ... Sunday 02:00–04:00 ... 2 weeks of hypercare"
+    },
+    {
+      "id": "P6-11",
+      "status": 2,
+      "evidence": "Old disks are wiped to NIST 800-88 after retirement ... Written vendor statement of support for Azure IaaS"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "The cloud DB has had log backups shipped and applied every 1 min for 2 weeks ... 3 full rehearsals"
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "Writing to both systems risks double bookings (#1)."
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "No public IPs, enforced by an Azure Policy *deny* rule ... synthetic test data (A13)"
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "Interface engine stays on site ... repointing the scheduling inbound and outbound connections to the cloud listener"
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "Copy across, don't rebuild (D1)."
+    }
+  ],
+  "note": "A strong, honest rehost plan with one-writer log-shipping cutover, tested rollback and clear assumptions. Its weak points are that 'no downtime' becomes a ≤15 min full app stop, and that app-level identity and break-glass access and shadow validation are thin.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 6366,
+    "thinking_tokens": 3591,
+    "cache_read_input_tokens": 919,
+    "cache_creation_input_tokens": 27802
+  },
+  "cost_usd": 0.1333568,
+  "latency_s": 60.139,
+  "raw_file": "raw/judge-e0467deb7edc.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

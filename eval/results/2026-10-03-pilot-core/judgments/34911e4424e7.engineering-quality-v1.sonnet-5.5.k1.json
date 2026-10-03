@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "34911e4424e7.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "34911e4424e7",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 165,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Stored amounts are **int64 minor units plus an ISO 4217 currency code**. ... Rounding happens once, at the line item, half-up",
+      "rationale": "Correct on money, RLS, outbox, Stripe idempotency and unknown-state handling; minor issues (SAQ-A with Connect, gapless sequence under concurrency, 'serializable or row locks') leave small imprecision."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "A multi-tenant platform where tenants set up a product catalog, run subscriptions and usage-based pricing, issue invoices, collect payment",
+      "rationale": "Interprets the ambiguity explicitly and covers core capabilities with explicit deferrals, though the scope (building a Chargebee-like platform) is large and tax/entitlements thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Modular monolith: one deployable, one Postgres. ... Boundaries are enforced in CI by an import linter",
+      "rationale": "Consistent design with clear module and data ownership; minor loose ends such as Phase 0 prod test keys and ledger-vs-Stripe Connect flow."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Replaying the full journal reproduces the snapshots exactly. ... A chaos test that drops 10% of webhooks still converges to correct state within 1 hour.",
+      "rationale": "Per-phase exit checks tied to specific risks, early thin slice, injected-imbalance alert, and production invariant/reconciliation monitoring; some thresholds arbitrary."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "**Assumption:** this plan treats the system as a **billing platform that is itself multi-tenant SaaS**.",
+      "rationale": "Key interpretive assumption is stated with its consequence, but scale, team size and compliance assumptions are implicit and thresholds like 5k events/s are unjustified."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "A timeout leads to a status query, never a blind retry; every attempt carries an idempotency key.",
+      "rationale": "Covers duplicates, missed webhooks, tax outage, billing run crash, SSRF, noisy neighbours, ledger imbalance, with detection and recovery; dispute and tenant-isolation leaks handled."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Terraform defines the infrastructure. GitHub Actions builds the image (pinned by digest), runs database migrations, and deploys to staging, then prod.",
+      "rationale": "Meaningful domain signals, paging and restore drill, but rollback, migration safety and team ownership/on-call sizing are thin."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Buy: payment processing (Stripe with Connect), tax calculation (Stripe Tax or Avalara), email (Postmark/SES)",
+      "rationale": "Cost appears only as build/buy choice; no vendor fee, infrastructure, people estimates or cost growth and controls."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "A tenant→cell routing step exists from day one but points everything at one cell.",
+      "rationale": "Explicitly handles one-way decisions (ledger model, money, price versions, tenancy, processor interface, line-item contract) with isolation and revisit triggers."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Modular monolith: one deployable, one Postgres.",
+      "rationale": "Starts simple with deferrals, though cells routing, Connect and two-person approval add some speculative weight."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phases (ordered by dependency ... Depends on ... Unlocks ... Exit check",
+      "rationale": "Thin end-to-end slice first, dependency-reasoned phases, concrete tasks and checkable exit criteria; adaptation on disappointing results is only via revisit triggers."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "int64 minor units plus an ISO 4217 currency code ... Rounding happens once, at the line item, half-up, and is documented."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Double-entry, append-only journal. Corrections are reversing entries; rows are never updated or deleted."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "A timeout leads to a status query, never a blind retry; every attempt carries an idempotency key."
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "card data never touches our servers (PCI SAQ-A) ... We verify the signature, dedupe on event ID"
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "A CI migration check rejects any table that has no `tenant_id` or no RLS policy."
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "Re-rating a closed period from raw events reproduces the invoiced amount to the cent."
+    },
+    {
+      "id": "P2-07",
+      "status": 2,
+      "evidence": "Immutable price versions ... Each tenant has a configured anchor timezone for period boundaries."
+    },
+    {
+      "id": "P2-08",
+      "status": 1,
+      "evidence": "Gapless invoice numbering per tenant: a sequence allocated at finalization, inside the transaction."
+    },
+    {
+      "id": "P2-09",
+      "status": 1,
+      "evidence": "Dunning: a retry schedule configurable per tenant, `past_due` handling, and a cancel-or-pause policy."
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "Daily reconciliation of our ledger cash against Stripe balance transactions and payouts."
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Buy: payment processing ... Build: ledger, catalog, subscriptions, rating, invoicing, dunning. Those are the product."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "No floats anywhere."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "the app role gets INSERT only on journal tables, plus a trigger that rejects UPDATE and DELETE."
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "store the raw payload, dedupe, process out of order, and pull from Stripe periodically to catch missed events."
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "card data never touches our servers (PCI SAQ-A)"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "Shared database and schema, `tenant_id` on every row, Postgres row-level security (RLS) enforced."
+    }
+  ],
+  "note": "Strong, correctness-focused plan with excellent phasing, immutability, idempotency and reversibility reasoning; weak on cost, entitlements, and detailed tax/dunning/operations.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2369,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 16131
+  },
+  "cost_usd": 0.0640255,
+  "latency_s": 37.849,
+  "raw_file": "raw/judge-34911e4424e7.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

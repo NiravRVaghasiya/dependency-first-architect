@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "7c593f6d7bcc.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "7c593f6d7bcc",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 30,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Hybrid pgvector + full-text over public articles; citation links checked against the URLs that were actually retrieved.",
+      "rationale": "Mechanisms (blue/green index swap, enforced tool allow-list, renderer exfiltration closure, delete propagation) are accurate; only minor imprecision such as the 'auto' kill switch and Presidio's limits on free text."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "This plan assumes: anonymous customers, public published articles only, answers only, and a handoff to a human as the bot's single action.",
+      "rationale": "It resolves the ambiguities sensibly, covers all the core needs, and gives explicit, reasoned exclusions and pull-forward triggers in §10."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Release bundle = prompt + model + index + guards, reproducible from git",
+      "rationale": "Design is consistent: one-way sync, public-only index, the single write action, and a session TTL. Rollback, identity and error handling are applied the same way across phases."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "CI suite of ≥ 200 cases: known strings, plus red-team cases in user input, in a planted test article in a staging index, and in handoff arguments.",
+      "rationale": "Each validation check is tied to a specific risk and has thresholds labeled as assumptions. The riskiest checks (V1, V2) run early, the judge is calibrated against SME labels, and a canary SME audit continues after launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Missing inputs, and the order changes they would force",
+      "rationale": "Assumptions and unknowns are labeled explicitly, with what each would change and who supplies it."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Output renderer: only allow-listed help-center links, no images, no raw HTML. This closes the exfiltration path.",
+      "rationale": "It covers hallucinated commitments, injection, exfiltration, PII, runaway spend, provider outage, feedback poisoning and stale content. Each has detection and mitigation, plus auto-rollback."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Breaching the spend cap or the error SLO triggers automatic rollback to the previous step.",
+      "rationale": "It covers deploy and rollback, alias swaps, traces, alerts, canary steps and ownership, sized for a small team with a single service. Incident-response ownership is only lightly described."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "per turn ≤ 6k input / 800 output tokens and 1 generation call; per session ≤ 10 turns; global daily spend cap with a kill switch",
+      "rationale": "Caps, controls, a cost-per-resolution ratio and build-vs-buy are covered. It gives no absolute cost estimate or token-based model for cost per conversation, and the engineering build cost is missing."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Data-privacy boundary | R3: customer text sent to a third party or logged can't be un-exposed",
+      "rationale": "Decisions are classified by reversibility, with validation and revisit triggers. Measures include provider abstraction, index alias and pinned embedding versions."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "1 service, 1 ingestion job, 1 managed Postgres",
+      "rationale": "It starts with a monolith, a single chain and no routing, and defers everything else. The process is heavy but each element is justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check V0: a real request succeeds with one trace across every tier. A deploy and a rollback both succeed through the pipeline.",
+      "rationale": "It gives a thin vertical slice first, dependency-ordered phases, checkable exit criteria and failure branches."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "Incremental sync (webhook or 5-minute poll) with deletes propagated, plus a nightly full rebuild into a new index version."
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Metadata on every chunk: article ID, URL, locale, `updated_at`, product. Chunking by heading."
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "Eval runner in CI (e.g. promptfoo or an in-house harness)."
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "No citation means refuse and offer a handoff."
+    },
+    {
+      "id": "P1-05",
+      "status": 1,
+      "evidence": "The user confirms \"talk to a person\". That creates a ticket tagged `bot_handoff`, with the transcript"
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "Tool executor allow-list containing only `create_handoff`... enforced in code, not by the model."
+    },
+    {
+      "id": "P1-07",
+      "status": 2,
+      "evidence": "Ingestion allow-list: only articles that are public and published. Drafts and internal articles are excluded at the source."
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "Redact PII (Presidio) before logs and traces. Transcripts kept 30 days, access-controlled."
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "The bot never fetches account data"
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "Weekly report clustering unanswered intents."
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "per turn ≤ 6k input / 800 output tokens and 1 generation call; per session ≤ 10 turns; global daily spend cap"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Grounded answers only: every claim cites a retrieved public article."
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Ingestion allow-list: only articles that are public and published."
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "prompt+RAG, because the docs change and citations are required."
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "each change merges only if the next eval run improves its target metric with no V4 regression."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "Single-chain orchestration: rewrite the query using history, retrieve, generate or refuse, offer a handoff."
+    }
+  ],
+  "note": "Exceptionally strong, risk-driven plan; its gaps are the lack of an absolute cost model and lightweight incident ownership. It leans on assumption-labeled thresholds.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2243,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 919,
+    "cache_creation_input_tokens": 16353
+  },
+  "cost_usd": 0.06350430000000001,
+  "latency_s": 30.335,
+  "raw_file": "raw/judge-7c593f6d7bcc.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "c1ada5508a8a.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "c1ada5508a8a",
+  "blind_sha256": "c623f77c638faaf488a0aa0ad2969ecb71d56d5c253ccd14af98f07c0e1e207c",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 375,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "The executor, journal and undo work can proceed in parallel with the reader once the types in `models.py` are agreed (T5).",
+      "rationale": "Models, then scan/reader/plan/execute, then CLI, then e2e; spikes gate the reader; M2 depends on M1 results."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "M1: JPEG renaming works end to end, with the preview table, `--apply`, collision suffixes, the journal and `undo`. CI passes on Windows, macOS and Linux.",
+      "rationale": "M1 is a real thin end-to-end slice with e2e exit gate, though it's a local tool so 'production' is CI plus local run; strong enough."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D4 ... Revisit if: Users regularly hit locked files on large folders and want to continue past them.",
+      "rationale": "Decision table with options, default, reversibility and revisit triggers, plus assumptions and open questions with defaults."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Define the dataclasses ... blocks T6–T9",
+      "rationale": "Shared models and planner safety before leaf CLI/report is implied, but blast-radius ordering isn't explicitly reasoned."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Security (local tool, single user, built in M1): ExifTool runs without a shell ... `pip-audit` in CI (M1).",
+      "rationale": "Concrete security in M1 but mostly a standalone section; M2 and M3 have little specific security work."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "`-v` writes structured log lines to stderr. ... `--json` outputs the plan as JSON (M3).",
+      "rationale": "M1 has preview, -v, journal and exit codes, but observability isn't explicitly threaded through M2/M3 phases."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "CI matrix ... installs ExifTool ... ExifTool version appears in the log",
+      "rationale": "CI, pyproject, generated fixtures and logged versions exist, but no pinned lockfile or explicit reproducibility across every phase."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "making the k-th `os.rename` fail leaves the folder listing and file hashes identical to the start.",
+      "rationale": "Failure handling is in M1 (rollback, crash recovery, timeouts), with fault injection; M2 adds filesystem and timezone handling, and M3 adds the README recovery section."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "AI-specific concerns: not applicable; no model is involved.",
+      "rationale": "Explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "`--recursive` (when the user has nested folders; clashes would be resolved per folder). `--shift +1h` ... (when travel photos come up).",
+      "rationale": "Deferred list with pull-forward conditions and explicit M1 exclusions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, safety-driven plan with an early end-to-end slice, decision gates and explicit deferrals; weaker on threading security, observability and reproducibility through every phase.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1149,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 15033
+  },
+  "cost_usd": 0.0490805,
+  "latency_s": 16.752,
+  "raw_file": "raw/judge-c1ada5508a8a.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

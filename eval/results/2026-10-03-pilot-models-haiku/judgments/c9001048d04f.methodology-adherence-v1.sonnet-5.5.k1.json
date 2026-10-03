@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "c9001048d04f.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "c9001048d04f",
+  "blind_sha256": "60c3d1932e9f9815c935441f7cd6753357fbd13c81b1540b521b96439dfc0dd0",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 3,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1: \"Implement Yjs Y.Doc and Y.Text for shared document (replaces ad-hoc CRDT)\"",
+      "rationale": "The dependency map and gated phases run substrate upward, but Phase 0 uses TipTap+Yjs before V1 proves the CRDT. Phase 1 also includes offline queue before persistence (Phase 2), and the plan contradicts itself on offline sync (deferred to Phase 4)."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Pipeline: GitHub Actions → (npm run test, npm run lint) → Docker build → push to local registry → docker-compose pull + up.",
+      "rationale": "Phase 0 is a real end-to-end slice with deploy, rollback and injected failure. It runs only on localhost and docker-compose, so it isn't a production path."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "CRDT vs. Operational Transform | R3 ... Default: CRDT (Yjs) ... Flip condition: Benchmark shows latency > 1s or ops/s < 50",
+      "rationale": "The irreversible decisions are listed with reversibility, a default, an assumption, a validation step and a flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Phase 1 ... Tasks: 1. Implement Yjs ... 2. conflict-resolution test suite ... 4. Protocol hardening ... 5. Offline queue",
+      "rationale": "Order within phases is partly sensible, with the core model and tests before the queue. Phase 3 puts auth and routing ahead of UI polish, but blast radius is never stated as an ordering principle."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Phase 0: \"no auth (internal only); CORS to same origin\"; Phase 1: \"JWT validation (stub; uses hardcoded key)\"",
+      "rationale": "Security has an entry in every phase, but early phases are stubs and real ACLs, encryption and OAuth arrive in Phases 3–4. The plan also contradicts itself: encryption is listed as deferred, yet it appears in Phase 4."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Backend logs every WebSocket message (op, user, doc, timestamp) to stdout; structured JSON.",
+      "rationale": "Concrete observability starts in Phase 0 (structured logs, latency trace, slow-query logs) and grows in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Docker Compose for reproducible env; npm --prefix locks dependency versions; seeded random tests (fixed seeds for conflict resolution)",
+      "rationale": "Reproducibility has concrete content in every phase, including seeds, deterministic replay, restore procedures and blue-green deployment."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Graceful shutdown (allow in-flight ops to complete, then close); client-side optimistic update + server reconciliation",
+      "rationale": "Each phase adds concrete resilience, including crash rehydration, circuit breakers, per-doc failover and chaos tests, and V0 injects a Postgres failure."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A — no AI component.",
+      "rationale": "The plan explicitly declares the AI layer N/A. One stray phrase, \"daily inference cost\" in Phase 5, is a minor slip."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Full-text search on documents: Deferred until Phase 4 beta expands to 50+ users ... Triggered when: users request search feature",
+      "rationale": "The deferred items are explicit, each with a phase and a pull-forward trigger."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is strong on tradeoff gates, observability, reproducibility, resilience and deferrals. Its Phase 0 is local only, and it has internal inconsistencies around offline support, encryption and the security stubs.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1387,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10521
+  },
+  "cost_usd": 0.0401805,
+  "latency_s": 32.177,
+  "raw_file": "raw/judge-c9001048d04f.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

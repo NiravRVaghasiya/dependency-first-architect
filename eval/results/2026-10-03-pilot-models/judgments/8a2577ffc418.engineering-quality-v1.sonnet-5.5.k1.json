@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "8a2577ffc418.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "8a2577ffc418",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 95,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Hosted card fields only, so no card data touches our servers.",
+      "rationale": "Mechanisms the design depends on (RLS, append-only ledger, SAQ A with hosted fields, at-least-once plus dedupe, crypto-shredding) are described correctly, but rounding and webhook ordering semantics are left unstated."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Rating, with proration and credits.",
+      "rationale": "It covers metering, rating, invoicing, payments and ledger credibly, but leaves out entitlements, trial/pause/anchor/time-zone lifecycle, invoice numbering and detailed dunning."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Modular monolith (ingest, rating, invoicing, payments, ledger as modules) plus one worker. Module boundaries enforced by a CI dependency lint",
+      "rationale": "Ownership of data is clear, with strong consistency for the ledger and available-first ingest, and the sections agree with each other; only small gaps remain, such as entitlement ownership."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "0 lost and 0 double-counted events against producer counts; ack p99 < 200 ms (ASSUMPTION, see §1).",
+      "rationale": "Checks V0–V6 are tied to specific risks, run early and have measurable, labeled criteria plus production reconciliation; dunning and out-of-order webhook validation are thin."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Missing inputs (assumptions stated; each changes the plan if false)",
+      "rationale": "Unknowns are labeled UNKNOWN with owners and deadlines, assumptions are flagged, and each one says how the plan changes if it is wrong."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "daily reconciliation catches lost webhooks",
+      "rationale": "It covers duplicates, lost events, cross-tenant leaks, lost webhooks, replay and compensation after a bad charge; dunning edge cases, disputes and out-of-order webhook handling get little detail."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Rollback is to the previous image. Database migrations are expand/contract.",
+      "rationale": "Deploy, rollback, flags, alerts, SLIs and restore drills are concrete and sized to a team of 4–6, but on-call and incident ownership are not spelled out."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "PSP and tax fees | No number. Needs the fee schedule from the PSP and tax vendor contracts",
+      "rationale": "It names PSP and tax fees as cost drivers and defers to pricing minimums, but it gives no build cost, no infrastructure cost scaling, and no quantified build-versus-buy comparison."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Reversibility | R3: real customer data and contracts cannot be re-partitioned cheaply",
+      "rationale": "Each decision is rated for reversibility; the one-way ones (tenancy, ledger, IDs, PSP tokens) get early validation, a routing seam, a PSP interface with token export, and explicit revisit triggers."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "One modular monolith, one worker, one managed Postgres, one durable queue, no self-hosted cluster",
+      "rationale": "It is a lean monolith with deferrals listed, but the per-subject-key crypto-shredding, routing seam and staged canaries add some speculative weight, and some essentials are missing."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Exit check: V1 and V2 pass.",
+      "rationale": "Phases are ordered by dependency and risk with checkable exits and a concrete first slice; details such as rounding rules, dunning schedule and lifecycle semantics are left to the team."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 1,
+      "evidence": "Append-only double-entry ledger in integer minor units with a currency on every entry."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Corrections are reversals, never edits."
+    },
+    {
+      "id": "P2-03",
+      "status": 1,
+      "evidence": "Idempotent charge and refund. Signed and replay-safe webhooks."
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "Hosted card fields only, so no card data touches our servers."
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "Row-level security that fails closed. Tenant comes from the token claim, never the request body."
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "Late and out-of-order handling, with a watermark that closes the billing period."
+    },
+    {
+      "id": "P2-07",
+      "status": 1,
+      "evidence": "Plan and price catalog, versioned and immutable once used."
+    },
+    {
+      "id": "P2-08",
+      "status": 1,
+      "evidence": "Tax through the bought engine."
+    },
+    {
+      "id": "P2-09",
+      "status": 1,
+      "evidence": "Payment state machine and dunning schedule."
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "Daily ledger-to-PSP settlement reconciliation."
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Buy payments (hosted fields, Stripe or Adyen class) and tax calculation. Build metering, rating, invoicing, and the ledger."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "integer minor units with a currency on every entry"
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Corrections are reversals, never edits."
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "Idempotency key on every write."
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "No PAN is ever stored."
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "Negative isolation test matrix, run in CI from now on."
+    }
+  ],
+  "note": "Strong, risk-ordered plan with excellent assumptions and reversibility handling and sound money/ledger/isolation/PSP design. It is thin on subscription lifecycle, tax/invoice numbering, dunning, entitlements and cost quantification.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 3564,
+    "thinking_tokens": 1373,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 14923
+  },
+  "cost_usd": 0.0731405,
+  "latency_s": 46.819,
+  "raw_file": "raw/judge-8a2577ffc418.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

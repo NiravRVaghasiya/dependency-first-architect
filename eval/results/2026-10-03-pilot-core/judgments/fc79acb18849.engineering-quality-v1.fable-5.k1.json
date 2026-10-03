@@ -1,0 +1,173 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "fc79acb18849.engineering-quality-v1.fable-5.k1",
+  "blind_id": "fc79acb18849",
+  "blind_sha256": "1ed32d33520d85baaa1c333f94f7d2472ab1cf259f48f0698829299f95d9fb67",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 232,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "on POSIX it silently replaces an existing file, on Windows it raises an error",
+      "rationale": "Technical claims are precise and correct throughout, including subtle areas: os.rename platform semantics, hard-link no-replace trick, FAT/exFAT lacking hard links, exifread format coverage with CR3 caveat, and correct exiftool syntax."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Check \"buy\" first. `exiftool '-FileName<DateTimeOriginal' ...` already does the core job",
+      "rationale": "Solves exactly the stated problem, resolves ambiguities (preview default, missing dates, recursion) sensibly, is clearly buildable, and every exclusion is explicit with a stated bring-forward trigger."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "One process with four internal modules: `scan → read → plan → apply`.",
+      "rationale": "Responsibilities, data ownership (journal, RenamePlan record, DateSource interface) and error propagation (skipped-with-reason statuses) are consistent across every phase with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "the set of SHA-256 content hashes never changes; `undo` restores the original names exactly",
+      "rationale": "Validation is built around the actual failure risks (collisions, cycles, crash-kill, fuzzing malicious EXIF, real-device fixtures) with checkable invariants, and the riskiest layer (rename safety) is validated first."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "The check-then-rename gap is acceptable for a single-user tool and is closed in Phase 1.",
+      "rationale": "Assumptions (single-user, local, formats, scale) are explicit, and every default carries a 'revisit trigger' saying what would change the design and when."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "collisions, case clashes and cycles ... killing the process at a random rename and running `undo`",
+      "rationale": "Covers the hardest domain failures concretely: silent overwrite, same-second bursts, case-insensitive clashes, rename cycles, mid-run crash recovery, malicious EXIF, tampered journals, vanished/read-only files, and FAT fallback."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "GitHub Actions runs on Windows, macOS and Linux, builds the wheel and runs the end-to-end test",
+      "rationale": "Operations are right-sized for a CLI: CI on three OSes, pipx distribution, exit codes and structured logs, versioned journal with migration test as the rollback/undo story."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "If the user is fine running a one-liner without undo, stop here and ship a documented exiftool alias.",
+      "rationale": "The dominant cost (engineering time) is controlled via an explicit build-vs-buy gate and an aggressive deferral list, though no effort estimates or ranges are given."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Naming format (a contract with users' libraries) ... The default never changes once released.",
+      "rationale": "The genuinely one-way decisions (filename contract, journal format version) get the most scrutiny, while reversible choices (exifread vs exiftool, Python vs Go) are isolated behind interfaces with explicit switch paths."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Splitting it into services would be absurd.",
+      "rationale": "The simplest design that fully meets the need: one process, no databases or services, speculative features deferred with triggers, and essentials (safety, undo, dry-run) still included."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phase 1 ... Depends on: Phase 0's working end-to-end path and journal.",
+      "rationale": "Phases are ordered by dependency and risk with concrete tasks, specific decisions (tag order, name template, journal schema) and measurable exit checks a team could act on immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "Use `DateTimeOriginal`, then `DateTimeDigitized`, then `DateTime` ... Format coverage: JPEG, HEIC, DNG, CR2, NEF, ARW"
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "reject `0000:00:00 00:00:00`, blank or garbled dates ... skipped and reported, never given a guessed date ... Opt-in `--fallback=mtime`"
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "`_NN` breaks ties within the same second, ordered by `SubSecTimeOriginal` and then the original filename"
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "preview is the default ... prints `IMG_0412.JPG → 2024-07-14_093012.JPG`. Then `photorename ~/Pictures/trip --apply`"
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "swaps and cycles (A→B, B→A), handled by renaming to temporary names first ... files already in the target format are left alone"
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "Write each journal entry and flush it to disk before its rename. Add `photorename undo DIR`, which replays the journal backwards"
+    },
+    {
+      "id": "P7-07",
+      "status": 1,
+      "evidence": "No timezone conversion: the camera's local time is used as recorded ... Timezone shift / `OffsetTimeOriginal` handling [deferred]"
+    },
+    {
+      "id": "P7-08",
+      "status": 1,
+      "evidence": "Detect and warn only; actually renaming them together is deferred."
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "`YYYY-MM-DD_HHMMSS[_NN].<original ext>`. It sorts correctly as text, is legal on Windows (no colons), and keeps the extension's case."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "before each rename, check that the target doesn't exist and refuse if it does ... create a hard link that fails if the target exists"
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "Use `DateTimeOriginal`, then `DateTimeDigitized`, then `DateTime` ... The user explicitly opts in with `--fallback=mtime`"
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "One process with four internal modules ... Splitting it into services would be absurd."
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "Buy: pure-Python `exifread`, read-only."
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "It sorts correctly as text, is legal on Windows (no colons)"
+    }
+  ],
+  "note": "An exemplary plan for this task: correct on the subtle filesystem and EXIF details, safety-first ordering, explicit assumptions and deferrals; only sidecar co-renaming and OffsetTimeOriginal are deferred rather than delivered.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 5893,
+    "thinking_tokens": 3366,
+    "cache_read_input_tokens": 852,
+    "cache_creation_input_tokens": 11951
+  },
+  "cost_usd": 0.4449095,
+  "latency_s": 105.424,
+  "raw_file": "raw/judge-fc79acb18849.engineering-quality-v1.fable-5.k1.txt"
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "8bfc5417d98d.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "8bfc5417d98d",
+  "blind_sha256": "f72695c313eeabde4bae36da4e3deb0af09713ca850fc099827fa6faa960add8",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 230,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Each phase depends on the ones before it.",
+      "rationale": "Order goes decisions → local editor and CRDT merge proof → network and save → security → features → scale, with rationale for each dependency."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 1: Prove that edits merge correctly ... connected in memory with no network.",
+      "rationale": "No thin end-to-end slice is deployed to production first; the first phases are local or in-memory and production comes last."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Pick a CRDT unless you have a specific reason not to.",
+      "rationale": "Irreversible decisions (CRDT, schema, transport) are listed up front with defaults, but there are mostly no explicit flip conditions, and storage and hosting choices are missing."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Merging comes first because a mistake there means lost or corrupted documents.",
+      "rationale": "There is some widest-impact-first reasoning (merge, then storage, then security), but no explicit ordering of items within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Phase 3: Security (do this before any real users)",
+      "rationale": "Security is a dedicated phase, placed before real users but absent from Phases 1-2, so it is not threaded through every phase."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "Monitoring: connections per room, sync delay, update sizes, and alerts when copies stop matching.",
+      "rationale": "Observability appears only in Phase 6, the last phase, not from day zero."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan doesn't mention reproducible builds, environments, or data such as CI, pinned versions, or IaC. The ongoing merge test suite is correctness testing and doesn't cover reproducibility."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Reconnect handling: reconnect automatically with increasing delays, then fetch only the changes missed while disconnected.",
+      "rationale": "Resilience shows up in Phases 2, 4 and 6 (reconnect, offline, chaos tests, backups), but not in every phase, and much of it comes late."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never says whether an AI layer applies, so the N/A declaration is missing."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Suggestion / track-changes mode (optional, and much harder than it looks).",
+      "rationale": "Some work is marked optional or late, and scaling is deferred with a reason (one server can handle a lot). It has no explicit deferred list with pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan has a sound dependency order and sensible up-front decisions. It has no production walking skeleton, leaves observability and reproducibility to the end or omits them, and never states that no AI layer applies.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1026,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3223
+  },
+  "cost_usd": 0.0183255,
+  "latency_s": 19.491,
+  "raw_file": "raw/judge-8bfc5417d98d.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

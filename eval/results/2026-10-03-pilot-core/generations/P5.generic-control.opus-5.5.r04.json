@@ -1,0 +1,115 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P5.generic-control.opus-5.5.r04",
+  "prompt_id": "P5",
+  "condition": "generic-control",
+  "generator": "opus-5.5",
+  "run_index": 4,
+  "seed": 506216997,
+  "seed_honored": false,
+  "request": "/architecture-planner Order the build of a real-time collaborative document editor.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P5.generic-control.opus-5.5.r04.md",
+  "output_sha256": "ea097e115d62c236410715e26a91064fd3f8115eccb0cf00519217a5244fcbe2",
+  "metrics": {
+    "words": 7153,
+    "chars": 45398,
+    "visible_tokens_est": 11350
+  },
+  "turns": 4,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p2ab33809/skills/architecture-planner/reference/document-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p2ab33809/skills/architecture-planner/reference/guidance.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "w559c7da1/README.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "architecture-planner:architecture-planner",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "eval/conditions/generic-architect/reference/document-template.md",
+      "sha256": "517670de5932f7ab0ecf24b9552eef0898f2878615236f7a28d2df41ea230c02",
+      "words": 1195
+    },
+    {
+      "path": "eval/conditions/generic-architect/reference/guidance.md",
+      "sha256": "a1221cbaa4130a04df554c6ee69526c259863c4ac6c0c5975970a4bbb636b6ad",
+      "words": 2023
+    }
+  ],
+  "started_at": "2026-10-03T00:05:23+00:00",
+  "finished_at": "2026-10-03T00:12:21+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [
+    "claude-opus-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 31173,
+    "thinking_tokens": 13131,
+    "cache_read_input_tokens": 5797,
+    "cache_creation_input_tokens": 12330
+  },
+  "cost_usd": 0.6862934000000002,
+  "latency_s": 418.588,
+  "raw_file": "raw/gen-P5.generic-control.opus-5.5.r04.txt"
+}

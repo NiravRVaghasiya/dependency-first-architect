@@ -1,0 +1,173 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "c58bd5137d6b.engineering-quality-v1.fable-5.k1",
+  "blind_id": "c58bd5137d6b",
+  "blind_sha256": "544e24b2ac934005f0cf9e978c010d521fff3c0c3a52819e54faf8d7ddd46448",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 385,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "On POSIX this is `os.link` then `os.unlink`, which fails atomically if the target exists.",
+      "rationale": "Technical claims are accurate and precise throughout, including subtle areas (atomic no-replace rename semantics per OS, FAT/exFAT hardlink gap, QuickTime CreateDate being UTC by spec, ExifTool -stay_open, argfile option-injection defense)."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Dry-run by default. The tool prints the plan, and `--apply` is required to change anything.",
+      "rationale": "Solves exactly the stated problem, resolves ambiguities (missing EXIF, collisions, dry-run, sidecars) with sensible defaults, is clearly buildable by one engineer, and every exclusion is explicit with a pull-forward trigger."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "A wrong date is only recoverable because of the journal and undo, so the safety substrate must come first.",
+      "rationale": "Clear component responsibilities (scanner, DateSource, planner, applier, reporter), a versioned plan/journal schema owned in one place, and decisions (consistency, no-overwrite, no network) honored consistently across every phase."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "File count and content hashes are preserved. No overwrite ever happens. `undo` restores the exact original names. A second run is a no-op.",
+      "rationale": "Validation is built around the actual failure risks: property tests of safety invariants in Phase 1, a real-file fixture corpus, TZ-varied CI, kill-mid-run fault injection, and three-OS release smoke tests continuing after launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Install friction (\"I don't have ExifTool\") becomes the top complaint. Then add a pure-Python backend",
+      "rationale": "Every default decision carries an explicit revisit trigger stating what evidence would change it and how; no invented specifics are presented as fact, and targets like the 50k-file benchmark are framed as checks, not requirements."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Rename chains and cycles (A→B while B→A) are handled with two-phase temporary names.",
+      "rationale": "Covers the hard domain failures—overwrite, crash mid-batch, rename cycles, case-insensitive filesystems, corrupt/hanging files, hostile filenames, disk full, broken sidecar links—each with concrete detection, containment (journal) and recovery (undo/resume/rollback)."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "stable exit codes: 0 = ok, 1 = partial, 2 = usage error, 3 = aborted, 4 = dependency missing",
+      "rationale": "Operations are sensibly reinterpreted for a local CLI: three-OS release smoke jobs, pinned dependencies, versioned diagnostics, a `doctor` command, and multi-channel distribution, all sized to a small team."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "if this is a one-off job, ExifTool can already do it",
+      "rationale": "The build-vs-buy trade-off and the use-the-one-liner alternative show real cost reasoning for the dominant driver (engineering time), but there is no explicit effort or time estimate for the phased build."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "expensive to reverse: users' libraries end up depending on it",
+      "rationale": "The genuinely one-way decisions (naming contract, journal/plan schema) are explicitly flagged, versioned, group-shaped early to avoid schema breaks, and frozen under semver, while reversible choices are made quickly with revisit triggers."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "If you don't need those, use the one-liner and stop here.",
+      "rationale": "A monolith with stdlib argparse and no database/GUI/service; every added mechanism (journal, grouping, property tests) is justified by the stated data-safety constraint, and heavier distribution work is gated to a late phase."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: on all three OS runners, the installed release renames the fixture correctly, exits 0",
+      "rationale": "Dependency-justified phase ordering, a concrete first end-to-end slice, specific implementable decisions (exit codes, name format, rename mechanism), checkable exit criteria per phase, and explicit triggers for changing course."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "Tag precedence policy: `DateTimeOriginal`, then `CreateDate`/`DateTimeDigitized`, then (for video) QuickTime `CreateDate`"
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "Skip the file and report it. Never fall back to mtime silently, because copies reset mtime."
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "Collision suffixes `_01`, `_02`… are assigned in a deterministic sort order of (datetime, subsec, original name)."
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "Dry-run plan printer, shown as a diff-style `old → new` table. This is the default mode."
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "a **no-replace rename** ... A file whose name already matches its own date, with or without a suffix, is a no-op"
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "Write-ahead journal. Each entry is fsync'd *before* its rename ... This comes with `photodate undo` and `photodate resume`."
+    },
+    {
+      "id": "P7-07",
+      "status": 2,
+      "evidence": "Use `DateTimeOriginal` **as the local wall-clock time recorded**, with no conversion."
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "files sharing a stem in the same directory form one group (`.HEIC` + `.MOV` + `.AAE`, `.CR3` + `.JPG` + `.xmp`)"
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "`YYYY-MM-DD_HHMMSS[_NN].<original ext>`. No colons, so it's legal on Windows. It sorts lexically."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Even the skeleton can never overwrite a file."
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "Never fall back to mtime silently, because copies reset mtime."
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "**Monolith.** One Python package and one process."
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "Writing or fixing EXIF dates. Not planned. It changes the tool's risk profile from rename-only to editing file contents"
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "No colons, so it's legal on Windows. It sorts lexically."
+    }
+  ],
+  "note": "An exemplary plan: technically precise on the subtle filesystem and EXIF details, safety-first with journal/undo validated early, every checklist item concretely addressed and every trap explicitly avoided; the only gap is the absence of effort/time estimates.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6805,
+    "thinking_tokens": 4197,
+    "cache_read_input_tokens": 852,
+    "cache_creation_input_tokens": 12989
+  },
+  "cost_usd": 0.5034845000000001,
+  "latency_s": 111.605,
+  "raw_file": "raw/judge-c58bd5137d6b.engineering-quality-v1.fable-5.k1.txt"
+}

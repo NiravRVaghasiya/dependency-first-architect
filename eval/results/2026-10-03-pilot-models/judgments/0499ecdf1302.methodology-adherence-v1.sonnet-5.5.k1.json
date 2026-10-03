@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0499ecdf1302.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "0499ecdf1302",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 2,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 3 \"Depends on: Phase 2, V2, V3, and the resolution benchmark.\"",
+      "rationale": "Phases run substrate, guardrails, triage, resolution, widening, and each phase unlocks only after its gate passes. The dependency map makes this explicit."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A real issue opened by a maintainer on the allow-listed pilot repo... webhook... enqueues... worker... model API... Postgres audit log",
+      "rationale": "Phase 0 is a real end-to-end production slice with deploy, rollback and alerts. It is dry run, but it runs through every tier."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Autonomy and trust boundary | R3 ... Default ... Flip condition: Auto-merge is considered only after V5 plus months of measured history.",
+      "rationale": "The irreversible decisions are listed with reversibility, default, assumption, validation and flip condition. Assumptions are labeled."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks, widest blast radius first: 1. Tool executor with a tool allow-list...",
+      "rationale": "Phase 1 is explicitly ordered by blast radius, and Phase 2 starts with the schema as the widest rework. Phase 3's task order is less explicit."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Webhook signature check; least-privilege App; secrets in a secret manager; dry run only; untrusted text fenced",
+      "rationale": "The cross-cutting table gives concrete security treatment in every phase from Phase 0 on."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OpenTelemetry trace per issue from webhook to model call... Alerts on queue age, error rate, and the daily cost cap.",
+      "rationale": "Phase 0 has concrete observability, and each later phase extends it with specific metrics."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "IaC (Terraform), pinned image, pinned model and prompt versions",
+      "rationale": "Reproducibility is concrete in every phase, covering IaC, pins, versioned eval sets and hash-locked sandbox images."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Kill switch; previous-image rollback; idempotent processing by delivery ID",
+      "rationale": "Resilience appears concretely in every phase, including kill switches, fallbacks, retries and rollbacks."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Guardrail defense, cost budget and HITL in Phase 1, then retrieval (Phase 2), model access, memory and orchestration (Phase 3), routing and feedback (Phase 4)",
+      "rationale": "Defenses, budgets and human-in-the-loop come before capabilities, and the later layers follow the required order. One wrinkle: memory is listed in Phase 3 alongside orchestration."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Auto-merge of agent PRs: pulled forward only after a sustained V5 history, an explicit risk acceptance by the repo owner, and a fresh V2/V3 run.",
+      "rationale": "Each deferred item has an explicit pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "This is a strong plan. It has a real production walking skeleton, guardrails before capabilities, threaded cross-cutting concerns, explicit gates and deferrals, and only minor ordering quibbles.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1217,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 8547
+  },
+  "cost_usd": 0.0336585,
+  "latency_s": 43.056,
+  "raw_file": "raw/judge-0499ecdf1302.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

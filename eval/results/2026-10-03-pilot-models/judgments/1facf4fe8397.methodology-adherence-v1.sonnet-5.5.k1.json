@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "1facf4fe8397.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "1facf4fe8397",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 57,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Observability \"You need this before automating deploys so you can see failures.\"; \"The pilot must succeed before the waves start.\"",
+      "rationale": "Phases run substrate→CI→security→CD→pilot→scale with explicit dependency callouts, though pilot onboarding precedes gates slightly."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 0: Foundations — inventory, pick pilots, make decisions, define metrics",
+      "rationale": "Phase 0 is planning only; the first real pilot-to-prod path arrives in Phase 4, not as an early thin slice."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "CI engine (GitHub Actions, GitLab CI, Jenkins, or Tekton).",
+      "rationale": "Core decisions are listed with options and one preference, but no defaults with flip conditions and little on irreversibility."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Migrate services in waves of 8–10, ordered by archetype and risk: low-criticality first, then core services last.",
+      "rationale": "Substrate before templates before services is sensible, but ordering by blast radius within phases isn't explicit, and scale waves put low-risk first."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Set up identity and secrets: a secrets manager, OIDC federation for CI (no long-lived credentials), and RBAC.",
+      "rationale": "Security appears in Phase 1, 2 (SBOM, signing) and 3, but not in Phase 0 and is mostly a dedicated phase, not every phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Set up basic observability: logs, metrics, and traces.",
+      "rationale": "Observability starts in Phase 1, not Phase 0, and is absent from Phases 2–3; it returns in 4 and 7."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "infrastructure as code for clusters and environments; \"immutable artifacts\"; GitOps",
+      "rationale": "IaC, immutable artifacts and GitOps give reproducibility in several phases but it isn't threaded through all of them."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "progressive delivery: canary or blue/green ... with automated rollback on SLO breach.",
+      "rationale": "Resilience appears in Phase 4, 5 (DR drill) and 7, but not in the early phases."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never says whether an AI layer applies, so it doesn't declare N/A."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Phase 7: Optimization and governance (ongoing)",
+      "rationale": "Later work is deferred into Phase 7 and some items are flagged \"if applicable\", but there are no pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is a sound conventional phased sequence with good dependency ordering, but it has no early walking skeleton, no flip-condition gates and no pull-forward triggers. Cross-cutting concerns are only partly threaded, and it never addresses the AI question.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1102,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 2954
+  },
+  "cost_usd": 0.018525999999999997,
+  "latency_s": 50.44,
+  "raw_file": "raw/judge-1facf4fe8397.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

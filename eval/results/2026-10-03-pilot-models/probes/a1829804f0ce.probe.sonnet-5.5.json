@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "a1829804f0ce.probe.sonnet-5.5",
+  "blind_id": "a1829804f0ce",
+  "judge": "sonnet-5.5",
+  "order_index": 47,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Rigid labeled structure: numbered sections for Classification, Dependencies, Key decisions, First end-to-end slice (Phase 0), Phases, Validation checks, Cross-cutting concerns, AI layer, Exceptions, Deferred",
+    "Reversibility ratings (R2/R3) on every key decision, each with a default, assumption, validator and revisit trigger",
+    "Validation checks V0–V5 with hypothesis, method, acceptance threshold, evidence path, and 'unlocks (and if it fails)' columns",
+    "Explicit epistemic labels (ASSUMPTION / UNKNOWN / Missing inputs) attached to budget targets, with who supplies each input and when it is needed",
+    "Boilerplate methodology slots filled even when irrelevant: '## 8. AI layer N/A', '## 9. Exceptions None', 'N/A: Brownfield migration, AI, payments tradeoffs', plus a Phase 0 walking-skeleton slice with a per-phase security/observability/reproducibility/resilience matrix"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 430,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7115
+  },
+  "cost_usd": 0.022095499999999997,
+  "latency_s": 21.856,
+  "raw_file": "raw/probe-a1829804f0ce.probe.sonnet-5.5.txt"
+}

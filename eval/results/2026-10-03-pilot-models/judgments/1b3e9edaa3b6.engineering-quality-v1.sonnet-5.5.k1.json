@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "1b3e9edaa3b6.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "1b3e9edaa3b6",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 66,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "setIdempotencyKey(UUID.randomUUID().toString())",
+      "rationale": "Random idempotency key per attempt defeats idempotency; tenant ID from client X-Tenant-ID header is insecure; the plan says \"Mark invoice as paid\" by mutating; the API example shows amount 99.00 as a float; and the Stripe/Paddle choice is mixed up (Paddle is a merchant of record, which changes tax and billing)."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "POST /api/v1/subscriptions ... POST /api/v1/usage/record",
+      "rationale": "Covers the broad surface of subscriptions, invoicing, metering and payments, but misses tax, dunning, reconciliation and entitlements, and never says what the requested system is for."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Row-Level Security: Use database policies for multi-tenancy",
+      "rationale": "The components are recognizable, but it contradicts itself: it claims RLS while the code uses a ThreadLocal and a header. The schema also has a plans table with tenant_id, which muddles platform versus tenant billing, and the Billing Service duplicates usage and payment functions owned by other services."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No testing or validation plan appears; only production metrics are listed."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No assumptions are stated about scale, team, compliance or budget, and the plan asserts it is \"scalable, secure\" without support."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "subscription.setStatus(SubscriptionStatus.PAST_DUE);",
+      "rationale": "Failure handling is generic: any exception marks the subscription past_due, with no retries, duplicate handling, or recovery for partial failures."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Alerts: - High payment failure rate (> 5%)",
+      "rationale": "A list of metrics and alerts exists, but there is no deployment, rollback, migration, ownership or incident plan, and the 5% threshold is invented."
+    },
+    {
+      "dim": 8,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Costs are never discussed, including vendor fees, Kafka and Redis infrastructure, or engineering time."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "provider ENUM('stripe', 'paddle', 'adyen')",
+      "rationale": "Provider abstraction is implied, but there is no discussion of one-way decisions such as the tenancy model, ID scheme, or price versioning."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Event Bus (Kafka)",
+      "rationale": "Microservices, Kafka, Redis, a CLTV and MRR reporting service and pricing-class hierarchies are added without any justification or stated scale, while essentials such as tax and dunning are omitted."
+    },
+    {
+      "dim": 11,
+      "score": 1,
+      "evidence": "Would you like me to dive deeper into any specific component?",
+      "rationale": "Code and schema sketches are given, but there is no build order, milestones, or checkable results, and many sketches contain bugs."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 1,
+      "evidence": "amount_due DECIMAL(19,4), currency VARCHAR(3)"
+    },
+    {
+      "id": "P2-02",
+      "status": 0,
+      "evidence": "invoice.setStatus(InvoiceStatus.PAID); invoiceRepository.save(invoice);"
+    },
+    {
+      "id": "P2-03",
+      "status": 0,
+      "evidence": "setIdempotencyKey(UUID.randomUUID().toString())"
+    },
+    {
+      "id": "P2-04",
+      "status": 1,
+      "evidence": "Webhook Verification: Validate signatures from payment providers"
+    },
+    {
+      "id": "P2-05",
+      "status": 1,
+      "evidence": "Row-Level Security: Use database policies for multi-tenancy"
+    },
+    {
+      "id": "P2-06",
+      "status": 1,
+      "evidence": "usage_events ... PARTITION BY RANGE (YEAR(timestamp))"
+    },
+    {
+      "id": "P2-07",
+      "status": 1,
+      "evidence": "POST   /api/v1/subscriptions/{id}/upgrade # Upgrade plan"
+    },
+    {
+      "id": "P2-08",
+      "status": 0,
+      "evidence": "tax_rate DECIMAL(5,4)"
+    },
+    {
+      "id": "P2-09",
+      "status": 0,
+      "evidence": "reminderService.schedulePaymentReminder(invoice);"
+    },
+    {
+      "id": "P2-10",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "BigDecimal unitPrice = sub.getPlan().getUnitPrice();"
+    },
+    {
+      "id": "P2-T2",
+      "present": true,
+      "evidence": "invoice.setStatus(InvoiceStatus.PAID); invoiceRepository.save(invoice);"
+    },
+    {
+      "id": "P2-T3",
+      "present": true,
+      "evidence": "setIdempotencyKey(UUID.randomUUID().toString())"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "Payment PCI Compliance: Use tokenized payments (Stripe, Paddle)"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "Row-Level Security: Use database policies for multi-tenancy"
+    }
+  ],
+  "note": "A broad but shallow catalog of billing components with schema and code sketches; it has serious correctness flaws (random idempotency keys, header-trusted tenant ID, in-place invoice mutation) and no validation, assumptions, costs or build order.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2003,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 16512
+  },
+  "cost_usd": 0.061503,
+  "latency_s": 39.293,
+  "raw_file": "raw/judge-1b3e9edaa3b6.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

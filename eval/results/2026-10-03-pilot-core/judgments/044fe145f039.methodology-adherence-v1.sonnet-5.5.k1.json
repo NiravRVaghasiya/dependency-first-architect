@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "044fe145f039.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "044fe145f039",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 160,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Why this comes after sync: the permission checks wrap the sync channel, so the channel needs to exist and be stable first.",
+      "rationale": "Mostly sound substrate-upward order with local tests before networking, but auth comes after sync and persistence while sync is exposed without access control, and offline (IndexedDB) comes late."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 1: Single-user editor (no networking)",
+      "rationale": "Phase 0 is decisions only; the first builds are a local editor with no deployed end-to-end production path."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Recommendation: use Yjs unless you have a specific reason not to.",
+      "rationale": "Irreversible decisions are listed up front with a default for CRDT, but there are no explicit flip conditions, and document model and scope have no defaults."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Everything after that can be built in parallel by different people.",
+      "rationale": "Some widest-impact-first reasoning exists (merge choice, critical path), but within-phase ordering is not justified by blast radius."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "Phase 4: Identity and access",
+      "rationale": "Security is concentrated in Phase 4 and a Phase 9 review and is absent from Phases 1-3, so it is not threaded."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "Phase 8: ... Add observability: sync delay, number of connections, and alerts",
+      "rationale": "Observability first appears in Phase 8, not day zero."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There is no mention of reproducible builds, environments, CI, or infrastructure as code."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Handle reconnection: buffer edits while disconnected and send them on reconnect, with backoff between retries.",
+      "rationale": "Resilience appears in Phases 2, 3 (restart test), 6 and 8, but it is not present in every phase and is partly concentrated late."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never states that no AI layer applies, so the question is not addressed."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Suggestion (track-changes) mode, if it's in scope.",
+      "rationale": "Some items are conditionally in or out of scope, but there is no explicit deferred list with pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A sensible dependency-ordered CRDT roadmap, but it has no production walking skeleton, and security, observability and reproducibility are not threaded. It also has no AI-N/A declaration and no explicit deferral triggers.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 968,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 2715
+  },
+  "cost_usd": 0.0165885,
+  "latency_s": 30.163,
+  "raw_file": "raw/judge-044fe145f039.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "c26b685c4739.probe.sonnet-5.5",
+  "blind_id": "c26b685c4739",
+  "judge": "sonnet-5.5",
+  "order_index": 1,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.6,
+  "cues": [
+    "Opens with a one-sentence ordering principle (irreversible decisions first, pilot to prod, waves, enforcement last), which suggests a deliberate sequencing heuristic",
+    "Explicit 'Done when:' exit criteria for every phase and a defined 'when a service counts as migrated'",
+    "Each enforcement step lists a 'Needs:' prerequisite, and a closing 'What blocks what' dependency section",
+    "Explicit stated assumptions and a closing offer to refine based on CI tool, hosting, repo layout and team size",
+    "Rationale given for ordering choices ('Why one service to production before many to dev') and anti-patterns called out",
+    "Could equally be a strong unstructured answer: the ASCII Gantt, capacity arithmetic and tool names are typical of a capable model without a methodology"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 345,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3674
+  },
+  "cost_usd": 0.012643000000000001,
+  "latency_s": 26.807,
+  "raw_file": "raw/probe-c26b685c4739.probe.sonnet-5.5.txt"
+}

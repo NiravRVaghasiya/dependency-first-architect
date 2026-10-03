@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "806c2330951a.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "806c2330951a",
+  "blind_sha256": "454ca11395cea91b1378ae80cc4ecf589cc72b6e8e21a3b834f7419e0aee2c49",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 253,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "M1 thin slice → M2 usage/catalog → M3 lifecycle/corrections → M4 production readiness; T4 schema → T6 tenancy → T7 isolation suite → T8/T10/T13",
+      "rationale": "Milestones and tasks run substrate (infra, schema, RLS, tenancy) up to features with explicit dependencies and spikes proving unknowns before dependents."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "One thin slice deployed to staging through the real pipeline... flat monthly subscription... charged through a Stripe Connect test account, marked paid from Stripe's webhook",
+      "rationale": "M1 is a genuine end-to-end slice through CI/CD to staging before features; the only gap is that prod itself is gated to M4, which is acceptable."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D2 ... Hard | Spike S1 shows >25% overhead or context leaks; or a tenant contractually needs a dedicated DB.",
+      "rationale": "Decision table lists options, reversibility, default and explicit revisit triggers, plus assumptions with impact and validation."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "T4 base schema and RLS lint → T6 tenancy middleware → T7 isolation suite before Catalog/Invoicing; scheduler fairness per environment",
+      "rationale": "Within M1 the widest-impact work (infra, schema, RLS, tenancy, ledger) precedes leaf features, and spikes of riskiest unknowns run early."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Security (built in M1 unless noted)... cross-tenant suite on every PR; M2 hosted pages; M3 impersonation + audit UI; M4 pen test, QSA",
+      "rationale": "Security controls start in M1 (RLS, API key hashing, egress proxy, secrets, supply-chain scans) and recur in M2–M4 with concrete items."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "M1 builds the baseline and two alerts; the rest come with their components.",
+      "rationale": "Observability is in M1 (T16) but it comes after much of the build in task order, and later-phase treatment is thin (full alerts and runbooks mostly in M4)."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "no console-created resources; staging applies from the pipeline only; Terraform, migrations as one-off ECS task, synthetic generators, test clocks",
+      "rationale": "IaC, pipeline-only deploys, migrations, deterministic test clocks and synthetic fixtures are threaded from M1 onward."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Fault-injection tests: response dropped on create... duplicate webhook... circuit breaker; M2 load shedding; M3 dunning; M4 restore drill",
+      "rationale": "Failure handling (idempotency, forward-only state, reconcilers, backpressure, DLQ, restore drill) appears in each milestone starting M1."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "AI-specific concerns: not applicable. There are no model-driven components in scope.",
+      "rationale": "Plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Additional processors (Adyen, Braintree) | ≥2 qualified prospects blocked on them; the PaymentGateway port is the extension point",
+      "rationale": "Deferred table with explicit triggers, plus non-goals and intentional shortcuts with revisit conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan with walking skeleton, decision gates with flip conditions and explicit deferrals; only observability is slightly late and thin after M1.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1330,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 26160
+  },
+  "cost_usd": 0.078708,
+  "latency_s": 19.709,
+  "raw_file": "raw/judge-806c2330951a.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

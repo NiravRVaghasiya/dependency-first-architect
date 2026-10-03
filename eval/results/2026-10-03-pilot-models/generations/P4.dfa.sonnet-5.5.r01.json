@@ -1,0 +1,110 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P4.dfa.sonnet-5.5.r01",
+  "prompt_id": "P4",
+  "condition": "dfa",
+  "generator": "sonnet-5.5",
+  "run_index": 1,
+  "seed": 2974302622,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Plan an autonomous agent that triages and resolves GitHub issues.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P4.dfa.sonnet-5.5.r01.md",
+  "output_sha256": "dea0572fb23648f6687665e49a75f4ad55d4cb303ed988d112013c8a781ba2ae",
+  "metrics": {
+    "words": 3546,
+    "chars": 21650,
+    "visible_tokens_est": 5413
+  },
+  "turns": 3,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/ai-systems.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "dependency-first-architect:dependency-first-architect",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "reference/ai-systems.md",
+      "sha256": "623e02a2b37bbf9bd637a2689d1510179b4a3a65cada3e2f162c1ed11444d579",
+      "words": 855
+    },
+    {
+      "path": "reference/plan-template.md",
+      "sha256": "95ccaec942bf8a640ff4d830daada167a340b6b652242e2ed41aec6d24605c2a",
+      "words": 1257
+    }
+  ],
+  "started_at": "2026-10-02T23:53:59+00:00",
+  "finished_at": "2026-10-02T23:56:16+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 16503,
+    "thinking_tokens": 7866,
+    "cache_read_input_tokens": 7074,
+    "cache_creation_input_tokens": 11204
+  },
+  "cost_usd": 0.1944668,
+  "latency_s": 136.934,
+  "raw_file": "raw/gen-P4.dfa.sonnet-5.5.r01.txt"
+}

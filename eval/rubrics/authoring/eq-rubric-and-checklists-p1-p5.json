@@ -1,0 +1,848 @@
+{
+  "schema": "dfa-eval/authoring-session@1",
+  "purpose": "Engineering-quality rubric (11 dimensions) and domain checklists for P1-P5",
+  "blind_to_skill": true,
+  "session": {
+    "date": "2026-10-02",
+    "model": "claude-opus-5-5",
+    "effort": "high",
+    "claude_cli": "2.1.287.1066",
+    "invocation": "claude --bare -p --model claude-opus-5-5 --effort high --no-session-persistence --tools \"\" --output-format json --json-schema <schema>, in an empty directory",
+    "models_used": [
+      "claude-opus-5-5"
+    ],
+    "cost_usd": 0.44609099999999996,
+    "duration_s": 284.4,
+    "prompt": "You are designing the scoring materials for a controlled study of AI-written software plans.\n\nIn the study, AI models answer short requests by writing an architecture and build plan. Independent expert reviewers then score every plan without knowing which model or setup wrote it. You are writing what those reviewers use:\n\n1. A general ENGINEERING-QUALITY RUBRIC that applies to any plan for any of the requests.\n2. For each request, a DOMAIN CHECKLIST: the considerations an expert would expect a competent plan for that system to address, and the serious mistakes (\"traps\") a plan could make.\n\nThe requests (verbatim):\n- P1: \"Plan a customer-support RAG chatbot over our help-center docs.\"\n- P2: \"Architect a multi-tenant SaaS billing system.\"\n- P3: \"Sequence building a CI/CD platform for 50 microservices.\"\n- P4: \"Plan an autonomous agent that triages and resolves GitHub issues.\"\n- P5: \"Order the build of a real-time collaborative document editor.\"\n\nRUBRIC REQUIREMENTS\n- Exactly these 11 dimensions, in this order, with these names:\n  1 Technical correctness\n  2 Requirement fit and feasibility\n  3 Architectural coherence\n  4 Validation quality\n  5 Assumption quality\n  6 Failure-mode coverage\n  7 Operational feasibility\n  8 Cost realism\n  9 Decision reversibility\n  10 Proportionality (absence of unnecessary complexity)\n  11 Implementation actionability\n- For each: a one-sentence definition, what to look for in the plan, and behavioral anchors for scores 0, 1, 2, 3 and 4 (0 = severely deficient or absent; 2 = adequate with notable gaps; 4 = exemplary, hard to improve). Higher is always better, including for dimension 10.\n- The rubric must be methodology-neutral. It must not reward any particular document structure, template, section names, tables, diagrams, or named planning method, and must not use the vocabulary of any specific planning methodology. A plan written as plain prose and a plan written as tables must be able to earn the same score when their engineering content is equally good.\n- It must let reviewers penalize: technically wrong claims; internal contradictions; numbers or certainty that the request does not support, presented as fact; scope or machinery out of proportion to the request; hand-waving that sounds rigorous but cannot be acted on.\n- Write 6 to 10 SCORING RULES for reviewers (for example: length is not quality; score substance, not vocabulary; how to treat self-assessments or compliance claims inside a plan; how to treat requests that leave constraints unspecified).\n\nCHECKLIST REQUIREMENTS (one checklist per request)\n- 8 to 12 items: the domain considerations whose omission would most likely make a real system of this kind fail, be insecure, lose data or money, or be very expensive to fix later. Each item: an id (P1-01, P1-02, ...), a short title, one sentence on what \"concretely addressed\" means, and a category (correctness, security, reliability, operations, cost, data, compliance, or product).\n- 3 to 5 traps: specific, serious mistakes a plan for this system could make (known anti-patterns or dangerous choices in this domain). Each: an id (P1-T1, P1-T2, ...), a title, and how a reviewer recognizes it in a plan.\n- Items must be about the system's domain and engineering, never about plan format, document structure, or planning method. Prefer items that distinguish expert plans from superficially complete ones.\n\nReturn the result in the required structured format.\n",
+    "prompt_sha256": "b8e053edd866dfa654826666199325ef977326fa2f6bbc922904cdacb5e949c4",
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "dimensions": {
+          "type": "array",
+          "minItems": 11,
+          "maxItems": 11,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "definition": {
+                "type": "string"
+              },
+              "look_for": {
+                "type": "string"
+              },
+              "anchors": {
+                "type": "object",
+                "properties": {
+                  "0": {
+                    "type": "string"
+                  },
+                  "1": {
+                    "type": "string"
+                  },
+                  "2": {
+                    "type": "string"
+                  },
+                  "3": {
+                    "type": "string"
+                  },
+                  "4": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "0",
+                  "1",
+                  "2",
+                  "3",
+                  "4"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "definition",
+              "look_for",
+              "anchors"
+            ]
+          }
+        },
+        "scoring_rules": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 10,
+          "items": {
+            "type": "string"
+          }
+        },
+        "checklists": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "properties": {
+              "prompt_id": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "minItems": 8,
+                "maxItems": 12,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "addressed_means": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "type": "string",
+                      "enum": [
+                        "correctness",
+                        "security",
+                        "reliability",
+                        "operations",
+                        "cost",
+                        "data",
+                        "compliance",
+                        "product"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title",
+                    "addressed_means",
+                    "category"
+                  ]
+                }
+              },
+              "traps": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 5,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "recognize": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title",
+                    "recognize"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "prompt_id",
+              "items",
+              "traps"
+            ]
+          }
+        }
+      },
+      "required": [
+        "dimensions",
+        "scoring_rules",
+        "checklists"
+      ]
+    }
+  },
+  "structured_output": {
+    "dimensions": [
+      {
+        "id": 1,
+        "name": "Technical correctness",
+        "definition": "How accurate the plan's technical claims, mechanisms and described component behaviors are for the technologies and domain involved.",
+        "look_for": "Claims about how technologies, protocols, algorithms and services actually behave (consistency guarantees, delivery semantics, security properties, library or vendor capabilities). Check whether domain concepts are used correctly, and whether the parts the design depends on would work as described. Weigh each error by its consequence, not by how many errors there are. Flag confident statements that are false or that misstate guarantees.",
+        "anchors": {
+          "0": "The core approach rests on a false premise, or the plan has several errors that would make the system not work, lose data or money, or be insecure.",
+          "1": "Several material errors, or one error in a component the design depends on. Correct statements are mostly generic and do not reach the hard parts.",
+          "2": "Mostly correct, but one or two material inaccuracies or misstated guarantees in secondary areas that a competent engineer would catch and fix.",
+          "3": "Correct on everything the design depends on. Only minor imprecision with no design consequence.",
+          "4": "Correct and precise throughout, including the subtle areas where plans commonly go wrong. States the real limits and guarantees of the chosen technologies accurately."
+        }
+      },
+      {
+        "id": 2,
+        "name": "Requirement fit and feasibility",
+        "definition": "How well the plan addresses what the request actually asks, interprets its ambiguities sensibly, and proposes something that a realistic team could build.",
+        "look_for": "Whether the plan solves the stated problem rather than an easier or adjacent one. Whether it covers the core capabilities the request implies and separates essential needs from optional ones. Whether scope, sequencing and dependencies are achievable without heroic assumptions. Whether any scope it excludes is excluded explicitly and with a reason.",
+        "anchors": {
+          "0": "Answers a different problem, or proposes something that could not realistically be built.",
+          "1": "Addresses the request only partly: core capabilities are missing, or feasibility depends on unrealistic resources or unproven breakthroughs.",
+          "2": "Addresses the main request and is broadly buildable, but misses at least one implied core need or contains a questionable feasibility leap.",
+          "3": "Covers the core needs the request implies, separates essential from optional, and is credibly buildable. Gaps are minor.",
+          "4": "Fits the request precisely and resolves its ambiguities sensibly. It is clearly buildable, and exclusions or deferrals are explicit and justified."
+        }
+      },
+      {
+        "id": 3,
+        "name": "Architectural coherence",
+        "definition": "How well the components, data flows, responsibilities and decisions fit together into one consistent design with no internal contradictions.",
+        "look_for": "Clear responsibility for each component and clear ownership of each piece of data. Interfaces and data flows that connect. Choices made in one place that are honored everywhere else. Penalize contradictions, for example calling a component stateless while storing session state in it, promising strong consistency on top of an eventually consistent store, or giving a requirement to two components with conflicting behavior.",
+        "anchors": {
+          "0": "No discernible overall design, or contradictions so basic that the parts cannot work together.",
+          "1": "Components are listed but their relationships are unclear, or there are significant contradictions between sections.",
+          "2": "A recognizable, mostly consistent design with some unclear boundaries, unowned data, or a contradiction outside the parts the design depends on.",
+          "3": "A consistent design with clear responsibilities and data ownership. Choices are applied consistently, with at most trivial loose ends.",
+          "4": "Fully consistent, with tight reasoning about how the parts interact. Cross-cutting concerns such as identity, consistency and error propagation are handled the same way everywhere."
+        }
+      },
+      {
+        "id": 4,
+        "name": "Validation quality",
+        "definition": "How convincingly the plan shows how it will establish that the system and its riskiest decisions actually work, before and after it commits to them.",
+        "look_for": "Checks tied to the plan's specific risks rather than generic statements such as 'write unit tests'. Validation methods that suit the domain. Acceptance criteria that can be measured, with targets that are justified or clearly labeled provisional. Risky assumptions tested early, before the plan is heavily committed to them. Validation that continues after launch. Penalize invented thresholds presented as known requirements.",
+        "anchors": {
+          "0": "No meaningful validation, or only empty statements that testing will happen.",
+          "1": "Generic testing mentioned, not linked to the system's actual risks. Nothing tests the riskiest assumptions.",
+          "2": "Some domain-appropriate validation, but it misses at least one major risk, comes too late to change course, or lacks criteria that could be checked.",
+          "3": "Validation targets the main risks with domain-appropriate methods and checkable criteria, and the riskiest parts are validated early.",
+          "4": "Validation is designed around the specific failure risks, happens before major commitments, uses well-grounded criteria, and continues in production to catch regressions."
+        }
+      },
+      {
+        "id": 5,
+        "name": "Assumption quality",
+        "definition": "How clearly and reasonably the plan states what it assumes about unspecified constraints, separates assumptions from facts, and explains what would change if they were wrong.",
+        "look_for": "Unstated constraints the plan identifies and resolves with reasonable defaults, such as scale, team size, existing stack, compliance needs and budget. Numbers clearly marked as estimates or assumptions. Notes on which assumptions the design is sensitive to. Penalize specific figures, constraints or certainty that the request does not support but that are presented as given facts.",
+        "anchors": {
+          "0": "Invented specifics are presented as facts throughout, or the design depends on unstated assumptions that are clearly unreasonable.",
+          "1": "Important assumptions are left implicit, and several unsupported numbers or certainties are stated as fact.",
+          "2": "Some key assumptions are stated, but others the design depends on are implicit, or some unsupported figures appear without qualification.",
+          "3": "The assumptions the design depends on are stated and reasonable, and estimates are marked as such. Some sensitivity analysis is missing.",
+          "4": "All assumptions the design depends on are explicit and reasonable. The plan says which assumptions would change the design if they were wrong, how, and how they will be confirmed. It never states unsupported certainty."
+        }
+      },
+      {
+        "id": 6,
+        "name": "Failure-mode coverage",
+        "definition": "How well the plan identifies the realistic ways this particular system can fail, whether technical, data, security, abuse or human failures, and how it detects, contains and recovers from them.",
+        "look_for": "Failures specific to the domain rather than generic 'the server may go down' statements. Concrete detection, mitigation and recovery for each. Attention to how far a failure spreads, to partial failures, retries and duplicates, and to malicious inputs. Whether the hardest failure modes for this kind of system are present.",
+        "anchors": {
+          "0": "Failure modes are absent, or only generic platitudes appear.",
+          "1": "A few failures are named, mostly generic, with little or no concrete handling. The most dangerous domain failures are missing.",
+          "2": "Several relevant failure modes are covered with some concrete handling, but at least one major failure mode for this domain is missing or handled vaguely.",
+          "3": "The major domain failure modes are covered, each with concrete detection and mitigation. Recovery paths are mostly specified.",
+          "4": "Thorough, domain-specific coverage that includes subtle failures such as partial failures, duplicates, adversarial input and data corruption, with concrete detection, containment and recovery."
+        }
+      },
+      {
+        "id": 7,
+        "name": "Operational feasibility",
+        "definition": "Whether a realistic team could deploy, monitor, operate, change and support the system once it is live.",
+        "look_for": "How the system is observed (which signals show it is healthy or degrading), how it is deployed and rolled back, how data or schemas are migrated, who owns and responds to incidents, and how access is administered. Whether the operational burden matches the likely team. Penalize designs that only work if someone watches them constantly or that have no path for changing them safely.",
+        "anchors": {
+          "0": "Running the system is ignored, or the design cannot practically be operated.",
+          "1": "Operations are mentioned only in passing. There is no workable plan for monitoring, deployment, rollback or incident handling.",
+          "2": "Basic deployment and monitoring are covered, but there are notable gaps (for example rollback, migrations, ownership, or alerting on the signals that matter), or the burden is unrealistic for a likely team.",
+          "3": "Deployment, rollback, monitoring of meaningful signals and ownership are addressed concretely, and the burden is plausible for a realistic team.",
+          "4": "Operations are designed in from the start: domain-meaningful health signals, safe change and rollback, migration paths, clear ownership and incident response, all sized to a realistic team."
+        }
+      },
+      {
+        "id": 8,
+        "name": "Cost realism",
+        "definition": "How well the plan accounts for the money, compute, vendor and people costs of building and running the system, and how well its cost claims are grounded.",
+        "look_for": "The main cost drivers for this domain, such as model inference, compute minutes, storage, vendor fees and engineering time. How costs grow with usage. Concrete cost controls. Estimates given as ranges or orders of magnitude with a stated basis. Penalize ignoring the dominant cost driver, and penalize precise figures that have no basis.",
+        "anchors": {
+          "0": "Costs are ignored, or the design implies costs that are clearly prohibitive and goes unremarked.",
+          "1": "Costs are mentioned only generically. The dominant cost driver is missed, or unsupported precise figures are presented as fact.",
+          "2": "The main cost drivers are identified, but how costs grow with usage or how they are controlled is thin, or some estimates lack a basis.",
+          "3": "The dominant cost drivers, their scaling behavior and concrete controls are covered, and estimates are grounded or clearly labeled.",
+          "4": "Clear, well-grounded cost reasoning that covers build and run costs, scaling, controls, and the cost trade-offs behind major choices such as building versus buying."
+        }
+      },
+      {
+        "id": 9,
+        "name": "Decision reversibility",
+        "definition": "How well the plan distinguishes hard-to-reverse decisions from easily changed ones, puts the most care into the hard ones, and avoids unnecessary lock-in.",
+        "look_for": "Recognition of the decisions that are expensive to undo in this domain, such as data models, identifier schemes, persisted formats, public interfaces, tenancy models and deep vendor coupling. More scrutiny and earlier validation for those. Deferring or isolating commitments where possible. Exit or migration paths. Penalize locking in irreversible choices casually or early without justification.",
+        "anchors": {
+          "0": "Makes several irreversible commitments casually and shows no awareness of what would be costly to undo.",
+          "1": "Little distinction between reversible and irreversible decisions. At least one major lock-in or one-way choice goes unexamined.",
+          "2": "Some hard-to-reverse decisions are recognized, but others are missed, or protections and exit paths are vague.",
+          "3": "The major one-way decisions are identified and justified, with reasonable isolation or migration paths. Easily reversed choices are not over-analyzed.",
+          "4": "Effort is clearly concentrated on the hard-to-reverse decisions: they are validated early, commitments are isolated or deferred where sensible, exit paths are explicit, and reversible choices are made quickly."
+        }
+      },
+      {
+        "id": 10,
+        "name": "Proportionality (absence of unnecessary complexity)",
+        "definition": "How well the plan's scope, components and process overhead match the request; a higher score means less unnecessary complexity without leaving out what is needed.",
+        "look_for": "Whether each component, technology and process step is justified by a stated or reasonably inferred need. Speculative scale, gold-plating, extra infrastructure, or ceremony that adds overhead without benefit. Whether the plan starts from the simplest workable design and has a path to grow. Also penalize under-building that leaves out essentials, which is not the same as simplicity.",
+        "anchors": {
+          "0": "Grossly mismatched to the request: heavy machinery for a simple need, or so stripped down that essential parts are missing.",
+          "1": "Substantial unjustified complexity, such as many speculative components, premature scale or heavy process, or significant essentials omitted.",
+          "2": "Mostly proportionate, with some unjustified components or overhead, or some under-scoping.",
+          "3": "Proportionate. Nearly every element is justified by a need, and complexity is added only where the domain requires it.",
+          "4": "The simplest design that fully meets the need, with a clear path to grow. Every significant element earns its place, and essentials are not sacrificed for simplicity."
+        }
+      },
+      {
+        "id": 11,
+        "name": "Implementation actionability",
+        "definition": "Whether an engineering team could start and carry out the work from this plan without first redoing its thinking.",
+        "look_for": "A build order with the reasoning behind its dependencies. Concrete first steps. Decisions specific enough to implement. Intermediate results that can be checked. Clear criteria for moving on or changing course. Penalize statements that sound rigorous but cannot be acted on, such as 'ensure robust scalability', 'leverage best practices' or 'implement comprehensive security'.",
+        "anchors": {
+          "0": "Nothing can be acted on: aspirations and buzzwords with no concrete steps or decisions.",
+          "1": "Mostly high-level statements. A team would have to make most of the real decisions and work out the ordering themselves.",
+          "2": "Some concrete steps and decisions, but important parts are vague, the ordering ignores real dependencies, or checkable intermediate results are missing.",
+          "3": "Concrete and ordered sensibly by dependencies, with checkable intermediate results. Only minor details are left for the team to settle.",
+          "4": "A team could start immediately: the ordering is justified by dependencies and risk, decisions are specific, each stage has checkable results, and the plan says how it would adapt if early results disappoint."
+        }
+      }
+    ],
+    "scoring_rules": [
+      "Score engineering substance, not form. Plain prose, bullet lists and tables with the same engineering content must get the same scores. Give no credit for headings, templates, diagrams, section names, named methods or specialist vocabulary, and do not penalize their absence.",
+      "Length is not quality. Do not reward a plan for being longer or seeming to cover more. Ignore padding, repetition and generic boilerplate when judging coverage. Where boilerplate hides the actual decisions, lower Proportionality or Implementation actionability.",
+      "Treat self-assessments, confidence ratings and claims of compliance or completeness inside a plan as unverified assertions. Examples: 'this design is fully secure', 'GDPR compliant', 'all risks addressed', or a plan scoring itself. Give credit only for content that supports them. An unsupported claim counts against Assumption quality, and against Technical correctness if it is false.",
+      "When a request leaves constraints unspecified (scale, team, budget, compliance, existing stack), do not penalize a plan for picking reasonable assumptions. Reward plans that state their assumptions and what depends on them. Penalize invented specifics presented as given facts. Clarifying questions alone are not a substitute for a plan, but a plan that states assumptions and proceeds is fine.",
+      "Mentioning a keyword is not addressing it. A checklist item counts as addressed only when the plan meets the item's 'concretely addressed' description. A different approach that is equally valid counts as addressed. Mark each item as addressed, partially addressed or not addressed. Use those marks to inform the dimension scores, especially Failure-mode coverage, Requirement fit and Technical correctness. Do not convert them mechanically into scores.",
+      "If a plan falls into a listed trap, or makes a comparably serious domain mistake that is not listed, reflect it in the dimension most directly affected, usually Technical correctness, Failure-mode coverage or Proportionality. A trap in a part of the design that everything depends on should normally cap that dimension at 1. A plan that explicitly recognizes a trap and avoids it should get credit.",
+      "Score each dimension independently against its anchors, and avoid letting a strong or weak impression of the whole plan carry over between dimensions. Charge each flaw mainly to the dimension it most directly affects. Penalize it in a second dimension only if it has a distinct consequence there.",
+      "Penalize internal contradictions under Architectural coherence. If a contradiction affects how a part the design depends on behaves, or makes a claim false, also penalize it under Technical correctness.",
+      "Do not reward any particular vendor, framework or fashionable technique. Accept any reasonable technology choice that fits the stated or assumed need and is justified. Penalize a choice only when it is wrong, unjustified, or out of proportion to the need.",
+      "When a plan falls between two anchors, choose the lower score unless it fully meets the lower anchor and clearly meets part of the higher one. Give 4 only when you cannot name a significant improvement within that dimension."
+    ],
+    "checklists": [
+      {
+        "prompt_id": "P1",
+        "items": [
+          {
+            "id": "P1-01",
+            "title": "Ingestion with updates and deletions",
+            "addressed_means": "The plan describes how help-center content is pulled into the index, how it is updated incrementally, and how edited, retracted or deleted articles are re-indexed or removed within a defined time window, so the bot does not cite stale or withdrawn content.",
+            "category": "data"
+          },
+          {
+            "id": "P1-02",
+            "title": "Structure-aware chunking and metadata",
+            "addressed_means": "Articles are split along their own structure (titles, sections, steps), and each chunk keeps metadata such as source URL, product, version, locale and visibility that is used for filtering and citation.",
+            "category": "correctness"
+          },
+          {
+            "id": "P1-03",
+            "title": "Retrieval and answer evaluation set",
+            "addressed_means": "A representative set of questions drawn from real tickets or search logs, with expected source articles, is used to measure retrieval quality and answer faithfulness before launch and again after every change to prompts, models, embeddings or chunking.",
+            "category": "correctness"
+          },
+          {
+            "id": "P1-04",
+            "title": "Grounding, citations and declining to answer",
+            "addressed_means": "Answers are restricted to retrieved content and cite their sources, and the bot has a defined behavior for low retrieval confidence or out-of-scope questions (say it doesn't know, or hand off) instead of answering from the model's general knowledge.",
+            "category": "correctness"
+          },
+          {
+            "id": "P1-05",
+            "title": "Escalation to a human",
+            "addressed_means": "Specific triggers for escalation are defined, such as the user asking, low confidence, repeated failure, or sensitive topics like refunds, legal or account security, and the conversation context is passed to the human agent.",
+            "category": "product"
+          },
+          {
+            "id": "P1-06",
+            "title": "Prompt-injection resistance",
+            "addressed_means": "User messages and retrieved content, especially any user-generated content such as community posts, are treated as untrusted. The bot has no privileged actions an injected instruction could trigger, and its safety does not rely on the system prompt alone.",
+            "category": "security"
+          },
+          {
+            "id": "P1-07",
+            "title": "Document visibility enforced at retrieval",
+            "addressed_means": "Internal-only, plan-specific or customer-specific articles are filtered at retrieval time using the authenticated user's entitlements, not by telling the model what it may reveal.",
+            "category": "security"
+          },
+          {
+            "id": "P1-08",
+            "title": "Personal data handling and retention",
+            "addressed_means": "The plan covers customers pasting personal or account data: redaction in logs, a retention period, the LLM provider's data-use and processing terms, and any regional data requirements.",
+            "category": "compliance"
+          },
+          {
+            "id": "P1-09",
+            "title": "Boundary for account-specific questions",
+            "addressed_means": "The plan explicitly decides whether the bot handles account-specific questions (orders, billing status). If it does, it uses authenticated, read-only, narrowly scoped tool calls. If it does not, it says so and routes those questions elsewhere.",
+            "category": "product"
+          },
+          {
+            "id": "P1-10",
+            "title": "Production monitoring and feedback loop",
+            "addressed_means": "Queries, retrieved chunks, answers, user feedback and escalations are logged, and someone reviews them. Unanswered questions are fed back as documentation gaps. Resolution and escalation rates are tracked alongside customer satisfaction, not just deflection.",
+            "category": "operations"
+          },
+          {
+            "id": "P1-11",
+            "title": "Inference cost and latency controls",
+            "addressed_means": "The plan estimates cost per conversation on a stated basis and applies controls such as limits on context size, caching, choice of model tier, rate limiting against abuse, and streaming or other latency targets.",
+            "category": "cost"
+          }
+        ],
+        "traps": [
+          {
+            "id": "P1-T1",
+            "title": "Ungrounded answers presented as authoritative",
+            "recognize": "Nothing makes the bot cite sources or decline to answer. The plan assumes the model will 'answer customer questions' in general, which lets it invent policies, prices or refund terms that can create liability."
+          },
+          {
+            "id": "P1-T2",
+            "title": "Access control left to the prompt",
+            "recognize": "Internal or restricted documents share an index with public ones, and the only safeguard is telling the model not to reveal them. There is no retrieval-time filter tied to the user's identity."
+          },
+          {
+            "id": "P1-T3",
+            "title": "Fine-tuning or one-time indexing as the knowledge mechanism",
+            "recognize": "The plan proposes fine-tuning the model on help-center docs as the main way it learns their content, or indexes the docs once with no way to update or delete them. Either way, answers go stale and cannot be traced to a source."
+          },
+          {
+            "id": "P1-T4",
+            "title": "Launch on demos without regression evaluation",
+            "recognize": "Quality is judged from a handful of manual trial conversations, and prompt, model or chunking changes ship without a repeatable evaluation against a fixed question set."
+          },
+          {
+            "id": "P1-T5",
+            "title": "Overbuilt pipeline before a baseline exists",
+            "recognize": "Multi-agent orchestration, knowledge graphs, custom-trained embeddings or complex query rewriting are proposed from day one, before a simple retrieval baseline has been measured and found inadequate."
+          }
+        ]
+      },
+      {
+        "prompt_id": "P2",
+        "items": [
+          {
+            "id": "P2-01",
+            "title": "Exact money representation",
+            "addressed_means": "Amounts are stored as integers in the currency's smallest unit (such as cents) or as fixed-precision decimals, every amount carries its currency, and rounding rules and the stage at which rounding happens (line item or invoice total) are defined.",
+            "category": "correctness"
+          },
+          {
+            "id": "P2-02",
+            "title": "Immutable financial records",
+            "addressed_means": "Finalized invoices and ledger entries are never edited or deleted. Corrections are made through credit notes, adjustments or reversing entries, and there is a full audit trail.",
+            "category": "data"
+          },
+          {
+            "id": "P2-03",
+            "title": "Idempotent charging and webhook handling",
+            "addressed_means": "Charge and invoice creation use idempotency keys. Payment-provider webhooks are deduplicated and handled correctly when they arrive out of order or more than once. Retries cannot double-charge.",
+            "category": "reliability"
+          },
+          {
+            "id": "P2-04",
+            "title": "Payment provider integration and PCI scope",
+            "addressed_means": "Card data is collected through the provider's hosted fields or tokenization so the system never stores raw card numbers. Webhook signatures are verified. Asynchronous payment states (pending, requires action, disputed) are modeled.",
+            "category": "security"
+          },
+          {
+            "id": "P2-05",
+            "title": "Enforced tenant isolation",
+            "addressed_means": "Tenant scoping is enforced at a layer that individual queries cannot bypass, such as row-level security or a mandatory tenant-scoped data access layer, and automated tests check for cross-tenant data leaks.",
+            "category": "security"
+          },
+          {
+            "id": "P2-06",
+            "title": "Usage metering correctness",
+            "addressed_means": "If usage is billed, events are deduplicated, late-arriving events are handled, billing periods have defined cutoffs, and aggregations can be reproduced and recomputed. Invoiced usage can be traced back to the raw events.",
+            "category": "data"
+          },
+          {
+            "id": "P2-07",
+            "title": "Subscription lifecycle, proration and price versioning",
+            "addressed_means": "Upgrades, downgrades, trials, cancellations and pauses are specified, including proration rules, billing anchor dates and time zones. Price changes create new versions so existing customers can keep their old price.",
+            "category": "correctness"
+          },
+          {
+            "id": "P2-08",
+            "title": "Tax and invoice compliance",
+            "addressed_means": "Sales tax or VAT is calculated by a tax service or rules engine, customer tax IDs and reverse-charge cases are handled, invoice numbering meets the sequential rules of each jurisdiction, and record-retention requirements are met.",
+            "category": "compliance"
+          },
+          {
+            "id": "P2-09",
+            "title": "Failed payments and dunning",
+            "addressed_means": "Failed payments trigger a defined retry schedule, customer notifications, a grace period and a policy for downgrading or suspending access. Card-update and recovery flows are included.",
+            "category": "product"
+          },
+          {
+            "id": "P2-10",
+            "title": "Reconciliation with the payment provider and bank",
+            "addressed_means": "A recurring job reconciles internal ledger entries with provider charges, refunds, disputes and payouts, and discrepancies are flagged and resolved by a named owner.",
+            "category": "reliability"
+          },
+          {
+            "id": "P2-11",
+            "title": "Entitlements separated from billing availability",
+            "addressed_means": "Product access is decided from entitlement state that is cached or stored locally, so an outage in billing or the payment provider does not lock paying customers out.",
+            "category": "reliability"
+          },
+          {
+            "id": "P2-12",
+            "title": "Build-versus-buy for the billing engine",
+            "addressed_means": "The plan compares building the billing engine against buying a billing platform, weighing fees, flexibility, compliance burden and lock-in, and justifies which parts are built in-house.",
+            "category": "cost"
+          }
+        ],
+        "traps": [
+          {
+            "id": "P2-T1",
+            "title": "Floating-point money",
+            "recognize": "Amounts are stored or calculated as binary floating-point numbers, or the plan never says how money is represented while doing arithmetic such as proration or tax on prices."
+          },
+          {
+            "id": "P2-T2",
+            "title": "Mutable invoices and balances",
+            "recognize": "Invoices or balances are updated in place, or records are deleted to fix mistakes. There are no credit notes or reversing entries and no audit trail."
+          },
+          {
+            "id": "P2-T3",
+            "title": "Non-idempotent charges and naive webhook trust",
+            "recognize": "Charges are retried on timeout without idempotency keys, or the plan assumes webhooks arrive exactly once and in order, and does not verify their signatures."
+          },
+          {
+            "id": "P2-T4",
+            "title": "Handling raw card data in-house",
+            "recognize": "The plan stores card numbers in its own database or builds its own card vault without acknowledging the full PCI DSS compliance burden, when a provider's tokenization would avoid it."
+          },
+          {
+            "id": "P2-T5",
+            "title": "Tenant isolation by convention only",
+            "recognize": "Shared tables rely on every developer remembering a tenant filter in every query, with no enforcement mechanism and no tests for cross-tenant access."
+          }
+        ]
+      },
+      {
+        "prompt_id": "P3",
+        "items": [
+          {
+            "id": "P3-01",
+            "title": "Service inventory and a common build contract",
+            "addressed_means": "The plan surveys the languages, build tools and deployment targets of the 50 services and defines a shared pipeline interface or reusable templates, with a controlled escape hatch, instead of 50 bespoke pipelines.",
+            "category": "operations"
+          },
+          {
+            "id": "P3-02",
+            "title": "Incremental migration with a pilot",
+            "addressed_means": "Work starts with a few representative services (for example different stacks, and both critical and non-critical ones). The rest move in waves with old and new pipelines running side by side, and there are explicit criteria for moving each service and a way to fall back.",
+            "category": "reliability"
+          },
+          {
+            "id": "P3-03",
+            "title": "Build once, promote immutable artifacts",
+            "addressed_means": "Each commit produces one versioned, immutable artifact identified by commit or content hash, and that same artifact is promoted through every environment without being rebuilt.",
+            "category": "correctness"
+          },
+          {
+            "id": "P3-04",
+            "title": "Pipeline credentials and secrets",
+            "addressed_means": "Pipelines use short-lived, least-privilege credentials, for example identity federation to the cloud provider, and pull secrets from a secrets manager. Untrusted builds, such as pull requests from forks, never receive production secrets.",
+            "category": "security"
+          },
+          {
+            "id": "P3-05",
+            "title": "Software supply-chain integrity",
+            "addressed_means": "Dependencies are pinned and scanned, artifacts are signed or carry provenance records, changes to pipeline definitions are protected by review, and the production deploy path cannot be bypassed.",
+            "category": "security"
+          },
+          {
+            "id": "P3-06",
+            "title": "Safe deployment, rollback and database migrations",
+            "addressed_means": "Deployments roll out progressively with automated health checks and a fast rollback path, and schema migrations stay compatible with both old and new code versions so rollback stays possible.",
+            "category": "reliability"
+          },
+          {
+            "id": "P3-07",
+            "title": "Independent deploys and contract compatibility",
+            "addressed_means": "Each service deploys independently. API and event-schema compatibility is checked automatically, for example with contract tests or schema checks, so no change requires deploying several services in lockstep.",
+            "category": "correctness"
+          },
+          {
+            "id": "P3-08",
+            "title": "Test environments and flaky tests",
+            "addressed_means": "There is a defined approach to test environments (short-lived per-change environments, shared staging, or a mix) along with test data handling, and flaky tests are detected and quarantined so they do not erode trust in the pipeline.",
+            "category": "reliability"
+          },
+          {
+            "id": "P3-09",
+            "title": "Feedback speed through caching and parallelism",
+            "addressed_means": "Dependency and image-layer caching, parallel test execution and build-only-what-changed strategies keep build feedback within a stated target time.",
+            "category": "operations"
+          },
+          {
+            "id": "P3-10",
+            "title": "Runner capacity and compute cost",
+            "addressed_means": "The plan chooses between hosted and self-hosted runners, plans autoscaling and concurrency limits, and estimates compute cost from expected commit and build volume across 50 services.",
+            "category": "cost"
+          },
+          {
+            "id": "P3-11",
+            "title": "Platform reliability and delivery metrics",
+            "addressed_means": "The CI/CD platform is treated as critical production infrastructure with its own monitoring, a named owner and a plan for its own outages, and delivery metrics such as lead time, deployment frequency, change failure rate and recovery time are tracked.",
+            "category": "operations"
+          },
+          {
+            "id": "P3-12",
+            "title": "Production change control and audit",
+            "addressed_means": "Production environments have protection rules (approvals where required, restricted deployers), every production deploy leaves an audit trail, and ownership and change procedures for shared pipeline templates are defined.",
+            "category": "compliance"
+          }
+        ],
+        "traps": [
+          {
+            "id": "P3-T1",
+            "title": "Big-bang cutover",
+            "recognize": "All 50 services move to the new platform at once, or the old system is switched off before the new one is proven on a pilot, with no parallel running and no fallback."
+          },
+          {
+            "id": "P3-T2",
+            "title": "Rebuilding per environment or mutable tags",
+            "recognize": "Artifacts are rebuilt for each environment, or deployments reference movable tags such as 'latest', so what was tested is not provably what was deployed."
+          },
+          {
+            "id": "P3-T3",
+            "title": "Long-lived, over-privileged CI credentials",
+            "recognize": "Static cloud keys with broad or admin permissions are stored in CI settings and shared across pipelines, or secrets are available to builds of untrusted pull requests."
+          },
+          {
+            "id": "P3-T4",
+            "title": "Lockstep releases or a single shared gate",
+            "recognize": "One pipeline or shared staging gate releases all services together, so one service's failure blocks all 50 and a distributed monolith grows."
+          },
+          {
+            "id": "P3-T5",
+            "title": "Building a custom CI orchestrator from scratch",
+            "recognize": "The plan writes its own build scheduler or pipeline engine instead of configuring existing tools, and gives no requirement that existing tools fail to meet."
+          }
+        ]
+      },
+      {
+        "prompt_id": "P4",
+        "items": [
+          {
+            "id": "P4-01",
+            "title": "Tiers of autonomy and approval",
+            "addressed_means": "The plan lists which actions the agent may take on its own (labeling, commenting, asking for details), which need human approval (opening pull requests, closing issues), and which are forbidden (merging to protected branches, changing repository settings), and says how autonomy expands as trust is earned.",
+            "category": "product"
+          },
+          {
+            "id": "P4-02",
+            "title": "Least-privilege GitHub credentials",
+            "addressed_means": "The agent acts through a scoped GitHub App installation, or an equivalent fine-grained identity, with short-lived tokens limited to the needed permissions and repositories. It cannot change workflows, branch protection or secrets.",
+            "category": "security"
+          },
+          {
+            "id": "P4-03",
+            "title": "Untrusted issue content and prompt injection",
+            "addressed_means": "Issue bodies, comments, linked content and repository files are treated as attacker-controlled. Instructions found in them cannot trigger privileged actions or data leaks, and actions are checked against policy rather than left to the model's judgment.",
+            "category": "security"
+          },
+          {
+            "id": "P4-04",
+            "title": "Sandboxed code execution",
+            "addressed_means": "Repository code and tests run in isolated, short-lived environments with no access to secrets, restricted network access, and limits on resources and run time.",
+            "category": "security"
+          },
+          {
+            "id": "P4-05",
+            "title": "Fix verification",
+            "addressed_means": "Before fixing, the agent reproduces the issue, ideally as a failing test, then shows the test passing along with the full existing test suite and CI. Pull requests include evidence of the fix, and humans review any tests the agent wrote.",
+            "category": "correctness"
+          },
+          {
+            "id": "P4-06",
+            "title": "Offline triage evaluation",
+            "addressed_means": "Labeling, prioritization, duplicate detection and routing are measured against historical issues with known outcomes before any action is enabled, with precision thresholds required for each action.",
+            "category": "correctness"
+          },
+          {
+            "id": "P4-07",
+            "title": "Human feedback and outcome tracking",
+            "addressed_means": "Agent-generated pull requests and comments are clearly marked. Acceptance, rejection, revert and reopen rates are tracked and used to adjust or reduce the agent's autonomy.",
+            "category": "product"
+          },
+          {
+            "id": "P4-08",
+            "title": "Loop prevention, rate limits and kill switch",
+            "addressed_means": "There are attempt and time limits per issue and protection against bot-to-bot loops and comment spam, so the agent cannot keep re-triggering itself, plus global rate limits and an immediate way to switch the agent off.",
+            "category": "reliability"
+          },
+          {
+            "id": "P4-09",
+            "title": "Model cost budgets",
+            "addressed_means": "Each task has a token or cost budget with stop conditions, and cost per triaged issue and per accepted fix is tracked against the value it delivers.",
+            "category": "cost"
+          },
+          {
+            "id": "P4-10",
+            "title": "Audit trail of agent actions",
+            "addressed_means": "Every action, tool call, model input and output, and code change is logged and attributable, so any action can be reconstructed and reverted.",
+            "category": "operations"
+          },
+          {
+            "id": "P4-11",
+            "title": "Codebase context retrieval",
+            "addressed_means": "The plan specifies how the agent finds relevant code in repositories larger than its context window, for example through code search, indexing or symbol navigation, and how that index stays current.",
+            "category": "correctness"
+          },
+          {
+            "id": "P4-12",
+            "title": "Event handling and coordination with humans",
+            "addressed_means": "Webhook events are processed idempotently, issue edits and new comments during work are handled, and the agent claims or yields issues so it does not collide with humans or other agents working on the same issue.",
+            "category": "reliability"
+          }
+        ],
+        "traps": [
+          {
+            "id": "P4-T1",
+            "title": "Auto-merging without human review",
+            "recognize": "The agent can push to default or protected branches, or merge its own pull requests based on its own judgment or passing CI alone, with no human approval step."
+          },
+          {
+            "id": "P4-T2",
+            "title": "Broad credentials reachable by the agent",
+            "recognize": "A personal access token with wide scope, or CI or production secrets, are available inside the environment where the agent runs untrusted code or reads untrusted text. This makes injection-driven theft of credentials possible."
+          },
+          {
+            "id": "P4-T3",
+            "title": "Issue text treated as trusted instructions",
+            "recognize": "The plan feeds issue and comment content to the model as task instructions, with no acknowledgment of prompt injection and no policy layer limiting what an issue can make the agent do."
+          },
+          {
+            "id": "P4-T4",
+            "title": "Activity counted as success",
+            "recognize": "Success is measured by issues closed or pull requests opened rather than verified, accepted fixes, or the agent auto-closes issues as resolved or stale without evidence."
+          },
+          {
+            "id": "P4-T5",
+            "title": "Unbounded agent loops",
+            "recognize": "No limits on iterations, retries, time or spend, and no kill switch, so the agent can retry endlessly, post spam, or run up unbounded model costs."
+          }
+        ]
+      },
+      {
+        "prompt_id": "P5",
+        "items": [
+          {
+            "id": "P5-01",
+            "title": "Deliberate choice of concurrency approach",
+            "addressed_means": "The plan chooses between operational transformation and CRDTs based on its needs (whether a server holds the authoritative copy, offline editing, rich-text support, document size) and prefers a proven library over a custom algorithm.",
+            "category": "correctness"
+          },
+          {
+            "id": "P5-02",
+            "title": "Document model and merge semantics for rich text",
+            "addressed_means": "A structured document schema (blocks, inline formatting, embedded objects) is defined, along with how concurrent edits to structure and formatting merge, such as overlapping formatting ranges or moving a block while it is being edited, and how the schema is versioned.",
+            "category": "correctness"
+          },
+          {
+            "id": "P5-03",
+            "title": "Convergence testing",
+            "addressed_means": "Randomized or property-based tests apply concurrent edits with reordered, delayed and duplicated delivery, and assert that every copy of the document ends up identical and keeps the users' intended changes.",
+            "category": "correctness"
+          },
+          {
+            "id": "P5-04",
+            "title": "Durable persistence and compaction",
+            "addressed_means": "Edits are stored durably before they are acknowledged to the client, using an operation log or update history plus periodic snapshots. Acknowledged edits survive a server crash. Growth of history and deletion markers (tombstones) is managed.",
+            "category": "data"
+          },
+          {
+            "id": "P5-05",
+            "title": "Real-time transport and session routing",
+            "addressed_means": "Persistent client connections reconnect automatically, all editors of a document are routed to one coordinating process or share a fan-out channel, the service scales horizontally, and backpressure is handled.",
+            "category": "reliability"
+          },
+          {
+            "id": "P5-06",
+            "title": "Offline editing and reconnection",
+            "addressed_means": "The plan either supports offline editing, with local buffering of edits, resync and handling of long divergence, or explicitly limits the editor to online use and handles disconnects without losing typed content.",
+            "category": "product"
+          },
+          {
+            "id": "P5-07",
+            "title": "Per-document authorization on live sessions",
+            "addressed_means": "Read and write permissions are enforced on the server for every subscription and every incoming edit, and revoking access or changing a share link takes effect on connections that are already open.",
+            "category": "security"
+          },
+          {
+            "id": "P5-08",
+            "title": "Collaborative undo and version history",
+            "addressed_means": "Undo reverses only the current user's own edits, correctly adjusted for others' concurrent changes. Version history allows viewing and restoring earlier states without breaking collaborators who are editing.",
+            "category": "product"
+          },
+          {
+            "id": "P5-09",
+            "title": "Temporary presence kept separate from document state",
+            "addressed_means": "Cursors, selections and presence travel on a lightweight channel that is never saved into the document, and cursor positions shift correctly when others make concurrent edits.",
+            "category": "product"
+          },
+          {
+            "id": "P5-10",
+            "title": "Sync core built and proven first",
+            "addressed_means": "The build order puts the document model, sync engine, persistence and convergence tests first, proven with multiple concurrent users, before features such as comments, sharing UI or advanced formatting are layered on.",
+            "category": "reliability"
+          },
+          {
+            "id": "P5-11",
+            "title": "Large documents and many concurrent editors",
+            "addressed_means": "The plan addresses initial load size, snapshot loading, memory growth, batching of edits, and behavior when many people edit the same document at once, with stated limits or degradation strategies.",
+            "category": "reliability"
+          },
+          {
+            "id": "P5-12",
+            "title": "Protocol and client version compatibility",
+            "addressed_means": "The sync protocol and edit formats are versioned so that older clients still connected during a deploy keep working or are upgraded safely, and stored documents are migrated when the schema changes.",
+            "category": "operations"
+          }
+        ],
+        "traps": [
+          {
+            "id": "P5-T1",
+            "title": "Last-write-wins or locking passed off as real-time collaboration",
+            "recognize": "Whole-document saves overwrite each other, or paragraphs or sections are locked to one editor, while the plan describes this as real-time co-editing. Concurrent edits are silently lost or blocked."
+          },
+          {
+            "id": "P5-T2",
+            "title": "Inventing a custom merge algorithm",
+            "recognize": "The plan designs its own transformation or CRDT algorithm from scratch with no rigorous testing or proof, ignoring that many such algorithms, including published ones, have turned out to be incorrect."
+          },
+          {
+            "id": "P5-T3",
+            "title": "Sync bolted onto a single-user editor late",
+            "recognize": "The build order starts with a single-user editor and its features and adds multi-user sync near the end, so the document model and storage must be reworked once concurrency arrives."
+          },
+          {
+            "id": "P5-T4",
+            "title": "Edits acknowledged before they are durable",
+            "recognize": "The server keeps document state only in memory, or confirms edits to clients before saving them durably, with no recovery plan if the process holding a document crashes."
+          },
+          {
+            "id": "P5-T5",
+            "title": "Misstated guarantees",
+            "recognize": "The plan makes technically wrong claims, for example that CRDTs automatically preserve user intent for every rich-text conflict, need no server for storage, access control or delivery, or have no metadata overhead, or that operational transformation easily works peer-to-peer with no central ordering."
+          }
+        ]
+      }
+    ]
+  }
+}

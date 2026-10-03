@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "22acfbd92420.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "22acfbd92420",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 68,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Asynchronous engine-native replication on-premises → cloud during coexistence. Switch to synchronous commit just before the planned failover",
+      "rationale": "Mechanisms (sync switch before failover, reverse replication, DAG/Data Guard) are accurate; minor issues like DNS-flip claims for interfaces and the \"no downtime\" versus 60 s pause framing are handled honestly."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Move a working, on-premises patient scheduling system ... Users must not lose scheduling at any point.",
+      "rationale": "Solves the real problem with staged tier-by-tier migration and explicitly reframes zero downtime as a ≤60 s pause; some gaps on kiosks/SMS detail and clinical cutover comms."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Exactly one writable primary database at all times. On-premises is the system of record until the Phase 3 cutover, the cloud after it. Never both.",
+      "rationale": "Single write authority, rollback, coexistence, and exceptions are consistently honored across decisions, phases, validation and cross-cutting tables."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Two full rehearsals on a production-sized copy ... 0 lost or duplicated transactions against the load generator's ledger; ... failback ≤ 15 min (ASSUMPTION)",
+      "rationale": "Validation is tied to specific risks, early (V0, V1), thresholds labeled as assumptions, with post-cutover reconciliation; production monitoring continues though load-test realism could improve."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Missing inputs (most plan-changing first), with what I assumed",
+      "rationale": "Assumptions are labeled, ranked, with what flips in the design and how confirmed; unknowns explicitly marked UNKNOWN."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "otherwise patients get duplicate reminders and other systems get duplicate scheduling (SIU) messages",
+      "rationale": "Covers split brain, duplicate messages, link loss, failback, WAN down and reconciliation, but adversarial input, partial replication corruption and clinical-staff human failures are thinner."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Rollback: shift load-balancer weight back to the on-premises app tier (seconds).",
+      "rationale": "Deployment, rollback, SIEM/synthetic checks, on-call and ownership are concrete, though hypercare/staffing and incident ownership are light."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "UNKNOWN: monthly budget comes from finance/CFO before Phase 4",
+      "rationale": "Cost drivers (egress, circuits, licences, double running) are identified with a V7 check and 6-month cap, but no magnitudes, build cost or scaling reasoning is given."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: two writers can double-book, which can't be undone after the fact",
+      "rationale": "Decisions are rated by reversibility with revisit triggers, point of no return deferred to Phase 5, and reverse replication as the exit path."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Keep the existing architecture",
+      "rationale": "Rehost with no rewrite and explicit deferrals is proportionate; the dense ceremony (dependency tables, exception tables) is somewhat heavy."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Create stable DNS names for the database and app listener now, so the cutover is a DNS change",
+      "rationale": "Phased order with dependencies, checkable exit checks per phase, concrete first slice, and fallback actions when checks fail."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "BAA covers every service in use; ... keys managed by the hospital; Private endpoints only; Load balancer, app and database audit logs go to the SIEM"
+    },
+    {
+      "id": "P6-02",
+      "status": 1,
+      "evidence": "a dependency inventory lists every interface, batch job, report extract, printer or label server, call-centre phone integration, reminder vendor, portal"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "daily reconciliation of per-table row counts and checksums, plus appointment counts per resource per day ... lag p99 < 5 s"
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "Exactly one writable primary database at all times. ... A short write pause is preferred over two databases accepting writes"
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "Reverse replication cloud → on-premises starts at the cutover. On-premises stays a warm standby until V6; failback rehearsed"
+    },
+    {
+      "id": "P6-06",
+      "status": 2,
+      "evidence": "Two physically diverse private circuits plus a VPN backup; p95 ≤ 1.2× the on-premises BASELINE"
+    },
+    {
+      "id": "P6-07",
+      "status": 1,
+      "evidence": "The existing downtime reports keep printing locally from the cloud; RPO/RTO UNKNOWN supplied by BC/DR lead"
+    },
+    {
+      "id": "P6-08",
+      "status": 1,
+      "evidence": "Identity federated with AD and least-privilege roles; Elevated access during the cutover only, with time limits"
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "load test at 2× BASELINE peak over the real circuit; Phase 2 waves with Monday peak; shadow traffic fallback"
+    },
+    {
+      "id": "P6-10",
+      "status": 1,
+      "evidence": "a CAB slot outside known peaks (flu season, month-end); Freeze schema and config changes; low-volume window"
+    },
+    {
+      "id": "P6-11",
+      "status": 1,
+      "evidence": "Wipe storage media to NIST 800-88 with certificates; Vendor support statement for running in the cloud (ASSUMED)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "Move the tiers separately. First the cloud app tier serves groups of users against the on-premises database (Phase 2)."
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "If it must be literally zero, two databases would have to accept writes at once. ... I would push back on that requirement"
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "BAA signed with the cloud provider covering every service used; Private endpoints only"
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "Smoke-test every inventoried interface; the hospital-wide interface engine, which stays on-premises"
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "Re-architecture (containers, services, a managed database the app isn't built for). Pulled forward when Phase 5 is done"
+    }
+  ],
+  "note": "Strong, coherent staged migration with single write authority, rehearsed failback and honest assumptions; weaker on cost magnitudes, clinical cutover communications/hypercare, break-glass and the vendor/DR details.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2419,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 17330
+  },
+  "cost_usd": 0.067523,
+  "latency_s": 29.037,
+  "raw_file": "raw/judge-22acfbd92420.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "37d888ff8716.engineering-quality-v1.fable-5.k1",
+  "blind_id": "37d888ff8716",
+  "blind_sha256": "ed27b79645b426ebc5adf28112e9bf4495f406e79cc0306f233a50c6b3a6d015",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 368,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "At the moment of the switch there is usually a write pause of a few seconds to under a minute, hidden by automatic retries.",
+      "rationale": "CDC mechanics, HL7 ADT/SIU semantics, single-sender rule for outbound messages, and the honest statement of what 'zero downtime' really permits are all accurate, including the subtle limits."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Is a write pause of under a minute, hidden by retries, acceptable? Or do you need truly zero pause, which means app changes?",
+      "rationale": "Solves exactly the stated problem, resolves the key ambiguity (what 'no downtime' means) explicitly, offers vendor-vs-in-house branching, and is clearly buildable by a normal hospital IT team."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Only one system takes bookings at any moment... move \"write authority\" over in a single controlled switch.",
+      "rationale": "The single-write-authority rule and routing-layer decision made up front are honored consistently through replication, shadow running, cutover steps and rollback with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Run at least two full dress rehearsals of the cutover and the rollback, using production-sized data, and time each step.",
+      "rationale": "Validation is tied to the specific risks (lag, data mismatch, HL7 duplicates), happens before commitment via rehearsals and shadow reads, has checkable go/no-go criteria, and continues into hypercare."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "This plan is generic, and the assumptions are flagged where they matter.",
+      "rationale": "Assumptions (US/HIPAA, vendor product, write-pause tolerance) are explicit, estimates are hedged ('~1 second', 'typically'), and the plan states exactly which answers would change the design."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Duplicate or missing HL7 messages | Only the active system sends; message IDs that can safely be resent; reconcile counts",
+      "rationale": "The major domain failures (double-booking, HL7 duplication, link failure, lag, rollback divergence) have concrete handling, but some mitigations are one-line table entries and failures of reverse replication or restores are not covered."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Watch the system closely with on-site support in the first week, and survey scheduling staff.",
+      "rationale": "Cutover deployment, rollback, IaC, hypercare and meaningful signals (lag, error rate, mismatches) are concrete, but steady-state alerting, incident ownership and operating-model detail after hypercare are thin."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "I can turn this into a detailed runbook, a timeline for your team size, or a provider-specific design.",
+      "rationale": "Money is essentially ignored: no mention of cloud spend, redundant-link or dual-running costs, licensing fees or cost controls; only phase durations hint at engineering effort."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Every step must be reversible until the on-premises system is shut down.",
+      "rationale": "Reversibility is a stated core rule, backed by reverse replication, a routing layer that makes the switch a config change, a 30-90 day warm standby, and a deliberately low-lock-in replatform strategy."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "I'd usually recommend replatforming: the same app on cloud VMs or containers, plus a managed database.",
+      "rationale": "The simplest workable strategy is chosen, re-architecture is explicitly avoided, and every component (routing layer, CDC, rehearsals) earns its place against the no-downtime requirement."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Set the on-premises database to read-only. The write pause starts here, and the app retries bookings automatically.",
+      "rationale": "Phases are ordered by dependency with weeks, the cutover is a 10-step numbered runbook with go/no-go and rollback triggers, and the plan says which answers would change course."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "sign a BAA (Business Associate Agreement) with the cloud provider, use only HIPAA-eligible services, update the HIPAA risk analysis"
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "the EHR, plus HL7 messages for patient admissions (ADT) and appointments (SIU)... the interface engine (e.g., Mirth or Rhapsody)"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "initial bulk copy, then continuous one-way change data capture (CDC)... Check row counts and checksums... \"appointments per provider per day match\""
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "Only one system takes bookings at any moment... move \"write authority\" over in a single controlled switch."
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "Start reverse replication (cloud → on-premises) so the old system stays current for rollback... at least two full dress rehearsals of the cutover and the rollback"
+    },
+    {
+      "id": "P6-06",
+      "status": 1,
+      "evidence": "Redundant private network links between the hospital and the cloud (e.g., Direct Connect or ExpressRoute), with VPN backup."
+    },
+    {
+      "id": "P6-07",
+      "status": 2,
+      "evidence": "how much data you can afford to lose (RPO, which should be about zero)... backups and a multi-zone setup... paper downtime procedures ready just in case"
+    },
+    {
+      "id": "P6-08",
+      "status": 1,
+      "evidence": "Single sign-on tied to your existing directory (AD/Entra), using least-privilege access."
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "Replay or mirror real read traffic and compare responses... Load-test at 2–3× your peak volume."
+    },
+    {
+      "id": "P6-10",
+      "status": 2,
+      "evidence": "Pick the lowest-volume window, typically early on a Sunday morning. Clinical leadership signs off, and the change freeze is in effect."
+    },
+    {
+      "id": "P6-11",
+      "status": 2,
+      "evidence": "the vendor's hosting and migration path will drive most of this plan... take a final archive, wipe the data to NIST 800-88 standards"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "continuous one-way change data capture (CDC)... at least two full dress rehearsals of the cutover and the rollback"
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "Avoid having both systems write at once (dual-write) and avoid two-way sync while both are live."
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "sign a BAA (Business Associate Agreement) with the cloud provider, use only HIPAA-eligible services"
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "Point the interface engine's inbound and outbound feeds at the cloud, then turn on the cloud's outbound messages."
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "I'd usually recommend replatforming: the same app on cloud VMs or containers, plus a managed database."
+    }
+  ],
+  "note": "An expert, honest migration plan that nails write authority, HL7 handling, rollback and reversibility while avoiding every trap; its only material gaps are cost realism and identity/break-glass detail.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8782,
+    "thinking_tokens": 6115,
+    "cache_read_input_tokens": 864,
+    "cache_creation_input_tokens": 9981
+  },
+  "cost_usd": 0.5647465,
+  "latency_s": 175.615,
+  "raw_file": "raw/judge-37d888ff8716.engineering-quality-v1.fable-5.k1.txt"
+}

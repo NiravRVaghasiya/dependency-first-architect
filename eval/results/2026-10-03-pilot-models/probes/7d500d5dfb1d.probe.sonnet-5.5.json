@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "7d500d5dfb1d.probe.sonnet-5.5",
+  "blind_id": "7d500d5dfb1d",
+  "judge": "sonnet-5.5",
+  "order_index": 2,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.97,
+  "cues": [
+    "Opens by mentioning it couldn't access reference files but has the methodology and the \"10-step framework provided\"",
+    "Rigid numbered sections mirroring a template: Classification/Constraints, Dependencies, Key decisions, First end-to-end slice, Phases, Validation checks, Cross-Cutting, AI Layer, Exceptions, Deferred",
+    "Jargon tags such as R1/R2/R3 reversibility tiers, V0–V12 gates with hypothesis/method/threshold/evidence/consumer/unlocks fields, and REQUIREMENT/BASELINE/ASSUMPTION/UNKNOWN labels",
+    "Explicit references to numbered principles (Principle 1, 3, 5, 6, 7), an 'E1 exception', and 'canonical order'",
+    "A closing Self-Check with checkmarks that audits the plan against the methodology, plus mandatory 'AI Layer: N/A' and 'Exceptions: None' sections, and pull-forward conditions for each deferred item"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 421,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 22912
+  },
+  "cost_usd": 0.061498,
+  "latency_s": 30.165,
+  "raw_file": "raw/probe-7d500d5dfb1d.probe.sonnet-5.5.txt"
+}

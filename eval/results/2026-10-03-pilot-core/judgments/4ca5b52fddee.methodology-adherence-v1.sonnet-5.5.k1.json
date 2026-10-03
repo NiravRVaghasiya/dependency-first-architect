@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "4ca5b52fddee.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "4ca5b52fddee",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 120,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Freezing the update-log and snapshot storage format; schema v1 | Depends on | V1 (the engine plus our editor binding converge)",
+      "rationale": "Phases build from walking skeleton to convergence, persistence, identity, scale, features, exposure, with each gated by explicit validation before dependents are specified."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Staff user A signs in through OIDC, creates a document and types \"hello\". Staff user B, in a second browser, sees it live.",
+      "rationale": "Phase 0 is a real end-to-end slice deployed to production through every tier, with deploy, rollback and monitoring, before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "V1 finds an engine-level divergence that can't be fixed in about 2 weeks, or V5 fails... → server-authoritative OT",
+      "rationale": "The gate table lists irreversible decisions with reversibility class, default, assumption, validation and concrete flip condition; missing inputs are stated with consequences."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tenancy contract: `tenant_id` + RLS on every table. Update-log and snapshot schema, with `schema_version`.",
+      "rationale": "Within phases, widest-impact contracts come first (tenancy, schema, then fuzz), and Phase 4 starts with affinity routing before limits and benchmarks."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: TLS everywhere, OIDC, staff allow-list behind a flag, secrets manager, WebSocket origin check, no customer data",
+      "rationale": "The cross-cutting table gives concrete security measures in every phase 0–6, starting with the first phase."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "One trace browser → database; content-free logs; synthetic canary-document probe; first alerts",
+      "rationale": "Observability is concrete in Phase 0 and in each subsequent phase with specific metrics and alerts."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform, lockfiles, image digests, migrations run in CI",
+      "rationale": "Reproducibility is concretely addressed in every phase, from pinned builds to deterministic fuzz replay, scripted restore drills and versioned load scripts."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Rollback by previous digest; add-only migrations; client reconnect with backoff",
+      "rationale": "Failure handling appears in each phase, from Phase 0 reconnect and rollback through PITR, fail-closed IdP outage, node loss rebalance and kill switches."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: no AI component.",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components, only deferring one with defenses first."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Each item is built only when its condition is met: E2EE: a customer or regulatory requirement",
+      "rationale": "A deferred list gives each item an explicit pull-forward trigger."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan that meets every rubric dimension with concrete content; no significant gaps found.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 8,
+    "output_tokens": 2291,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 11403,
+    "cache_creation_input_tokens": 10273
+  },
+  "cost_usd": 0.05088909999999999,
+  "latency_s": 73.439,
+  "raw_file": "raw/judge-4ca5b52fddee.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

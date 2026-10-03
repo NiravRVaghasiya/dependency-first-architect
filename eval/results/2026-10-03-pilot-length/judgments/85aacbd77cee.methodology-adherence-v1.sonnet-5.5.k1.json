@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "85aacbd77cee.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "85aacbd77cee",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 13,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Prototype: \"Ingestion, hybrid index, basic RAG, offline eval harness\"; Hardening later: \"guardrails, escalation integration, observability, security review\"",
+      "rationale": "Substrate-to-retrieval order is sensible, but guardrails, escalation and observability come after the basic RAG prototype instead of before it."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 0. Discovery: \"Ticket-driver analysis, doc inventory and quality audit, success metrics, golden dataset v1, vendor/model choices\"",
+      "rationale": "Phase 0 is discovery only; the first build is an internal demo prototype, and no thin end-to-end slice runs in production first."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "\"Build vs. buy: compare against built-in vendor bots (Intercom Fin, Zendesk AI, etc.) ... before committing to a custom build.\"",
+      "rationale": "Open questions and vendor options are listed, but there are no defaults with flip conditions for the irreversible choices such as index, model or embeddings."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "\"Reranking, query rewrite, confidence gating, guardrails, escalation integration, observability, security review\"",
+      "rationale": "Phases are loosely sequenced from substrate upward, but there is no explicit ordering by blast radius within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "\"Access control: index only public docs for the public bot.\" and Phase 2 \"security review\"",
+      "rationale": "Security is covered in detail, but mostly in standalone sections and Phase 2, and it is absent from the Phase 1 prototype."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "\"Observability: trace each turn (rewritten query, retrieved IDs and scores, prompt version, model, tokens, latency, outcome).\"",
+      "rationale": "Observability is described well but is scheduled in Phase 2 hardening, not from day zero."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "\"store a content hash per chunk so only changed content is re-embedded. Keep an index version ID for rollback.\"",
+      "rationale": "Content versioning, prompt versioning and a CI eval gate exist, but there is no environment or build reproducibility and nothing tied to each phase."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "\"use timeouts and fallback models. If the LLM is down, fall back to plain search results.\"",
+      "rationale": "Resilience is handled in a standalone operations section and in Phase 2, and the prototype phase has none."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "\"Guardrails / confidence check\" and Phase 2 \"guardrails, escalation integration\" after Phase 1 \"basic RAG\"",
+      "rationale": "The plan has strong defenses, cost budgets and human handoff, but it builds them after basic RAG instead of before capabilities. The retrieval → model → routing order is otherwise reasonable."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "\"Out of scope for v1: account-specific actions such as refunds or password resets... Plan for these in v2 through tool calling.\"",
+      "rationale": "Deferred items are named (v2 tool use, multilingual expansion, internal docs), but there are no explicit pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is a thorough, sensible RAG design, but its phasing is prototype-first with discovery as Phase 0, and security, observability and resilience arrive late in Phase 2.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1267,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 5309
+  },
+  "cost_usd": 0.0260635,
+  "latency_s": 42.353,
+  "raw_file": "raw/judge-85aacbd77cee.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

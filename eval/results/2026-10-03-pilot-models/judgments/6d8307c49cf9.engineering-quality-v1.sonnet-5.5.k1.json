@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "6d8307c49cf9.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "6d8307c49cf9",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 78,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Version field is lamport clock (OT) or (version, client_id) pair (CRDT).",
+      "rationale": "Treats OT and CRDT as interchangeable with merge-latency benchmarks on string stubs, calls Postgres replica failover trivial, and lists Litestream as an event store. It also assumes a \"minimal OT merge function\" is adequate, and that \"both converge 100%\" settles correctness. The rich-text and OT-correctness hard parts are missed."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Build minimal OT merge function (e.g., simple string insert/delete) and minimal CRDT (e.g., Yjs or Automerge stub).",
+      "rationale": "The plan addresses the main request and is buildable, but it covers plain text only. There is no rich-text model, undo or presence, and much of the effort goes to SaaS, SLA and multi-tenancy."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Backend: Node.js + Express → WebSocket handler ... Backend language: Go (low latency, concurrency model fits shared state).",
+      "rationale": "The design is recognizable, but it contradicts itself: Node vs Go, server-authoritative vs \"peer CRDT\", 500ms RTT vs real-time, and Phase 1 keeps last-write-wins as the fallback path. Session routing is unowned."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Pass bar: OT <5ms merge latency, CRDT <50ms, both converge 100% of trials.",
+      "rationale": "The plan has gated load tests and early spikes, but it has no randomized convergence tests with reordering, delay or duplication, and thresholds are invented. Validation of durability under crash is thin, and production validation is limited."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Latency (edit → peer sees it): ASSUMPTION 500ms RTT acceptable for real-time feel; if <100ms required, architecture changes",
+      "rationale": "The plan labels its assumptions and the triggers that would change the design. Some of them are odd, such as the claim that <100ms latency would need a CRDT, and some numbers (such as the cost-per-user budget) are arbitrary."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Client queues edits locally during outage; no loss. ... Error: any merge divergence → log + alert.",
+      "rationale": "The plan covers failover, retries, rate limits and a checksum, but it has no handling of duplicate ops or idempotency, malicious ops, permission revocation on open sockets, or server crash mid-document. Divergence detection is just a log."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Alert: merge latency p99 >1s → page on-call. Runbook: check Postgres CPU, check client count, decide: throttle / scale / rollback.",
+      "rationale": "The plan covers deployment, rollback via flags, canary, tracing, backups, runbooks and alerts. Schema migration and ownership are thin, and the Phase 3 burden is heavy."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Pass bar: <$0.01 USD per concurrent user per day (ASSUMPTION; who confirms?).",
+      "rationale": "The plan has a cost gate and a V3 validation, and it identifies cold-storage archival. It has no real cost model or build-vs-buy analysis beyond one line, and the figures are arbitrary."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Conflict model ... R3 (months of rework; every client and merge logic changes) ... Tenancy ... R3",
+      "rationale": "The plan classifies decisions by reversibility, validates the conflict model early, and gives revisit triggers. It misses the lock-in of the doc format and op-log schema, and the plan to flip from OT to CRDT later is understated."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Multi-region ready (Postgres in 2+ regions, eventual consistency model defined).",
+      "rationale": "The plan is overbuilt on SaaS, SLA, multi-region and multi-tenancy, while essentials like rich-text schema, undo and presence are under-built. The Phase 0 last-write-wins start adds rework."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Define `operations` table: `(op_id UUID, doc_id UUID, user_id UUID, timestamp, op_type, op_data JSON, version INT, checksum)`.",
+      "rationale": "The plan gives concrete phases, schemas, gates and evidence, with checkable exit criteria. However, it starts with last-write-wins and defers the real sync core to Phase 1."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 1,
+      "evidence": "Default Server-authoritative OT ... Vendor OT library (e.g., ot.js) or CRDT (e.g., Yjs)"
+    },
+    {
+      "id": "P5-02",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-03",
+      "status": 1,
+      "evidence": "both converge 100% of trials"
+    },
+    {
+      "id": "P5-04",
+      "status": 1,
+      "evidence": "Write all ops to DB before broadcasting."
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "Per-doc: max 100 concurrent clients (ASSUMPTION)."
+    },
+    {
+      "id": "P5-06",
+      "status": 1,
+      "evidence": "Client queues edits locally during outage; no loss."
+    },
+    {
+      "id": "P5-07",
+      "status": 1,
+      "evidence": "Server validates every op: is user in doc's editor list?"
+    },
+    {
+      "id": "P5-08",
+      "status": 0,
+      "evidence": "PDF export, document templates, version history UI: Deferred."
+    },
+    {
+      "id": "P5-09",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-10",
+      "status": 0,
+      "evidence": "conflict detection (stub: last-write-wins, no OT/CRDT yet)"
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "snapshots every 100 ops (to avoid full replay)"
+    },
+    {
+      "id": "P5-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": true,
+      "evidence": "conflict detection (stub: last-write-wins, no OT/CRDT yet) → broadcast to all connected clients."
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Vendor OT library (e.g., ot.js) or CRDT (e.g., Yjs)"
+    },
+    {
+      "id": "P5-T3",
+      "present": true,
+      "evidence": "Phase 0 ... In-memory document state (no disk yet) ... Phase 1: Conflict Resolution Model + Persistence"
+    },
+    {
+      "id": "P5-T4",
+      "present": true,
+      "evidence": "Persistence: In-memory document state (no disk yet)."
+    },
+    {
+      "id": "P5-T5",
+      "present": true,
+      "evidence": "if <100ms required, architecture changes (need local-first + eventual consistency, not server-authoritative)."
+    }
+  ],
+  "note": "The plan is a well-gated, operations-aware phased rollout, but it is thin on collaborative-editing substance: it has no rich-text model, undo or presence, no convergence fuzzing, and it starts from last-write-wins in memory.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2494,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 19231
+  },
+  "cost_usd": 0.07321050000000001,
+  "latency_s": 49.868,
+  "raw_file": "raw/judge-6d8307c49cf9.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

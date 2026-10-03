@@ -1,0 +1,173 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9fac63871136.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "9fac63871136",
+  "blind_sha256": "bd0fb24f156bc450812cca1c5e19fe734918e0ccc317737ef0d3ade0d396db55",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 409,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Characters like `:` and `?` aren't allowed in Windows file names, so the default template uses `-` and `_`.",
+      "rationale": "The core mechanics are right (DateTimeOriginal first, two-phase rename, casefold comparison, no overwrite). Minor imprecision: the plan lists exifread for HEIC/CR3 coverage it may not have, and it never says that EXIF times are camera-local."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "**Version 1 leaves out:** Moving files into date-based folders, editing EXIF data, and a GUI. These could come later.",
+      "rationale": "It covers the core needs: dry-run, collisions, undo, sidecars, bogus dates. Exclusions are explicit but barely justified. Extras like `--tz-shift` and the filename fallback widen the scope."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "scan → read metadata → resolve date → render name → plan (resolve collisions) → preview | execute → log",
+      "rationale": "The modules have clear responsibilities and the pipeline is consistent, with collisions resolved in the planner and execution in a separate module. Small loose ends remain: `{seq}` versus the suffix scheme, and how dates.py feeds naming."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "applying the plan and then undoing it gives back the original names. No file is ever lost or overwritten.",
+      "rationale": "The tests are domain-appropriate: a property test for round-trip, real fixtures, and a cross-platform CI matrix. There are no measurable acceptance criteria. Crash-injection testing is absent, and no risky assumption is validated early."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "These decisions would change the design: - **Videos:** Should the tool rename MP4 and MOV files",
+      "rationale": "It lists open questions. Key assumptions stay implicit: camera-clock and timezone semantics, folder size, and the file systems in use. There is no analysis of what changes if they are wrong."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Write `.exifrename-log-<timestamp>.jsonl` *before* each step and flush it each time. If the run crashes partway, the log can still restore everything.",
+      "rationale": "It covers the main domain failures: bogus dates, bursts, swaps and chains, case-insensitive file systems, crashes mid-run, and reruns. It omits undo when files changed since the run, permission errors, symlinks, and a check-then-rename race."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "`0`: success - `1`: some files were skipped or failed - `2`: bad usage",
+      "rationale": "For a CLI it has exit codes, verbose/quiet, JSON output, packaging, CI, and undo as rollback. Versioning of the log format and a support path are not covered."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "none",
+      "rationale": "Cost is not discussed. The plan does not weigh exiftool per-file process spawn cost against performance on large folders, though cost matters little for a local CLI."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Undo log location: Keep it in the photo folder, or in a central app-data directory?",
+      "rationale": "It has an undo log and a safe dry-run default. It does not call out one-way choices such as the default name template, the log format versioning, or where the log lives, and these are left open."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Default to a pure-Python reader (`exifread` + `pillow-heif`). Use `exiftool` automatically if it's on `PATH`",
+      "rationale": "It is a single local CLI with no database or service. Some gold-plating: Hypothesis, a PyInstaller exe, a progress bar, and the camera/seq tokens. The reader abstraction earns its place."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "1. **MVP:** JPEG only, dry-run and apply, default template, collision suffixes, undo log.",
+      "rationale": "It gives a concrete module layout, a full CLI spec, and milestones ordered by dependency with the safety core first. The intermediate checks and criteria for changing course are thin."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "`DateTimeOriginal` + `SubSecTimeOriginal` + `OffsetTimeOriginal` 2. `CreateDate` / `DateTimeDigitized`"
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "Treat values like `0000:00:00 00:00:00` and blank strings as missing."
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "Sort by sub-second value first, then by original name. Add `_01`, `_02`, and so on."
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "Safety default: The tool only previews unless `--apply` is passed."
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "First rename every file to a temporary name (`.exifrename-tmp-<uuid>`), then to its final name."
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "`--undo LOGFILE              Revert a previous run`"
+    },
+    {
+      "id": "P7-07",
+      "status": 1,
+      "evidence": "`DateTimeOriginal` + `SubSecTimeOriginal` + `OffsetTimeOriginal`"
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "`IMG_1.HEIC`, `IMG_1.xmp`, `IMG_1.AAE`, and `IMG_1.MOV` (when it's a Live Photo pair) all get the same new name stem."
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "default: \"{date:%Y-%m-%d_%H-%M-%S}\""
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Use `os.rename` with an existence check rather than `os.replace`."
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "The `--fallback` source: file modification time... (default: skip)"
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "Default to a pure-Python reader (`exifread` + `pillow-heif`)."
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "Version 1 leaves out: ... editing EXIF data"
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "the default template uses `-` and `_`"
+    }
+  ],
+  "note": "A strong, proportionate plan with safe rename mechanics (dry-run default, two-phase rename, undo log) and no listed trap hit. It is weaker on explicit timezone semantics, assumptions, acceptance criteria, and cost.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4260,
+    "thinking_tokens": 1896,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10731
+  },
+  "cost_usd": 0.0694355,
+  "latency_s": 40.15,
+  "raw_file": "raw/judge-9fac63871136.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

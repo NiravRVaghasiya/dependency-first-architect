@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "32911a8b53e3.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "32911a8b53e3",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 37,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Rollout: \"Shadow mode... Triage live... Fixes on allowlisted categories... Expansion\"",
+      "rationale": "Rollout phases order triage before fixes and the MVP builds sensible pieces, but the plan isn't organized substrate-upward with proven dependencies per phase; architecture is described all at once."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Minimal first build (MVP): GitHub App and webhook queue, triage stage, label-triggered fix pipeline... Draft PR output... Logging dashboard",
+      "rationale": "The MVP is an end-to-end slice, but it is bundled with many features, and the plan's Phase 1 is shadow mode (private), not a thin production path."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No irreversible decisions are listed with defaults and flip conditions; queue choice is 'SQS, Redis Streams, etc.' and model choices are left open."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Stage A: \"Security screen: If the issue looks like a vulnerability report, stop.\"",
+      "rationale": "Some ordering by risk exists (policy gate, least privilege, escalation before implementation) but no explicit widest-impact-first ordering within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Least privilege: A GitHub App with only issues and pull-requests write access plus contents write limited to its own branches.",
+      "rationale": "Security is strong but in a standalone section plus stage-level checks, not explicitly tied to each rollout phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "MVP: \"Logging dashboard\"; \"Every action is logged with its reasoning trace.\"",
+      "rationale": "Logging is in the MVP, but metrics are in a separate section and not specified per phase."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Sandboxed workers: Ephemeral containers holding a clone of the repo.",
+      "rationale": "Ephemeral sandboxes and AGENT.md build commands give some reproducibility, but there are no pinned versions, data, or environment reproducibility per phase."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Idempotency keys so retries never produce duplicate actions... state outside the LLM context so the agent can resume after a crash.",
+      "rationale": "Resilience is real (idempotency, crash resume, bounded attempts, flaky-test handling) but is architectural and not threaded through phases."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Budgets: Per-issue limits on tokens, wall-clock time, and attempts... Merging always needs human approval.",
+      "rationale": "Defenses, budgets and HITL are defined and the MVP includes them, but they sit in a later section, and the plan has no layered build order of retrieval → model → memory → orchestration → routing → feedback."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Out of scope at first: Merging without a human... Architectural changes",
+      "rationale": "Out-of-scope items and expansion are listed, but with few explicit pull-forward conditions beyond 'expand based on measured acceptance and revert rates'."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, detailed agent design with good safety content, but it is organized as a component spec rather than a dependency-ordered build plan, and it has no tradeoff gates.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1207,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 4992
+  },
+  "cost_usd": 0.024671,
+  "latency_s": 29.921,
+  "raw_file": "raw/judge-32911a8b53e3.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

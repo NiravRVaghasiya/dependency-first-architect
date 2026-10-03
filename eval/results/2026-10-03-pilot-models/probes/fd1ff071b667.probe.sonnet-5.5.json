@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "fd1ff071b667.probe.sonnet-5.5",
+  "blind_id": "fd1ff071b667",
+  "judge": "sonnet-5.5",
+  "order_index": 56,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.1,
+  "cues": [
+    "Does not actually produce a plan; it asks a clarifying question and lists generic options",
+    "No concrete steps, sequencing, or build phases, which a structured methodology would likely require",
+    "Generic bulleted menu of deliverables with bold labels, like a default assistant reply",
+    "No assumptions stated, milestones, risks, or verification criteria",
+    "Misreads 'order the build' as ordering a document or proposal, which suggests no systematic analysis of the request"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 227,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 783
+  },
+  "cost_usd": 0.0042355,
+  "latency_s": 24.692,
+  "raw_file": "raw/probe-fd1ff071b667.probe.sonnet-5.5.txt"
+}

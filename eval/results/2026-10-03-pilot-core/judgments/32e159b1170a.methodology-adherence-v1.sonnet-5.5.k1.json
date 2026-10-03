@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "32e159b1170a.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "32e159b1170a",
+  "blind_sha256": "1b0a7690edaf7bf607df8e9c734dd0bde6776be38edf53d8305a581e2388c471",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 386,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Storage format, comment anchors, version history, export | V1 (choice of merge algorithm) | decision + validation | specified",
+      "rationale": "Phases go merge core → trust/durability → scale → features → exposure, each with explicit dependencies and gates that must pass first."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "An internal user signs in, creates a document and types a line. A second browser session... sees the line appear. A reload shows the line was saved.",
+      "rationale": "Phase 0 is a real production end-to-end slice through all tiers with deploy, trace, alerts and rollback."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Yjs CRDT ... Flip condition: V1 fails, or a need appears for a single server-ordered edit history (audit) → OT",
+      "rationale": "Irreversible decisions are tabulated with reversibility class, default, assumption, validation and flip condition; missing inputs are flagged."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1: Merge core and data model (biggest rework if wrong) ... Phase 4: Collaboration features (leaf work)",
+      "rationale": "Widest-impact items (merge, storage, RLS, trust) come first; leaf features like presence are explicitly last, with ordering inside phases too."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0 | OIDC login, TLS, WebSocket origin check, short-lived WS tokens, secrets manager, allow-list flag",
+      "rationale": "Concrete security work appears in every phase from 0 through 5."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "End-to-end OpenTelemetry trace; ack-latency and save-failure alerts; content-free logs",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform, lockfiles, images pinned by digest, CI-only deploys",
+      "rationale": "Reproducibility has concrete entries in every phase (fuzz seeds, chaos as code, versioned load scripts, migration tests, canary release train)."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Rollback rehearsed; client auto-reconnect; health checks",
+      "rationale": "Resilience is concrete in each phase from 0 through 5, not just at the end."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A: no AI component.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Offline-first editing (days offline): pulled forward when product requires it. Yjs keeps this option open.",
+      "rationale": "A deferred list with specific pull-forward conditions for each item."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally complete plan that meets every rubric dimension with concrete, phase-level content.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1032,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9814
+  },
+  "cost_usd": 0.034863,
+  "latency_s": 21.445,
+  "raw_file": "raw/judge-32e159b1170a.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

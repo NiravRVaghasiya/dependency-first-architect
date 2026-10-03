@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "e8500402cef1.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "e8500402cef1",
+  "blind_sha256": "ea821d55bcc5dea6b2ce3bb61c912e32050f741d21174fcb413459244dd3e2fc",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 54,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Build vs buy: no third-party CI product fits the 50-service, custom-rollback, secret-injection scope without heavy modification; build is forced.",
+      "rationale": "Several errors: Vault transit \"encrypts secrets in transit\" misstated, Vault static auth for prod, \"dual-write\" for CI transition is incoherent, reverse-image pull rollback ignores schema state, webhook IP whitelist/static secret."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Ramp 40 services in waves of 5–10 (two per week, blitzing on Friday); each wave runs its pipeline on the new platform before the old pipeline is disabled.",
+      "rationale": "Covers main sequencing with pilot and waves, but claims build is forced with no justification, misses the service inventory, and the Phase 3 timeline with 40 services plus the 2-week cutover is loosely specified."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Platform runs on a single host ... Monolithic controller + remote runners; Phase 0 'stateless' controller yet also 'Phase 3 cutover: all 50 for 2 weeks'",
+      "rationale": "Recognizable design, but contradictions: Vault choice 'static team credentials' vs service-scoped policies, Phase 0 'production' vs dev, wave-based onboarding vs 'cutover of all 50' gate, single-node SPOF vs 99.5% SLO."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Inject a failure mid-rollback, verify the rollback succeeds and the old version is live",
+      "rationale": "Validation is tied to risks with early spike, pilot, and measurable gates, though thresholds are largely invented and lacks contract, supply chain, flaky tests checks."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "ASSUMPTION: developer velocity at 5–10 min feedback is standard",
+      "rationale": "Assumptions are labeled with revisit triggers and missing inputs, though some assertions (e.g. 'REQUIREMENT: stated by ops team', $500/month) are invented."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Canary rollback is automatic if error rate > baseline + 5% for 2 min; manual override is also possible.",
+      "rationale": "Covers rollback, Vault seal, platform SPOF, secrets redaction, but misses untrusted PRs, supply chain, flaky tests, DB migration failure modes, duplicates."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "on-call playbooks for common alerts (queue depth, Vault seal, artifact store full)",
+      "rationale": "Observability, GitOps rollback, runbooks and IaC exist but ownership is thin, 2 FTE for 50 services with self-hosted Vault is optimistic, and single-node controller."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Storage cost (artifacts, logs) | ≤ $500/month",
+      "rationale": "Only storage cost is budgeted; compute/runner cost, the dominant driver, is not estimated and the hosted vs self-hosted claim is unsupported."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Monolith vs services ... Reversibility R3: all 50 services adopt; schema baked into configs",
+      "rationale": "Decision table explicitly rates reversibility and schema spike validates the hardest-to-undo choice early, though build-forced and Vault lock-in are little examined."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Build vs buy: ... build is forced.",
+      "rationale": "Mostly proportionate phasing, but self-hosting Vault HA, canary via service mesh and a custom controller add unjustified complexity for the need."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Two-week spike (parallel to Phase 0): define the config schema on paper, code the validator, and test it against the actual build configs of 6 sampled services",
+      "rationale": "Ordered phases with concrete tasks and exit checks and fallback; some vagueness around the controller implementation."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "sampled across tech stacks: Node, Go, Python, Java ... Define the config schema (YAML) for a service pipeline"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Ramp 40 services in waves of 5–10 ... each wave runs its pipeline on the new platform before the old pipeline is disabled."
+    },
+    {
+      "id": "P3-03",
+      "status": 1,
+      "evidence": "Reverse-image pull (revert to the previous tagged image in the registry)"
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "HashiCorp Vault + static team credentials (no service-to-service yet)"
+    },
+    {
+      "id": "P3-05",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Implement traffic-split ... 5% of traffic, measure error rates and latency, expand to 25% then 100% or rollback."
+    },
+    {
+      "id": "P3-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Build a staging environment (mirror of dev; services run on dedicated cluster or namespace)."
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Pipeline latency (commit to feedback) | p95 < 5 min"
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Self-hosted runners on a single cluster (gated by single-node SPOF risk)"
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "Set up SLIs and burn-rate alerts: measure platform availability and pipeline success rate"
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "Capture audit logs: every secret read, every deployment, every rollback is logged with timestamp and operator"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Rollback: If V5 fails ... those services revert to the old pipeline; The old CI system is kept as a standby for 2 weeks"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Reverse-image pull (revert to the previous tagged image in the registry)"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "HashiCorp Vault + static team credentials (no service-to-service yet)"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "if one service's build fails, others are unaffected; no cascading failure"
+    },
+    {
+      "id": "P3-T5",
+      "present": true,
+      "evidence": "no third-party CI product fits the 50-service, custom-rollback, secret-injection scope without heavy modification; build is forced."
+    }
+  ],
+  "note": "A phased, pilot-first plan with good gates and reversibility tables, but it skips supply-chain security, immutable artifact promotion, contract testing, flaky tests and compute cost, and it leans toward building a custom controller.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2416,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 16587
+  },
+  "cost_usd": 0.0658087,
+  "latency_s": 29.903,
+  "raw_file": "raw/judge-e8500402cef1.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "390e00f5dc63.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "390e00f5dc63",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 30,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "It works offline and peer-to-peer, the server can be simple, and the libraries are mature.",
+      "rationale": "Mostly correct (Yjs, state vectors, relative positions, UndoManager), but \"server can be simple\" understates needs, and the plan omits that CRDT doesn't guarantee intent for rich-text conflicts, and \"CRDT garbage collection\" is glossed."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Scope for v1: rich text, live cursors, sharing, offline editing, version history. Leave tables, embeds and comments for later.",
+      "rationale": "Covers core needs with explicit deferrals, though Phase 10 comments contradicts the v1 deferral and large-doc handling is thin."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Alternatively, run several servers and share updates between them through Redis pub/sub.",
+      "rationale": "Mostly consistent, but scaling is deferred to phase 11 with two alternative routing options unresolved, comments deferred then scheduled, and Phase 1 builds a non-CRDT editor with its own undo later replaced."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "the fuzz tests pass across thousands of random runs, and the two side-by-side editors always end up the same.",
+      "rationale": "Risky convergence is tested early and gates are checkable, with load, offline and security tests, but some thresholds (500 ms, 2x peak) are invented and post-launch validation is thin."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Targets: maximum users per document, maximum document size, and latency (for example, under 100 ms on the same continent).",
+      "rationale": "Team size and stack are stated as choices and targets are deferred, but there is little on which assumptions would change the design, and the 4-month timeline is asserted."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Permissions bypassed over the socket | Server-side enforcement of every write (Phase 5)",
+      "rationale": "Risk table and tests cover divergence, log growth, permission bypass, oversized messages, and paste XSS, but revocation on open connections, poison updates, crash recovery and duplicates are not detailed."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "metrics for sync delay, connected clients, update throughput, compaction time and errors. Also distributed tracing and alerts.",
+      "rationale": "Observability, backups, feature-flag staged rollout exist but rollback, migrations, on-call ownership and protocol upgrades are not covered, and observability is left to the end."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Suggested team (about 4–6 people, about 4 months to v1)",
+      "rationale": "Only team cost is given; infrastructure cost drivers (storage, connections, memory, S3) and controls are essentially absent beyond limits and idle unloading."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Define the document schema: paragraphs, headings, lists, bold/italic, links.",
+      "rationale": "Phase 0 ADR and the log-based restore are good, but the schema is defined before the CRDT choice is bound, the persisted update format and schema versioning are not treated as one-way, and there are no exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Do this once the features work. If you design for it earlier, just make sure documents are kept separate from each other",
+      "rationale": "Mostly proportionate using off-the-shelf Yjs/Hocuspocus with optional items deferred, with minor extras such as a read-only fan-out tier, distributed tracing and a full dashboard."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Each phase ends with a check that must pass before the next phase starts.",
+      "rationale": "Phases are concrete with week ranges, gates and dependency graph, though it doesn't say what to do if the gates fail and some decisions are left open."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "Recommended: CRDT (for example Yjs, or Automerge). ... OT (as in Google Docs) needs a central server to decide the order of edits"
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Define the document schema: paragraphs, headings, lists, bold/italic, links."
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "Write convergence fuzz tests: random concurrent edits, delays and reordering, then check that all copies end up identical."
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "Make sure that when the server confirms an update, that update has been saved to disk."
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "Handle reconnection on the client with exponential backoff."
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Cache documents and pending updates locally in IndexedDB (y-indexeddb)."
+    },
+    {
+      "id": "P5-07",
+      "status": 1,
+      "evidence": "Check permissions when the WebSocket connects using a short-lived token. Reject writes from viewers on the server"
+    },
+    {
+      "id": "P5-08",
+      "status": 2,
+      "evidence": "Replace normal undo with per-user undo (Y.UndoManager) ... Restore a version by writing a new update"
+    },
+    {
+      "id": "P5-09",
+      "status": 2,
+      "evidence": "This data is temporary and is not saved."
+    },
+    {
+      "id": "P5-10",
+      "status": 1,
+      "evidence": "Phase 1: Single-user editor ... Phase 2: Local collaboration with no network (This is the most important phase)"
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "Rate limits, a maximum document size, and protection against oversized messages."
+    },
+    {
+      "id": "P5-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "CRDT library, fuzz tests in Phase 2"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Get editing right for one person before adding collaboration."
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "when the server confirms an update, that update has been saved to disk."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "It works offline and peer-to-peer, the server can be simple"
+    }
+  ],
+  "note": "Sound CRDT-first plan with early fuzz testing and concrete phases, but it is weak on cost, protocol/schema versioning, rich-text merge semantics and operations, and it starts with a single-user editor.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2259,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 10762
+  },
+  "cost_usd": 0.04968800000000001,
+  "latency_s": 28.489,
+  "raw_file": "raw/judge-390e00f5dc63.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "75d951529fe7.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "75d951529fe7",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 54,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "pushes only to `agent/*` branches (enforced by GitHub ruleset, not by the agent)",
+      "rationale": "Mechanisms (HMAC, X-GitHub-Delivery dedupe, SKIP LOCKED, installation tokens, fork-like secretless CI) are accurate; minor imprecision such as ruleset path restrictions vs. contents permission and untested claims of embedding-per-caller ACLs."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "When a maintainer opts in, it reproduces the issue, writes a fix in a sandbox, and opens a draft PR for human review.",
+      "rationale": "Covers triage and resolve with opt-in and explicit deferrals; some gaps on concurrent-human handling and codebase retrieval detail."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "GitHub remains the system of record for issues, PRs, and labels. The agent's database holds run state only.",
+      "rationale": "Clear data ownership and consistent application of executor/ruleset/kill switch; minor loose ends like 'Phase 1 unlocks' ordering with live labels in Phase 2."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "CI suite of ≥ 150 injection cases across all input channels, plus sandbox egress/secret-canary tests, plus red-team review",
+      "rationale": "Validation is tied to specific risks, run early (V0-V2 before exposure), with labeled provisional thresholds, stated sampling error, and canary/production tracking."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Assumed not until V1 passes... If the answer is no, the plan flips to a self-hosted or private-endpoint model (§3).",
+      "rationale": "Assumptions and unknowns are explicitly labeled with owners, sensitivities, and what changes if wrong."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Rollback: Kill switch. Labels and comments are removed by a bulk script keyed on the bot's authorship.",
+      "rationale": "Injection, exfiltration, runaway loops, poison messages, model fallback and sandbox residue are covered with detection and recovery; human collision, mid-run edits and comment-triggered retriggering are thin."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "The pipeline builds a pinned container image, with infrastructure as code. Rollback is redeploying the previous image.",
+      "rationale": "Deploy, rollback, alerts, kill switch and per-phase rollback are concrete for a small team; incident ownership and on-call are not explicit."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Triage ≤ $0.10 per issue; resolve ≤ $5 per run and ≤ 30 loop iterations",
+      "rationale": "Caps labeled as assumptions, cost per accepted PR vs maintainer time, routing as a lever; no quantitative run-cost estimate or sandbox/embedding cost."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: a trust boundary with org re-approval to change",
+      "rationale": "Every key decision carries a reversibility rating, validation, revisit trigger and exit path, with the one-way data-privacy decision gated early by V1."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "One webhook/worker service, one Postgres (also the queue), one sandbox runner",
+      "rationale": "Simple architecture with deferrals of multi-agent, fine-tuning and routing; the heavy process (eleven-ish tables, five V checks, AI-layer nine sublayers) is somewhat ceremonious."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Freeze the action schema and the tool-executor contract. Every write goes through an executor that enforces an allow-list",
+      "rationale": "Phased order justified by dependencies, concrete tasks, checkable exit criteria and fallback actions if validations fail."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Triage: labels and comments only. Resolve: only on a maintainer-applied `agent:resolve` label; ... draft PR only; the agent never merges or approves."
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "GitHub App with short-lived installation tokens scoped per repo; ... no admin, no secrets, no workflows"
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Every write goes through an executor that enforces an allow-list, validates arguments, and requires an approval token bound to the exact action"
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "Ephemeral gVisor/Firecracker sandbox per run: no secrets, no network except an allow-listed package mirror, CPU/mem/time limits"
+    },
+    {
+      "id": "P4-05",
+      "status": 1,
+      "evidence": "a fixed state machine (plan → reproduce → patch → run tests → self-review → open draft PR)"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Shadow run on ≥ 200 recent issues vs. maintainers' labels and priorities; Label agreement ≥ 0.80"
+    },
+    {
+      "id": "P4-07",
+      "status": 1,
+      "evidence": "maintainer outcomes (merged, edited, rejected) enter the eval set through review, never directly into prompts."
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "The bot ignores its own events, so it can't loop. A global **kill switch** (config flag) and an App suspend are the emergency stop."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "resolve ≤ $5 per run and ≤ 30 loop iterations; Cost per accepted PR vs. maintainer time saved"
+    },
+    {
+      "id": "P4-10",
+      "status": 1,
+      "evidence": "every PR traces to its run; Each run records image, model, prompt, and repo commit so it can be replayed"
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "Build the repo and issue-history index with the embedding model pinned to the index version."
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "dedupes on delivery ID, then enqueues the job; Resolve: only on a maintainer-applied `agent:resolve` label"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "the agent never merges or approves."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "CI on `agent/*` branches runs with no secrets and no deploy credentials, as for fork PRs"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "treats its text as data in a delimited untrusted block"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "accepted = merged with ≤ agreed edit size"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "hard wall-clock kill at 60 min; ≤ 30 loop iterations"
+    }
+  ],
+  "note": "Strong, security-first, phased plan with validation gates and explicit assumptions; weaker on codebase retrieval for resolve, human collision/claim handling and incident ownership.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2445,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 14574
+  },
+  "cost_usd": 0.06107800000000001,
+  "latency_s": 49.416,
+  "raw_file": "raw/judge-75d951529fe7.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

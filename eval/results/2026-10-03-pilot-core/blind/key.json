@@ -1,0 +1,2569 @@
+{
+  "schema": "dfa-eval/blind-key@1",
+  "salt": "252408ebb9510205",
+  "neutralize_terms_for": [
+    "engineering-quality-v1"
+  ],
+  "entries": [
+    {
+      "blind_id": "005271a6740e",
+      "gen_id": "P2.dfa-v1.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "30b3930e8d07d185b0486cf3e0b0095ebd5551c0fa511e00c18f905ed0b80d5e",
+      "replacements": 11,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "005ae017490c",
+      "gen_id": "P6.generic-control.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "b68f002e6b5e5c3cbcd8c797716b5120d3c0643b8cdcb50b6e215c3e3d04f5b6",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0334d7a90c94",
+      "gen_id": "P2.baseline.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "9a56fbcd24202e1ff04e39fbd0fbcc19e23671f240c772787ef3ac719fead682",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "03d78b37951f",
+      "gen_id": "P7.dfa.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "c59ad5a02d885e122453ad8949a73874df7d188d87d69e57681c5e44b5750af4",
+      "replacements": 10,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "044fe145f039",
+      "gen_id": "P5.baseline.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "a8c07c8db10382ac8d23dfb5fc58622b800367498b9c71c0fda04a346763a5cf",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "04c23650f8d5",
+      "gen_id": "P5.dfa.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "92a4044111b66aa36c66ceb4bcaa7f8a8dced5c6d4514bc6b2f056136e3d2fd2",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "04eb221dcdb4",
+      "gen_id": "P7.dfa-v1.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "32a02e83282cce5c118b259c2a849a7a0768a8c36784920185374dc8027c04d7",
+      "replacements": 9,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "0567f8385683",
+      "gen_id": "P1.generic-control.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "5f53a168789498ed37eae764a4d26dc4b1a259abbeec78ccb2029b410832d93b",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0655810d165b",
+      "gen_id": "P7.generic-control.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "c623f77c638faaf488a0aa0ad2969ecb71d56d5c253ccd14af98f07c0e1e207c",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "06836bcc96f2",
+      "gen_id": "P4.baseline.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "5e71b628e55948616b2b844cc87897c2f7e9fa72fc8ec725b7d4ea8847983ef7",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "098125386bb9",
+      "gen_id": "P4.dfa.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "a2ef061a7e720e46ab8f9f7d9d8ec07dff62498aed12e458855c9631a2a6e861",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0a5096b67515",
+      "gen_id": "P4.generic-control.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "9f4e125ab24e9c643623aabbc26c68ab28950b641cd4cb13519df3758beae15a",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0a6f3611dbb3",
+      "gen_id": "P6.generic-control.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "b68f002e6b5e5c3cbcd8c797716b5120d3c0643b8cdcb50b6e215c3e3d04f5b6",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0b2440d7f086",
+      "gen_id": "P4.dfa.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "538113404853d9cf3f23f0d94f17143da5ebfbff067b4154a65ee524260d8f50",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0b78c5c75913",
+      "gen_id": "P7.dfa.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "050ecdcc6f9664c39498b3a2ca3dfeea560ddf4811e6ba03f06637eee8c1136f",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0ba03dd7bcaa",
+      "gen_id": "P4.baseline.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "97453212479edebfcf57d2f297c7b18c93d9cc346d80bac21a7e1832261e95c2",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0bc53d03dd15",
+      "gen_id": "P1.dfa-v1.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "f9e5bd4cfee65797e4f60063866d6ec8f3f38b8429aaee8665846a39b71944a3",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "0cedf5be2ec2",
+      "gen_id": "P1.dfa-v1.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "d5bfb8f2319d066954e57cf434c9b18a341ea6f549b8e8e4dc6ae7aaba932b99",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "0d96cb1309b4",
+      "gen_id": "P1.generic-control.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "4afa83787a0567641ac34e9cffc6d85116cc03e12533d864395e94fafcbbe39d",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0e0d17c2277a",
+      "gen_id": "P7.dfa.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "6aff2b59e60e5be97e4ccbfadc29da5a4849062e15697946059d9e936c1bae90",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0f0fb9edd1c0",
+      "gen_id": "P7.dfa.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "ef2f81a232c3906e20b9ef629efbab8e119382cdb81a5faeac0d18b6126a4a15",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "0fa56924e876",
+      "gen_id": "P1.generic-control.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "ca655086015c73fdd1f911352d0523294876bec45505a9794268e7c4f50db07d",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "102ac83384c6",
+      "gen_id": "P1.dfa-v1.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "a311d1c92a01b74c5258e3eb900e7664d05cedd1a81038cd223ecf067d3280e3",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "118f14fb7310",
+      "gen_id": "P4.baseline.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "4ad854619696aad0fa57b4f6d6da22afa5774939c14a33bd9b3c0ca2ef5af766",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "12f70a8139a5",
+      "gen_id": "P3.generic-control.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "282671732f5567e34371e635ee695b6c9ca965e3f0fed65c8a5bf2ec065a6428",
+      "replacements": 2,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "13bcc48d9f64",
+      "gen_id": "P5.generic-control.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "262c122547ff8806bba57dc0d37908dbed06f33d5441910a4893467d6b1a3ee9",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "14fdec8fa50d",
+      "gen_id": "P1.dfa.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "2b3d4f508b62e14f301ab9626f30674e76a4d0bca5e9e6d920dbf164600d1fe9",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "153dba331918",
+      "gen_id": "P4.dfa-v1.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "e695438a126a4dd760bb2e3f7260e54e7cfb44ee1f68e18b82d1d7722432cd02",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "1658539e18c6",
+      "gen_id": "P6.generic-control.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "0d7131812636fba4f37f3ccb493b78a5c2de8ed310cbb3f61a13a7db0f3a2f37",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "16612c2c500d",
+      "gen_id": "P6.dfa-v1.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "b14ced65090377c66542361483e4c299d1bcecd58ea29ace22d1bb87e387452a",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "1857c6f36392",
+      "gen_id": "P2.dfa.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "5532aab0dab95cca3962d4e986ea843af4cbb8b1877b212c82c7131748f17942",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "18ccfa886b47",
+      "gen_id": "P1.dfa-v1.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "380493c196326036cfe72d7bba17c62843ac0a8d8eb5f31b76c0034bf18593af",
+      "replacements": 8,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "19aa76d5ec68",
+      "gen_id": "P2.baseline.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "d405da185f7d7dc91ce8251d7285b97af0dae1e3eacd351058dc9667bcb0ac4a",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "19b9c92e4384",
+      "gen_id": "P1.dfa.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "2685577d4befb245d17593971df9f680bdf9cc5d87519a3e01da04b06f6b1027",
+      "replacements": 10,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "1a6bc5364293",
+      "gen_id": "P6.baseline.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "085563c1d4c95ba548e56996fd91f41abea66ba5fbf0d386db53874e313bb500",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "1a842385cb63",
+      "gen_id": "P8.generic-control.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "4069f0aa07facd6ee70e23381d8a3314fd7260c99feb0ec6cde9f8bc0dc683b0",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "1b823e8478d6",
+      "gen_id": "P5.generic-control.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "69d1b8565c94d85883f620392864ab70abd05c40910be2e21933eb37a8254173",
+      "replacements": 1,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "1c4b0821fdaa",
+      "gen_id": "P4.generic-control.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "f3affe0854fcc3f874aae4de17c7ddd4befb7be0a338e5807fcdeb3a059135d6",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "1ebdded148ab",
+      "gen_id": "P6.baseline.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "47f847ac6e90c864e2b928a77d47788aedd37bd12d920578e9254bd7e70c960f",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "1fc93d873a93",
+      "gen_id": "P8.dfa.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "e437e00d97d58eb060b997f4ef1a61b3b17290ed36abb42efc4bb26c693548df",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "2017d7832088",
+      "gen_id": "P8.baseline.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "0129998369d77ffe63a4dff61ad44d7edd98ced9c496a9eb753a6152ef98d744",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "219b9aeae693",
+      "gen_id": "P1.baseline.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "ee1eb1e6026d1b9789baae359b3711246e5a701a7042c87a9a54d30351205700",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "21b0769b5f8f",
+      "gen_id": "P5.baseline.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "a8c07c8db10382ac8d23dfb5fc58622b800367498b9c71c0fda04a346763a5cf",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "21be52d282d7",
+      "gen_id": "P8.dfa-v1.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "b7b058264e280a36ec8a3dbe2cebf42e188dcc559861ea04bcf2e0d7b48363b0",
+      "replacements": 6,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "222189cb78ef",
+      "gen_id": "P2.baseline.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "9a56fbcd24202e1ff04e39fbd0fbcc19e23671f240c772787ef3ac719fead682",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "22acfbd92420",
+      "gen_id": "P6.dfa.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "2df18a27375118bd428cf6373a3865fe128cce4c5b1ff3c4e2a7b083486a6a3d",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "23f5598656e4",
+      "gen_id": "P3.generic-control.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "d7f7797843c7c0518c64fc8f5b4a67ec23289f5974e87fc90e6143411b3f8b38",
+      "replacements": 6,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "2519f538447b",
+      "gen_id": "P1.baseline.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "20cc6b39fe36749e8db0a5e798e4136de7cc93e5837e67a374ca8e8a8e65ed1e",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "259293bb558e",
+      "gen_id": "P2.baseline.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "8992285013ce10ee2b34cd2a24de60ff2c5f4e672a9aa83a86c2bd799c4a6158",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "25b621d0778c",
+      "gen_id": "P7.baseline.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "f8ccb59a72398409b893f3a3c3dade1cf8fc37c8680124daa9148db9de8fd0e3",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "273e68a22bd3",
+      "gen_id": "P6.generic-control.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "f09732ca3596406847c6ebef2dfafa69eebe492d52c5775724d69c75dff24e62",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "27ee560b4259",
+      "gen_id": "P6.generic-control.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "f09732ca3596406847c6ebef2dfafa69eebe492d52c5775724d69c75dff24e62",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "289c2382e4e0",
+      "gen_id": "P1.baseline.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "babd2015e4a34ea4fe1473591c8a7d3d45ebb7aab7c796e6f1b1695141bb5191",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "28cf2ddd1405",
+      "gen_id": "P6.dfa.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "5216f3609ea9c65eaa6166ef39976031f995be13c2f80e1ac7ee5f41ff9ddc89",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "28f3da9547b3",
+      "gen_id": "P7.baseline.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "bb9bad35afbee0bc1c9dcf0f6d4468177ac3082f938f12cca5d37168a4ab11a2",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "29f4bc37c2ba",
+      "gen_id": "P6.dfa.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "336e5da8c17f8a2e4495711aae5b2e28be68e3a34f1a7afe35d5bc439cf5919a",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "2a102640f951",
+      "gen_id": "P1.dfa-v1.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "2d5e587e439f69090553577fa9bb379156dc2610585b13b0a1f5cf151c1f0557",
+      "replacements": 9,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "2c9c1ba8919a",
+      "gen_id": "P5.generic-control.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "a803a461df85be4f71370c7125bd16efee51cd81b10c9065e485098669f9155c",
+      "replacements": 1,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "2d8016747046",
+      "gen_id": "P3.dfa-v1.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "acf823f2c1aab92f186fac47368e1a31e70c65d271a70d204b01aea3e61ece01",
+      "replacements": 7,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "2e78761e52da",
+      "gen_id": "P7.generic-control.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "b5f7f5324b5bc79ee90051deb58241346710ff8e1563d5c6df92a4da9f369ff0",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "2f03d6b92dc3",
+      "gen_id": "P8.generic-control.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "9c5ab20e161f404076d2512d2d68c2d2372ac0d9032c9c769b679707f1c7cc83",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "30166ea2b207",
+      "gen_id": "P8.dfa.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "d05407dacc006aa7a90d0bcd3a06a7d2f98ad429625a853fa262d3a31da3f8a5",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "326823ee85dc",
+      "gen_id": "P8.generic-control.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "4069f0aa07facd6ee70e23381d8a3314fd7260c99feb0ec6cde9f8bc0dc683b0",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "327018029bf7",
+      "gen_id": "P1.baseline.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "6405f227155fff79a1de0c5722bbf9e64445f1a14663d7f0069526a822f711e8",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "32963a99683f",
+      "gen_id": "P4.dfa-v1.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "3ed2c3b1a6cdd611988c267bac265591624fe7748dbe009cbbb0893cbf45ede6",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "32bc2ba26723",
+      "gen_id": "P3.generic-control.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "7407401d95a4b0e219d0984dafc96487e1656ab9727043a2c6dacb61bd8f33d6",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "32e159b1170a",
+      "gen_id": "P5.dfa.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "1b0a7690edaf7bf607df8e9c734dd0bde6776be38edf53d8305a581e2388c471",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "32e2d835c7ce",
+      "gen_id": "P6.baseline.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "de93cea3cfa85913ff5de63cac1786b9b846ade2a630da9f018c13f891895285",
+      "replacements": 1,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "32e5654ad5e2",
+      "gen_id": "P7.baseline.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "f8ccb59a72398409b893f3a3c3dade1cf8fc37c8680124daa9148db9de8fd0e3",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "34911e4424e7",
+      "gen_id": "P2.dfa-v1.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "70150960202a1fab800f7d882eef8b6d9a1adf07793b7be93b176dcb03ea2803",
+      "replacements": 6,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "34dc1e627b3e",
+      "gen_id": "P1.baseline.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "20cc6b39fe36749e8db0a5e798e4136de7cc93e5837e67a374ca8e8a8e65ed1e",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "36bfc6dff867",
+      "gen_id": "P1.dfa-v1.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "454b959839c0b471eaa8afbf925222dff89ec37cfb6748a3c52009af80b23046",
+      "replacements": 8,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "37d888ff8716",
+      "gen_id": "P6.baseline.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "ed27b79645b426ebc5adf28112e9bf4495f406e79cc0306f233a50c6b3a6d015",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "382806b723ac",
+      "gen_id": "P3.generic-control.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "26d8438455ad46cfd4d646d7c5c5f70e990e0b9bef41399fa6ca6542f100ed12",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "38af9b6f51ec",
+      "gen_id": "P3.generic-control.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "891f9ad5ae18e843fc5d1b2b3e87fc6ece669b2790357d1bda724f9b320274eb",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "38ef90173207",
+      "gen_id": "P4.dfa.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "236df3611bd641c2bf0317128bbbf430d17ec72af281b19575032a458e4382c3",
+      "replacements": 13,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "396e7b9d43df",
+      "gen_id": "P8.generic-control.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "7e442e4fd97735270bdf4bcfd5a7e890dd50e76ee70eb5963f50b4d031ecf424",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "399611752385",
+      "gen_id": "P6.baseline.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "085563c1d4c95ba548e56996fd91f41abea66ba5fbf0d386db53874e313bb500",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3a29d0414705",
+      "gen_id": "P4.dfa.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "5b1380448e70cff4d5382e26a4004a717e79de5b2a7daa22338b4db6b7ccbc30",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3ad0d603eae2",
+      "gen_id": "P4.baseline.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "4ad854619696aad0fa57b4f6d6da22afa5774939c14a33bd9b3c0ca2ef5af766",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3ae5b5c6ccd3",
+      "gen_id": "P2.baseline.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "d405da185f7d7dc91ce8251d7285b97af0dae1e3eacd351058dc9667bcb0ac4a",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3bbf121c1620",
+      "gen_id": "P7.baseline.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "10e4c8f87c57369c523d9ad4be5a87d91b7e1241ccf43c05e23c24d649bba566",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3d6c68248af5",
+      "gen_id": "P3.baseline.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "2f1081aa0c90f5d016614b8f37ee1014217540511a3b2e28e8e5479c86660acc",
+      "replacements": 1,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3dc9ab8d85c3",
+      "gen_id": "P3.generic-control.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "6616fe16cff01ae0c362632cdea9365bbfa4a3d804acb3277f0b1029e12ec4e4",
+      "replacements": 5,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3e4d1b5c6d4b",
+      "gen_id": "P3.dfa.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "25e2a6f00428bfa98c28a596236a69fa33c0c8845ac327b235eeaede71c0db97",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3f4555e6f1ca",
+      "gen_id": "P6.dfa.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "b672add706784b7ac54f003c7b793540132b639b315ee007d52106e30d416339",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "3f5ef0254298",
+      "gen_id": "P7.baseline.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "10e4c8f87c57369c523d9ad4be5a87d91b7e1241ccf43c05e23c24d649bba566",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "4011f79d7a49",
+      "gen_id": "P3.baseline.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "3224bc5fcbf5c092a909788870282ec1cff151e9936a20c87687ec08cdb3aced",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "42ca851e6437",
+      "gen_id": "P7.baseline.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "7fa1a1bb45419251d01a93e4cab3efb7e5ebaadcdf9d295a4a863d2a18dcdf8b",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "4494585bfe65",
+      "gen_id": "P8.dfa-v1.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "8a38217c39aa61681228eb1e727037c04a52f126699b19d6daedb9452f59d4f9",
+      "replacements": 7,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "44f33515f507",
+      "gen_id": "P3.baseline.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "01573081a91d9c2479ec6aac9c3b543b1023b277c124ad7415c02d328355dbf5",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "463b06ff24a6",
+      "gen_id": "P2.dfa.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "175a9dd9ff1d9a3e13d91bfb6f2ad529103ba9ad62882f666eaf025405491aaf",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "46c88ce0cf02",
+      "gen_id": "P3.dfa.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "d19675053235948f72eef279021e93b1985f85e620c202eb47058de07a9c7d63",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "4906db5e1b3b",
+      "gen_id": "P3.baseline.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "ea515d1b63d2054a835cd23d26b6d0523e77d28f7e71fb9d8631ee80e0c01c5a",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "4bb7ae9a032e",
+      "gen_id": "P1.baseline.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "ee1eb1e6026d1b9789baae359b3711246e5a701a7042c87a9a54d30351205700",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "4c134e8bc12c",
+      "gen_id": "P2.dfa-v1.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "aa19bc27c7da6d083a60c58b8683e62d2defb9e7be80d75068f249fa0d8eca2f",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "4c7b87ab1d6f",
+      "gen_id": "P7.dfa-v1.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "64c776e92e57231ca6792d6880bf037f3738a2c19634de72bfb5f099d90418f8",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "4ca5b52fddee",
+      "gen_id": "P5.dfa.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "1b589534b9c14e1735c41dacbed662df403185b7b2b66e8af48038496b64445e",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "4dbc1895a26b",
+      "gen_id": "P3.dfa.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "72ff6d38bd3fffe10355244f149decb9d6fa1a4c9c6c6e30a5cfef4fe3bf15fe",
+      "replacements": 10,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "4dfd31fe4b82",
+      "gen_id": "P6.baseline.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "4752a2a22f61d79570ab02a9bd11c6fdf7eb08ed03e01aaea57dee0e5bd7cc42",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "4f4413d6f4f2",
+      "gen_id": "P5.generic-control.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "8a4b4c412400fd3648f94a39bd7c673e423379dfbe5c800eddd9b5bfc12447a1",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "4fb3a1c87aba",
+      "gen_id": "P1.dfa.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "23417cdc473f8858120f348fce83187be7affb2dfbf4f3eb01eb6b9d8ed7bced",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "51ca0e88ee2e",
+      "gen_id": "P5.dfa-v1.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "f14fc703e7b533abe76880927274413f11c16414ee1320a8655c96c3b991cb36",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "53851b25a767",
+      "gen_id": "P8.dfa.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "69e3de42708c909e1af30aad181ae55f84958f86113c75e0ed8802e19c32f3e5",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "53e1509201a2",
+      "gen_id": "P4.generic-control.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "783523fa2a4d6f339e6e65784c4e7580834a70b940bbc676b61feb70330a2861",
+      "replacements": 1,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5456afe27122",
+      "gen_id": "P6.dfa-v1.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "ebbd4b3eaf69c0105955a5d2ffe0c5473bb16971b7968dfec377c19de8610747",
+      "replacements": 7,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "556bd76fa6d2",
+      "gen_id": "P2.baseline.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "5180c0b8d8992db60ffaddaebdf72783183d50551ca77a9cf156c57eb7530d39",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "561d45930d45",
+      "gen_id": "P4.dfa-v1.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "522f618ba121853778cb70f190f54c6022049b9c0a7ead8eb34c67556d74d785",
+      "replacements": 9,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "5652bb2dc67d",
+      "gen_id": "P3.dfa.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "8184602eee9dc9c4c421d9e1b3676b289b7058b620f50b5d330832a0978b83d3",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "57c9966bbfae",
+      "gen_id": "P1.dfa.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "abf1272b2241769d14c267de98c35fd3aedbd81f9884789df9d582ed0155370f",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5922facdb873",
+      "gen_id": "P3.generic-control.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "bb96414f5ca3b57c4b6794d09426509fd328ae791b6e7f3b7f182323f01060c7",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5a7c007b9665",
+      "gen_id": "P2.dfa.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "8ad9e9bc3f413989fa90877d4b5df1a8e91079ddc98356946d343bc1e9916597",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5b1d454fa5fd",
+      "gen_id": "P4.generic-control.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "bcb273fa53819dd4fb64ccc52fbda6b50c551cfda0c34505ad5a57a0756a4639",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5c25fa5c212e",
+      "gen_id": "P4.generic-control.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "e55997957d8cbdccc5d15c3968a761a812e855079f629487e71868c50949c430",
+      "replacements": 2,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5c7a7d7f3bc4",
+      "gen_id": "P2.baseline.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "38a6becd4acada7135580581043ffc91c9aa9ba87bd68e573d197f69c3d95696",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5cb36b17c052",
+      "gen_id": "P7.generic-control.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "af722dfea571464112735885ee62690c3939c9bb15c21358ab85bb1c243bd71f",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "5db4d66faf24",
+      "gen_id": "P4.dfa.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "02a1c7717c73a9228112209925f4acb9a51ecff115c196fcbd1103f313ea2142",
+      "replacements": 10,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "6000ff99eb6f",
+      "gen_id": "P2.generic-control.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "2b8f99b15ae8ae4599fce819b87cdcbc17e32b58292fa9f09b739dbb80bd2003",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "610c531839b1",
+      "gen_id": "P6.dfa.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "5f0d7cd2f3fb0bec9485e614b1f4c01c476dd88dc8fee5f851f774c3064f3405",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "63fbfcfe20a5",
+      "gen_id": "P7.baseline.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "bb9bad35afbee0bc1c9dcf0f6d4468177ac3082f938f12cca5d37168a4ab11a2",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "6790d0906aef",
+      "gen_id": "P3.dfa-v1.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "40875cbaa11185bc8f0ca4ae0c5d812fa608a6ec8b36ba528cfaca3460d04753",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "6bb394b615fa",
+      "gen_id": "P8.dfa.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "b5abe64aedf964ea66434bc9831fe20467a4ce64160648705877ea20b8217a09",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "6ca88cc041f8",
+      "gen_id": "P1.dfa.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "e2d1b08aeb81fb201871ff154b344bd7ba6cc6181eed6ef9c91c4f1c331682bf",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "6d99fb4efc5e",
+      "gen_id": "P7.generic-control.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "af722dfea571464112735885ee62690c3939c9bb15c21358ab85bb1c243bd71f",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "71576677a037",
+      "gen_id": "P8.dfa.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "7a40f664ae5320bd78543959d3b59e445c6203e08adfa161432f6b31199dfea0",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "71a6eab69c7f",
+      "gen_id": "P5.baseline.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "6ab40db46b1718c96afb2d27e0238bc11a4503e284d17dfae0cffd7cf8ecd05f",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "72ddbd1d61d6",
+      "gen_id": "P5.baseline.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "f2c83fbe401591695f142cf388aea3cc0d8b00b7cb573a67287cc3ec833374fa",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "730c2ade890f",
+      "gen_id": "P8.dfa.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "25a51ab804479cf10b0ae0219ada0269ee0e3925ab686b43aff747e3b5f00981",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "7324186af616",
+      "gen_id": "P2.dfa.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "56189db5f29b9a157cb5b1852a72554a2ab1b489206cbfffacbcafcdcf0bee89",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "74fe3b1a544c",
+      "gen_id": "P5.dfa-v1.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "186efc7e2412ce07d2938bd6bca227758f042c84803431edfaa36c97c86e92ff",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "754395614bd5",
+      "gen_id": "P3.dfa.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "d635a0e6d8896b6da5ca0a19a384e50b2b363688ced63197e0035d7fbc5fda13",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "75ef09a532a1",
+      "gen_id": "P5.dfa-v1.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "de9a604478ecaa41e95ade199c44087b07561b24d73c46e6bca80bd8d77028ff",
+      "replacements": 7,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "76035e994dac",
+      "gen_id": "P6.dfa-v1.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "8ae5d8f5d929671836e182badb969cb117c43edd7a4dcbc2ff0e1d084344b78a",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "7687d9b1e351",
+      "gen_id": "P4.dfa-v1.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "87ecaf2befc36f248260fa34e475e2180f2ab28d8fc24a85d4709fba7dba9c6c",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "778df07b83e3",
+      "gen_id": "P3.baseline.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "533bb8b7fc3ef5ad365961b553adeb785b3649ece5afb30420d012775629c6f9",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "77a0236df4e7",
+      "gen_id": "P3.generic-control.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "4434de887c3e67615b171d1d510ec49213f3dfeea2283d4372ea53524b3ffe19",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "7875afc7359e",
+      "gen_id": "P8.baseline.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "1498387294cae4a7222c0f31f070f75413626c3984b5f959268078558a8f4ccf",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "7910e04aad15",
+      "gen_id": "P8.dfa.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "6eb694439af04058e270927bb1ed4cbbe02aae848947939fd1773ef350150c9c",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "7a3e61031343",
+      "gen_id": "P8.dfa-v1.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "8ac035b876a744744af97f5690401d9f310caad482ecb53ba9ed1840c5283363",
+      "replacements": 8,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "7b054269d575",
+      "gen_id": "P5.dfa-v1.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "a535738262a1be25406ca2b1d1c7a89743b4a9949ace7d1da6d9ea805e816a9a",
+      "replacements": 10,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "7b74919af783",
+      "gen_id": "P2.dfa-v1.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "765f7deba57aeb12ba482458290723283457a57d89d81e67dac4b0f85468b823",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "7c432c14d925",
+      "gen_id": "P6.dfa-v1.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "a43ca3082f085acd6a1c70d548780669492ca01ddd8e914e4e10a2de2829fa91",
+      "replacements": 11,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "7c593f6d7bcc",
+      "gen_id": "P1.dfa.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "ef72fc455e8620cef5b684630aeb13749ba10c93073bd5f839bd9bc777fede21",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "7eb41f45cf2b",
+      "gen_id": "P1.generic-control.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "a0d1b86d171d41d04b152ae9e9c9f4c910b01c7f3cc525bc7866170b811dc286",
+      "replacements": 1,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "806c2330951a",
+      "gen_id": "P2.generic-control.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "454ca11395cea91b1378ae80cc4ecf589cc72b6e8e21a3b834f7419e0aee2c49",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "815bae4abc26",
+      "gen_id": "P3.dfa-v1.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "23e9087d7395cd5d881db9821538304b132e3d5c5a9563e763bb23a275c2f486",
+      "replacements": 9,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "81a4051da0ef",
+      "gen_id": "P6.dfa.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "c5d043e7fcc1a3cea6704ae0ce8d3fd8cc2f119c0c850cf578494ab0d9c5b032",
+      "replacements": 6,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "82482f2d7b6d",
+      "gen_id": "P3.baseline.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "3a87108a38f6290972ffd9805042527742598f863bea1aa95610280b1286ea82",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "824d3fd2b37e",
+      "gen_id": "P8.dfa-v1.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "36d2591f9ff37f23dfb94972aff2ea7cf8e69e75f6f7d0ed35d834840dbafb39",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "842394137131",
+      "gen_id": "P3.dfa-v1.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "754edd6c65e5a63ea32c8d2e0b88ca348427a2fc62bdde79947adb8e0c626c56",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "87538bb90069",
+      "gen_id": "P3.dfa-v1.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "092b508ac5446986971118d8c3fc7d77bf0de2e153d8373de4e2fdcf89749697",
+      "replacements": 7,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "8764edb268c2",
+      "gen_id": "P7.dfa-v1.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "5a405eaaf4060ee381b7ac22cd5ab6c9dbf12231a4c61c670593bc7ed905130b",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "87a3870903b9",
+      "gen_id": "P8.dfa-v1.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "ba7200a6e390396cad5125ab48cef56ac4f331f4e9135ff05ddd4962b44b0980",
+      "replacements": 8,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "8860ced8aaba",
+      "gen_id": "P4.dfa.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "22973e78fed6a089800421a4c8868b3db36f11f7eca522103563041a9b957525",
+      "replacements": 10,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "88d875a84691",
+      "gen_id": "P8.baseline.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "c4cbe2215ea63967971dbf9b8234f2d5ac2f574e0a6d2eaa2556cc6fb90415b1",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "893aa91e1252",
+      "gen_id": "P8.baseline.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "ead2b798233e9769df362ae66be4dc407071e092d43e9660d42394066af118f9",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8995a465e425",
+      "gen_id": "P5.dfa-v1.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "f926f165de6bca172e90ea9e91859f0e77abcda94d05728b0baa5f5f5b6b82bc",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "89a2d7463a01",
+      "gen_id": "P1.dfa.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "58f768282cc5ffeab2bc68f88bcc573e194b377ff03f4357ccd2c91649465753",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8aac1f39e955",
+      "gen_id": "P1.baseline.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "c1cb29e871a3570ce45625168c2c1fd2670bc908f8eb5c2c0910ad361ccab5db",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8b0d04ba9721",
+      "gen_id": "P7.generic-control.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "aa5db59d4475c6139304e2c4ed6c07ff8e7562eed018311dbcaa5ba5164cd451",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8be8127976c1",
+      "gen_id": "P7.dfa-v1.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "3f6665dbbdcb59bbde92dbf6cd319130bdea0258a3d80573e99d53c76a7c6e2d",
+      "replacements": 8,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "8bfc5417d98d",
+      "gen_id": "P5.baseline.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "f72695c313eeabde4bae36da4e3deb0af09713ca850fc099827fa6faa960add8",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8c33ada65eb3",
+      "gen_id": "P2.dfa-v1.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "1af754126ca3d39f725209d6a5b04248bd0dec4d680b430653fd3341d295e352",
+      "replacements": 13,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "8d1b7144e7fa",
+      "gen_id": "P3.dfa-v1.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "071594c2a9b7f66638b1ea9d6084b3f5c8451630cbf4a1a1d9e7700a6788a636",
+      "replacements": 7,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "8db7694c7af0",
+      "gen_id": "P3.dfa-v1.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "3e098c1af1e92502e36b51b3a960c220eb3c3167155f2836c77a81ff05a63a88",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "8dce1cfb5c69",
+      "gen_id": "P7.baseline.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "bd0fb24f156bc450812cca1c5e19fe734918e0ccc317737ef0d3ade0d396db55",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8e345b6d1fd6",
+      "gen_id": "P5.dfa.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "f90116eee77bad9665ad9bc197de059628ac21dc8b67de8523ba2b1fde55fe2b",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8f4550c9a2e0",
+      "gen_id": "P2.dfa.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "b3e0a6846a3fd5b53f2eb6e9de7c9c389088901808b291b118972b78dc66c4a5",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "8f59350397cc",
+      "gen_id": "P2.generic-control.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "31f3fe93b64c45b2f82932cf921dc76ffec9f64ab29ca9b1b8a72d25cbc395a0",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "917eb2b0ebe9",
+      "gen_id": "P6.dfa-v1.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "6a7e7c38038e8df72d0999d7818eb79f60faba81603d4faa00ba6c0c94646815",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "92a508efd6a9",
+      "gen_id": "P3.dfa.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "b580e6194aca65415688b47ec1dbbeddf8a77421d294c84e7b5733430c13d299",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "940cfbfa2280",
+      "gen_id": "P2.dfa.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "ac67e5682370739a131ab5791a574b9c537d5f0ba04cf32a5969620b9dd06d3c",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "965578b55167",
+      "gen_id": "P3.generic-control.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "4434de887c3e67615b171d1d510ec49213f3dfeea2283d4372ea53524b3ffe19",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9680034ba3b8",
+      "gen_id": "P3.generic-control.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "313acb240965dd8a23373c943fb403d0329632d23841140ce9d5426b0a3d5dbe",
+      "replacements": 2,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "96a965c9ca64",
+      "gen_id": "P6.baseline.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "2f5124ce8f232052c163daf4cdb69889254dedeb4df3bb61dfa41d0861088729",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "97ab47729f63",
+      "gen_id": "P5.generic-control.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "4ed52907b40e05c4a2f3900517a8c8f5494d46f262871b501d1493029ae8f164",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9805de165834",
+      "gen_id": "P5.dfa.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "9fa96360b2a8ee1b5c9cb3c2d3dacb76e87a079b34f75e03713949bcabf1b01d",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9871cec03b7b",
+      "gen_id": "P3.dfa-v1.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "9efa0c6ad8227356946f546cda0b4aa8cb0c45320b22644853f44b56e6236fc7",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "98b508e38149",
+      "gen_id": "P4.dfa-v1.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "a400be6c6f677ed2d6a605e65987482b159be919d99ab5b75b42bf15db2e4208",
+      "replacements": 9,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "98e4bcb2d78e",
+      "gen_id": "P7.dfa.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "380a56d96ef440a993a9b838b3955565b55c4f9aa38d1d5933cb4f80b359c460",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "995c8b1aaa15",
+      "gen_id": "P8.dfa-v1.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "5f9b94f2aaad1a24c9c304b2932d2e12e37aa5c5dece5d2e9add423ed55ebf49",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "99dea7834757",
+      "gen_id": "P5.baseline.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "305dcbb50382c3267323491d347df2eb032e9de641445a4dc40797016eba62e6",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9a06a6a54f1f",
+      "gen_id": "P6.dfa-v1.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "2e7850266189b07c27ffc69c7adc78524dd4d2808e8779f6a1023e99db033132",
+      "replacements": 8,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "9b3cf42fbc30",
+      "gen_id": "P2.dfa.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "8b9bfd57e19a018c140faedfd3e88aa788644fe39c6f216782a669270cba11bf",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9b628afd1392",
+      "gen_id": "P1.baseline.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "6405f227155fff79a1de0c5722bbf9e64445f1a14663d7f0069526a822f711e8",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9b6ac4324f59",
+      "gen_id": "P6.baseline.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "4752a2a22f61d79570ab02a9bd11c6fdf7eb08ed03e01aaea57dee0e5bd7cc42",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9c184abebc5e",
+      "gen_id": "P7.dfa-v1.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "7eb628b384cc41c00bb6f174f6fe0d9904b34276b470fca9949c68721737eb79",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "9d3f7c47bd5d",
+      "gen_id": "P2.dfa-v1.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "e513f52022226fe9e6f7abee423696a849ca899e9a1da80d8bebbfa7db96aa26",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "9d5f2be9cc1b",
+      "gen_id": "P8.dfa-v1.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "3fdc68dd41be0eb222cf7530d3aa1a69df7ea94b62fb269fc6cfbe76543f0e8a",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "9df9f0d283f9",
+      "gen_id": "P4.generic-control.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "edb6a8c98f8893f6b83c3ba059312fab2f1778eb8a5176f012e72a1ca3013c00",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9e1c10b517ce",
+      "gen_id": "P7.generic-control.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "b5f7f5324b5bc79ee90051deb58241346710ff8e1563d5c6df92a4da9f369ff0",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9f798e35dd26",
+      "gen_id": "P2.generic-control.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "454ca11395cea91b1378ae80cc4ecf589cc72b6e8e21a3b834f7419e0aee2c49",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9f8e2c30a0b9",
+      "gen_id": "P8.baseline.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "1498387294cae4a7222c0f31f070f75413626c3984b5f959268078558a8f4ccf",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9fac63871136",
+      "gen_id": "P7.baseline.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "bd0fb24f156bc450812cca1c5e19fe734918e0ccc317737ef0d3ade0d396db55",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "9fe982cf191e",
+      "gen_id": "P7.dfa.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "c3f23e9f2e42cfdd49dd0a122e20cf99a0bfd3952c6e645d1151c3e472d4b688",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a15b7a95e8c4",
+      "gen_id": "P3.dfa-v1.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "9c87a960956b7871bffe9638a994b5f0976305d84448e970344a9f5644cdfae2",
+      "replacements": 14,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "a2a3efee6567",
+      "gen_id": "P4.dfa.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "a5f9340666cf475dcaabdb7673d8a7c7351bf0f793b0e7ef7e3c406baebe7a34",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a2f7561b5ebf",
+      "gen_id": "P6.generic-control.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "0d7131812636fba4f37f3ccb493b78a5c2de8ed310cbb3f61a13a7db0f3a2f37",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a3afdb2791f5",
+      "gen_id": "P8.generic-control.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "7e442e4fd97735270bdf4bcfd5a7e890dd50e76ee70eb5963f50b4d031ecf424",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a40d66ef7d52",
+      "gen_id": "P5.dfa-v1.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "66a679aecb893e1d8c25368af0de8aa00585f4b3dad16348f76a9a6e9fb360ae",
+      "replacements": 8,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "a49c105b4468",
+      "gen_id": "P6.generic-control.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "9558fbcce55efc8a58ef941569b56355e3cc871daf142301ad34a1d60e08e412",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a4cd5ee227af",
+      "gen_id": "P1.generic-control.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "5f53a168789498ed37eae764a4d26dc4b1a259abbeec78ccb2029b410832d93b",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a932d88aeb03",
+      "gen_id": "P6.baseline.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "ed27b79645b426ebc5adf28112e9bf4495f406e79cc0306f233a50c6b3a6d015",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "a93a4a978c3e",
+      "gen_id": "P4.baseline.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "974a1c5481440e1e4b7c027afca4c9886c10c829923f9fab2abb4e42e107725f",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "aa2c17c486ad",
+      "gen_id": "P6.dfa-v1.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "5a7681f6e2f4ec4c921f8821fa1b8cc9133bdee940b935f29d89e7badadff6d8",
+      "replacements": 10,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "aaec3964c6c8",
+      "gen_id": "P4.dfa-v1.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "666bf4d3cf002f6f99c208bf00be458e038f6dc5fcca1c7e58ee1e583b0c9073",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "ab786c57263a",
+      "gen_id": "P3.baseline.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "3224bc5fcbf5c092a909788870282ec1cff151e9936a20c87687ec08cdb3aced",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ac56ef064578",
+      "gen_id": "P2.dfa-v1.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "4a382eba664e4b4365924d1b32e6539b68172905ed27515fae7e8384a2bf8447",
+      "replacements": 6,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "ac9836ab93b3",
+      "gen_id": "P4.generic-control.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "edb6a8c98f8893f6b83c3ba059312fab2f1778eb8a5176f012e72a1ca3013c00",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ad58e0e0c912",
+      "gen_id": "P5.dfa.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "47f01bcbb088031b3de944eca75e37f1697f072e9dd2a345a9735ea21a19bbd5",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "adea17f212c2",
+      "gen_id": "P6.baseline.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "47f847ac6e90c864e2b928a77d47788aedd37bd12d920578e9254bd7e70c960f",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ae5700a230cd",
+      "gen_id": "P1.generic-control.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "18ec15b39392557464c4dcfb5bc0e1ac28c9b29a3a4b7c79d8f34833359a7fb2",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ae90a10f2116",
+      "gen_id": "P4.dfa.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "a4b2744dada3a1fc83205dc0c878a67db8ca7de1db632cff3c8797b9a1e9d958",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "aeb86e5f51f5",
+      "gen_id": "P4.dfa-v1.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "b7f97c67d7524038e28ab6922cb4b270a22377e0b1c2da607582a1e84a2b3973",
+      "replacements": 12,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "af251a438376",
+      "gen_id": "P8.generic-control.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "c59426cd423ef490a7477a4c8245a4e3ccc8fbf904dcca6d5f8161551c3e85ec",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "b1321820beb6",
+      "gen_id": "P3.dfa.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "066b2716779ac1166c9c91e5bf5c3c0cfde766b8150761b33856d9638cfa88e6",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "b32eb621d7c9",
+      "gen_id": "P2.dfa.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "c4805505306ab7231a0959a90712d3bac884e09ba4de76c4ff93a2c5eaea99c0",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "b3671966ec3f",
+      "gen_id": "P8.dfa.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "e381cf4fa28aac0eeda8f1bf9e8e5c005340b8ded3e513c4cd872bef9eb2441c",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "b438f23b1253",
+      "gen_id": "P5.dfa.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "0ec5681c5ba60cc5322ae18225ba48afe04fbd99e820fc5ff4567c67419f11a7",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "b448cd84d421",
+      "gen_id": "P5.generic-control.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "d0e2b4a9a6dcecf01e31d960522a56fd9c234f1dba6bd3935114a852bbe35ac1",
+      "replacements": 1,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "b51a6b19847f",
+      "gen_id": "P5.baseline.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "f72695c313eeabde4bae36da4e3deb0af09713ca850fc099827fa6faa960add8",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "b58b08dc528e",
+      "gen_id": "P2.dfa.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "57a98027bfd4d8bc04afee6a977b1fb911a55203210c14b0cfba81cf937d2798",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "b5d6428e4ce9",
+      "gen_id": "P1.baseline.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "babd2015e4a34ea4fe1473591c8a7d3d45ebb7aab7c796e6f1b1695141bb5191",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "b72d0acb086a",
+      "gen_id": "P1.dfa-v1.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "b8e6471950b8ab9b1be8849c513d5fea956f0d9cd2ef57833c9595e4874ac643",
+      "replacements": 9,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "b7bbb9a302b8",
+      "gen_id": "P2.generic-control.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "9af3a0f19ab1c699eaf13fb3ab56ae7592518e366defd4bc342aea3362854858",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "b963efe7dff2",
+      "gen_id": "P6.dfa.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "dcf76219dd4007c468e6d2fc58d868b4021267ad7ba1016b652cb0d3f3f56932",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "bad8f5090270",
+      "gen_id": "P7.dfa-v1.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "d3dc83f184db31005a43e85af7315652c9ef9ae3de9578218ab2899e6070cb4c",
+      "replacements": 7,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "bba18d403d17",
+      "gen_id": "P4.dfa.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "050681c546e8369d9c2a44336e4a3644fa3d616685b78af3c4d63b164836ebf8",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "bbbf4f81cc07",
+      "gen_id": "P1.dfa.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "e317e46b97cc7304c04845b15cdfd2ff642d0856522a6997858f84cc672a7c1e",
+      "replacements": 10,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "be674b168bcc",
+      "gen_id": "P2.generic-control.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "f57a4d43549643b18853ce14f8726ea88152099cbee965eb9769d272e40095ca",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "be88dadcde44",
+      "gen_id": "P1.generic-control.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "18ec15b39392557464c4dcfb5bc0e1ac28c9b29a3a4b7c79d8f34833359a7fb2",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "be98f49ff73d",
+      "gen_id": "P4.baseline.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "974a1c5481440e1e4b7c027afca4c9886c10c829923f9fab2abb4e42e107725f",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "bf11e0ed0934",
+      "gen_id": "P8.dfa.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "7196e481d502c956105dcc311d623b2aac12cdde10362d55c42c6f622c9d384c",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "c0914a90d06a",
+      "gen_id": "P2.generic-control.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "d96f938404f5459bfdf96b8f9c03569a4e6035e1a011f2a68577c3e9317937fb",
+      "replacements": 1,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "c1815aa9bb3f",
+      "gen_id": "P7.dfa.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "4ab53cd60640dbd377827d475d0983e8bd9e0528551f56226e534fa26909bc78",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "c1ada5508a8a",
+      "gen_id": "P7.generic-control.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "c623f77c638faaf488a0aa0ad2969ecb71d56d5c253ccd14af98f07c0e1e207c",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "c56ab8127799",
+      "gen_id": "P2.generic-control.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "2b8f99b15ae8ae4599fce819b87cdcbc17e32b58292fa9f09b739dbb80bd2003",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "c58bd5137d6b",
+      "gen_id": "P7.dfa-v1.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "544e24b2ac934005f0cf9e978c010d521fff3c0c3a52819e54faf8d7ddd46448",
+      "replacements": 7,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "c6e2805a3552",
+      "gen_id": "P3.baseline.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "01573081a91d9c2479ec6aac9c3b543b1023b277c124ad7415c02d328355dbf5",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "c90355d7e3ec",
+      "gen_id": "P7.generic-control.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "aa5db59d4475c6139304e2c4ed6c07ff8e7562eed018311dbcaa5ba5164cd451",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "c916efee92ef",
+      "gen_id": "P7.baseline.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "7fa1a1bb45419251d01a93e4cab3efb7e5ebaadcdf9d295a4a863d2a18dcdf8b",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "c951056e2833",
+      "gen_id": "P5.dfa-v1.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "c410a8528ad5f42df967f12494772c9ecf3c11cc21f8dacb0b17642c469b22a6",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "ca5904728177",
+      "gen_id": "P7.generic-control.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "e4b36723088e488a06cae2724c2140f4c4ed235016d67761c1d804c2363035d5",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ca93f8486efe",
+      "gen_id": "P2.baseline.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "0bd0178ee2cf41df8d06f97bcce23a620c3557691bd08a2c1a9e1357efa9bed9",
+      "replacements": 1,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "cbf0af150eee",
+      "gen_id": "P8.dfa.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "3191f982dc51f5aee268c260322e0adc685b4ff732a06d91f549d92c6582581d",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ccabe53d1d0a",
+      "gen_id": "P2.dfa-v1.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "2296f0587641d99061e80588b4c4c031372774cfbe1a7e35c199f3488614a132",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "ccdd69b3e8ba",
+      "gen_id": "P8.dfa-v1.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "ce3f09a210f44b67f0044834c208238f0fcf0b166f2e0ce3b4c826b9054719a6",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "cec4b451191c",
+      "gen_id": "P5.dfa-v1.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "34979c7d987231e88ac316f841b44a0f7f0cd710d4bd0ed6529610b83070ff5a",
+      "replacements": 8,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "cf82eed96187",
+      "gen_id": "P4.dfa.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "c934354fc23c831c453d4b70fa762e3cf8d6d83ca20d429a165f433bfb28ce43",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "cfb88823e0a1",
+      "gen_id": "P3.dfa-v1.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "15e8338015feb06e6815b2ee032aaa04ce62fd3baf38ded862e766ad64657b75",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "d0db11792657",
+      "gen_id": "P8.generic-control.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "c59426cd423ef490a7477a4c8245a4e3ccc8fbf904dcca6d5f8161551c3e85ec",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "d13372184597",
+      "gen_id": "P4.generic-control.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "f3affe0854fcc3f874aae4de17c7ddd4befb7be0a338e5807fcdeb3a059135d6",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "d1453562468a",
+      "gen_id": "P7.dfa-v1.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "e54c0c68522d9b86ae2e74d98e19230bbd48384dc704314de87189d3bc5d2185",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "d3224950d003",
+      "gen_id": "P6.dfa.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "ce716ec35d48d46dd0584b72cc7c5179eb434cfe8aa2de448db5b54a23dab758",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "d36827d06c9c",
+      "gen_id": "P2.dfa.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "c329ac50d5563ccd95b153f98f715b9e681a77ab118f2e7e3bf39966e17d6596",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "d591a55a02ce",
+      "gen_id": "P5.dfa-v1.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "c38808794fbcc4fede7402a75d8b9440a6fea971c1ed93d60d944a57d8332b6f",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "d66655d62674",
+      "gen_id": "P8.baseline.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "ead2b798233e9769df362ae66be4dc407071e092d43e9660d42394066af118f9",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "d7cdfc638916",
+      "gen_id": "P4.baseline.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "97453212479edebfcf57d2f297c7b18c93d9cc346d80bac21a7e1832261e95c2",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "d84a622c0251",
+      "gen_id": "P1.baseline.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "c1cb29e871a3570ce45625168c2c1fd2670bc908f8eb5c2c0910ad361ccab5db",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "d85351d45a31",
+      "gen_id": "P2.baseline.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "5180c0b8d8992db60ffaddaebdf72783183d50551ca77a9cf156c57eb7530d39",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "d9304b409726",
+      "gen_id": "P7.generic-control.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "e4b36723088e488a06cae2724c2140f4c4ed235016d67761c1d804c2363035d5",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "d992a29048d5",
+      "gen_id": "P6.dfa.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "65c2bc3e00137a95f9e3f74d54be20065da6d2709b15b7784b1e0a74f00fff82",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "da3e054ae8d6",
+      "gen_id": "P1.dfa-v1.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "4fff4b3450a045472f1f91e70d55d1298b98dc29efae73b091f7e4111ffe4de3",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "dabc87e0f1d5",
+      "gen_id": "P1.generic-control.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "ca655086015c73fdd1f911352d0523294876bec45505a9794268e7c4f50db07d",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "db5afc232044",
+      "gen_id": "P8.generic-control.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "a3629d2704789c4e6d93a099945bdc1349097844934c30d2af8739db9be87179",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "dc4f98dd0d12",
+      "gen_id": "P3.dfa.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "51b8e2d4dd7ec19a031d0a3720e884832612e7a8388b0aa31cf57f01a4287af5",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "dc50bba87acc",
+      "gen_id": "P2.dfa-v1.opus-5.5.r01",
+      "variant": "plain",
+      "sha256": "482dae5be5b7788ab6a68381972df05a436e7e76a4347479150ffecd538d4240",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "dc95bcf273ea",
+      "gen_id": "P6.generic-control.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "f76e33bb65496c442cfdec7ffa306a19dfd7e22eae0fdee1e0a085e9d01a5a24",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ddadbb4f10eb",
+      "gen_id": "P8.baseline.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "c4cbe2215ea63967971dbf9b8234f2d5ac2f574e0a6d2eaa2556cc6fb90415b1",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ddc175a4be50",
+      "gen_id": "P4.baseline.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "4e8a6dda6f17d45b0a6a8ef92135cfb052d76f78ddc226b176f763620c9abda9",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ddf58cd0d61b",
+      "gen_id": "P1.dfa-v1.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "d115f668df1e9708eec367d6249b604d59ebd1f15c27d1bf984b182bcd18782e",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "de29fa6af3ed",
+      "gen_id": "P6.dfa-v1.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "fe281cecfad58d9156ac411a161b06733e86bbd85dbe080c5d9c20b9cc0340ae",
+      "replacements": 6,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "deaddca4ad99",
+      "gen_id": "P3.baseline.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "c382589354e8e4d03a4abc2eb176a6b2b4127437a57ca70fa5959f41907bc62d",
+      "replacements": 1,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "df4070778bd6",
+      "gen_id": "P2.generic-control.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "f57a4d43549643b18853ce14f8726ea88152099cbee965eb9769d272e40095ca",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "e03dabd8e7e2",
+      "gen_id": "P8.baseline.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "bda92257b3d1daeb2a83095c3205df1017c4661e231dfcd0c730f3b0773812ff",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "e0467deb7edc",
+      "gen_id": "P6.generic-control.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "9558fbcce55efc8a58ef941569b56355e3cc871daf142301ad34a1d60e08e412",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "e27be501d82b",
+      "gen_id": "P4.baseline.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "5e71b628e55948616b2b844cc87897c2f7e9fa72fc8ec725b7d4ea8847983ef7",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "e30f90eb85af",
+      "gen_id": "P2.baseline.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "38a6becd4acada7135580581043ffc91c9aa9ba87bd68e573d197f69c3d95696",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "e3a846fe6195",
+      "gen_id": "P7.dfa.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "e72df4f802e38244c60b75120379edc36ce7a5b048515d1aa7e3b30b2b3505aa",
+      "replacements": 10,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "e403ecd26ddf",
+      "gen_id": "P2.dfa-v1.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "152c901e5b4de42e6f4be8c0a9e259443bde3e51398e1874a223cd7b5bca8542",
+      "replacements": 6,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "e4dac6ab336c",
+      "gen_id": "P4.generic-control.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "9f4e125ab24e9c643623aabbc26c68ab28950b641cd4cb13519df3758beae15a",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "e5463ada76bc",
+      "gen_id": "P5.baseline.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "6ab40db46b1718c96afb2d27e0238bc11a4503e284d17dfae0cffd7cf8ecd05f",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "e5cac5b47deb",
+      "gen_id": "P4.dfa-v1.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "accbaf46b4b07fe64f9a0dc7d820de22b4dd97fd40065a4755f1d2cdf9d8a31a",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "e69e1167634e",
+      "gen_id": "P5.generic-control.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "d652526b30d9f80d9fbd6cb39c95d1e28bea03f48b42c7a7942cefe8a58951e3",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "e7249279d5f2",
+      "gen_id": "P4.dfa-v1.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "9f036f605974151094677b76ece7a17f616bc9b5d348379aedc2629ca54889ab",
+      "replacements": 7,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "e7419d0d7294",
+      "gen_id": "P4.dfa-v1.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "b80ebe4927bfcee5d66752f8286d9ad6fe3fa2e57ea10027504eeacfe54894da",
+      "replacements": 7,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "e75ee3a5e1b7",
+      "gen_id": "P8.generic-control.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "a3629d2704789c4e6d93a099945bdc1349097844934c30d2af8739db9be87179",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "e788e13698a4",
+      "gen_id": "P8.baseline.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "bda92257b3d1daeb2a83095c3205df1017c4661e231dfcd0c730f3b0773812ff",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "e85be612f83a",
+      "gen_id": "P5.generic-control.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "ea097e115d62c236410715e26a91064fd3f8115eccb0cf00519217a5244fcbe2",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "e9fb23909538",
+      "gen_id": "P6.dfa-v1.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "1f515ecfca7dc2a44a648d17f400bf118657e37891c24b6045d75d5ca86fbbb8",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "ec527cf3377e",
+      "gen_id": "P1.generic-control.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "4a878189057ae3cfa0764697a7adb18b02e264514f1727478eaa4d4de8ba6b61",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ec7ce9c897db",
+      "gen_id": "P4.baseline.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "4e8a6dda6f17d45b0a6a8ef92135cfb052d76f78ddc226b176f763620c9abda9",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "eda7c3a043ad",
+      "gen_id": "P7.dfa-v1.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "9a81fec6a42a5451219fdc355542c15251ee34a42371d6600c1802a883766759",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "ee240b24da51",
+      "gen_id": "P1.generic-control.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "74dada6cb6b780dcaacb641ada6faa6e802d7baeecc7e8b24f3394bd53c471b8",
+      "replacements": 1,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "eee0fbaee76a",
+      "gen_id": "P1.dfa.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "e7c862aafe49d4ca375c2531e5101df77f5a20df933eca2dc3329dec034af2df",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "ef0bb2d82eca",
+      "gen_id": "P4.generic-control.opus-5.5.r02",
+      "variant": "plain",
+      "sha256": "b32e5a0f1f9433877932f78f571dcd6ecb7d8e7bb1a034117faf657a51419f13",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f0531e8339ae",
+      "gen_id": "P3.dfa.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "2f837fe2135462089e19d350968b3f2e74278a3aa0a781c41f6e9c8a0f12dfdd",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f07ded4c99fa",
+      "gen_id": "P5.generic-control.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "d652526b30d9f80d9fbd6cb39c95d1e28bea03f48b42c7a7942cefe8a58951e3",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f13fb4575532",
+      "gen_id": "P5.baseline.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "305dcbb50382c3267323491d347df2eb032e9de641445a4dc40797016eba62e6",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f1c2f18d212d",
+      "gen_id": "P5.dfa-v1.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "8ed54cd648b946778303b0f6a154f0ac7695c97a0ffd2c9fd4d3de2dd5602052",
+      "replacements": 8,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "f26b964328c3",
+      "gen_id": "P8.generic-control.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "49dfd6210fc0ff526857d7db83bc13c50e69dd09b1524db25d06e91982318e38",
+      "replacements": 1,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f3a6092c7da3",
+      "gen_id": "P1.dfa.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "a4cdf42e279bd8f9ff054c7b1e903fa84c2459d185674776a35ebc3372e63099",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f3ae66c6dc5f",
+      "gen_id": "P7.dfa.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "ad156f08f34603c7dc1bed67ce0dcfc585d878f854b4e669a22d7b96af30ed28",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f460a7f609cd",
+      "gen_id": "P6.generic-control.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "f76e33bb65496c442cfdec7ffa306a19dfd7e22eae0fdee1e0a085e9d01a5a24",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f4dde373b2dd",
+      "gen_id": "P5.dfa.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "4f357f129bea642ae5d34da652877202734f63a4cb61c4ece9c54963030e227b",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f716ccc23c2d",
+      "gen_id": "P5.generic-control.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "262c122547ff8806bba57dc0d37908dbed06f33d5441910a4893467d6b1a3ee9",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f7a48caa0e10",
+      "gen_id": "P1.dfa-v1.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "f4ca9feb6178777bf28317a79d4a29788b487de3ca234900f8a31c484f9b2d3c",
+      "replacements": 9,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "f7c6e069a59c",
+      "gen_id": "P5.dfa.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "06e7d90ebbd465001621eb0a2015664af6d00dee9ba63d27a5fb5fee8d2013b8",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f8405e48d46e",
+      "gen_id": "P8.dfa-v1.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "0a68fe34c3b3d32a3a483c0b6547d2b177ceca2b4e41639e5f489e8ca4cf2a41",
+      "replacements": 0,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "f8d97bc78699",
+      "gen_id": "P5.baseline.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "f2c83fbe401591695f142cf388aea3cc0d8b00b7cb573a67287cc3ec833374fa",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "f934afc27269",
+      "gen_id": "P7.dfa.opus-5.5.r03",
+      "variant": "plain",
+      "sha256": "50e688a9719e694ad3c63a3d861bdc6bf808b43f67552eb5e644d7569af2e258",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "fb1f662333b3",
+      "gen_id": "P6.dfa.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "34fc5264c36a3f79dac3423d94fc53e10bf190790febf6f528d7c1cb0bd353f8",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "fb23f441f762",
+      "gen_id": "P5.dfa.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "2a930ee5b729caa8529fe395b9d87ef4e20774199e4d3d992eefeec61cf2ca42",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "fbb1946f8245",
+      "gen_id": "P3.baseline.opus-5.5.r03",
+      "variant": "neutralized",
+      "sha256": "d420638ce9bcc6ed1a74e6249830473986acef950f2bd2c674c7d9ec33837b92",
+      "replacements": 2,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "fc79acb18849",
+      "gen_id": "P7.dfa-v1.opus-5.5.r02",
+      "variant": "neutralized",
+      "sha256": "1ed32d33520d85baaa1c333f94f7d2472ab1cf259f48f0698829299f95d9fb67",
+      "replacements": 9,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "fc936b5bcb3e",
+      "gen_id": "P2.generic-control.opus-5.5.r04",
+      "variant": "plain",
+      "sha256": "31f3fe93b64c45b2f82932cf921dc76ffec9f64ab29ca9b1b8a72d25cbc395a0",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "fd3e81c8edab",
+      "gen_id": "P8.dfa-v1.opus-5.5.r04",
+      "variant": "neutralized",
+      "sha256": "db09beb4ff47207c9d9cf2f48c698ddafa1bf6c8f96d14235dde24f6b7a11623",
+      "replacements": 7,
+      "self_score_removed": true
+    },
+    {
+      "blind_id": "fda27ac722fe",
+      "gen_id": "P8.baseline.opus-5.5.r01",
+      "variant": "neutralized",
+      "sha256": "0129998369d77ffe63a4dff61ad44d7edd98ced9c496a9eb753a6152ef98d744",
+      "replacements": 0,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "fec361d053b8",
+      "gen_id": "P3.dfa.opus-5.5.r05",
+      "variant": "neutralized",
+      "sha256": "4760a3ad3393b50ef18014dfd482a726fcbe46d9857511b7fa645373ad5b7cc8",
+      "replacements": 9,
+      "self_score_removed": false
+    },
+    {
+      "blind_id": "fed8e995f56d",
+      "gen_id": "P6.dfa-v1.opus-5.5.r05",
+      "variant": "plain",
+      "sha256": "c66675290ef0fc43a31ea1713d6620a4653003b1ba8a0501b31c2022fece9d25",
+      "replacements": 0,
+      "self_score_removed": true
+    }
+  ]
+}

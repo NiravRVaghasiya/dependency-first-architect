@@ -1,0 +1,173 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0e0d17c2277a.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "0e0d17c2277a",
+  "blind_sha256": "6aff2b59e60e5be97e4ccbfadc29da5a4849062e15697946059d9e936c1bae90",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 229,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "renames use each OS's no-replace call: `renameat2(RENAME_NOREPLACE)` on Linux, `renamex_np(RENAME_EXCL)` on macOS, `MoveFileExW` without `REPLACE_EXISTING` on Windows",
+      "rationale": "The no-replace primitives and the oracle approach are correct, and support on exFAT is treated as an assumption to test. The timezone statement is thin, and the fallback tag order is absent."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "renames each photo (plus its sidecar files) ... It shows the plan before applying it, and every applied run can be undone.",
+      "rationale": "It covers dry-run, undo, sidecars, collisions and the missing-date policy, and defers video, timezone and mtime fallback with triggers. It leaves out the DateTimeDigitized/DateTime fallback and does not say how swap or chained renames are handled."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "The unit is a **file group** sharing one stem ... The journal is JSONL with `schema_version` and, per group, the original path, new path and SHA-256",
+      "rationale": "Responsibilities, journal ownership and phase dependencies are consistent. A small tension: hashing every file sits oddly with the 'only headers are read' throughput budget."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Property-based tests (Hypothesis library) covering same-second bursts, existing targets and names differing only in case. A `kill -9` mid-run, then undo/resume.",
+      "rationale": "Validation is tied to the riskiest failures (overwrite, date accuracy, undo), uses an oracle, is run per filesystem, and is sequenced early. Some thresholds are arbitrary, though labelled as assumptions, and there is little post-release monitoring."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "*Assumed: repeated use, where dry-run, undo and sidecar pairing are worth having.* If that's wrong, stop here and use ExifTool.",
+      "rationale": "Assumptions are explicit and labelled, with what would change if each is wrong and how it will be confirmed."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Write each journal entry and flush it to disk (`fsync`) *before* each rename, so an interrupted run can always be undone.",
+      "rationale": "It covers overwrite, crash, concurrent runs, stale plans, symlinks, malformed EXIF, zero dates and case-insensitive collisions. It misses chained or swapped renames and the mixed-timezone sort problem is only deferred."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Yank the pre-release, then reinstall the previous version with `pipx install photo-rename==<prev>`.",
+      "rationale": "Release, rollback, run IDs, exit codes and summaries are concrete and suit a single developer. Ownership of user support after release is thin."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Small build: one developer, no outside service, no money, no regulated data.",
+      "rationale": "It covers people and compute cost and a build-vs-buy argument against ExifTool. There is little on CI cost for the filesystem matrix."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R2: planner, journal and undo all build on it, and changing it breaks old journals",
+      "rationale": "It labels reversibility, freezes the journal schema with a version field, hides the reader behind an interface with a fallback backend, and gives an exit path for the filesystem support risk."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "CI then installs it with `pipx` on Windows, macOS and Linux runners ... Trusted publishing with PyPI attestations",
+      "rationale": "The core is a single CLI with no extras. The release pipeline, filesystem images on 3 OSes, rc testers and attestations are heavy for a small personal rename tool."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Write each journal entry and flush it to disk (`fsync`) *before* each rename ... Widen exposure in steps, each only after the previous one passes",
+      "rationale": "Phases are ordered by risk and dependency, each with checkable exit criteria, specific decisions and fallbacks if validation fails."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 1,
+      "evidence": "`DateTimeOriginal`, with `SubSecTimeOriginal` used only to order photos taken in the same second."
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "Missing date: skip the file and report why. There's no fallback to file modification time by default."
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "Collisions get deterministic `_1`, `_2` suffixes, ordered by `SubSecTimeOriginal` and then by original name."
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "prints each proposed `old → new` name, writes `plan.jsonl`"
+    },
+    {
+      "id": "P7-05",
+      "status": 1,
+      "evidence": "Make it idempotent: a file already named correctly is skipped."
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "Add `undo journal.jsonl`."
+    },
+    {
+      "id": "P7-07",
+      "status": 1,
+      "evidence": "Local time is used as recorded, with no timezone conversion."
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "photo, `.xmp`, `.aae`, RAW+JPEG pair, Live Photo `.MOV`"
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "`YYYY-MM-DD_HH-MM-SS[_n].<original ext>`. `--format` accepts strftime patterns but rejects characters Windows doesn't allow."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Never overwrite. ... Renames use each OS's no-replace call"
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "`DateTimeOriginal`, with `SubSecTimeOriginal` used only to order photos"
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "No services. Python plus one metadata library"
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "Read-only. Paths are passed as data, never through a shell."
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "`YYYY-MM-DD_HH-MM-SS[_n].<original ext>`"
+    }
+  ],
+  "note": "This is a strong, safety-first plan with careful validation and reversibility reasoning. Its weaknesses are the thin date-tag fallback and timezone handling, no handling of chained renames, and release machinery that is heavy for a small CLI.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 3944,
+    "thinking_tokens": 1616,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 13754
+  },
+  "cost_usd": 0.073833,
+  "latency_s": 35.772,
+  "raw_file": "raw/judge-0e0d17c2277a.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

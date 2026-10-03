@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f3a6092c7da3.engineering-quality-v1.fable-5.k1",
+  "blind_id": "f3a6092c7da3",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 189,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "hit@5 ≥ 0.90 (ASSUMPTION; ±4 points of noise at n=200); 0 internal or draft passages returned",
+      "rationale": "Technical claims (vendor no-retention terms, EU AI Act Art. 50(1), Moffatt v. Air Canada, eval statistics, pgvector trade-offs) are accurate and precisely stated, with only a trivial BM25-on-Postgres imprecision of no design consequence."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "answers customer questions only from published help-center articles, cites its sources, and hands off to a human",
+      "rationale": "Solves exactly the stated problem, resolves scope ambiguities (account actions, internal docs, locales) explicitly with reasons, and is clearly buildable by the assumed 2–4 engineer team."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The CMS is the source of truth. The index catches up in the background",
+      "rationale": "Clear data ownership, consistent decisions honored everywhere (versions tied across prompt/model/index, redaction applied at every boundary, fallback reply uniform), with no internal contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "An LLM judge is calibrated to expert labels for catching regressions, but V3 passes only on expert review.",
+      "rationale": "V0–V5 target the specific risks with checkable thresholds explicitly labeled as assumptions, the riskiest assumptions (grounding, privacy boundary) gate exposure, and validation continues in production via canary, drift tracking and scheduled red-teams."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "I assume only published, public articles. If internal-only or plan-specific articles are included: access control at retrieval time becomes a security dependency",
+      "rationale": "Every load-bearing assumption is marked ASSUMPTION/UNKNOWN/BASELINE with an owner, a confirmation path, and an explicit statement of what changes if it is wrong."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Feedback enters only through review (blocks poisoning); scheduled red-team; retention deletion verified",
+      "rationale": "Covers the hard domain failures—wrong policy statements, PII leakage, injection via planted documents, feedback poisoning, stale/withdrawn content, vendor outage, runaway cost—each with concrete detection, containment and recovery; only trivia like ticket-creation idempotency is unaddressed."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Rollback means turning the flag off and redeploying the previous image, and it is rehearsed once.",
+      "rationale": "Deployment, rehearsed rollback, domain-meaningful SLIs (decline rate, citation failures, ingestion lag, cost per session), on-call, kill switch and daily review are all specified and sized against an explicit operational-complexity budget."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Cost per resolved conversation below a threshold set from human cost per ticket",
+      "rationale": "Identifies inference as the dominant driver, imposes hard caps and a daily spend limit, measures baselines rather than inventing figures, and grounds the build-vs-buy and model-tier trade-offs in cost per resolution."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: personal data sent to a vendor can't be recalled",
+      "rationale": "Decisions are explicitly classified by reversibility, the one-way ones (data to vendor, answer policy, disclosure) are validated before exposure, and exit paths (swappable model interface, index versions, vendor fallback) are concrete."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "A single retrieve-then-generate chain, nothing more.",
+      "rationale": "Deliberately minimal (one service, pgvector not a dedicated vector DB, no routing or multi-agent machinery) while keeping every essential, with a justified deferral list as the growth path."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "An injected model-endpoint failure (bad API key) fires an alert, and the widget shows the fallback reply.",
+      "rationale": "Dependency-justified phase ordering, a concrete end-to-end first slice, ordered task lists, checkable exit criteria per phase, and explicit 'if it fails' branches mean a team could start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "Webhook updates, fast removal of unpublished articles, nightly reconcile against CMS article counts"
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Chunk schema carries article ID, version, locale, URL, visibility and updated-at from day one"
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "≥ 200 answerable real questions, ≥ 100 the docs can't answer, ≥ 50 high-risk policy questions"
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "every claim must cite an article the system actually retrieved; otherwise decline and hand off"
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "Handoff ticket with the redacted transcript and its citations"
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "Instructions kept separate from user and retrieved text; link allow-list in the renderer; moderation; no tools besides the handoff ticket"
+    },
+    {
+      "id": "P1-07",
+      "status": 2,
+      "evidence": "Only published, public articles; visibility is also filtered at query time."
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "Emails, phones, card numbers, addresses and order IDs are redacted before the model call and before logging"
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Answer-only. The only write is a ticket the user starts, which the server builds"
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "thumbs-down answers and handoffs go to support review. Reviewed cases join the question set (versioned), and doc gaps go to the content team"
+    },
+    {
+      "id": "P1-11",
+      "status": 2,
+      "evidence": "≤ 6k input / 600 output tokens per turn; ≤ 2 model calls per turn; ≤ 20 turns per session; daily spend cap"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "every claim must cite an article the system actually retrieved; otherwise decline and hand off"
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "access control at retrieval time becomes a security dependency before exposure"
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Prompt + RAG ... Webhook updates, fast removal of unpublished articles, nightly reconcile"
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Eval harness in CI ... V3 passes only on expert review"
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "A single retrieve-then-generate chain, nothing more."
+    }
+  ],
+  "note": "Near-exemplary: a deliberately minimal RAG design with grounding and privacy gates before any exposure, labeled assumptions throughout, and all five domain traps explicitly recognized and avoided.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 9569,
+    "thinking_tokens": 7054,
+    "cache_read_input_tokens": 923,
+    "cache_creation_input_tokens": 16239
+  },
+  "cost_usd": 0.6823805000000001,
+  "latency_s": 133.687,
+  "raw_file": "raw/judge-f3a6092c7da3.engineering-quality-v1.fable-5.k1.txt"
+}

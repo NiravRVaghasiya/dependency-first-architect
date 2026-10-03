@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "d992a29048d5.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "d992a29048d5",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 83,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Native log-based replication (for example SQL Server distributed availability groups or log shipping)",
+      "rationale": "Mechanisms are largely accurate (single primary, fencing, reverse replication, UTC/DST risk), but the claim of RPO 0 across zones and the use of DAGs for reverse replication after cutover are not deeply examined, and a brief write pause with 'clients retrying' is somewhat optimistic."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "\"No downtime\" allows a short write pause. It means reads never stop and writes may pause for a few seconds",
+      "rationale": "Interprets the ambiguous requirement sensibly, flags it for sign-off, covers the core needs, and explicitly defers out-of-scope items with reasons."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Exactly one writable database at all times: on-premises until the switch, cloud after. Replication runs one way.",
+      "rationale": "Single write authority, fencing, and rollback are applied consistently across decisions, phases, validation and exceptions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "≥ 2 consecutive full rehearsals with synthetic bookings during the switch. Fencing test. Reverse switch.",
+      "rationale": "Each validation is tied to a specific risk with measurable thresholds labeled as assumptions, risky items are rehearsed before commitment, and there are post-switch SLO and reconciliation checks."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Each one says what changes if it is false.",
+      "rationale": "Assumptions are explicit, labeled (BASELINE/ASSUMPTION/UNKNOWN), ranked by plan impact, with revisit triggers and confirmation owners."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Worst failure: two databases both accepting writes at the switch, or replication losing writes.",
+      "rationale": "Covers split brain, replication loss, DST, missed consumers, zone and circuit failure, and queued HL7, but adversarial input, cloud-outage clinical downtime detail and duplicate HL7 handling are thinner."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Switch dashboard: write rate, reverse lag, HL7 counts, errors",
+      "rationale": "Deploy, rollback, monitoring, runbooks, and sign-off owners are concrete; on-call and incident response ownership and access admin are thinner."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Reserved-capacity purchase | 30 days of real cost data",
+      "rationale": "Cost is mostly UNKNOWN with right-sizing and deferred reservations; dual-environment duration is capped, but no drivers (egress, DB licensing, circuits) or ranges are estimated."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: once writes exist only in the cloud, rolling back can lose them",
+      "rationale": "Decisions are classed R2/R3 with defaults, revisit triggers, exit paths, a named point of no return, and early validation of the hardest ones."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Lift the app tier as-is onto VMs ... No re-architecture.",
+      "rationale": "Scope is well constrained and deferrals are justified, but the process ceremony (R-levels, many tables, V0-V7, CAB, PIM) is heavy for the request."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Put the app tier into a short \"hold writes\" state while reads continue.",
+      "rationale": "Phases are ordered by dependencies with 17-step switch runbook, exit checks, and fallbacks if validation fails."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "PHI only in services the BAA covers, in one in-country region. Private endpoints only, customer-managed keys."
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "HL7 appointment and patient-registration feeds, portal, SMS/IVR reminders, billing, warehouse ETL, direct database readers"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "Daily reconciliation: row counts plus per-table hashes, and no PHI in the output."
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "Fence on-premises: make it read-only and revoke the app's database logins."
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "At the switch, start reverse replication (cloud → on-premises) and keep on-premises warm and read-only until V7."
+    },
+    {
+      "id": "P6-06",
+      "status": 2,
+      "evidence": "Two private circuits on diverse paths plus an IPsec VPN backup."
+    },
+    {
+      "id": "P6-07",
+      "status": 1,
+      "evidence": "Disaster-recovery RPO/RTO | — | UNKNOWN: needs the business impact analysis"
+    },
+    {
+      "id": "P6-08",
+      "status": 1,
+      "evidence": "admin access with MFA and just-in-time elevation (PIM)"
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "Load at 2× peak for 2 h on a production-sized copy."
+    },
+    {
+      "id": "P6-10",
+      "status": 1,
+      "evidence": "Pick a low-volume window from the baseline (for example Sunday 02:00)."
+    },
+    {
+      "id": "P6-11",
+      "status": 1,
+      "evidence": "Decommission, with media sanitized to NIST 800-88."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "Exactly one writable database at all times"
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "Legal confirms the BAA scope covers every listed service."
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "Inventory everything that depends on the system: HL7 appointment and patient-registration feeds"
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "No re-architecture."
+    }
+  ],
+  "note": "Strong, carefully reasoned staged migration with single write authority, reverse replication, and rehearsed rollback; weaker on cost, business-continuity detail, and some operational ownership, and somewhat heavy process.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2155,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 919,
+    "cache_creation_input_tokens": 16806
+  },
+  "cost_usd": 0.0637568,
+  "latency_s": 37.549,
+  "raw_file": "raw/judge-d992a29048d5.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

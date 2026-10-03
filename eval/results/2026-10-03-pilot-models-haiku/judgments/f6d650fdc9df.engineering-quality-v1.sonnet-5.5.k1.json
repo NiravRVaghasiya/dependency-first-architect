@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f6d650fdc9df.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "f6d650fdc9df",
+  "blind_sha256": "79ad3cf550eafb1bae39e8da6c713f302b207fc9285f028eabe5617d4972c78f",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 38,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Parity check (V8): \"Digest must match exactly... SHA-256 of image blobs match bit-for-bit\" across old and new platform",
+      "rationale": "Requiring bit-identical image digests across two different build platforms is unrealistic without reproducible-build work (timestamps, layers), and it gates the cutover; also secret scrubbing of logs is treated as the main secret defense, and \"50 concurrent builds; 10 parallel deploys\" style numbers are shaky."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Phase 0 \"First end-to-end slice\"... pilot \"5 pilot services (internal + one external team)\" ... \"Pilot on-boarding\"",
+      "rationale": "Covers pilot, waves, canary and registry but omits contract testing, service inventory, and the phases include scope creep (multi-cluster, Jaeger, SOC2); the sequencing is largely feasible."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Phase 5 says \"Staging-only cutover\" with parity run across all 50, yet Phase 4 \"Unlocks: Full platform rollout to all 50 services\"",
+      "rationale": "Mostly consistent overall design but with contradictions: 5 pilot services with 'external team', 10% 'traffic' vs 5 services, Phase 2 signs images yet V3/V4 numbering is inconsistent, and Phase 0 rollback is rerunning a build rather than redeploying."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "V6: \"Canary receives 10% traffic; error rate climbs to 6%; controller detects within 30 s; canary is automatically rolled back\"",
+      "rationale": "Validation is tied to specific risks (canary abort, RBAC isolation, signing, load) with early checks and measurable criteria, though many thresholds are invented and little post-launch regression validation beyond SLO."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "\"ASSUMPTION: shared runner pool; per-team breakdown pending\"; \"Stateless services dominate\"",
+      "rationale": "Assumptions are labeled in a budget table, but the 5-min latency labeled REQUIREMENT, $8K budget and others are invented, and the language mix and service inventory are not surveyed."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"Incident severity classification... > 3 critical services fail → kill switch activated\"; \"unsigned image rejected by admission controller\"",
+      "rationale": "Covers kill switch, canary abort, registry outage, runner crash, but lacks fork PR/untrusted builds, DB migration failures, flaky tests, and pipeline-definition tampering."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "\"One platform team, one on-call; runbooks for >95% of alerts\"; \"burn-rate alerts\"; kill-switch tested in drill",
+      "rationale": "Monitoring, runbooks, rollback, on-call and drills are concrete, though a one-team burden with so many phases (multi-cluster, tracing, SOC2) is heavy."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"monthly cost < $8K\"; \"cost per build < $0.50\"; \"egress cost < $2K/month\"",
+      "rationale": "Cost drivers, attribution, quotas and tiered storage addressed, but figures lack basis and there is no hosted vs self-hosted or build-volume estimate."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "\"Reversibility | R3 ... Default (chosen now) ... Revisit trigger\"; \"Point of no return\" decommissioning gate V10",
+      "rationale": "The plan explicitly rates reversibility, has revisit triggers and a staged decommissioning with grace period, though some ratings are odd and the registry choice is committed early."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Phase 7 ... Multi-cluster deployment ... distributed tracing (Jaeger) ... Export for SOC 2 audit\"",
+      "rationale": "Uses existing tools (Tekton, Flagger) but adds speculative multi-cluster, tracing, SOC2 audit log, 9 phases and 11 validation gates for an unstated need."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "\"Depends on: Phase 2 (V3, V4 passed)... Exit check: ✓ Build cache hit rate > 60%...\"",
+      "rationale": "Phased with dependencies, concrete tasks and checkable exit criteria per phase, although key items like templates, contract checks and tool choices remain open."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "\"define base image + test command... Store as reusable pipeline templates.\""
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "\"keeping their old pipeline as fallback; run both for 2 weeks in parallel (parity check).\""
+    },
+    {
+      "id": "P3-03",
+      "status": 1,
+      "evidence": "\"Immutable artifacts + instant switch for stateless\"; Image digest deploys but builds are re-done for parity and immutability of tags left as a decision"
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "\"Integrate with HashiCorp Vault / AWS Secrets Manager to pull secrets... federated via OIDC\" (as option)"
+    },
+    {
+      "id": "P3-05",
+      "status": 1,
+      "evidence": "\"unsigned image rejected by admission controller\""
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "\"canary is rolled back within 30 s\"; no DB migration compatibility"
+    },
+    {
+      "id": "P3-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "\"Build cache hit rate > 60%\"; \"Code push to test feedback < 5 min p95\""
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "\"Size: 5 reserved + up to 25 on-demand\"; \"cost per build < $0.50\""
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "\"One platform team, one on-call; runbooks for >95% of alerts\""
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "\"Implement immutable audit log (append-only, cryptographically signed)\"; approvals recorded in audit log"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "\"Wave 2 (50% of services)... Kill-switch mechanism... revert all services to old platform in < 2 min\""
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "\"Stores image by digest\"; \"Every build artifact tagged with build commit SHA\""
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "\"per-service service accounts (minimal RBAC)\"; \"kubeconfig credentials stored in sealed-secret\""
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "\"Service-level rollback for individual failures\"; per-service deploy config"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "\"Pipeline orchestrator (Tekton / Argo / GitHub Actions)\""
+    }
+  ],
+  "note": "Well-structured, pilot-and-wave migration with measurable gates and a kill switch, but it demands bit-identical cross-platform digests, misses contract testing, fork-PR/OIDC credential handling, and flaky tests, and adds speculative scope.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2647,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 24022
+  },
+  "cost_usd": 0.08670620000000001,
+  "latency_s": 44.687,
+  "raw_file": "raw/judge-f6d650fdc9df.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

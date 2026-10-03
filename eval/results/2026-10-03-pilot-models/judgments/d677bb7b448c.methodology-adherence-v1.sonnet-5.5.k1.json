@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "d677bb7b448c.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "d677bb7b448c",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 104,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Any prod deploy beyond the canary service | V3 (signing, admission, scoped credentials)",
+      "rationale": "Dependency map and gates order skeleton → trust → contract/capacity → waves → decommission, with each phase gated on a validation."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A real commit to one low-risk internal canary service lands in the new platform's CI... A real health-check request reaches the new version",
+      "rationale": "Phase 0 is a real prod end-to-end path with deploy, rollback, trace and alert."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Artifact trust and identity model | R3 ... Default ... Flip condition | V3 fails, or the org mandates an existing PKI or HSM-backed signing",
+      "rationale": "Irreversible decisions list reversibility, default, assumption, validation and flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1: Trust and identity controls (widest blast radius first)",
+      "rationale": "Trust controls precede leaf work, and waves go smallest exposure first with tier-1 last; the phase labels state the ordering."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Namespace-scoped credential; secret masking; admission in audit mode",
+      "rationale": "The cross-cutting table gives concrete security content in every phase from Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "One commit→pod trace; platform metrics and an injected-failure alert",
+      "rationale": "Observability is concrete in Phase 0 and in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Platform in Terraform; pinned runner images and tool versions",
+      "rationale": "Reproducibility is concrete in every phase: IaC, policies as code, pinned templates, hermetic builds, and rebuild drills."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Rollback via config revert and flag; old pipeline stays default",
+      "rationale": "Each phase has concrete failure handling: rollback, break-glass, autoscaling, deploy locks, DR drills."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "## 8. AI layer N/A — no AI component.",
+      "rationale": "The plan explicitly declares the AI layer not applicable."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Progressive delivery... Pulled forward if the change failure rate after Phase 3 stays above its BASELINE",
+      "rationale": "Deferred items each carry an explicit pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan that meets every rubric dimension with concrete content; the only minor softness is several UNKNOWN budget inputs, which are flagged openly.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 987,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 7498
+  },
+  "cost_usd": 0.028736,
+  "latency_s": 32.685,
+  "raw_file": "raw/judge-d677bb7b448c.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

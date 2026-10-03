@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ac56ef064578.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "ac56ef064578",
+  "blind_sha256": "4a382eba664e4b4365924d1b32e6539b68172905ed27515fae7e8384a2bf8447",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 302,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Stripe Payments with Elements, so cards never reach us and PCI scope stays at SAQ-A",
+      "rationale": "Correct on key points (RLS non-owner role, outbox, idempotency, fetch-latest for out-of-order webhooks), with minor imprecision such as serializable ledger writes without retry handling and SKIP LOCKED workers."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "If the real pricing sheet is only flat per-seat plans with no usage pricing, **buy the whole engine**",
+      "rationale": "Covers the core needs, resolves the interpretation ambiguity explicitly, and defers with reasons; the entitlement and dunning-suspension side is thin and the scope is large."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Sync for API changes... the state change and its ledger entries go in one transaction. Async, through a transactional outbox",
+      "rationale": "Consistent modular design with clear ownership; small loose ends such as the ledger posting at subscription creation versus at invoice finalization, and the portal's read-only fallback."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "14 straight days of reconciliation with zero unexplained differences on live traffic. A fault-injection suite passes: duplicate, reordered and 24 h-delayed webhooks",
+      "rationale": "Risk-targeted, checkable exit criteria at each phase and a Phase 0 live slice; some thresholds like 100k operations and 10x peak are not justified, and post-launch validation is mostly the canary and invariants."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Revisit trigger ... Decide this before Phase 1 because every table changes.",
+      "rationale": "Assumptions come with revisit triggers and the interpretation is stated; the scale assumptions (5k events/s, RPO/RTO, 20% ARR) appear without stating their basis, and the team size is never stated."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Per-tenant checkpoints and resumable runs. Failures stay isolated to one tenant. Kill switch to pause finalization. Tax outage holds invoices as drafts.",
+      "rationale": "Thorough domain-specific failures with detection and recovery: duplicates, out-of-order and delayed webhooks, replays, processor outages, tax outage, late events, cross-tenant leaks, refund abuse, reconciliation."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "GitHub Actions builds one container image, identified by its digest... Rollback means redeploying the previous digest.",
+      "rationale": "Deployment, rollback, migrations, monitoring and alerts on meaningful signals are covered; on-call ownership and incident response are thin, and the burden (OTel, canary, dbt, restore drills) is substantial for a small team."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Buy payment processing... tax... and email (Postmark or SES). Build the ledger, subscriptions, rating and invoicing.",
+      "rationale": "Build-versus-buy is reasoned qualitatively, but there are no fee or cost estimates, no run-cost growth and no engineering-time estimate."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Treat this as permanent... Decide this before Phase 1 because every table changes.",
+      "rationale": "Explicitly separates one-way decisions (ledger, tenancy hierarchy, usage schema, money type, price immutability) from reversible ones, validates them early, isolates them and gives exit paths like cells and no Kafka."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Modular monolith... Postgres SKIP LOCKED workers to start; no Kafka.",
+      "rationale": "Starts simple with an explicit deferral table, though the scope is wide (custom ledger, rating, accounting export, dashboards, SQS) and includes some early ceremony."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phase 0: POST /v1/subscriptions for one internal tenant... Exit check: In prod, one real request produces a paid invoice.",
+      "rationale": "A concrete thin slice, dependency-justified phases, specific tasks and checkable exit criteria; adaptation on disappointing results is only partly stated through revisit triggers."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "`bigint` minor units plus an ISO 4217 currency code. No floats anywhere. Rounding rules (banker's or half-up, per currency) live in one place."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Corrections are made with reversing entries, never `UPDATE` or `DELETE` (a database trigger enforces this)."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "signature check, duplicate removal by event ID, and safe handling of out-of-order events by fetching the latest state from Stripe"
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "Stripe Payments with Elements, so cards never reach us and PCI scope stays at SAQ-A"
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "A cross-tenant test suite calls every repository function with the wrong tenant context and expects zero rows."
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "Replaying the raw event log for a closed period gives **identical** priced totals."
+    },
+    {
+      "id": "P2-07",
+      "status": 2,
+      "evidence": "prices are versioned and **become immutable once any subscription uses them**... handles month-end, leap years and the tenant's billing time zone"
+    },
+    {
+      "id": "P2-08",
+      "status": 1,
+      "evidence": "sequential numbers per tenant's legal entity... an invoice is **never finalized without tax**"
+    },
+    {
+      "id": "P2-09",
+      "status": 1,
+      "evidence": "jittered retry schedule, `past_due` transitions, grace period, and a hook to suspend the tenant's service."
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "Daily reconciliation: Stripe balance transactions compared with ledger cash entries. Any difference that can't be explained pages someone."
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "Real-time spend caps and entitlement enforcement"
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Build the ledger, subscriptions, rating and invoicing. The ledger is the source of truth, usage pricing will outgrow off-the-shelf models"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "`bigint` minor units plus an ISO 4217 currency code. No floats anywhere."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Double-entry, append-only and immutable."
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "calls Stripe with an idempotency key of `invoice_id:attempt_n`"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "so cards never reach us and PCI scope stays at SAQ-A"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "enforced by **Postgres row-level security (RLS)**... The app's database role is not the table owner"
+    }
+  ],
+  "note": "A strong, risk-aware plan with a live-money first slice and excellent reversibility and failure handling, but it has no cost estimates, is thin on entitlements and tax edge cases, and does not state team size.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2556,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 15035
+  },
+  "cost_usd": 0.06332869999999999,
+  "latency_s": 27.843,
+  "raw_file": "raw/judge-ac56ef064578.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

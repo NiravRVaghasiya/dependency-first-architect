@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "824f9c3bb3df.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "824f9c3bb3df",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 19,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "support queries often contain exact strings like error codes and feature names.",
+      "rationale": "Hybrid search, reranker, authenticated tool calls for personalization and structured output are all correct; a few minor imprecisions (e.g., 'filter outputs', LLM-as-judge) have no design consequence."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Decide which topics the bot must never answer alone, such as billing disputes, legal, security incidents, and account deletion.",
+      "rationale": "Covers core RAG support needs, with phased rollout and a realistic team, but it defers account-specific scope to a question and does not explicitly exclude anything."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Personalization, such as the user's plan or account status, should come through authenticated tool calls. Don't put it in the vector store.",
+      "rationale": "The pipeline is consistent with clear responsibilities, but data ownership and the identity flow into retrieval filters are only sketched."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "run the eval set and score retrieval (recall@k, MRR) and answers (faithfulness, correctness, completeness)... Run it in CI on every change",
+      "rationale": "The eval set from real tickets, CI regression runs, red-teaming, shadow mode and staged rollout are good, but the targets (2%, 3s) are not justified as provisional and there are no post-launch quality checks beyond dashboards."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "I don't know your stack, doc volume, or constraints yet, so this plan rests on stated assumptions.",
+      "rationale": "It admits unknowns and asks questions, but it never lists concrete assumptions or how the design changes if they are wrong, and the timeline and thresholds are given without a basis."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Prompt injection via content or user | Treat retrieved text as data, restrict tools, and filter outputs",
+      "rationale": "The risk table covers hallucination, staleness, injection, PII and cost at a high level, but detection and recovery are thin, and it omits partial sync failure, index corruption and abuse or rate limiting."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Dashboards: deflection, CSAT, escalation reasons, no-answer queries, cost per conversation, and latency.",
+      "rationale": "It has dashboards, a staged rollout and a docs-gap loop, but no alerting, rollback mechanics, ownership or incident response, and no index versioning."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Cache frequent queries, use a smaller model for rewriting, and stream responses",
+      "rationale": "It names cost per conversation and a few controls, but gives no estimate, no basis, no context limits and no build-versus-buy analysis."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Take the embedding model from a quick bake-off on your own eval set rather than from a leaderboard.",
+      "rationale": "It makes the vector store and embedding choices empirically, but it does not discuss lock-in, re-embedding cost, model or vendor abstraction, or exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Start with hybrid search (dense embeddings plus BM25)... Add a cross-encoder reranker",
+      "rationale": "The design is a standard, reasonable pipeline with phased rollout and no exotic components; the reranker, query rewrite and verification pass are added before a baseline is measured, which is slightly premature."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Pull 200–500 real past tickets or chat questions. They become your eval set",
+      "rationale": "The phases are ordered with concrete choices (chunk size, top-k, output schema), but it says little about criteria for moving between phases or what to do if early results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 1,
+      "evidence": "Run incremental updates by webhook or nightly, and handle deletions so stale articles don't linger."
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Chunk by heading structure, at roughly 300–600 tokens, with the article title and section path prepended to each chunk."
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "Run it in CI on every change to prompts, chunking, or models."
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "say \"I'm not sure\" when context is insufficient"
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "Handoff should create a ticket in your helpdesk with the transcript, retrieved articles, and a summary."
+    },
+    {
+      "id": "P1-06",
+      "status": 1,
+      "evidence": "Treat retrieved text as data, restrict tools, and filter outputs"
+    },
+    {
+      "id": "P1-07",
+      "status": 1,
+      "evidence": "audience (admin or end user). You'll use it for filtering and citations."
+    },
+    {
+      "id": "P1-08",
+      "status": 1,
+      "evidence": "Redact logs, apply retention limits, and give the LLM no access to other users' data"
+    },
+    {
+      "id": "P1-09",
+      "status": 1,
+      "evidence": "should come through authenticated tool calls. Don't put it in the vector store."
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "Send the top unanswered questions to the docs team as content-gap reports."
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "Cache frequent queries, use a smaller model for rewriting, and stream responses"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "answer only from the retrieved context"
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "audience (admin or end user). You'll use it for filtering and citations."
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Re-index on doc changes and re-run evals when you change models."
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Run it in CI on every change to prompts, chunking, or models."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "Start with hybrid search (dense embeddings plus BM25)"
+    }
+  ],
+  "note": "A solid, pragmatic RAG plan with grounding, evals in CI and a staged rollout. It is weak on retrieval-time entitlement enforcement, privacy and retention detail, cost quantification, and explicit assumptions.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2194,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10504
+  },
+  "cost_usd": 0.048208,
+  "latency_s": 36.214,
+  "raw_file": "raw/judge-824f9c3bb3df.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

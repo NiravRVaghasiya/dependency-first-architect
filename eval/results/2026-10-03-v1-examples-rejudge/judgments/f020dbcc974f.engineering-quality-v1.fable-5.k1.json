@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f020dbcc974f.engineering-quality-v1.fable-5.k1",
+  "blind_id": "f020dbcc974f",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 26,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "It also lacks the GitHub `workflows` permission, so GitHub itself rejects any edit to CI workflow files.",
+      "rationale": "Precise and correct throughout the subtle areas — webhook non-retry and reconciliation, fork PRs getting no secrets, pull_request_target risk, Camo image-proxy exfiltration, gVisor isolation — with no material errors found."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "It covers repos we own, starting with one, and handles issues only.",
+      "rationale": "Addresses both triage and resolution exactly as asked, resolves ambiguities (scope, trigger model, autonomy) sensibly, and every exclusion is explicit with a pull-forward condition."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Every side effect becomes a typed `ProposedAction{type, target, args, tier, idempotency_key}`, judged by policy code with risk tiers T0–T3",
+      "rationale": "One consistent design: the ledger, policy engine, trust boundary, and identity choices are honored uniformly across all phases and the cross-cutting table with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "The red-team suite triggers no out-of-policy actions and leaks no secrets or links.",
+      "rationale": "Validation is built around the actual risks — injection red-team, sandbox escape suite, shadow triage before live writes, historically-validated fix benchmark, canary and drills continuing in production — with checkable exit criteria per phase."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "All numeric thresholds are starting guesses, to be recalibrated from what Phases 1–2 measure.",
+      "rationale": "Assumptions and defaults are explicit, numbers are labeled as provisional, and every major decision carries a stated revisit trigger describing what would change it."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "GitHub's image proxy fetches whatever URL an image points to, so an image can carry data out",
+      "rationale": "Covers the hard domain failures — prompt injection, memory poisoning, sandbox escape, secret exfiltration, bot loops, duplicate deliveries, flaky tests, mid-run crashes, base-branch drift — each with concrete detection, containment and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "An hourly synthetic canary opens and labels an issue in a separate canary repo, and pages if no comment appears within 5 min.",
+      "rationale": "Operations are designed in from Phase 0 (canary, alerts, kill switch, on-call paging, versioned prompts/configs, automatic demotion) and sized to a small team; only explicit DB migration procedure is left implicit."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Fixing: ≤$5, ≤50 tool calls and ≤30 min per attempt; at most 2 attempts per issue.",
+      "rationale": "Dominant inference costs have labeled budgets, breakers, model tiering and per-route tracking, and build-vs-buy is a measured bake-off, but engineering/people cost and expected run-cost at volume are never estimated."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Only the parts that are expensive to reverse are fixed from day one: the ledger schema, the action contract, the sandbox boundary, and the App permissions.",
+      "rationale": "Explicitly separates one-way choices (fixed early and validated) from reversible ones held behind named revisit triggers, with exit paths like fallback models, same-repo branches, and config-only model swaps."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "**Modular monolith.** One repo and one image with two roles: `web` receives webhooks, `worker` runs jobs.",
+      "rationale": "Simplest workable design (monolith, Postgres queue, one repo, one agent) with every added complexity justified by security or correctness and heavier machinery (Temporal, Firecracker, multi-agent) explicitly deferred behind gates."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Redelivering the webhook from GitHub's UI does not post a second comment.",
+      "rationale": "A team could start Phase 0 immediately: dependency-ordered phases with reasoning, concrete first tasks, specific decisions down to headers and table names, and measurable exit checks plus adaptation triggers at each stage."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "T0 (reads) and T1 (reversible writes: labels, templated comments, requests for info) run on their own once shadow precision qualifies."
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "GitHub App, never a personal access token. Its tokens expire after 1 h."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "The model *proposes* typed actions; fixed policy code decides."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "They hold no credentials, can't reach the cloud metadata endpoint, and have no network except a proxy to package registries."
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "Reproduce first. A failing test or repro script is required before any patch."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Go live for each label class with shadow precision ≥90%"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "PR outcomes: merged as-is, merged with edits (and how big the edits were), closed, or reverted within 30 days"
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "≤10 writes per issue per hour, which stops loops between bots; a $100 daily breaker per repo."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Triage: ≤$0.10 per issue; 95% of first responses within 5 min."
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "writes a ledger row with an idempotency key, then posts the comment"
+    },
+    {
+      "id": "P4-11",
+      "status": 2,
+      "evidence": "ripgrep text search, a tree-sitter symbol map, and extraction of `file:line` from stack traces"
+    },
+    {
+      "id": "P4-12",
+      "status": 2,
+      "evidence": "drops duplicate deliveries by `X-GitHub-Delivery` ID"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent proposes; humans merge."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "They hold no credentials, can't reach the cloud metadata endpoint"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "the issue text goes inside a separate block marked as untrusted data"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "Live precision stays ≥90% for 2 weeks, measured by how often maintainers correct labels."
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "An `AGENT_WRITES_ENABLED` kill switch."
+    }
+  ],
+  "note": "An exemplary plan: technically precise on GitHub's actual security mechanics, phased from a safe end-to-end slice to earned autonomy with injection, sandbox, budget and audit defenses built in before capability; the only notable thinness is engineering/people cost and total run-cost estimation.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 9301,
+    "thinking_tokens": 6705,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 20346
+  },
+  "cost_usd": 0.719395,
+  "latency_s": 119.309,
+  "raw_file": "raw/judge-f020dbcc974f.engineering-quality-v1.fable-5.k1.txt"
+}

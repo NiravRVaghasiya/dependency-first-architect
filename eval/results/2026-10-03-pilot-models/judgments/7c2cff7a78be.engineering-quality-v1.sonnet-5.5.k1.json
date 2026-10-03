@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "7c2cff7a78be.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "7c2cff7a78be",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 100,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Support content has many exact terms like error codes, feature names, and SKUs.",
+      "rationale": "Claims about hybrid search, reranking, chunking and LLM judge calibration are accurate; only minor imprecision and it doesn't reach the hard parts like deletion semantics or ACLs."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Non-goals for v1: taking account actions (refunds, password resets) and handling multi-turn troubleshooting flows.",
+      "rationale": "Covers core RAG needs with explicit non-goals and an agent-copilot pilot, but visibility/entitlements are only deferred and the plan ends by offering to produce the real design."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Low confidence / sensitive → Human handoff",
+      "rationale": "The pipeline is consistent and flows connect, though data ownership and confidence thresholds are thin and the stack is a menu of options."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "CI regression: run the eval on every change to chunking, prompts, models, or indexes.",
+      "rationale": "Golden set from real tickets, retrieval and generation metrics, calibrated judge, online metrics and an early baseline; targets are not set and rollout gating criteria are missing."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "I don't know your stack, doc volume, or constraints yet, so this plan uses stated assumptions.",
+      "rationale": "Open questions are explicit and relevant, but few assumptions are stated with design sensitivity, and some figures (chunk sizes, 150–300) are unlabeled defaults."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Repeated failed turns",
+      "rationale": "Hallucination, stale content, bad docs, injection and handoff are named with some handling, but injection mitigation is one line and there are no failure modes for sync failures, abuse or provider outage."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Trace every step (query, chunks, scores, answer), e.g. Langfuse or LangSmith",
+      "rationale": "Tracing and a 10–20% ramp are present, but there is no alerting, rollback, ownership, incident handling or index-migration plan."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Cost and latency: mitigate with caching, a smaller model for rewriting, and limiting context size.",
+      "rationale": "Cost is a metric with a few controls, but there is no per-conversation estimate, no basis, no rate limiting and no build cost."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Plain code or a thin framework. Avoid heavy abstractions for v1.",
+      "rationale": "Starts with a mid-tier model and avoids heavy frameworks, but does not identify one-way decisions like embedding model, index or metadata schema, or exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Weeks 1–2: Ingest the docs, build a baseline (chunk, embed, retrieve, answer), and assemble the golden set.",
+      "rationale": "Baseline first, then hybrid, rerank and rewriting tuned against evals; mostly proportionate, though those additions are planned by default rather than earned by measurement."
+    },
+    {
+      "dim": 11,
+      "score": 2,
+      "evidence": "Weeks 3–4: Add hybrid search, reranking, and query rewriting. Tune against evals and add guardrails.",
+      "rationale": "A sensible phased order with concrete chunking and pipeline parameters, but stack choices are left as options, there are no stage exit criteria and the plan defers to a later concrete design."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 1,
+      "evidence": "run incremental sync (webhook or nightly). Re-embed only changed articles and delete removed ones so stale answers don't persist."
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "article URL, title, section heading path, last-updated date, product or plan, locale, and audience (admin or end user)."
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "150–300 real questions from past tickets and search logs, with reference answers and expected source articles."
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "Say \"I don't know\" and offer handoff when the context is insufficient."
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "pass the transcript and retrieved articles to the agent so the customer doesn't have to repeat themselves."
+    },
+    {
+      "id": "P1-06",
+      "status": 1,
+      "evidence": "treat retrieved text and user input as untrusted data, not instructions."
+    },
+    {
+      "id": "P1-07",
+      "status": 1,
+      "evidence": "apply locale, plan, and product filters when they're known."
+    },
+    {
+      "id": "P1-08",
+      "status": 1,
+      "evidence": "PII: redact PII in logs."
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Non-goals for v1: taking account actions (refunds, password resets)"
+    },
+    {
+      "id": "P1-10",
+      "status": 1,
+      "evidence": "Build a content-gap feedback loop that reports unanswered questions to the docs team."
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "mitigate with caching, a smaller model for rewriting, and limiting context size."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Answer only from the provided context."
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "apply locale, plan, and product filters when they're known."
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Re-embed only changed articles and delete removed ones so stale answers don't persist."
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "CI regression: run the eval on every change to chunking, prompts, models, or indexes."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "Weeks 1–2: Ingest the docs, build a baseline (chunk, embed, retrieve, answer), and assemble the golden set."
+    }
+  ],
+  "note": "A sound, proportionate RAG baseline with good evaluation and grounding, but shallow on access control, data retention and compliance, cost quantification, operations and go/no-go criteria.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 4775,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 11471,
+    "cache_creation_input_tokens": 12605
+  },
+  "cost_usd": 0.0815687,
+  "latency_s": 62.267,
+  "raw_file": "raw/judge-7c2cff7a78be.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

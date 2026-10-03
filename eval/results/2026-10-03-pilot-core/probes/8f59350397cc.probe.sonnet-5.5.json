@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "8f59350397cc.probe.sonnet-5.5",
+  "blind_id": "8f59350397cc",
+  "blind_sha256": "31f3fe93b64c45b2f82932cf921dc76ffec9f64ab29ca9b1b8a72d25cbc395a0",
+  "judge": "sonnet-5.5",
+  "order_index": 120,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Rigid numbered template (Summary, Context/Goals, Drivers, Current State, Assumptions/Open Questions, Architecture, Decisions, Cross-Cutting, Build Sequence, Rollout, Risks, Deferred Work, Next Steps) that reads like a prescribed methodology",
+    "Explicit 'What I could inspect: nothing' and 'Inspected vs Assumed' sections, with every assumption tabulated with impact-if-wrong and how/when to validate",
+    "Decision table with options considered, rationale against ranked drivers, reversibility, and 'Revisit if' triggers (D1–D12)",
+    "Spikes with time boxes and 'Would change the plan' clauses, plus week-1 decision gates and milestone exit criteria",
+    "Ranked quality attributes with measurable targets, a dedicated 'AI-specific concerns: not applicable' line, and a closing 'What I'd most like you to tell me' section of prioritized questions"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 400,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 25066
+  },
+  "cost_usd": 0.066673,
+  "latency_s": 31.223,
+  "raw_file": "raw/probe-8f59350397cc.probe.sonnet-5.5.txt"
+}

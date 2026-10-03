@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "ac56ef064578.probe.sonnet-5.5",
+  "blind_id": "ac56ef064578",
+  "blind_sha256": "4a382eba664e4b4365924d1b32e6539b68172905ed27515fae7e8384a2bf8447",
+  "judge": "sonnet-5.5",
+  "order_index": 21,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.95,
+  "cues": [
+    "Fixed template sections: Classification (What/Type/Dominant constraint/Worst failure), Key decisions table with 'Default' and 'Revisit trigger' columns",
+    "Explicit 'First end-to-end slice (Phase 0)' with tiers crossed, deployed/logged/monitored, and exit check, a walking-skeleton requirement",
+    "Each phase has 'Unlocks', 'Depends on', tasks ordered 'widest → narrowest', and an 'Exit check'",
+    "Cross-cutting matrix (Security/Observability/Reproducibility/Resilience) per phase 'from the first commit', plus a Deferred table with pull-forward conditions",
+    "Template-leftover AI items: '(AI) prompt+RAG vs fine-tune' rows marked N/A, and 'AI layer N/A ... re-run this skill'"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 362,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8398
+  },
+  "cost_usd": 0.024623,
+  "latency_s": 25.005,
+  "raw_file": "raw/probe-ac56ef064578.probe.sonnet-5.5.txt"
+}

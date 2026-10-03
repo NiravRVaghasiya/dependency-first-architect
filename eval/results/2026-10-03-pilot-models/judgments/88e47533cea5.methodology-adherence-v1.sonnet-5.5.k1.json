@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "88e47533cea5.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "88e47533cea5",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 102,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 3 \"Depends on: V2; Phase 1.\" and \"Answer prompt and refusal policy | V2 (retrieval reaches the right passages) | specified\"",
+      "rationale": "Explicit dependency map and gates ensure the prompt isn't specified before retrieval is proven, and exposure waits on V1/V3/V5."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Staff member asks a real question... streamed answer with a citation to the real article; CI/CD deploy, Terraform, rollback, V0 exit check.",
+      "rationale": "Phase 0 is a real thin end-to-end production slice with deploy, trace, rollback, and alert."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Tradeoff table: Reversibility, Default (chosen now), Assumption, Validated by, Flip condition — e.g. \"V5 fails, residency requires a region or self-hosted model\"",
+      "rationale": "Irreversible decisions each have default, assumption and flip condition, with UNKNOWNs labeled."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1 before retrieval; Phase 4: \"Canary at 1–5%... smallest exposure first\"; Phase 2 ingestion/public-flag before eval and webhook",
+      "rationale": "Widest-impact items (defenses, caps, ingestion boundary) come first within phases, and leaf items like feedback come last, though ordering within phases isn't explicitly argued."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"SSO and allow-list, secrets manager, data/instruction separation, token and spend caps\"; per-phase security column through Phase 5",
+      "rationale": "Concrete security measures appear in every phase starting from Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: \"One OpenTelemetry trace from widget request to model call, with token and cost metrics per request. Alerts on error rate and on spend.\"",
+      "rationale": "Observability is concrete in Phase 0 and every subsequent phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"IaC, pinned image, versioned index alias\"; \"Embedding model pinned in the index version; labeled set versioned\"",
+      "rationale": "Reproducibility of infra, index, prompts, evals and rollout is addressed in every phase."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"Kill-switch flag, rollback tested, fallback to help-center search\"; \"Failed sync leaves the previous index serving; alias swap\"",
+      "rationale": "Failure handling and rollback are concrete in every phase."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Phase 1 \"Defenses, budgets, and human handoff\" precedes Phase 2 Retrieval, Phase 3 model access/memory; orchestration and routing deferred; feedback Phase 4-5",
+      "rationale": "Order is defenses/budgets/HITL → retrieval → model access → memory → (orchestration, routing N/A) → feedback, exactly as required."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Long-term memory and personalization: pulled forward if repeat-contact data shows value, and only after a privacy review.\"",
+      "rationale": "Deferred items are listed each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Exceptionally thorough plan that meets every rubric dimension with concrete content; only minor gap is that within-phase blast-radius ordering is implicit rather than argued.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1271,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 8560
+  },
+  "cost_usd": 0.034231,
+  "latency_s": 34.811,
+  "raw_file": "raw/judge-88e47533cea5.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "c6e2805a3552.probe.sonnet-5.5",
+  "blind_id": "c6e2805a3552",
+  "blind_sha256": "01573081a91d9c2479ec6aac9c3b543b1023b277c124ad7415c02d328355dbf5",
+  "judge": "sonnet-5.5",
+  "order_index": 155,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Well-organized phases with explicit 'Done when:' exit criteria for each phase, which suggests a structured template",
+    "Includes critical path diagram, 'Things not to do', and risk/mitigation table, which look thorough but are common in unguided detailed answers",
+    "Opening thesis ('order matters more than tool choice') and a closing offer to tailor the plan feel like default conversational assistant style",
+    "No sign of a distinctive methodology, such as explicit assumptions, numbered dependency IDs, or verification steps",
+    "Overlapping week ranges and realistic hedging ('varies a lot') are typical of a natural unguided plan"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 286,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3705
+  },
+  "cost_usd": 0.0121305,
+  "latency_s": 22.919,
+  "raw_file": "raw/probe-c6e2805a3552.probe.sonnet-5.5.txt"
+}

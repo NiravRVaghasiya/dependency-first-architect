@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "6000ff99eb6f.engineering-quality-v1.fable-5.k1",
+  "blind_id": "6000ff99eb6f",
+  "blind_sha256": "2b8f99b15ae8ae4599fce819b87cdcbc17e32b58292fa9f09b739dbb80bd2003",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 298,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Because Kinesis delivers at least once, this gives an exactly-once effect within the 35-day window.",
+      "rationale": "Claims about Kinesis semantics, Stripe idempotency keys and Connect direct charges, RLS with transaction-scoped set_config, gapless sequences, and partitioned unique constraints are all accurate, with uncertain vendor behaviors (Stripe Tax on connected accounts, pooler pinning) correctly flagged for spikes rather than asserted."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "If you actually meant \"billing for our own multi-tenant SaaS product,\" stop here... buy Stripe Billing, Chargebee, or Orb",
+      "rationale": "The central ambiguity is surfaced and resolved explicitly with a fallback recommendation, core billing capabilities are all covered, exclusions are listed with reasons, and the scope is credibly buildable by the stated team."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "One Postgres schema per module... A module only touches its own schema. Other modules call it through its exported TypeScript interface",
+      "rationale": "Every entity has one writing owner, data flows connect end to end, and cross-cutting choices (RLS tenancy, transactional outbox, idempotency, forward-only state transitions) are applied uniformly with no contradictions found."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "nightly shadow re-rating of 5% of the day's finalised invoices from snapshots (must match exactly)",
+      "rationale": "The riskiest assumptions are tested in week-1 time-boxed spikes with stated plan-changing outcomes, acceptance gates are checkable (golden suites, isolation harness, shadow cycle with 0 unexplained differences), and validation continues in production via invariants, re-rating and reconciliation."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Assumption | Impact if wrong | How and when validated",
+      "rationale": "Every load-bearing assumption is explicit, labeled, paired with its consequence if wrong and a validation method and date, and numeric targets are repeatedly marked as assumptions rather than facts."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "If a call times out, the attempt becomes `unknown`. Nothing retries it until the reconciler has looked it up in Stripe.",
+      "rationale": "Covers the hard domain failures—duplicate events, worker crash mid-batch, unknown payment outcomes, out-of-order webhooks, tax outage during finalisation, cross-tenant leaks, noisy neighbors, card testing—each with concrete detection, containment and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Injected failures in staging (stop aggregator; block Stripe egress) trigger the matching alerts.",
+      "rationale": "Symptom-based alerts tied to runbooks, demonstrated deploy and rollback, expand/contract migrations, kill switches, restore drills, break-glass access and a billing-day staffing plan are all sized to the stated 6-engineer team."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Datadog | ≈ $1–2.5k (largest variable; set log index quotas)",
+      "rationale": "Run costs are itemized as labeled ranges with controls, the largest variable is identified, build cost is expressed via team and milestones, and build-versus-buy trade-offs (Kafka/ClickHouse, Temporal, TigerBeetle, tax vendors) are explicitly weighed."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Write ADRs for D1, D2, D7, D8, and D9 (the hard-to-reverse ones)... so they can be challenged in week 1",
+      "rationale": "Every decision carries a reversibility rating and revisit trigger, the hard-to-reverse ones (tenancy model, money representation, numbering, public API) get early validation and ADRs, and exit paths (cells, PspAdapter, TaxProvider, metering split) are concrete."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "#5 a 6-person team can't run 8 services.",
+      "rationale": "A modular monolith with one justified separate service, deliberate avoidance of Kafka/ClickHouse/microservices/multi-region at launch, and trigger-based deferrals give the simplest design that still meets the need with a stated growth path."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T12 ... Test: feed the same batch 3 times, aggregates equal 1×. Kill worker mid-batch, restart, totals correct.",
+      "rationale": "Tasks T0–T21 have locations, verifiable done-criteria and dependency ordering, spikes state the result that would change the plan, and milestones carry exit criteria, so a team could start on day 1 without redoing the thinking."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Money: integer minor units for amounts, numeric(38,12) for unit prices, decimal.js, round once per line half-up"
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "a trigger rejects UPDATE/DELETE on finalised invoice rows and lines... Corrections are credit notes."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "The Stripe idempotency key is the payment_attempt.id... INSERT … ON CONFLICT DO NOTHING on psp_events(stripe_event_id)"
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "No card data, ever... Verify the signature... Stay at PCI DSS SAQ A by never touching card data"
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "RLS enabled and forced... isolation test suite in which tenant A tries every endpoint with tenant B's IDs"
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "Unique (tenant_id, event_id, event_date)... The next invoice gets a \"prior-period adjustment\" line that names the original period."
+    },
+    {
+      "id": "P2-07",
+      "status": 2,
+      "evidence": "proration by seconds within each segment... anchors on the 29th–31st, daylight saving and time zones... immutable price versions"
+    },
+    {
+      "id": "P2-08",
+      "status": 2,
+      "evidence": "take the next number from the per-tenant sequence (UPDATE invoice_sequences … RETURNING makes it gapless)... Tax behind TaxProvider"
+    },
+    {
+      "id": "P2-09",
+      "status": 2,
+      "evidence": "a retry schedule per tenant (default: days 1, 3, 5, 7), then a terminal action (cancel subscription, mark uncollectible, or leave past_due)"
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "Reconciliation (nightly): compare Stripe charges and refunds per connected account against payment_attempts... A finance or ops person reviews the reconciliation report daily"
+    },
+    {
+      "id": "P2-11",
+      "status": 1,
+      "evidence": "Non-goals (v1): ... an entitlements or feature-flag service... Real-time prepaid credit burn-down, spend alerts, entitlements API | 2+ partners require it"
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "the right call is to buy Stripe Billing, Chargebee, or Orb and build a thin layer for entitlements and usage forwarding"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "floats (rejected); integer only; this [integer minor units + decimal.js]"
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Finalised invoices immutable; corrections only via credit notes; gapless per-tenant numbering"
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "it retries step 2 with the same idempotency key, so Stripe never creates a duplicate charge"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "Card data | none (Stripe tokens only) | SAQ A scope"
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "Tenant scoping is enforced in the database by RLS... CI schema lint fails if any table... lacks tenant_id, RLS"
+    }
+  ],
+  "note": "An exemplary plan: technically precise on billing's hard parts (idempotent money movement, exact-once metering, enforced tenancy, immutable records), with explicit labeled assumptions, early risk-targeted spikes, shadow-billing validation gates, and a day-1-actionable build sequence; the only soft spot is entitlement decoupling, which is explicitly deferred rather than designed.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 10323,
+    "thinking_tokens": 7340,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 34787
+  },
+  "cost_usd": 0.9518775,
+  "latency_s": 140.351,
+  "raw_file": "raw/judge-6000ff99eb6f.engineering-quality-v1.fable-5.k1.txt"
+}

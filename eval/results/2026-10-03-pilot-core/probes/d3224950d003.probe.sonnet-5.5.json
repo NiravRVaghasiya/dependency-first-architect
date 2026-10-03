@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "d3224950d003.probe.sonnet-5.5",
+  "blind_id": "d3224950d003",
+  "blind_sha256": "ce716ec35d48d46dd0584b72cc7c5179eb434cfe8aa2de448db5b54a23dab758",
+  "judge": "sonnet-5.5",
+  "order_index": 36,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Rigid numbered template: Classification and constraints, Dependencies, Key decisions, First end-to-end slice (Phase 0), Phases, Validation checks, Cross-cutting concerns, AI layer, Exceptions, Deferred",
+    "Budgets labeled REQUIREMENT / ASSUMPTION / BASELINE / UNKNOWN with the gate that checks each",
+    "Decisions table with reversibility ratings (R2/R3), default, assumption, validated-by, and revisit trigger",
+    "Numbered validation gates V0–V8 with hypothesis, method, acceptance threshold, evidence, and failure consequence",
+    "Boilerplate sections like 'AI layer: N/A' and 'Exceptions: None', a 'Not applicable' list, and a dependency table with 'kinds' (organizational, risk-security, validation) that says 'All seven dependency kinds have instances'"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 379,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9768
+  },
+  "cost_usd": 0.028218,
+  "latency_s": 26.209,
+  "raw_file": "raw/probe-d3224950d003.probe.sonnet-5.5.txt"
+}

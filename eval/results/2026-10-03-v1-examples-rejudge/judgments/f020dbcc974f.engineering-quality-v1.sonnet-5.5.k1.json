@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f020dbcc974f.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "f020dbcc974f",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 25,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "GitHub doesn't retry failed webhook deliveries, so a reconciler re-requests them through the deliveries API and backfills with `issues?since=`.",
+      "rationale": "Accurate on hard parts (webhook non-retry, image proxy exfiltration, fork PR secrets, pull_request_target, workflows permission); minor quibbles like 'GitHub itself rejects' edits and a fork needing contents write."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Whether we build the fix-writing loop is decided by a Phase 6 bake-off against off-the-shelf tools such as GitHub Copilot coding agent and OpenHands.",
+      "rationale": "Covers triage and resolution, starts with one repo, explicit deferrals with triggers and reasons, buildable incrementally."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The model only *proposes* actions; fixed policy code decides.",
+      "rationale": "Consistent ledger, action contract, tiers and permissions applied across phases, with data ownership and cross-cutting table matching."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Apply each task's real historical fix and confirm the tests behave as expected. Run each test 3× and set aside flaky ones.",
+      "rationale": "Shadow mode, frozen eval sets, red team suite, benchmark validation before fixer choice, canary and ongoing production outcome tracking; thresholds labeled starting guesses."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "All numeric thresholds are starting guesses, to be recalibrated from what Phases 1–2 measure.",
+      "rationale": "Thresholds and defaults labeled with revisit triggers, but scale, team size and compliance assumptions are not explicitly listed."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Blocked network attempts page on-call (likely injection); resource metrics",
+      "rationale": "Covers injection, exfiltration via images, memory poisoning, duplicates, loops, flaky tests, base-branch moves, worker kill, provider outage, with detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Alerts on non-2xx webhook responses, any event waiting more than 5 min, run failure rate, and daily spend.",
+      "rationale": "Good signals, IaC, canary, kill switch, demotion; rollback procedure and on-call ownership/team sizing are thin."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Fixing: ≤$5, ≤50 tool calls and ≤30 min per attempt; at most 2 attempts per issue.",
+      "rationale": "Per-run budgets, daily breaker, model tiers, prompt caching, build vs buy; no aggregate cost estimate or build-cost estimate, and figures are guesses."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Only the parts that are expensive to reverse are fixed from day one: the ledger schema, the action contract, the sandbox boundary, and the App permissions.",
+      "rationale": "Explicitly identifies one-way decisions, isolates model via gateway, revisit triggers and exit paths for alternatives."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Modular monolith. One repo and one image with two roles: `web` receives webhooks, `worker` runs jobs.",
+      "rationale": "Mostly proportionate with deferrals, though nine phases, bake-off, routing and memory are substantial for a single-repo first scope."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: 1. A real label in production gets the comment within 2 min.",
+      "rationale": "Concrete Phase 0 slice, dependency-justified ordering, checkable exit criteria per phase, and adaptive bake-off."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "T2 needs approval: closing as a duplicate, assigning people, starting a fix... T3 is forbidden *by permissions*: merging, pushing to protected branches"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "GitHub App, never a personal access token. Its tokens expire after 1 h."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "The model *proposes* typed actions; fixed policy code decides."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "Short-lived gVisor containers... hold no credentials, can't reach the cloud metadata endpoint"
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "A failing test or repro script is required before any patch."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Go live for each label class with shadow precision ≥90%"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "PR outcomes: merged as-is, merged with edits (and how big the edits were), closed, or reverted within 30 days"
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "≤10 writes per issue per hour, which stops loops between bots; a $100 daily breaker per repo."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Fixing: ≤$5, ≤50 tool calls and ≤30 min per attempt; at most 2 attempts per issue."
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "goes into an append-only audit log"
+    },
+    {
+      "id": "P4-11",
+      "status": 2,
+      "evidence": "ripgrep text search, a tree-sitter symbol map, and extraction of `file:line` from stack traces"
+    },
+    {
+      "id": "P4-12",
+      "status": 2,
+      "evidence": "drops duplicate deliveries by `X-GitHub-Delivery` ID"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent proposes; humans merge."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "the part that reads untrusted text has no secrets and no open network access"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "the issue text goes inside a separate block marked as untrusted data"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "funnel from attempted to reproduced to green to PR to merged"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "A runaway loop is stopped at its limit and emits a `budget_exhausted` metric."
+    }
+  ],
+  "note": "Exceptionally thorough, security-first plan with strong validation, reversibility and actionability; weaker on explicit assumptions, aggregate cost and ops ownership, and somewhat heavy in scope.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2277,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 930,
+    "cache_creation_input_tokens": 19412
+  },
+  "cost_usd": 0.071494,
+  "latency_s": 25.337,
+  "raw_file": "raw/judge-f020dbcc974f.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

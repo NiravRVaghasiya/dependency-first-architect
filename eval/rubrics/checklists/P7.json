@@ -1,0 +1,89 @@
+{
+  "schema": "dfa-eval/checklist@1",
+  "prompt_id": "P7",
+  "request": "Plan a command-line tool that renames a folder of photos by their EXIF capture date.",
+  "provenance": "eval/rubrics/authoring/checklists-p6-p8.json (blind-authored; see eval/rubrics/AUTHORING.md)",
+  "items": [
+    {
+      "id": "P7-01",
+      "title": "Correct capture-date tag and format support",
+      "addressed_means": "The tool reads DateTimeOriginal first, with a clear fallback order (DateTimeDigitized, then DateTime), uses a reliable metadata library or exiftool, and states which formats it supports (JPEG, HEIC, RAW, PNG).",
+      "category": "correctness"
+    },
+    {
+      "id": "P7-02",
+      "title": "Missing or malformed EXIF handling",
+      "addressed_means": "Files with no date or a bogus one (e.g., '0000:00:00 00:00:00') are skipped and reported by default, and file modification time is used only if the user explicitly asks for it.",
+      "category": "correctness"
+    },
+    {
+      "id": "P7-03",
+      "title": "Collision-safe naming",
+      "addressed_means": "When photos share the same timestamp (e.g., burst shots), the tool uses SubSecTimeOriginal or a deterministic counter suffix and never overwrites an existing file.",
+      "category": "data"
+    },
+    {
+      "id": "P7-04",
+      "title": "Dry-run preview",
+      "addressed_means": "A dry-run mode shows the planned old-to-new mapping and any conflicts before any file is touched.",
+      "category": "product"
+    },
+    {
+      "id": "P7-05",
+      "title": "Safe, idempotent rename execution",
+      "addressed_means": "Each rename refuses to overwrite (it checks first, or uses a no-replace rename). Renames that swap or chain names go through temporary names. Running the tool again on already-renamed files changes nothing.",
+      "category": "data"
+    },
+    {
+      "id": "P7-06",
+      "title": "Undo log",
+      "addressed_means": "Every run writes a mapping log (e.g., CSV of old and new paths), and the tool can use that log to reverse the run.",
+      "category": "data"
+    },
+    {
+      "id": "P7-07",
+      "title": "Timezone semantics",
+      "addressed_means": "The plan states that EXIF times are camera-local with no timezone offset. It uses OffsetTimeOriginal when present and does not silently convert times to UTC.",
+      "category": "correctness"
+    },
+    {
+      "id": "P7-08",
+      "title": "Companion and sidecar files",
+      "addressed_means": "Paired files (RAW+JPEG, .xmp, .AAE, Live Photo .MOV) are renamed together under the same base name so the pairs stay linked.",
+      "category": "correctness"
+    },
+    {
+      "id": "P7-09",
+      "title": "Portable, sortable filename template",
+      "addressed_means": "The default name format sorts by time (e.g., YYYY-MM-DD_HHMMSS) and contains no characters illegal on Windows such as colons. The template is configurable, and the original extension is kept.",
+      "category": "correctness"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "title": "Silent overwrite on collision",
+      "recognize": "The plan calls os.rename or mv on a computed name without checking whether the target exists. On POSIX this silently replaces one photo with another."
+    },
+    {
+      "id": "P7-T2",
+      "title": "Wrong date source",
+      "recognize": "The plan uses filesystem mtime or ctime as the main date, or uses the EXIF DateTime (modification) tag instead of DateTimeOriginal."
+    },
+    {
+      "id": "P7-T3",
+      "title": "Overbuilt machinery",
+      "recognize": "The plan adds databases, a GUI or web service, cloud sync, plugin systems, ML tagging, or a microservice layout to what is a small single-purpose CLI."
+    },
+    {
+      "id": "P7-T4",
+      "title": "Rewriting image files",
+      "recognize": "The plan opens and re-saves images with an imaging library (losing quality or metadata) or edits EXIF, when the task only needs a filesystem rename."
+    },
+    {
+      "id": "P7-T5",
+      "title": "Illegal or unsortable filenames",
+      "recognize": "The plan uses the raw EXIF string with colons as the filename, or a locale-dependent date format that does not sort in time order."
+    }
+  ]
+}

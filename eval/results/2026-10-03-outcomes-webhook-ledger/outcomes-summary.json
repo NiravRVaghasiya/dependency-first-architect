@@ -1,0 +1,1352 @@
+{
+  "schema": "dfa-eval/outcomes-summary@1",
+  "run_id": "2026-10-03-outcomes-webhook-ledger",
+  "task": "eval/outcomes/tasks/webhook-ledger",
+  "config_name": "webhook-ledger-v1",
+  "implementer": {
+    "id": "sonnet-5.5",
+    "model": "claude-sonnet-5-5",
+    "effort": "high"
+  },
+  "planner": {
+    "id": "opus-5.5",
+    "model": "claude-opus-5-5",
+    "effort": "high"
+  },
+  "attempts": {
+    "planned": 20,
+    "recorded": 20,
+    "ok": 20,
+    "excluded": [],
+    "superseded": 0
+  },
+  "arms": [
+    {
+      "arm": "no-plan",
+      "plan_condition": null,
+      "n_planned": 5,
+      "n": 5,
+      "n_superseded": 0,
+      "metrics": {
+        "change_request_pass_rate": {
+          "n": 5,
+          "mean": 0.8,
+          "median": 1.0,
+          "sd": 0.4472,
+          "min": 0.0,
+          "max": 1.0,
+          "ci95": [
+            0.2447,
+            1.3553
+          ]
+        },
+        "cost_usd": {
+          "n": 5,
+          "mean": 0.2913,
+          "median": 0.2902,
+          "sd": 0.0161,
+          "min": 0.2742,
+          "max": 0.3081,
+          "ci95": [
+            0.2713,
+            0.3112
+          ]
+        },
+        "files_changed": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1,
+          "sd": 0.0,
+          "min": 1,
+          "max": 1,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "latency_s": {
+          "n": 5,
+          "mean": 182.2096,
+          "median": 181.782,
+          "sd": 13.5608,
+          "min": 163.041,
+          "max": 200.476,
+          "ci95": [
+            165.3717,
+            199.0475
+          ]
+        },
+        "output_tokens": {
+          "n": 5,
+          "mean": 19037.6,
+          "median": 18977,
+          "sd": 1179.1852,
+          "min": 17724,
+          "max": 20483,
+          "ci95": [
+            17573.4482,
+            20501.7518
+          ]
+        },
+        "r1_failure-injection": {
+          "n": 5,
+          "mean": 0.8,
+          "median": 1.0,
+          "sd": 0.4472,
+          "min": 0.0,
+          "max": 1.0,
+          "ci95": [
+            0.2447,
+            1.3553
+          ]
+        },
+        "r1_functional": {
+          "n": 5,
+          "mean": 0.8667,
+          "median": 1.0,
+          "sd": 0.2981,
+          "min": 0.3333,
+          "max": 1.0,
+          "ci95": [
+            0.4965,
+            1.2369
+          ]
+        },
+        "r1_idempotency": {
+          "n": 5,
+          "mean": 0.8,
+          "median": 1.0,
+          "sd": 0.4472,
+          "min": 0.0,
+          "max": 1.0,
+          "ci95": [
+            0.2447,
+            1.3553
+          ]
+        },
+        "r1_money": {
+          "n": 5,
+          "mean": 0.88,
+          "median": 1.0,
+          "sd": 0.2683,
+          "min": 0.4,
+          "max": 1.0,
+          "ci95": [
+            0.5468,
+            1.2132
+          ]
+        },
+        "r1_ordering": {
+          "n": 5,
+          "mean": 0.8,
+          "median": 1.0,
+          "sd": 0.4472,
+          "min": 0.0,
+          "max": 1.0,
+          "ci95": [
+            0.2447,
+            1.3553
+          ]
+        },
+        "r1_security": {
+          "n": 5,
+          "mean": 0.92,
+          "median": 1.0,
+          "sd": 0.1789,
+          "min": 0.6,
+          "max": 1.0,
+          "ci95": [
+            0.6979,
+            1.1421
+          ]
+        },
+        "regression_pass_rate": {
+          "n": 5,
+          "mean": 0.8629,
+          "median": 1.0,
+          "sd": 0.3067,
+          "min": 0.3143,
+          "max": 1.0,
+          "ci95": [
+            0.4821,
+            1.2436
+          ]
+        },
+        "rework_lines": {
+          "n": 5,
+          "mean": 76.0,
+          "median": 71,
+          "sd": 17.5499,
+          "min": 57,
+          "max": 103,
+          "ci95": [
+            54.2089,
+            97.7911
+          ]
+        },
+        "round1_pass_rate": {
+          "n": 5,
+          "mean": 0.8629,
+          "median": 1.0,
+          "sd": 0.3067,
+          "min": 0.3143,
+          "max": 1.0,
+          "ci95": [
+            0.4821,
+            1.2436
+          ]
+        }
+      }
+    },
+    {
+      "arm": "baseline-plan",
+      "plan_condition": "baseline",
+      "n_planned": 5,
+      "n": 5,
+      "n_superseded": 0,
+      "metrics": {
+        "change_request_pass_rate": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "cost_usd": {
+          "n": 5,
+          "mean": 0.4038,
+          "median": 0.4133,
+          "sd": 0.0769,
+          "min": 0.3172,
+          "max": 0.5113,
+          "ci95": [
+            0.3083,
+            0.4993
+          ]
+        },
+        "files_changed": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1,
+          "sd": 0.0,
+          "min": 1,
+          "max": 1,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "latency_s": {
+          "n": 5,
+          "mean": 215.633,
+          "median": 223.896,
+          "sd": 39.3999,
+          "min": 164.7,
+          "max": 267.635,
+          "ci95": [
+            166.7116,
+            264.5544
+          ]
+        },
+        "output_tokens": {
+          "n": 5,
+          "mean": 24427.2,
+          "median": 23726,
+          "sd": 4864.6523,
+          "min": 19102,
+          "max": 31476,
+          "ci95": [
+            18386.9364,
+            30467.4636
+          ]
+        },
+        "r1_failure-injection": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "r1_functional": {
+          "n": 5,
+          "mean": 0.9333,
+          "median": 0.8889,
+          "sd": 0.0609,
+          "min": 0.8889,
+          "max": 1.0,
+          "ci95": [
+            0.8578,
+            1.0089
+          ]
+        },
+        "r1_idempotency": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "r1_money": {
+          "n": 5,
+          "mean": 0.76,
+          "median": 0.6,
+          "sd": 0.2191,
+          "min": 0.6,
+          "max": 1.0,
+          "ci95": [
+            0.488,
+            1.032
+          ]
+        },
+        "r1_ordering": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "r1_security": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "regression_pass_rate": {
+          "n": 5,
+          "mean": 0.9486,
+          "median": 0.9143,
+          "sd": 0.0469,
+          "min": 0.9143,
+          "max": 1.0,
+          "ci95": [
+            0.8903,
+            1.0069
+          ]
+        },
+        "rework_lines": {
+          "n": 5,
+          "mean": 78.8,
+          "median": 76,
+          "sd": 21.2061,
+          "min": 55,
+          "max": 101,
+          "ci95": [
+            52.4691,
+            105.1309
+          ]
+        },
+        "round1_pass_rate": {
+          "n": 5,
+          "mean": 0.9486,
+          "median": 0.9143,
+          "sd": 0.0469,
+          "min": 0.9143,
+          "max": 1.0,
+          "ci95": [
+            0.8903,
+            1.0069
+          ]
+        }
+      }
+    },
+    {
+      "arm": "dfa-plan",
+      "plan_condition": "dfa",
+      "n_planned": 5,
+      "n": 5,
+      "n_superseded": 0,
+      "metrics": {
+        "change_request_pass_rate": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "cost_usd": {
+          "n": 5,
+          "mean": 0.4035,
+          "median": 0.4191,
+          "sd": 0.0588,
+          "min": 0.3179,
+          "max": 0.4768,
+          "ci95": [
+            0.3304,
+            0.4765
+          ]
+        },
+        "files_changed": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1,
+          "sd": 0.0,
+          "min": 1,
+          "max": 1,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "latency_s": {
+          "n": 5,
+          "mean": 196.7048,
+          "median": 195.831,
+          "sd": 31.8244,
+          "min": 159.979,
+          "max": 234.921,
+          "ci95": [
+            157.1895,
+            236.2201
+          ]
+        },
+        "output_tokens": {
+          "n": 5,
+          "mean": 22593.8,
+          "median": 23713,
+          "sd": 3663.2329,
+          "min": 16911,
+          "max": 26823,
+          "ci95": [
+            18045.2956,
+            27142.3044
+          ]
+        },
+        "r1_failure-injection": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "r1_functional": {
+          "n": 5,
+          "mean": 0.9333,
+          "median": 1.0,
+          "sd": 0.0994,
+          "min": 0.7778,
+          "max": 1.0,
+          "ci95": [
+            0.8099,
+            1.0567
+          ]
+        },
+        "r1_idempotency": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "r1_money": {
+          "n": 5,
+          "mean": 0.84,
+          "median": 1.0,
+          "sd": 0.2191,
+          "min": 0.6,
+          "max": 1.0,
+          "ci95": [
+            0.568,
+            1.112
+          ]
+        },
+        "r1_ordering": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "r1_security": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "regression_pass_rate": {
+          "n": 5,
+          "mean": 0.96,
+          "median": 1.0,
+          "sd": 0.0557,
+          "min": 0.8857,
+          "max": 1.0,
+          "ci95": [
+            0.8908,
+            1.0292
+          ]
+        },
+        "rework_lines": {
+          "n": 5,
+          "mean": 66.6,
+          "median": 75,
+          "sd": 22.4121,
+          "min": 28,
+          "max": 85,
+          "ci95": [
+            38.7718,
+            94.4282
+          ]
+        },
+        "round1_pass_rate": {
+          "n": 5,
+          "mean": 0.96,
+          "median": 1.0,
+          "sd": 0.0557,
+          "min": 0.8857,
+          "max": 1.0,
+          "ci95": [
+            0.8908,
+            1.0292
+          ]
+        }
+      }
+    },
+    {
+      "arm": "generic-plan",
+      "plan_condition": "generic-control",
+      "n_planned": 5,
+      "n": 5,
+      "n_superseded": 0,
+      "metrics": {
+        "change_request_pass_rate": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "cost_usd": {
+          "n": 5,
+          "mean": 0.5183,
+          "median": 0.5155,
+          "sd": 0.0632,
+          "min": 0.4238,
+          "max": 0.588,
+          "ci95": [
+            0.4398,
+            0.5968
+          ]
+        },
+        "files_changed": {
+          "n": 5,
+          "mean": 1.2,
+          "median": 1,
+          "sd": 0.4472,
+          "min": 1,
+          "max": 2,
+          "ci95": [
+            0.6447,
+            1.7553
+          ]
+        },
+        "latency_s": {
+          "n": 5,
+          "mean": 226.495,
+          "median": 234.699,
+          "sd": 17.0369,
+          "min": 207.06,
+          "max": 245.177,
+          "ci95": [
+            205.3409,
+            247.6491
+          ]
+        },
+        "output_tokens": {
+          "n": 5,
+          "mean": 25736.8,
+          "median": 26077,
+          "sd": 2816.4803,
+          "min": 21683,
+          "max": 28579,
+          "ci95": [
+            22239.6778,
+            29233.9222
+          ]
+        },
+        "r1_failure-injection": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "r1_functional": {
+          "n": 5,
+          "mean": 0.9778,
+          "median": 1.0,
+          "sd": 0.0497,
+          "min": 0.8889,
+          "max": 1.0,
+          "ci95": [
+            0.9161,
+            1.0395
+          ]
+        },
+        "r1_idempotency": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "r1_money": {
+          "n": 5,
+          "mean": 0.92,
+          "median": 1.0,
+          "sd": 0.1789,
+          "min": 0.6,
+          "max": 1.0,
+          "ci95": [
+            0.6979,
+            1.1421
+          ]
+        },
+        "r1_ordering": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "r1_security": {
+          "n": 5,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "regression_pass_rate": {
+          "n": 5,
+          "mean": 0.9829,
+          "median": 1.0,
+          "sd": 0.0383,
+          "min": 0.9143,
+          "max": 1.0,
+          "ci95": [
+            0.9353,
+            1.0305
+          ]
+        },
+        "rework_lines": {
+          "n": 5,
+          "mean": 70.2,
+          "median": 67,
+          "sd": 18.2264,
+          "min": 50,
+          "max": 98,
+          "ci95": [
+            47.569,
+            92.831
+          ]
+        },
+        "round1_pass_rate": {
+          "n": 5,
+          "mean": 0.9829,
+          "median": 1.0,
+          "sd": 0.0383,
+          "min": 0.9143,
+          "max": 1.0,
+          "ci95": [
+            0.9353,
+            1.0305
+          ]
+        }
+      }
+    }
+  ],
+  "contrasts": [
+    {
+      "treatment": "dfa-plan",
+      "control": "baseline-plan",
+      "metric": "round1_pass_rate",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.0114,
+      "bootstrap_ci95": [
+        -0.0457,
+        0.0686
+      ],
+      "cliffs_delta": 0.08,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "dfa-plan",
+      "control": "baseline-plan",
+      "metric": "change_request_pass_rate",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.0,
+      "bootstrap_ci95": [
+        0.0,
+        0.0
+      ],
+      "cliffs_delta": 0.0,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "dfa-plan",
+      "control": "baseline-plan",
+      "metric": "regression_pass_rate",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.0114,
+      "bootstrap_ci95": [
+        -0.0457,
+        0.0686
+      ],
+      "cliffs_delta": 0.08,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "dfa-plan",
+      "control": "baseline-plan",
+      "metric": "rework_lines",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": -12.2,
+      "bootstrap_ci95": [
+        -37.8,
+        10.0
+      ],
+      "cliffs_delta": -0.2,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "dfa-plan",
+      "control": "baseline-plan",
+      "metric": "cost_usd",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": -0.0003,
+      "bootstrap_ci95": [
+        -0.0772,
+        0.0733
+      ],
+      "cliffs_delta": 0.04,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "baseline-plan",
+      "control": "no-plan",
+      "metric": "round1_pass_rate",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.0857,
+      "bootstrap_ci95": [
+        -0.0857,
+        0.36
+      ],
+      "cliffs_delta": -0.28,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "baseline-plan",
+      "control": "no-plan",
+      "metric": "change_request_pass_rate",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.2,
+      "bootstrap_ci95": [
+        0.0,
+        0.6
+      ],
+      "cliffs_delta": 0.2,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "baseline-plan",
+      "control": "no-plan",
+      "metric": "regression_pass_rate",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.0857,
+      "bootstrap_ci95": [
+        -0.0857,
+        0.36
+      ],
+      "cliffs_delta": -0.28,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "baseline-plan",
+      "control": "no-plan",
+      "metric": "rework_lines",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 2.8,
+      "bootstrap_ci95": [
+        -18.8,
+        24.0
+      ],
+      "cliffs_delta": -0.04,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "baseline-plan",
+      "control": "no-plan",
+      "metric": "cost_usd",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.1125,
+      "bootstrap_ci95": [
+        0.0525,
+        0.1747
+      ],
+      "cliffs_delta": 1.0,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "dfa-plan",
+      "control": "no-plan",
+      "metric": "round1_pass_rate",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.0971,
+      "bootstrap_ci95": [
+        -0.0686,
+        0.3771
+      ],
+      "cliffs_delta": -0.12,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "dfa-plan",
+      "control": "no-plan",
+      "metric": "change_request_pass_rate",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.2,
+      "bootstrap_ci95": [
+        0.0,
+        0.6
+      ],
+      "cliffs_delta": 0.2,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "dfa-plan",
+      "control": "no-plan",
+      "metric": "regression_pass_rate",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.0971,
+      "bootstrap_ci95": [
+        -0.0743,
+        0.3771
+      ],
+      "cliffs_delta": -0.12,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "dfa-plan",
+      "control": "no-plan",
+      "metric": "rework_lines",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": -9.4,
+      "bootstrap_ci95": [
+        -33.6,
+        10.8
+      ],
+      "cliffs_delta": -0.04,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "dfa-plan",
+      "control": "no-plan",
+      "metric": "cost_usd",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.1122,
+      "bootstrap_ci95": [
+        0.0628,
+        0.1579
+      ],
+      "cliffs_delta": 1.0,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "generic-plan",
+      "control": "baseline-plan",
+      "metric": "round1_pass_rate",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.0343,
+      "bootstrap_ci95": [
+        -0.0171,
+        0.0857
+      ],
+      "cliffs_delta": 0.4,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "generic-plan",
+      "control": "baseline-plan",
+      "metric": "change_request_pass_rate",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.0,
+      "bootstrap_ci95": [
+        0.0,
+        0.0
+      ],
+      "cliffs_delta": 0.0,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "generic-plan",
+      "control": "baseline-plan",
+      "metric": "regression_pass_rate",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.0343,
+      "bootstrap_ci95": [
+        -0.0171,
+        0.069
+      ],
+      "cliffs_delta": 0.4,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "generic-plan",
+      "control": "baseline-plan",
+      "metric": "rework_lines",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": -8.6,
+      "bootstrap_ci95": [
+        -30.2,
+        13.4
+      ],
+      "cliffs_delta": -0.32,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "generic-plan",
+      "control": "baseline-plan",
+      "metric": "cost_usd",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.1145,
+      "bootstrap_ci95": [
+        0.0361,
+        0.1911
+      ],
+      "cliffs_delta": 0.76,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "dfa-plan",
+      "control": "generic-plan",
+      "metric": "round1_pass_rate",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": -0.0229,
+      "bootstrap_ci95": [
+        -0.0743,
+        0.0343
+      ],
+      "cliffs_delta": -0.24,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "dfa-plan",
+      "control": "generic-plan",
+      "metric": "change_request_pass_rate",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.0,
+      "bootstrap_ci95": [
+        0.0,
+        0.0
+      ],
+      "cliffs_delta": 0.0,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "dfa-plan",
+      "control": "generic-plan",
+      "metric": "regression_pass_rate",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": -0.0229,
+      "bootstrap_ci95": [
+        -0.0743,
+        0.0343
+      ],
+      "cliffs_delta": -0.24,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "dfa-plan",
+      "control": "generic-plan",
+      "metric": "rework_lines",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": -3.6,
+      "bootstrap_ci95": [
+        -28.8,
+        17.0
+      ],
+      "cliffs_delta": 0.12,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    },
+    {
+      "treatment": "dfa-plan",
+      "control": "generic-plan",
+      "metric": "cost_usd",
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": -0.1148,
+      "bootstrap_ci95": [
+        -0.1827,
+        -0.0485
+      ],
+      "cliffs_delta": -0.92,
+      "notes": [
+        "n < 10 attempts per arm: descriptive only"
+      ]
+    }
+  ],
+  "failed_tests": {
+    "1": {
+      "test_atomicity.FailureInjection.test_failed_write_during_a_payment": {
+        "no-plan": 1
+      },
+      "test_atomicity.FailureInjection.test_failed_write_during_a_refund": {
+        "no-plan": 1
+      },
+      "test_functional.Functional.test_accounts_are_independent": {
+        "no-plan": 1
+      },
+      "test_functional.Functional.test_full_refund_takes_the_money_back": {
+        "no-plan": 1
+      },
+      "test_functional.Functional.test_header_name_in_any_case": {
+        "no-plan": 1
+      },
+      "test_functional.Functional.test_malformed_json_is_rejected": {
+        "dfa-plan": 1
+      },
+      "test_functional.Functional.test_missing_field_is_rejected": {
+        "baseline-plan": 3,
+        "dfa-plan": 2,
+        "generic-plan": 1
+      },
+      "test_functional.Functional.test_payment_credits_the_account": {
+        "no-plan": 1
+      },
+      "test_functional.Functional.test_payments_accumulate_in_order": {
+        "no-plan": 1
+      },
+      "test_functional.Functional.test_unhandled_event_type_is_acknowledged_and_ignored": {
+        "no-plan": 1
+      },
+      "test_idempotency.Idempotency.test_five_deliveries_count_once": {
+        "no-plan": 1
+      },
+      "test_idempotency.Idempotency.test_redelivered_payment_counts_once": {
+        "no-plan": 1
+      },
+      "test_idempotency.Idempotency.test_redelivered_refund_counts_once": {
+        "no-plan": 1
+      },
+      "test_idempotency.Idempotency.test_redelivered_unhandled_event_is_harmless": {
+        "no-plan": 1
+      },
+      "test_idempotency.Idempotency.test_redelivery_after_a_restart_counts_once": {
+        "no-plan": 1
+      },
+      "test_idempotency.Idempotency.test_redelivery_after_other_events": {
+        "no-plan": 1
+      },
+      "test_money.Money.test_balance_is_an_integer": {
+        "no-plan": 1
+      },
+      "test_money.Money.test_fractional_amount_is_rejected": {
+        "baseline-plan": 3,
+        "dfa-plan": 2,
+        "generic-plan": 1
+      },
+      "test_money.Money.test_large_amounts_stay_exact": {
+        "no-plan": 1
+      },
+      "test_money.Money.test_payment_in_another_currency_does_not_change_the_account": {
+        "no-plan": 1
+      },
+      "test_money.Money.test_string_amount_is_rejected": {
+        "baseline-plan": 3,
+        "dfa-plan": 2,
+        "generic-plan": 1
+      },
+      "test_ordering.Ordering.test_early_refund_for_one_payment_does_not_touch_another": {
+        "no-plan": 1
+      },
+      "test_ordering.Ordering.test_payments_delivered_out_of_order_both_count": {
+        "no-plan": 1
+      },
+      "test_ordering.Ordering.test_refund_before_its_payment_is_not_lost_or_doubled": {
+        "no-plan": 1
+      },
+      "test_security.Security.test_deliveries_inside_the_window_are_accepted": {
+        "no-plan": 1
+      },
+      "test_security.Security.test_same_id_with_a_different_body_is_rejected": {
+        "no-plan": 1
+      },
+      "test_security.Security.test_signature_covers_the_exact_bytes": {
+        "no-plan": 1
+      },
+      "test_security.Security.test_the_window_uses_the_signature_time_not_the_event_time": {
+        "no-plan": 1
+      }
+    },
+    "2": {
+      "test_atomicity.FailureInjection.test_failed_write_during_a_payment": {
+        "no-plan": 1
+      },
+      "test_atomicity.FailureInjection.test_failed_write_during_a_refund": {
+        "no-plan": 1
+      },
+      "test_change_request.ChangeRequest.test_early_partial_refund_is_not_lost_or_doubled": {
+        "no-plan": 1
+      },
+      "test_change_request.ChangeRequest.test_full_refund_still_works": {
+        "no-plan": 1
+      },
+      "test_change_request.ChangeRequest.test_over_refund_is_rejected_with_422": {
+        "no-plan": 1
+      },
+      "test_change_request.ChangeRequest.test_partial_refunds_accumulate": {
+        "no-plan": 1
+      },
+      "test_change_request.ChangeRequest.test_redelivered_partial_refund_counts_once": {
+        "no-plan": 1
+      },
+      "test_change_request.ChangeRequest.test_refunding_the_remainder_is_allowed": {
+        "no-plan": 1
+      },
+      "test_change_request.ChangeRequest.test_single_refund_larger_than_the_payment_is_rejected_with_422": {
+        "no-plan": 1
+      },
+      "test_functional.Functional.test_accounts_are_independent": {
+        "no-plan": 1
+      },
+      "test_functional.Functional.test_full_refund_takes_the_money_back": {
+        "no-plan": 1
+      },
+      "test_functional.Functional.test_header_name_in_any_case": {
+        "no-plan": 1
+      },
+      "test_functional.Functional.test_malformed_json_is_rejected": {
+        "dfa-plan": 1
+      },
+      "test_functional.Functional.test_missing_field_is_rejected": {
+        "baseline-plan": 3,
+        "dfa-plan": 2,
+        "generic-plan": 1
+      },
+      "test_functional.Functional.test_payment_credits_the_account": {
+        "no-plan": 1
+      },
+      "test_functional.Functional.test_payments_accumulate_in_order": {
+        "no-plan": 1
+      },
+      "test_functional.Functional.test_unhandled_event_type_is_acknowledged_and_ignored": {
+        "no-plan": 1
+      },
+      "test_idempotency.Idempotency.test_five_deliveries_count_once": {
+        "no-plan": 1
+      },
+      "test_idempotency.Idempotency.test_redelivered_payment_counts_once": {
+        "no-plan": 1
+      },
+      "test_idempotency.Idempotency.test_redelivered_refund_counts_once": {
+        "no-plan": 1
+      },
+      "test_idempotency.Idempotency.test_redelivered_unhandled_event_is_harmless": {
+        "no-plan": 1
+      },
+      "test_idempotency.Idempotency.test_redelivery_after_a_restart_counts_once": {
+        "no-plan": 1
+      },
+      "test_idempotency.Idempotency.test_redelivery_after_other_events": {
+        "no-plan": 1
+      },
+      "test_money.Money.test_balance_is_an_integer": {
+        "no-plan": 1
+      },
+      "test_money.Money.test_fractional_amount_is_rejected": {
+        "baseline-plan": 3,
+        "dfa-plan": 2,
+        "generic-plan": 1
+      },
+      "test_money.Money.test_large_amounts_stay_exact": {
+        "no-plan": 1
+      },
+      "test_money.Money.test_payment_in_another_currency_does_not_change_the_account": {
+        "no-plan": 1
+      },
+      "test_money.Money.test_string_amount_is_rejected": {
+        "baseline-plan": 3,
+        "dfa-plan": 2,
+        "generic-plan": 1
+      },
+      "test_ordering.Ordering.test_early_refund_for_one_payment_does_not_touch_another": {
+        "no-plan": 1
+      },
+      "test_ordering.Ordering.test_payments_delivered_out_of_order_both_count": {
+        "no-plan": 1
+      },
+      "test_ordering.Ordering.test_refund_before_its_payment_is_not_lost_or_doubled": {
+        "no-plan": 1
+      },
+      "test_security.Security.test_deliveries_inside_the_window_are_accepted": {
+        "no-plan": 1
+      },
+      "test_security.Security.test_same_id_with_a_different_body_is_rejected": {
+        "no-plan": 1
+      },
+      "test_security.Security.test_signature_covers_the_exact_bytes": {
+        "no-plan": 1
+      },
+      "test_security.Security.test_the_window_uses_the_signature_time_not_the_event_time": {
+        "no-plan": 1
+      }
+    }
+  },
+  "cost": {
+    "planning_usd": 8.5799,
+    "implementer_usd": 8.0841,
+    "superseded_implementer_usd": 0.0,
+    "total_usd": 16.6641
+  },
+  "flags": [
+    "planner sessions ran with output style 'Concise' and permission mode auto (15) (the operator's Claude Code settings apply under --bare)",
+    "implementer sessions ran with output style 'Concise' and permission mode acceptEdits (40) (the operator's Claude Code settings apply under --bare)"
+  ]
+}

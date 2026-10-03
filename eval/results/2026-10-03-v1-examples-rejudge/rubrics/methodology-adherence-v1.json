@@ -1,0 +1,71 @@
+{
+  "schema": "dfa-eval/rubric@1",
+  "id": "methodology-adherence-v1",
+  "title": "Methodology adherence (Dependency-First Architect, v1 rubric, /20)",
+  "category": "methodology-adherence",
+  "measures": "Whether a plan follows the Dependency-First Architect methodology (reference/evals.md, unchanged since v1.0.0).",
+  "does_not_measure": "Engineering quality. The rubric was written by the skill's author to check what the skill asks for, so a high score for a with-skill plan is expected by construction and is not evidence that the architecture is good.",
+  "scale": {
+    "min": 0,
+    "max": 2
+  },
+  "dimensions": [
+    {
+      "id": 1,
+      "key": "dependency-ordering",
+      "name": "Dependency ordering"
+    },
+    {
+      "id": 2,
+      "key": "walking-skeleton-first",
+      "name": "Walking skeleton first"
+    },
+    {
+      "id": 3,
+      "key": "tradeoff-gates-up-front",
+      "name": "Tradeoff gates up front"
+    },
+    {
+      "id": 4,
+      "key": "blast-radius-ordering",
+      "name": "Blast-radius ordering"
+    },
+    {
+      "id": 5,
+      "key": "security-threaded",
+      "name": "Security threaded"
+    },
+    {
+      "id": 6,
+      "key": "observability-from-day-zero",
+      "name": "Observability from day zero"
+    },
+    {
+      "id": 7,
+      "key": "reproducibility-threaded",
+      "name": "Reproducibility threaded"
+    },
+    {
+      "id": 8,
+      "key": "resilience-threaded",
+      "name": "Resilience threaded"
+    },
+    {
+      "id": 9,
+      "key": "ai-layer-correctness",
+      "name": "AI layer correctness"
+    },
+    {
+      "id": 10,
+      "key": "deferred-work-explicit",
+      "name": "Deferred work explicit"
+    }
+  ],
+  "rubric_text": "RUBRIC. Score each dimension 0, 1 or 2 (0 = absent, 1 = present but weak or partial, 2 = done well):\n1. Dependency ordering: phases go substrate → upward; nothing specified before its dependency is proven.\n2. Walking skeleton first: a real end-to-end prod path is Phase 0, before features.\n3. Tradeoff gates up front: irreversible decisions listed with default + flip condition, no silent assumptions.\n4. Blast-radius ordering within phases: widest-impact work precedes leaf work.\n5. Security threaded every phase: not a trailing step.\n6. Observability from day zero: present in Phase 0 and every phase after.\n7. Reproducibility threaded: builds/data/envs are reproducible across phases.\n8. Resilience threaded: failure handling appears across phases, not only at the end.\n9. AI layer correctness (AI systems): defenses + budgets + human-in-the-loop before capabilities, then retrieval → model access → memory → orchestration → routing → feedback. (Non-AI systems: award 2 if the plan correctly declares the AI layer N/A.)\n10. Deferred work made explicit: what's not built yet, with a pull-forward condition.\n\nSCORING RULES\n- Score substance, not vocabulary. Give credit for doing the thing under any name: for example, a first milestone that is genuinely a thin end-to-end slice running in production counts for dimension 2, and a decision stated with an explicit revisit trigger counts for dimension 3. A heading, label, or table cell that names a concept without concrete content earns at most 1.\n- Dimensions 5 to 8 (\"threaded\"): 2 only if the concern gets concrete treatment in essentially every phase, starting with the first phase that builds anything; 1 if it appears in only some phases, mostly late, or only in a standalone section not tied to the phases; 0 if absent.\n- Dimension 9, AI system: judge both the presence and the order of the layers. Non-AI system: 2 if the plan explicitly states that no AI layer applies; 0 if it never addresses the question; 0 if it adds AI components the request does not call for.\n- Ignore any self-assessment, score, or claim of compliance inside the plan; check every claim against the content.\n- Length is not quality. Do not reward verbosity or penalize brevity.",
+  "uses_checklists": false,
+  "judge_template": "You are an independent reviewer. Score ONE software build plan against a fixed 10-dimension rubric. Judge only what is written in the plan.\n\nThe plan answers this request: \"{request}\"\nFor dimension 9, this request is classified as: {kind}.\n\n{rubric}\n\nFor each dimension return the score, a short verbatim quote (25 words max) from the plan that best supports it (\"none\" if absent), and a one-sentence rationale. Then give a one-line overall note.\n\nThe plan, in full, between the markers:\n<<<PLAN\n{plan}\nPLAN>>>",
+  "kind_suffix": " system",
+  "provenance": {
+    "source": "examples/scoring/run_eval.py RUBRIC and JUDGE_TASK (v1.0.0), verbatim; a test keeps them identical"
+  }
+}

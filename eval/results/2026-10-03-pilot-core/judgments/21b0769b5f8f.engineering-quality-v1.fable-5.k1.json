@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "21b0769b5f8f.engineering-quality-v1.fable-5.k1",
+  "blind_id": "21b0769b5f8f",
+  "blind_sha256": "a8c07c8db10382ac8d23dfb5fc58622b800367498b9c71c0fda04a346763a5cf",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 306,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "OT (operational transformation, as in Google Docs): needs a central server to order edits, and the server is harder to build correctly.",
+      "rationale": "Characterizations of CRDT vs OT, log+snapshot loading, server-side authorization and CRDT-based undo are all accurate; nothing the design depends on is misstated, though subtle limits (CRDT metadata overhead, rich-text merge edge cases) go unexamined."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Set the scope. Decide on maximum users per document, maximum document size, whether offline editing is needed",
+      "rationale": "It directly answers the ordering request, covers the implied core capabilities (sync, persistence, permissions, presence, offline), separates essentials from optionals ('if it's in scope'), and is credibly buildable; protocol versioning is a minor gap."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Every edit should go through the CRDT, so you have one source of truth.",
+      "rationale": "A single consistent design: CRDT as source of truth everywhere, dependency reasoning stated explicitly ('the permission checks wrap the sync channel'), with no internal contradictions, only loose ends like drift recovery."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "two CRDT copies in one browser tab, linked in memory, should end up identical. This catches merge bugs before networking hides them.",
+      "rationale": "Each phase has a checkable test tied to its specific risk (convergence, fault injection, crash restart, load test) and drift alerts continue in production, but convergence testing lacks randomization/duplicated delivery and load criteria are unstated."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "These answers decide your infrastructure.",
+      "rationale": "Unspecified constraints (scale, document size, offline, history) are surfaced as explicit Phase-0 decisions with their sensitivity noted, and no invented figures are presented as fact, though no defaults or what-if analysis is given."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "alerts if two copies of a document drift apart",
+      "rationale": "Drift detection, crash recovery testing, reconnection buffering and client-only-permission-check risk are concrete, but recovery from detected drift, duplicate delivery, access revocation on live connections and version-skew failures are missing or vague."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Add observability: sync delay, number of connections, and alerts if two copies of a document drift apart.",
+      "rationale": "Domain-meaningful health signals, rate limits and horizontal scaling are covered, but deployment, rollback, schema/protocol migration and incident ownership are absent."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "needs a central server to order edits, and the server is harder to build correctly",
+      "rationale": "Build-vs-buy reasoning (Yjs, off-the-shelf editors) implicitly controls engineering cost, but money, compute, storage and vendor costs and their growth with usage are never discussed."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Phase 0: Decisions you can't easily change later (before writing code)",
+      "rationale": "The genuinely one-way choices (merge algorithm, document model, scope) are identified, front-loaded and validated early via Phase-1 tests, though explicit exit or migration paths are not given."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Run multiple server instances. Either route each document to one server (sticky routing by document ID) or use pub/sub",
+      "rationale": "Lean and well-matched: scale work is deferred to Phase 8, proven libraries replace custom machinery, and nothing speculative appears, with only slight under-scoping on versioning/ops essentials."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Phase 0 decisions → editor + CRDT working locally → sync → persistence → permissions. Everything after that can be built in parallel",
+      "rationale": "Ordering is justified by dependencies, each phase ends in a checkable result, risks are ranked, and recommendations are specific (Yjs, Postgres append-only log); only adaptation criteria if early tests fail are missing."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "Recommendation: use Yjs unless you have a specific reason not to."
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Decide whether documents are plain text, rich text, or a block structure (like Notion)."
+    },
+    {
+      "id": "P5-03",
+      "status": 1,
+      "evidence": "you simulate network drops and messages arriving out of order (fault injection). Both copies must end up the same."
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "Store document updates in a database (Postgres or a key-value store) as an append-only log."
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "Either route each document to one server (sticky routing by document ID) or use pub/sub (e.g., Redis) between servers."
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Save a local copy in the browser (IndexedDB), so documents open instantly and can be edited offline."
+    },
+    {
+      "id": "P5-07",
+      "status": 1,
+      "evidence": "per-document permissions (owner, editor, commenter, viewer), checked on the server for every incoming update"
+    },
+    {
+      "id": "P5-08",
+      "status": 2,
+      "evidence": "Undo should affect only your own edits, not other people's."
+    },
+    {
+      "id": "P5-09",
+      "status": 2,
+      "evidence": "Keep this data temporary and separate from the document. It should never be saved."
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Phase 0 decisions → editor + CRDT working locally → sync → persistence → permissions."
+    },
+    {
+      "id": "P5-11",
+      "status": 2,
+      "evidence": "Add rate limits, limits on update size, and a cap on document size."
+    },
+    {
+      "id": "P5-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "Choose how edits get merged: CRDT or OT. Almost everything else depends on this."
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Recommendation: use Yjs unless you have a specific reason not to."
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Connect the editor to the CRDT locally. Every edit should go through the CRDT"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "restart the server partway through editing and confirm nothing is lost"
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "Merge offline changes on reconnect. The CRDT handles this; mainly you need to test it."
+    }
+  ],
+  "note": "A lean, technically sound build order that front-loads the irreversible merge-algorithm decision and proves the sync core with phase-by-phase tests; its weaknesses are absent cost reasoning, thin operations (no rollback/migrations), no protocol versioning, and vague handling of drift recovery and live permission revocation.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 9689,
+    "thinking_tokens": 7152,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 9036
+  },
+  "cost_usd": 0.59829,
+  "latency_s": 160.62,
+  "raw_file": "raw/judge-21b0769b5f8f.engineering-quality-v1.fable-5.k1.txt"
+}

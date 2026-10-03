@@ -1,0 +1,120 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P4.dfa.opus-5.5.r02",
+  "prompt_id": "P4",
+  "condition": "dfa",
+  "generator": "opus-5.5",
+  "run_index": 2,
+  "seed": 2087476481,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Plan an autonomous agent that triages and resolves GitHub issues.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P4.dfa.opus-5.5.r02.md",
+  "output_sha256": "050681c546e8369d9c2a44336e4a3644fa3d616685b78af3c4d63b164836ebf8",
+  "metrics": {
+    "words": 4866,
+    "chars": 28363,
+    "visible_tokens_est": 7091
+  },
+  "turns": 4,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/ai-systems.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/validation.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "dependency-first-architect:dependency-first-architect",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "reference/ai-systems.md",
+      "sha256": "623e02a2b37bbf9bd637a2689d1510179b4a3a65cada3e2f162c1ed11444d579",
+      "words": 855
+    },
+    {
+      "path": "reference/plan-template.md",
+      "sha256": "95ccaec942bf8a640ff4d830daada167a340b6b652242e2ed41aec6d24605c2a",
+      "words": 1257
+    },
+    {
+      "path": "reference/validation.md",
+      "sha256": "d5ddad548e7b7be656dc51d5946c3da45ceb21ce5234164440fa5c5829edd407",
+      "words": 1879
+    }
+  ],
+  "started_at": "2026-10-02T23:49:45+00:00",
+  "finished_at": "2026-10-02T23:56:23+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [
+    "claude-opus-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 30018,
+    "thinking_tokens": 18897,
+    "cache_read_input_tokens": 7076,
+    "cache_creation_input_tokens": 15430
+  },
+  "cost_usd": 0.6789492,
+  "latency_s": 398.197,
+  "raw_file": "raw/gen-P4.dfa.opus-5.5.r02.txt"
+}

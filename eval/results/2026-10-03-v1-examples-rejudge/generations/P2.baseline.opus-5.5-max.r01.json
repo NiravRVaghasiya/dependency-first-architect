@@ -1,0 +1,45 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P2.baseline.opus-5.5-max.r01",
+  "prompt_id": "P2",
+  "condition": "baseline",
+  "generator": "opus-5.5-max",
+  "run_index": 1,
+  "seed": null,
+  "seed_honored": false,
+  "request": "Architect a multi-tenant SaaS billing system.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P2.baseline.opus-5.5-max.r01.md",
+  "output_sha256": "9bb000d82d524a5aa2f1ffb34e2f2fbe233a162e5bd925c486520b1f1ea0ad5c",
+  "metrics": {
+    "words": 5285,
+    "chars": 34992,
+    "visible_tokens_est": 8748
+  },
+  "turns": 3,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "w04",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "w04/README.md",
+      "ok": false
+    }
+  ],
+  "skills_available": null,
+  "instructions_loaded": null,
+  "started_at": null,
+  "finished_at": null,
+  "provider": "imported",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [],
+  "model_mismatch": false,
+  "usage": null,
+  "cost_usd": null,
+  "latency_s": null,
+  "raw_file": null
+}

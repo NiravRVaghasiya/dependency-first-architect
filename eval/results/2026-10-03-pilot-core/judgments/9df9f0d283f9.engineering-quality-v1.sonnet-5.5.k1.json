@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9df9f0d283f9.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "9df9f0d283f9",
+  "blind_sha256": "edb6a8c98f8893f6b83c3ba059312fab2f1778eb8a5176f012e72a1ca3013c00",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 250,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Commits are created with the Git Data API (blob → tree → commit → ref) on `issue-agent/<issue>-<slug>`.",
+      "rationale": "Mechanisms (HMAC, delivery-id dedup, SKIP LOCKED, App permissions, workflows permission, fork PR secrets rules) are accurate; minor issues like Fargate egress-control via security groups and Object Lock claims are plausible but slightly loose."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Milestone 1 tests an off-the-shelf coding agent ... If it's as good, we keep our own triage and policy layer and drop the custom fix loop.",
+      "rationale": "Covers triage and resolve, resolves ambiguities with explicit defaults, and gives explicit non-goals and go/no-go deferrals."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Neither worker writes to GitHub. They send proposed actions to the Policy Engine ... Approved actions go to the GitHub Gateway, the only code that holds write credentials",
+      "rationale": "Data ownership, trust zones and idempotency are consistently applied across components, flows and decisions with import-linter enforcement."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Shadow precision ≥ 85% on ≥ 100 live issues before going live; ... Injection: Adversarial suite ... blocks at < 100%",
+      "rationale": "Validation is tied to specific risks, riskiest assumptions are spiked early, and continues in production via sampling and weekly regression; thresholds are labelled as assumptions."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "all targets are assumptions until the pilot teams confirm them",
+      "rationale": "Assumption table states impact if wrong and how validated, with defaults and owners for open questions."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "The worker crashes after the commit and ref are created but before the PR exists. The lease expires and another worker reclaims the job.",
+      "rationale": "Covers duplicates, partial failures, injection including via CI, provider outage, env failures and loops with concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Alerts linked to symptoms, each with a runbook: Oldest queued job > 30 min ... Any `blocked` policy violation.",
+      "rationale": "Monitoring, rollback, runbooks, ownership and migrations are covered and sized to the team; business-hours-only support and a few thin spots (deployment pipeline specifics) keep it from 4."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Estimated monthly cost at pilot scale: model $150–600 (A10), Fargate sandboxes about $20–50 ... Total roughly $350–950.",
+      "rationale": "Drivers, ranges with basis, per-run and monthly caps and a buy-vs-build comparison are covered; scaling with usage is somewhat thin."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "| D5 | Control loop runs in the trusted service ... | Hard (trust model) | — |",
+      "rationale": "Reversibility is tabulated per decision, hard ones (identity, trust model, language) flagged and validated early, with interfaces isolating inner loop, model and sandbox."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "D6 | Postgres for both queue and state ... One technology to run. Load is under 1 job per second",
+      "rationale": "Mostly simple single service with Postgres queue, but a lot of ceremony (OTel traces, import-linter, Object Lock, Terraform, four milestones) for a 2-3 person pilot."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T12 ... Test in dev: tools work; `curl https://api.github.com` and the metadata endpoint fail during the agent phase",
+      "rationale": "Waves of tasks with locations, done-when checks, time-boxed spikes, go/no-go thresholds and adaptation rules make it immediately startable."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Non-goals (v1): auto-merging; auto-closing issues; ... D3 | Maintainers trigger fixes; never automatic in v1 ... Pilot PR merge rate ≥ 40%"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "No `workflows` permission, so GitHub itself refuses changes to workflow files. No Actions, Secrets or Administration permissions."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Flow 4 ... Policy Engine denies it on protected paths; Fixed rules only. No model involved."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "There is **no outbound access**: no GitHub, no model API, no instance metadata endpoint. No IAM task role permissions."
+    },
+    {
+      "id": "P4-05",
+      "status": 1,
+      "evidence": "the orchestrator itself runs the repo's configured `test` command in the sandbox ... It does not trust the model's claim that tests pass."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Shadow precision ≥ 85% on ≥ 100 live issues before going live; ≥ 150 triage cases"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "`label_feedback` ... 10% of runs plus every PR that gets rejected or heavily edited are reviewed weekly"
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "60 tool calls; $5 model spend; 25 min wall-clock; abort if the same tool call ... repeats 3 times; Global kill switch (CLI, takes effect within seconds)"
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "A run-level budget is passed in, and the call is refused if it would exceed it. p95 cost ≤ $5 per fix attempt"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "Audit: the `github_actions` table plus S3 transcripts. S3 Object Lock in governance mode"
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "`search(regex, glob)` ... a repo's similar-issue context comes from GitHub search, not an index."
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "The unique `delivery_id` makes the second delivery do nothing ... job idempotency key (`repo#issue#label_event_id`)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "A human reviews and merges every change. The agent never merges."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "The sandbox never sees a token."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Issue text is input from strangers."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "≥ 30% of agent PRs merged with at most light edits."
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "60 tool calls; $5 model spend; 25 min wall-clock"
+    }
+  ],
+  "note": "Exceptionally thorough, safety-first plan with trusted-loop/untrusted-sandbox split, measurement gates and buy-vs-build; minor over-engineering and thin triage-side retrieval are the main gaps.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2516,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 29104
+  },
+  "cost_usd": 0.0981012,
+  "latency_s": 29.525,
+  "raw_file": "raw/judge-9df9f0d283f9.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

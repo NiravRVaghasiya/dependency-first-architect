@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ae5700a230cd.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "ae5700a230cd",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 184,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Keyword search matters because users type exact UI labels and error codes, which pure vector search often misses.",
+      "rationale": "Hybrid pgvector+tsvector with RRF, outbox idempotency, and deletion guard are accurate; minor issues (regex masking before LLM, lightweight phrase scan, Zendesk external-ID details) have little design consequence."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Non-goals (v1): Account-specific questions ... Actions such as refunds, cancellations or plan changes. Logged-in in-app chat.",
+      "rationale": "Solves the stated problem, resolves ambiguities with defaults, has explicit justified exclusions and a buildable scope for a 2-person team."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Each component has 'Owns (single writer)'; Eval Harness imports the same orchestrator code, so evaluation results describe what production actually runs.",
+      "rationale": "Consistent single-writer ownership; small loose ends such as Chat API enqueue vs Handoff Adapter ownership of outbox, and 'condense on every turn' vs ≤2 calls budget are fine."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Release blocks if: correctness < 90%, unsupported-claim rate > 2%, escalation recall < 90%, any adversarial violation, retrieval recall@5 drops > 3 points",
+      "rationale": "Eval set first, judge calibration, spikes early, CI gates, synthetic freshness test, holdout deflection, and production sampling; thresholds are labeled [A] provisional."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Every default is marked [A] and collected in §5.",
+      "rationale": "Assumptions table with impact-if-wrong and validation timing; open questions with defaults; numbers labeled estimates."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "a partial sync must never mass-delete the index ... If a run would delete more than 10% of articles, it stops and alerts",
+      "rationale": "Covers partial sync, duplicate tickets via idempotency, LLM outage degraded mode, stream breaks, injection, cost abuse, restricted-content leakage, XSS, with detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Runbooks written in M3: LLM provider outage; 'The bot said something wrong' ... Kill switch",
+      "rationale": "Alerts on meaningful signals, kill switch, rollback paths, migrations, ownership, business-hours on-call sized to a small team."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Per turn: ~5k input + 400 output tokens on a mid-tier model ... ≈ $0.02 per turn",
+      "rationale": "Dominant driver identified with basis, caps and controls, build-vs-buy cost; estimate labeled rough but people cost is thin and the $0.10 vs $0.03 budgets are slightly inconsistent."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Decision table with Reversibility column; 'Changing the embedding model: insert new rows ... switch Retriever ... through a config flag'",
+      "rationale": "Reversibility is explicit per decision, with interface isolation, blue/green re-index, build-vs-buy gate before heavy commitment."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "D3. Fixed pipeline, one generation call, no tools or agents ... D4. No RAG framework",
+      "rationale": "Simplest workable design, single DB, one image, deferred items with triggers; the holdout and backup detail are justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T7→T8→T9→T10 in order; T11 in parallel ... Done when `alembic upgrade head` and `downgrade base` both succeed in CI",
+      "rationale": "Concrete tasks with locations, checkable done criteria, dependency-based ordering, spikes with plan-changing outcomes."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "Edited articles show up in answers within 30 min. Unpublished or deleted articles are removed within 30 min"
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Splits into chunks at H2/H3 headings with a ~600-token cap, prefixing each chunk with `title > heading path`."
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "Draft evaluation set v1 with the SME: 150 answerable questions (expected article IDs + 1–3 key facts each)"
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "If the best fused score is below a threshold tuned on the evaluation set, skip generation. Return `cannot_answer`"
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "Refunds and billing disputes, account deletion or recovery, legal and privacy requests, security incidents, complaints about staff"
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "The bot has no tools or permissions. Sources and user text are delimited and marked as data."
+    },
+    {
+      "id": "P1-07",
+      "status": 2,
+      "evidence": "Keeps only articles that are published, in English, and visible to anonymous users... stops internal or agent-only content from leaking."
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "Regex masking before storage and before the LLM call. Vendor zero-retention/no-training terms. 90-day retention."
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Non-goals (v1): Account-specific questions (\"where is my order\", \"why was I charged\")."
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "The support-content team gets a weekly report of \"cannot answer\" and thumbs-down questions grouped by topic."
+    },
+    {
+      "id": "P1-11",
+      "status": 2,
+      "evidence": "Daily spend cap: alert at 80%, at 100% switch automatically to degraded (links-only) mode."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Answer only from retrieved articles, with checked citations and an explicit \"can't answer\" path."
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Ingest only articles visible to anonymous users. Test: a fixture restricted article must never appear in `documents`."
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "The `worker` keeps the index in sync with the help center ... scheduled every 15 min"
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Full suite on prompt, model or orchestrator changes and nightly. Release gate"
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "D3. Fixed pipeline, one generation call, no tools or agents"
+    }
+  ],
+  "note": "Exceptionally strong, well-scoped plan; main minor weaknesses are the thin people-cost accounting, regex-only PII masking, and lack of per-user entitlements (reasonably out of scope).",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2424,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 919,
+    "cache_creation_input_tokens": 27635
+  },
+  "cost_usd": 0.0935193,
+  "latency_s": 37.002,
+  "raw_file": "raw/judge-ae5700a230cd.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

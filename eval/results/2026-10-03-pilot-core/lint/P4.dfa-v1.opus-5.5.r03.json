@@ -1,0 +1,90 @@
+{
+  "schema": "dfa-eval/lint@1",
+  "gen_id": "P4.dfa-v1.opus-5.5.r03",
+  "template": "plan-template-v2",
+  "checks": [
+    {
+      "id": "sections.present",
+      "ok": false,
+      "detail": "missing: dependency map, validation gates, exceptions"
+    },
+    {
+      "id": "self_score.absent",
+      "ok": false,
+      "detail": "self-score heading on line 224: ## 8. Eval score: 19/20"
+    },
+    {
+      "id": "budgets.labeled",
+      "ok": false,
+      "detail": "no table with Budget and Label columns in section 1 (classification)"
+    },
+    {
+      "id": "budgets.unknown_has_no_number",
+      "ok": false,
+      "detail": "no table with Budget and Label columns in section 1 (classification)"
+    },
+    {
+      "id": "dependencies.typed",
+      "ok": false,
+      "detail": "section 2 (dependency map) not found"
+    },
+    {
+      "id": "gates.columns",
+      "ok": false,
+      "detail": "gates table lacks columns: Reversibility, Assumption, Validated by"
+    },
+    {
+      "id": "gates.no_r1_rows",
+      "ok": false,
+      "detail": "gates table has no Reversibility column"
+    },
+    {
+      "id": "gates.r3_backed",
+      "ok": false,
+      "detail": "gates table lacks a Reversibility or Validated by column"
+    },
+    {
+      "id": "validation.complete",
+      "ok": false,
+      "detail": "section 6 (validation gates) not found"
+    },
+    {
+      "id": "validation.v0",
+      "ok": false,
+      "detail": "section 6 (validation gates) not found"
+    },
+    {
+      "id": "validation.no_dangling",
+      "ok": false,
+      "detail": "section 6 (validation gates) not found"
+    },
+    {
+      "id": "validation.labeled",
+      "ok": false,
+      "detail": "section 6 (validation gates) not found"
+    },
+    {
+      "id": "crosscutting.complete",
+      "ok": true,
+      "detail": "8 phases including phase 0, no empty cell"
+    },
+    {
+      "id": "exceptions.complete",
+      "ok": false,
+      "detail": "section 9 (exceptions) not found"
+    },
+    {
+      "id": "deferred.present",
+      "ok": false,
+      "detail": "section 10 (deferred) has no bullet and does not say None"
+    },
+    {
+      "id": "ai_layer.consistent",
+      "ok": true,
+      "detail": "AI system; section 8 covers injection or guardrails, cost/budget and human approval"
+    }
+  ],
+  "passed": 2,
+  "total": 16,
+  "score": 0.125
+}

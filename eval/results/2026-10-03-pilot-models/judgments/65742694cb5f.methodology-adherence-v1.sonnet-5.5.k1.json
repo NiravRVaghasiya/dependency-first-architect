@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "65742694cb5f.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "65742694cb5f",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 59,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Week 1–2: GitHub App, webhook receiver, queue, state store, and sandbox runner.",
+      "rationale": "Substrate comes first, but security hardening and kill switch are deferred to Week 8 after fix and PR stages are built, so dependencies aren't proven before use."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "0. Shadow | Produces triage decisions privately and compares them to human decisions",
+      "rationale": "Shadow mode is a rollout phase but not a thin end-to-end prod slice; milestones build infrastructure then stages sequentially, with PR stage in Week 7."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Should the agent run as a hosted service or as a GitHub Action? An Action is simpler to start with, and a service scales better.",
+      "rationale": "Open questions list choices with some leanings but no defaults plus flip conditions; many decisions (model, provider) are unresolved."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Week 1–2: GitHub App, webhook receiver, queue, state store, and sandbox runner.",
+      "rationale": "Shared infrastructure precedes stages, but within phases there's no explicit widest-impact ordering, and security hardening comes last."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Week 8: Security hardening (injection tests and red-teaming), dashboards, and the kill switch.",
+      "rationale": "Design has strong security (least-privilege app, sandbox) but it's a standalone section and hardening is scheduled late rather than per phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Week 8: Security hardening (injection tests and red-teaming), dashboards, and the kill switch.",
+      "rationale": "Audit log and metrics appear in architecture, but dashboards are scheduled at Week 8, not threaded from Phase 0."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No treatment of reproducible builds, pinned environments, or versioned data/prompts beyond ephemeral fresh-clone sandboxes."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Idempotent handlers. Webhooks can be redelivered.",
+      "rationale": "Failure handling is good but in a standalone section; milestones don't tie it to each phase, though budgets appear in the fix phase."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Budgets: a cap on steps, wall-clock time, tokens and dollars, and files changed",
+      "rationale": "Defenses, budgets, and human review exist in design, but milestones build triage and fix capabilities before injection defenses (Week 8); retrieval/memory/routing order isn't laid out."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Feature request | Label it, summarize it, and route to maintainers (no auto-implementation in v1)",
+      "rationale": "Non-goals and v1 exclusions are stated, but without explicit pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Thoughtful, safety-aware design with strong rollout gating, but milestones build capabilities before security/observability, lack a Phase 0 production slice, decision defaults, and reproducibility.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1144,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 4654
+  },
+  "cost_usd": 0.023196,
+  "latency_s": 49.664,
+  "raw_file": "raw/judge-65742694cb5f.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

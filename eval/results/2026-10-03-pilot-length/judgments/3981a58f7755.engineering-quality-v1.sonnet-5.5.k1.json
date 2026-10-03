@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "3981a58f7755.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "3981a58f7755",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 41,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Pull-based GitOps removes production write access from CI",
+      "rationale": "OIDC, cosign, Kyverno, Argo CD/Rollouts and SLSA L2 are used correctly; minor imprecision, such as unspecified promotion mechanics and 'hermetic builds' at phase 2 while hermetic is deferred."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Inventory all 50 services' build needs; build 5 of the most dissimilar on template v1",
+      "rationale": "Covers the core capabilities with a pilot and explicit deferrals, but is thin on test environments, contract testing and DB migrations."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Git is authoritative. If git or CI is down, deploys pause; an audited break-glass `kubectl` role handles emergencies",
+      "rationale": "The design is consistent, with clear trust boundaries. Minor loose ends: the artifact promotion flow across environments is unspecified, and 'hermetic builds' in Phase 2 sits oddly with the hermetic-builds deferral."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Red-team: a forked-repo PR and a compromised job try to read production credentials and deploy an unsigned image",
+      "rationale": "Validation is tied to the riskiest decisions, runs early, has measurable thresholds labeled as assumptions, and continues through DORA metrics and per-wave tracking; it is missing production-time regression checks beyond that."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Peak commit rate | UNKNOWN: commits/day per service, supplied by engineering managers, needed in Phase 2",
+      "rationale": "Assumptions and unknowns are labeled, with revisit triggers and what changes if they are wrong (for example Kubernetes vs VMs)."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Worst failure: a compromised or misconfigured pipeline pushes unauthorized code to all 50 services at once.",
+      "rationale": "Covers compromise, outage with break-glass, canary rollback and wave rollback, but misses flaky tests, DB migration failures, duplicate or partial deploys, and poisoned dependencies."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Argo CD... alert fires on failed sync or failed deploy",
+      "rationale": "Covers rollback, monitoring, break-glass, the DORA dashboard, runbooks and an availability target, but a named owner, on-call and incident response are not spelled out."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Runner and registry cost | UNKNOWN: monthly cap, supplied by finance, needed before Phase 2",
+      "rationale": "It has a build-vs-buy decision, a cost cap gate and a load test against the cap, but no cost estimate, drivers analysis or concrete controls such as caching and concurrency limits."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3 (a short compromise causes harm that can't be undone)",
+      "rationale": "It classifies each decision by reversibility, validates the hard ones early, isolates via versioned templates, keeps the legacy fallback, and defines the point of no return and its revisit triggers."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Operational complexity | ≤ 4 components the platform team runs itself",
+      "rationale": "It buys components, defers Backstage, Bazel and multi-region, and phases the work sensibly; Argo Rollouts, Kyverno and SLSA add some weight, but they are justified."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Tasks, widest rework first: 1. Service manifest schema and template v1 (V1).",
+      "rationale": "The ordering is dependency-driven with checkable exit criteria and fail paths, but some specifics are left for the team, such as test environments, caching, migrations and runner sizing."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Inventory all 50 services' build needs; build 5 of the most dissimilar on template v1"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Each wave widens only after the previous wave runs 2 weeks with a rollback rate ≤ 10%."
+    },
+    {
+      "id": "P3-03",
+      "status": 1,
+      "evidence": "CI only pushes signed images; Argo CD pulls them into production"
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "OIDC federation; remove all static CI secrets."
+    },
+    {
+      "id": "P3-05",
+      "status": 1,
+      "evidence": "Admission policy for signatures plus provenance attestations (SLSA build level 2)."
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Argo Rollouts canary steps: 5% → 25% → 100%."
+    },
+    {
+      "id": "P3-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Remote build cache (e.g. Bazel): pulled forward if V3 shows build time p90 above 10 minutes."
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Buy hosted CI (GitHub Actions or the existing SCM's CI) with self-hosted autoscaled runners"
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "DORA metrics dashboard."
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "audit log of every deploy"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "legacy pipeline stays the fallback"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "CI only pushes signed images"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "OIDC federation; remove all static CI secrets."
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "per service, switch the deploy source back to the legacy pipeline."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Buy hosted CI (GitHub Actions or the existing SCM's CI)"
+    }
+  ],
+  "note": "A strong, risk-ordered, assumption-honest migration plan with excellent trust-boundary and reversibility thinking; it is thin on test environments and flaky tests, contract testing, DB migrations, cost estimation and artifact promotion detail.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2216,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 12010
+  },
+  "cost_usd": 0.052378,
+  "latency_s": 48.436,
+  "raw_file": "raw/judge-3981a58f7755.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

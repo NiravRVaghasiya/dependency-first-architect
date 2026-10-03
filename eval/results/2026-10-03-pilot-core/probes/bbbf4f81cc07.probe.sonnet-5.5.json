@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "bbbf4f81cc07.probe.sonnet-5.5",
+  "blind_id": "bbbf4f81cc07",
+  "blind_sha256": "e317e46b97cc7304c04845b15cdfd2ff642d0856522a6997858f84cc672a7c1e",
+  "judge": "sonnet-5.5",
+  "order_index": 65,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Highly structured, idiosyncratic scaffold: numbered sections for classification, dependencies, key decisions, first end-to-end slice (Phase 0), phases, validation checks, cross-cutting concerns, AI layer, exceptions, deferred. This looks like a template, not natural plan writing.",
+    "Reversibility labels (R2/R3 gates), 'Revisit trigger' columns, and a 'seven kinds of dependencies' framing. These are methodology-specific vocabulary applied consistently.",
+    "Validation checks V0–V6 each have hypothesis, method, acceptance threshold, evidence, and 'unlocks (and if it fails)' columns. Thresholds are explicitly tagged ASSUMPTION or UNKNOWN.",
+    "A walking-skeleton Phase 0 ships to production for allow-listed staff only, with deploy, observe, and rollback checked through every tier. It records BASELINE values and has a V0 exit check.",
+    "Fixed-format boilerplate: 'Missing inputs' ranked by how much they would change the plan, a 'Working assumption (sets the phase order)' header, an 'AI layer' table with nine sublayers, an explicit 'Exceptions: None' section, and 'N/A' and 'minor defaults' lines."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 505,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9471
+  },
+  "cost_usd": 0.0287355,
+  "latency_s": 32.251,
+  "raw_file": "raw/probe-bbbf4f81cc07.probe.sonnet-5.5.txt"
+}

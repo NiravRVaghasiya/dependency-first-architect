@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9e4fe0b84d4c.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "9e4fe0b84d4c",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 86,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1 Foundation → Phase 2 Core Infrastructure → Phase 3 Pipeline Framework → Phase 4 Deployment Infrastructure",
+      "rationale": "Broadly substrate-upward, but observability and rollback come after deployment, and nothing is proven before the next phase depends on it."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 6: \"Wave 1: Non-Critical Services (Weeks 18-30)\" — onboarding begins at week 18",
+      "rationale": "No thin end-to-end production path in Phase 0; the first real deploy comes after 17 weeks of horizontal layers."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "Select tech stack (Jenkins, GitLab CI, GitHub Actions, ArgoCD, etc.)",
+      "rationale": "Choices are listed as options with no defaults, no flip conditions, and no irreversible decisions identified."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Wave 1: Non-Critical Services ... Wave 3: Critical Services",
+      "rationale": "Onboarding goes from low-risk to critical (canary-style), but this is risk ordering rather than widest-impact-first, and other phases show no such ordering."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Set up access control and permissions; Security Integration; Phase 8: Complete security audit",
+      "rationale": "Security appears in Phases 1, 2, 3 and 8 but is absent from phases 4-7 and is partly a trailing hardening step."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Phase 5: Observability & Rollback (Weeks 15-17)",
+      "rationale": "Observability is a late phase, not day zero; only a vague \"from day one\" line in the table contradicts the sequencing."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Set up infrastructure as code (Terraform, CloudFormation); Configure environment parity",
+      "rationale": "IaC and environment parity are mentioned, but only in Phase 4 and with image versioning in Phase 2; it is not threaded across phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Set up automatic rollback on failures",
+      "rationale": "Resilience appears in Phase 5 (rollback) and Phase 8 (DR), with little in the early phases."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so it does not declare N/A."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "Phase 7: Advanced Features (Weeks 31-36)",
+      "rationale": "Advanced features are scheduled but there is no explicit list of deferred work or pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A conventional waterfall-style phase list that builds horizontal layers for 17 weeks before any service deploys. It has no walking skeleton, no decision gates, and no deferral logic, and observability and security are not threaded through the phases.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1078,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 3393
+  },
+  "cost_usd": 0.019383499999999998,
+  "latency_s": 39.014,
+  "raw_file": "raw/judge-9e4fe0b84d4c.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

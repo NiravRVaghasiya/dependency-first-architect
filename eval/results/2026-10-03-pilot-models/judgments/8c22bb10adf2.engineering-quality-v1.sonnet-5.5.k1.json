@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "8c22bb10adf2.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "8c22bb10adf2",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 118,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "LLM guardrail check before any agent action: if text matches jailbreak patterns (e.g., \"ignore previous instructions\"), escalate to human and log.",
+      "rationale": "Pattern-matching as the injection defense is weak and called an \"LLM guard\"; also webhook \"30 sec timeout\" with synchronous LLM, ngrok for GitHub App, and \"localhost:8000\" claims are shaky, and auto-close policy relies on model confidence."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Phase 3: no auto-fixes (too risky); humans do all resolution.",
+      "rationale": "The request asks for an agent that resolves issues; the plan is a triage/labeling/dup-closing bot with no reproduction, code fix or PR capability, deferring remediation entirely."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Async batch review (nightly cron, human reviews pending actions...) vs. Phase 0 agent posts label+comment immediately",
+      "rationale": "Mostly consistent phases, but contradictions exist: batch approval before posting versus immediate posting and auto-close, 'stateless' vs dead-letter queue, and duplicate detection via semantic search while vector store is deferred."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Randomly sample 50 real GitHub issues from production backlog... Run agent on each issue in dry-run mode... Duplicate precision: ≥95%.",
+      "rationale": "Gated, staged offline/backtest validation with checkable thresholds and ongoing audits, though sample sizes are small, thresholds are invented, and injection testing is thin."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "ASSUMPTION: $0.01–$0.05 per triage + $0.02–$0.10 per resolution attempt (GPT-4o or similar)",
+      "rationale": "Many figures are labeled assumptions and missing inputs noted, but numerous thresholds (85%, 95%, $100/month) are stated as requirements without basis and sensitivity is partial."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Inference endpoint failure: agent logs error, escalates issue to human queue (backlog), does not retry (avoid infinite loops).",
+      "rationale": "Covers endpoint failures, 429s, false closes and injection, but misses bot loops, webhook duplicates/idempotency, concurrent edits, and sandbox issues."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Circuit breaker: if error rate >5% for >10 min, shut down webhook + page on-call.",
+      "rationale": "Rollback, alerts, runbook, cost alerts and circuit breaker are present; Phase 0 deployment on localhost/ngrok and ownership details are thin."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "daily budget alert if spend exceeds $10; hard halt if >$20 (pilot phase).",
+      "rationale": "Token caps, daily spend halts, per-issue cost tracking and monthly targets exist, though no estimate for resolution cost, and figures are loosely grounded."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "R3 (once agent closes even 10 real issues, reverting trust requires audit...)",
+      "rationale": "Decisions are explicitly classified by reversibility with revisit triggers and deferrals, though the classification is partly odd (model choice, approval flow) and misses identity/data model issues."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Simple state machine: webhook → ingest → classify → label (if confidence >70%) OR escalate",
+      "rationale": "Starts simple and defers vector store, fine-tuning, and ensembles, but has heavy process ceremony and under-builds the resolution core."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Scaffold GitHub App (webhook receiver, OAuth token refresh). Implement classifier prompt: issue → category + confidence JSON.",
+      "rationale": "Phased tasks with concrete exit checks and gating are actionable for triage, but there's nothing to act on for the resolution component."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 1,
+      "evidence": "Phase 1: agent triages only (labels + comments). Phase 2b: unlock close on high-confidence duplicates and spam"
+    },
+    {
+      "id": "P4-02",
+      "status": 1,
+      "evidence": "GitHub token scoped to read-only labels (no delete)."
+    },
+    {
+      "id": "P4-03",
+      "status": 1,
+      "evidence": "Data (no code path): issue titles, bodies, and comments are treated as untrusted user input."
+    },
+    {
+      "id": "P4-04",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P4-05",
+      "status": 0,
+      "evidence": "Phase 3: no auto-fixes (too risky); humans do all resolution."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Randomly sample 50 real GitHub issues from production backlog... Run agent on each issue in dry-run mode"
+    },
+    {
+      "id": "P4-07",
+      "status": 1,
+      "evidence": "Track human override rate: measure % of agent labels / comments rejected by team; target <10%."
+    },
+    {
+      "id": "P4-08",
+      "status": 1,
+      "evidence": "Hard stop at token cap; circuit breaker: if error rate >5% for >10 min, shut down webhook + page on-call."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Fixed 1,000 output tokens per issue... daily budget alert if spend exceeds $10; hard halt if >$20"
+    },
+    {
+      "id": "P4-10",
+      "status": 1,
+      "evidence": "Add close action audit: log every close + reason (for incident postmortem)."
+    },
+    {
+      "id": "P4-11",
+      "status": 0,
+      "evidence": "Stateless design: agent does not retain conversation history across issues."
+    },
+    {
+      "id": "P4-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "Phase 3: no auto-fixes (too risky); humans do all resolution."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "Inference API key test-only (daily $5 limit)."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "issue titles, bodies, and comments are treated as untrusted user input."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "Sustained ≥85% accuracy (match to final human decision or resolution)."
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Hard stop at token cap; if exceeded, agent logs and escalates to human without completing action."
+    }
+  ],
+  "note": "Well-gated, carefully phased triage-labeling bot with real validation, but it drops the resolution half of the request, and its injection defense is pattern matching with no sandbox, PR flow, idempotency, or loop handling.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2375,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 22454
+  },
+  "cost_usd": 0.080078,
+  "latency_s": 28.092,
+  "raw_file": "raw/judge-8c22bb10adf2.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

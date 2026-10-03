@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "1c4b0821fdaa.probe.sonnet-5.5",
+  "blind_id": "1c4b0821fdaa",
+  "blind_sha256": "f3affe0854fcc3f874aae4de17c7ddd4befb7be0a338e5807fcdeb3a059135d6",
+  "judge": "sonnet-5.5",
+  "order_index": 132,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.9,
+  "cues": [
+    "Opens with a 'How this plan was produced' note: inspected the workspace (empty README), chose not to ask questions, and tagged assumptions as [A#] that are collected later",
+    "Rigid numbered section structure (Summary, Context/Goals, Drivers, Current State, Assumptions/Open Questions, Architecture, Decisions, Cross-cutting, Build Sequence, Rollout, Risks, Deferred Work, Next Steps)",
+    "Ranked quality-attribute table with measurable targets, and a decision table with options considered, rationale, reversibility and 'revisit if' triggers",
+    "Assumptions table with 'impact if wrong' and 'how/when validated', plus open questions with a default-if-unanswered and a needed-by date",
+    "Milestones have explicit exit criteria, the first milestone is a thin slice with time-boxed spikes that each state how the plan changes, and the plan closes with the questions whose answers would change it most"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 391,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 22241
+  },
+  "cost_usd": 0.0595205,
+  "latency_s": 32.396,
+  "raw_file": "raw/probe-1c4b0821fdaa.probe.sonnet-5.5.txt"
+}

@@ -1,0 +1,5247 @@
+{
+  "schema": "dfa-eval/summary@1",
+  "run_id": "2026-10-03-v1-examples-rejudge",
+  "run": {
+    "config_name": "v1-examples-rejudge",
+    "seed": 20261006,
+    "created": "2026-10-03",
+    "harness_version": "1.0.0",
+    "skill_version": "1.0.0 (commit 3ba6b70)",
+    "repo_commit": "7ec18f4+uncommitted",
+    "runs_per_cell": 1,
+    "judge_repeats": 1,
+    "generators": [
+      {
+        "id": "opus-5.5-max",
+        "provider": "claude-cli",
+        "model_requested": "claude-opus-5-5",
+        "effort": "max",
+        "models_used": [],
+        "n_ok": 10,
+        "n_records": 10
+      }
+    ],
+    "judges": [
+      {
+        "id": "sonnet-5.5",
+        "provider": "claude-cli",
+        "model_requested": "claude-sonnet-5-5",
+        "effort": "high",
+        "models_used": [
+          "claude-sonnet-5-5"
+        ],
+        "n_ok": 20,
+        "n_used": 20,
+        "n_records": 20
+      },
+      {
+        "id": "fable-5",
+        "provider": "claude-cli",
+        "model_requested": "claude-fable-5",
+        "effort": "high",
+        "models_used": [
+          "claude-fable-5"
+        ],
+        "n_ok": 10,
+        "n_used": 10,
+        "n_records": 10
+      }
+    ],
+    "probe_judges": [
+      "sonnet-5.5"
+    ],
+    "first_generation_started": null,
+    "last_generation_finished": null
+  },
+  "generated_from": {
+    "generations": {
+      "ok": 10,
+      "error": 0,
+      "not_a_valid_record": 0
+    },
+    "judgments": {
+      "ok": 30,
+      "error": 0,
+      "invalid": 0,
+      "not_a_valid_record": 0
+    },
+    "probes": {
+      "ok": 10,
+      "error": 0,
+      "invalid": 0,
+      "not_a_valid_record": 0
+    },
+    "lint": {
+      "records": 10,
+      "used": 10,
+      "not_a_valid_record": 0
+    },
+    "blind_key_entries": 20,
+    "judgments_used": 30,
+    "incomplete_judging": [],
+    "rubrics": {
+      "methodology-adherence-v1": {
+        "sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+        "dimensions": 10,
+        "scale_max": 2
+      },
+      "engineering-quality-v1": {
+        "sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+        "dimensions": 11,
+        "scale_max": 4
+      }
+    }
+  },
+  "metrics": {
+    "adherence_total": {
+      "definition": "methodology-adherence-v1: per-dimension median across the generation's ok judgments (all judges x repeats), summed (the v1.0.0 method); a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": 20
+      },
+      "category": "methodology-adherence"
+    },
+    "adherence_mean": {
+      "definition": "methodology-adherence-v1: mean of the generation's ok judgment totals; a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": 20
+      },
+      "category": "methodology-adherence"
+    },
+    "eq_total": {
+      "definition": "engineering-quality-v1: mean of the generation's ok judgment totals; a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": 44
+      },
+      "category": "engineering-quality"
+    },
+    "eq_core": {
+      "definition": "engineering-quality-v1: mean judgment total without the dimensions flagged overlaps_methodology (Validation quality, Decision reversibility); a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": 36
+      },
+      "category": "engineering-quality"
+    },
+    "eq_dim_technical-correctness": {
+      "definition": "engineering-quality-v1 dimension 1 (Technical correctness): mean score across the generation's ok judgments; a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": 4
+      },
+      "category": "engineering-quality"
+    },
+    "eq_dim_requirement-fit": {
+      "definition": "engineering-quality-v1 dimension 2 (Requirement fit and feasibility): mean score across the generation's ok judgments; a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": 4
+      },
+      "category": "engineering-quality"
+    },
+    "eq_dim_architectural-coherence": {
+      "definition": "engineering-quality-v1 dimension 3 (Architectural coherence): mean score across the generation's ok judgments; a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": 4
+      },
+      "category": "engineering-quality"
+    },
+    "eq_dim_validation-quality": {
+      "definition": "engineering-quality-v1 dimension 4 (Validation quality): mean score across the generation's ok judgments; a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": 4
+      },
+      "category": "engineering-quality"
+    },
+    "eq_dim_assumption-quality": {
+      "definition": "engineering-quality-v1 dimension 5 (Assumption quality): mean score across the generation's ok judgments; a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": 4
+      },
+      "category": "engineering-quality"
+    },
+    "eq_dim_failure-mode-coverage": {
+      "definition": "engineering-quality-v1 dimension 6 (Failure-mode coverage): mean score across the generation's ok judgments; a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": 4
+      },
+      "category": "engineering-quality"
+    },
+    "eq_dim_operational-feasibility": {
+      "definition": "engineering-quality-v1 dimension 7 (Operational feasibility): mean score across the generation's ok judgments; a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": 4
+      },
+      "category": "engineering-quality"
+    },
+    "eq_dim_cost-realism": {
+      "definition": "engineering-quality-v1 dimension 8 (Cost realism): mean score across the generation's ok judgments; a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": 4
+      },
+      "category": "engineering-quality"
+    },
+    "eq_dim_decision-reversibility": {
+      "definition": "engineering-quality-v1 dimension 9 (Decision reversibility): mean score across the generation's ok judgments; a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": 4
+      },
+      "category": "engineering-quality"
+    },
+    "eq_dim_proportionality": {
+      "definition": "engineering-quality-v1 dimension 10 (Proportionality (absence of unnecessary complexity)): mean score across the generation's ok judgments; a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": 4
+      },
+      "category": "engineering-quality"
+    },
+    "eq_dim_implementation-actionability": {
+      "definition": "engineering-quality-v1 dimension 11 (Implementation actionability): mean score across the generation's ok judgments; a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": 4
+      },
+      "category": "engineering-quality"
+    },
+    "eq_total@sonnet-5.5": {
+      "definition": "engineering-quality-v1: mean of judge sonnet-5.5's ok judgment totals only (does a difference hold for each judge?); every generation that judge scored ok counts",
+      "scale": {
+        "min": 0,
+        "max": 44
+      },
+      "category": "engineering-quality"
+    },
+    "eq_total@fable-5": {
+      "definition": "engineering-quality-v1: mean of judge fable-5's ok judgment totals only (does a difference hold for each judge?); every generation that judge scored ok counts",
+      "scale": {
+        "min": 0,
+        "max": 44
+      },
+      "category": "engineering-quality"
+    },
+    "checklist_coverage": {
+      "definition": "mean over judgments of sum(item status) / (2 x items) on the prompt's checklist; a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": 1
+      },
+      "category": "engineering-quality"
+    },
+    "traps_present": {
+      "definition": "mean over judgments of the number of the prompt's traps marked present; a generation counts only if every configured judge x repeat scored it ok",
+      "scale": {
+        "min": 0,
+        "max": null
+      },
+      "category": "engineering-quality"
+    },
+    "lint_score": {
+      "definition": "share of plan-template v2 format checks passed (lint.py); format, not quality",
+      "scale": {
+        "min": 0,
+        "max": 1
+      },
+      "category": "structure"
+    },
+    "words": {
+      "definition": "words in the plan (whitespace-separated)",
+      "scale": {
+        "min": 0,
+        "max": null
+      },
+      "category": "length"
+    },
+    "visible_tokens_est": {
+      "definition": "ceil(characters / 4) of the plan",
+      "scale": {
+        "min": 0,
+        "max": null
+      },
+      "category": "length"
+    },
+    "output_tokens": {
+      "definition": "output tokens billed by the provider (includes thinking when the provider counts it)",
+      "scale": {
+        "min": 0,
+        "max": null
+      },
+      "category": "cost"
+    },
+    "cost_usd": {
+      "definition": "generation cost reported by the provider, USD",
+      "scale": {
+        "min": 0,
+        "max": null
+      },
+      "category": "cost"
+    },
+    "latency_s": {
+      "definition": "generation wall-clock time measured by the harness, seconds",
+      "scale": {
+        "min": 0,
+        "max": null
+      },
+      "category": "cost"
+    },
+    "eq_per_1k_tokens": {
+      "definition": "eq_total / (visible_tokens_est / 1000)",
+      "scale": {
+        "min": 0,
+        "max": null
+      },
+      "category": "length"
+    },
+    "adherence_per_1k_tokens": {
+      "definition": "adherence_total / (visible_tokens_est / 1000)",
+      "scale": {
+        "min": 0,
+        "max": null
+      },
+      "category": "length"
+    }
+  },
+  "cells": [
+    {
+      "prompt": "P1",
+      "condition": "baseline",
+      "generator": "opus-5.5-max",
+      "n_generations": 1,
+      "n_failed": 0,
+      "metrics": {
+        "adherence_total": {
+          "n": 1,
+          "mean": 9.0,
+          "median": 9,
+          "sd": null,
+          "min": 9,
+          "max": 9,
+          "ci95": null
+        },
+        "adherence_mean": {
+          "n": 1,
+          "mean": 9.0,
+          "median": 9.0,
+          "sd": null,
+          "min": 9.0,
+          "max": 9.0,
+          "ci95": null
+        },
+        "eq_total": {
+          "n": 1,
+          "mean": 37.0,
+          "median": 37.0,
+          "sd": null,
+          "min": 37.0,
+          "max": 37.0,
+          "ci95": null
+        },
+        "eq_core": {
+          "n": 1,
+          "mean": 30.0,
+          "median": 30.0,
+          "sd": null,
+          "min": 30.0,
+          "max": 30.0,
+          "ci95": null
+        },
+        "eq_dim_technical-correctness": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_requirement-fit": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_architectural-coherence": {
+          "n": 1,
+          "mean": 3.0,
+          "median": 3.0,
+          "sd": null,
+          "min": 3.0,
+          "max": 3.0,
+          "ci95": null
+        },
+        "eq_dim_validation-quality": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_assumption-quality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_failure-mode-coverage": {
+          "n": 1,
+          "mean": 3.0,
+          "median": 3.0,
+          "sd": null,
+          "min": 3.0,
+          "max": 3.0,
+          "ci95": null
+        },
+        "eq_dim_operational-feasibility": {
+          "n": 1,
+          "mean": 2.5,
+          "median": 2.5,
+          "sd": null,
+          "min": 2.5,
+          "max": 2.5,
+          "ci95": null
+        },
+        "eq_dim_cost-realism": {
+          "n": 1,
+          "mean": 3.0,
+          "median": 3.0,
+          "sd": null,
+          "min": 3.0,
+          "max": 3.0,
+          "ci95": null
+        },
+        "eq_dim_decision-reversibility": {
+          "n": 1,
+          "mean": 3.0,
+          "median": 3.0,
+          "sd": null,
+          "min": 3.0,
+          "max": 3.0,
+          "ci95": null
+        },
+        "eq_dim_proportionality": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_implementation-actionability": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_total@sonnet-5.5": {
+          "n": 1,
+          "mean": 34.0,
+          "median": 34.0,
+          "sd": null,
+          "min": 34.0,
+          "max": 34.0,
+          "ci95": null
+        },
+        "eq_total@fable-5": {
+          "n": 1,
+          "mean": 40.0,
+          "median": 40.0,
+          "sd": null,
+          "min": 40.0,
+          "max": 40.0,
+          "ci95": null
+        },
+        "checklist_coverage": {
+          "n": 1,
+          "mean": 0.9318,
+          "median": 0.9318,
+          "sd": null,
+          "min": 0.9318,
+          "max": 0.9318,
+          "ci95": null
+        },
+        "traps_present": {
+          "n": 1,
+          "mean": 0.0,
+          "median": 0.0,
+          "sd": null,
+          "min": 0.0,
+          "max": 0.0,
+          "ci95": null
+        },
+        "lint_score": {
+          "n": 1,
+          "mean": 0.0625,
+          "median": 0.0625,
+          "sd": null,
+          "min": 0.0625,
+          "max": 0.0625,
+          "ci95": null
+        },
+        "words": {
+          "n": 1,
+          "mean": 2397.0,
+          "median": 2397,
+          "sd": null,
+          "min": 2397,
+          "max": 2397,
+          "ci95": null
+        },
+        "visible_tokens_est": {
+          "n": 1,
+          "mean": 3592.0,
+          "median": 3592,
+          "sd": null,
+          "min": 3592,
+          "max": 3592,
+          "ci95": null
+        },
+        "output_tokens": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "cost_usd": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "latency_s": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "eq_per_1k_tokens": {
+          "n": 1,
+          "mean": 10.3007,
+          "median": 10.3007,
+          "sd": null,
+          "min": 10.3007,
+          "max": 10.3007,
+          "ci95": null
+        },
+        "adherence_per_1k_tokens": {
+          "n": 1,
+          "mean": 2.5056,
+          "median": 2.5056,
+          "sd": null,
+          "min": 2.5056,
+          "max": 2.5056,
+          "ci95": null
+        }
+      }
+    },
+    {
+      "prompt": "P1",
+      "condition": "dfa-v1",
+      "generator": "opus-5.5-max",
+      "n_generations": 1,
+      "n_failed": 0,
+      "metrics": {
+        "adherence_total": {
+          "n": 1,
+          "mean": 20.0,
+          "median": 20,
+          "sd": null,
+          "min": 20,
+          "max": 20,
+          "ci95": null
+        },
+        "adherence_mean": {
+          "n": 1,
+          "mean": 20.0,
+          "median": 20.0,
+          "sd": null,
+          "min": 20.0,
+          "max": 20.0,
+          "ci95": null
+        },
+        "eq_total": {
+          "n": 1,
+          "mean": 39.5,
+          "median": 39.5,
+          "sd": null,
+          "min": 39.5,
+          "max": 39.5,
+          "ci95": null
+        },
+        "eq_core": {
+          "n": 1,
+          "mean": 31.5,
+          "median": 31.5,
+          "sd": null,
+          "min": 31.5,
+          "max": 31.5,
+          "ci95": null
+        },
+        "eq_dim_technical-correctness": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_requirement-fit": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_architectural-coherence": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_validation-quality": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_assumption-quality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_failure-mode-coverage": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_operational-feasibility": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_cost-realism": {
+          "n": 1,
+          "mean": 2.5,
+          "median": 2.5,
+          "sd": null,
+          "min": 2.5,
+          "max": 2.5,
+          "ci95": null
+        },
+        "eq_dim_decision-reversibility": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_proportionality": {
+          "n": 1,
+          "mean": 3.0,
+          "median": 3.0,
+          "sd": null,
+          "min": 3.0,
+          "max": 3.0,
+          "ci95": null
+        },
+        "eq_dim_implementation-actionability": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_total@sonnet-5.5": {
+          "n": 1,
+          "mean": 36.0,
+          "median": 36.0,
+          "sd": null,
+          "min": 36.0,
+          "max": 36.0,
+          "ci95": null
+        },
+        "eq_total@fable-5": {
+          "n": 1,
+          "mean": 43.0,
+          "median": 43.0,
+          "sd": null,
+          "min": 43.0,
+          "max": 43.0,
+          "ci95": null
+        },
+        "checklist_coverage": {
+          "n": 1,
+          "mean": 0.9545,
+          "median": 0.9545,
+          "sd": null,
+          "min": 0.9545,
+          "max": 0.9545,
+          "ci95": null
+        },
+        "traps_present": {
+          "n": 1,
+          "mean": 0.0,
+          "median": 0.0,
+          "sd": null,
+          "min": 0.0,
+          "max": 0.0,
+          "ci95": null
+        },
+        "lint_score": {
+          "n": 1,
+          "mean": 0.1875,
+          "median": 0.1875,
+          "sd": null,
+          "min": 0.1875,
+          "max": 0.1875,
+          "ci95": null
+        },
+        "words": {
+          "n": 1,
+          "mean": 5297.0,
+          "median": 5297,
+          "sd": null,
+          "min": 5297,
+          "max": 5297,
+          "ci95": null
+        },
+        "visible_tokens_est": {
+          "n": 1,
+          "mean": 8153.0,
+          "median": 8153,
+          "sd": null,
+          "min": 8153,
+          "max": 8153,
+          "ci95": null
+        },
+        "output_tokens": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "cost_usd": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "latency_s": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "eq_per_1k_tokens": {
+          "n": 1,
+          "mean": 4.8448,
+          "median": 4.8448,
+          "sd": null,
+          "min": 4.8448,
+          "max": 4.8448,
+          "ci95": null
+        },
+        "adherence_per_1k_tokens": {
+          "n": 1,
+          "mean": 2.4531,
+          "median": 2.4531,
+          "sd": null,
+          "min": 2.4531,
+          "max": 2.4531,
+          "ci95": null
+        }
+      }
+    },
+    {
+      "prompt": "P2",
+      "condition": "baseline",
+      "generator": "opus-5.5-max",
+      "n_generations": 1,
+      "n_failed": 0,
+      "metrics": {
+        "adherence_total": {
+          "n": 1,
+          "mean": 8.0,
+          "median": 8,
+          "sd": null,
+          "min": 8,
+          "max": 8,
+          "ci95": null
+        },
+        "adherence_mean": {
+          "n": 1,
+          "mean": 8.0,
+          "median": 8.0,
+          "sd": null,
+          "min": 8.0,
+          "max": 8.0,
+          "ci95": null
+        },
+        "eq_total": {
+          "n": 1,
+          "mean": 35.0,
+          "median": 35.0,
+          "sd": null,
+          "min": 35.0,
+          "max": 35.0,
+          "ci95": null
+        },
+        "eq_core": {
+          "n": 1,
+          "mean": 29.0,
+          "median": 29.0,
+          "sd": null,
+          "min": 29.0,
+          "max": 29.0,
+          "ci95": null
+        },
+        "eq_dim_technical-correctness": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_requirement-fit": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_architectural-coherence": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_validation-quality": {
+          "n": 1,
+          "mean": 2.5,
+          "median": 2.5,
+          "sd": null,
+          "min": 2.5,
+          "max": 2.5,
+          "ci95": null
+        },
+        "eq_dim_assumption-quality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_failure-mode-coverage": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_operational-feasibility": {
+          "n": 1,
+          "mean": 2.5,
+          "median": 2.5,
+          "sd": null,
+          "min": 2.5,
+          "max": 2.5,
+          "ci95": null
+        },
+        "eq_dim_cost-realism": {
+          "n": 1,
+          "mean": 2.5,
+          "median": 2.5,
+          "sd": null,
+          "min": 2.5,
+          "max": 2.5,
+          "ci95": null
+        },
+        "eq_dim_decision-reversibility": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_proportionality": {
+          "n": 1,
+          "mean": 3.0,
+          "median": 3.0,
+          "sd": null,
+          "min": 3.0,
+          "max": 3.0,
+          "ci95": null
+        },
+        "eq_dim_implementation-actionability": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_total@sonnet-5.5": {
+          "n": 1,
+          "mean": 29.0,
+          "median": 29.0,
+          "sd": null,
+          "min": 29.0,
+          "max": 29.0,
+          "ci95": null
+        },
+        "eq_total@fable-5": {
+          "n": 1,
+          "mean": 41.0,
+          "median": 41.0,
+          "sd": null,
+          "min": 41.0,
+          "max": 41.0,
+          "ci95": null
+        },
+        "checklist_coverage": {
+          "n": 1,
+          "mean": 0.9792,
+          "median": 0.9792,
+          "sd": null,
+          "min": 0.9792,
+          "max": 0.9792,
+          "ci95": null
+        },
+        "traps_present": {
+          "n": 1,
+          "mean": 0.0,
+          "median": 0.0,
+          "sd": null,
+          "min": 0.0,
+          "max": 0.0,
+          "ci95": null
+        },
+        "lint_score": {
+          "n": 1,
+          "mean": 0.0625,
+          "median": 0.0625,
+          "sd": null,
+          "min": 0.0625,
+          "max": 0.0625,
+          "ci95": null
+        },
+        "words": {
+          "n": 1,
+          "mean": 5285.0,
+          "median": 5285,
+          "sd": null,
+          "min": 5285,
+          "max": 5285,
+          "ci95": null
+        },
+        "visible_tokens_est": {
+          "n": 1,
+          "mean": 8748.0,
+          "median": 8748,
+          "sd": null,
+          "min": 8748,
+          "max": 8748,
+          "ci95": null
+        },
+        "output_tokens": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "cost_usd": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "latency_s": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "eq_per_1k_tokens": {
+          "n": 1,
+          "mean": 4.0009,
+          "median": 4.0009,
+          "sd": null,
+          "min": 4.0009,
+          "max": 4.0009,
+          "ci95": null
+        },
+        "adherence_per_1k_tokens": {
+          "n": 1,
+          "mean": 0.9145,
+          "median": 0.9145,
+          "sd": null,
+          "min": 0.9145,
+          "max": 0.9145,
+          "ci95": null
+        }
+      }
+    },
+    {
+      "prompt": "P2",
+      "condition": "dfa-v1",
+      "generator": "opus-5.5-max",
+      "n_generations": 1,
+      "n_failed": 0,
+      "metrics": {
+        "adherence_total": {
+          "n": 1,
+          "mean": 20.0,
+          "median": 20,
+          "sd": null,
+          "min": 20,
+          "max": 20,
+          "ci95": null
+        },
+        "adherence_mean": {
+          "n": 1,
+          "mean": 20.0,
+          "median": 20.0,
+          "sd": null,
+          "min": 20.0,
+          "max": 20.0,
+          "ci95": null
+        },
+        "eq_total": {
+          "n": 1,
+          "mean": 40.0,
+          "median": 40.0,
+          "sd": null,
+          "min": 40.0,
+          "max": 40.0,
+          "ci95": null
+        },
+        "eq_core": {
+          "n": 1,
+          "mean": 32.0,
+          "median": 32.0,
+          "sd": null,
+          "min": 32.0,
+          "max": 32.0,
+          "ci95": null
+        },
+        "eq_dim_technical-correctness": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_requirement-fit": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_architectural-coherence": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_validation-quality": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_assumption-quality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_failure-mode-coverage": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_operational-feasibility": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_cost-realism": {
+          "n": 1,
+          "mean": 2.0,
+          "median": 2.0,
+          "sd": null,
+          "min": 2.0,
+          "max": 2.0,
+          "ci95": null
+        },
+        "eq_dim_decision-reversibility": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_proportionality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_implementation-actionability": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_total@sonnet-5.5": {
+          "n": 1,
+          "mean": 38.0,
+          "median": 38.0,
+          "sd": null,
+          "min": 38.0,
+          "max": 38.0,
+          "ci95": null
+        },
+        "eq_total@fable-5": {
+          "n": 1,
+          "mean": 42.0,
+          "median": 42.0,
+          "sd": null,
+          "min": 42.0,
+          "max": 42.0,
+          "ci95": null
+        },
+        "checklist_coverage": {
+          "n": 1,
+          "mean": 0.9583,
+          "median": 0.9583,
+          "sd": null,
+          "min": 0.9583,
+          "max": 0.9583,
+          "ci95": null
+        },
+        "traps_present": {
+          "n": 1,
+          "mean": 0.0,
+          "median": 0.0,
+          "sd": null,
+          "min": 0.0,
+          "max": 0.0,
+          "ci95": null
+        },
+        "lint_score": {
+          "n": 1,
+          "mean": 0.1875,
+          "median": 0.1875,
+          "sd": null,
+          "min": 0.1875,
+          "max": 0.1875,
+          "ci95": null
+        },
+        "words": {
+          "n": 1,
+          "mean": 6235.0,
+          "median": 6235,
+          "sd": null,
+          "min": 6235,
+          "max": 6235,
+          "ci95": null
+        },
+        "visible_tokens_est": {
+          "n": 1,
+          "mean": 9829.0,
+          "median": 9829,
+          "sd": null,
+          "min": 9829,
+          "max": 9829,
+          "ci95": null
+        },
+        "output_tokens": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "cost_usd": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "latency_s": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "eq_per_1k_tokens": {
+          "n": 1,
+          "mean": 4.0696,
+          "median": 4.0696,
+          "sd": null,
+          "min": 4.0696,
+          "max": 4.0696,
+          "ci95": null
+        },
+        "adherence_per_1k_tokens": {
+          "n": 1,
+          "mean": 2.0348,
+          "median": 2.0348,
+          "sd": null,
+          "min": 2.0348,
+          "max": 2.0348,
+          "ci95": null
+        }
+      }
+    },
+    {
+      "prompt": "P3",
+      "condition": "baseline",
+      "generator": "opus-5.5-max",
+      "n_generations": 1,
+      "n_failed": 0,
+      "metrics": {
+        "adherence_total": {
+          "n": 1,
+          "mean": 16.0,
+          "median": 16,
+          "sd": null,
+          "min": 16,
+          "max": 16,
+          "ci95": null
+        },
+        "adherence_mean": {
+          "n": 1,
+          "mean": 16.0,
+          "median": 16.0,
+          "sd": null,
+          "min": 16.0,
+          "max": 16.0,
+          "ci95": null
+        },
+        "eq_total": {
+          "n": 1,
+          "mean": 36.0,
+          "median": 36.0,
+          "sd": null,
+          "min": 36.0,
+          "max": 36.0,
+          "ci95": null
+        },
+        "eq_core": {
+          "n": 1,
+          "mean": 28.5,
+          "median": 28.5,
+          "sd": null,
+          "min": 28.5,
+          "max": 28.5,
+          "ci95": null
+        },
+        "eq_dim_technical-correctness": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_requirement-fit": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_architectural-coherence": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_validation-quality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_assumption-quality": {
+          "n": 1,
+          "mean": 3.0,
+          "median": 3.0,
+          "sd": null,
+          "min": 3.0,
+          "max": 3.0,
+          "ci95": null
+        },
+        "eq_dim_failure-mode-coverage": {
+          "n": 1,
+          "mean": 2.5,
+          "median": 2.5,
+          "sd": null,
+          "min": 2.5,
+          "max": 2.5,
+          "ci95": null
+        },
+        "eq_dim_operational-feasibility": {
+          "n": 1,
+          "mean": 3.0,
+          "median": 3.0,
+          "sd": null,
+          "min": 3.0,
+          "max": 3.0,
+          "ci95": null
+        },
+        "eq_dim_cost-realism": {
+          "n": 1,
+          "mean": 2.5,
+          "median": 2.5,
+          "sd": null,
+          "min": 2.5,
+          "max": 2.5,
+          "ci95": null
+        },
+        "eq_dim_decision-reversibility": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_proportionality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_implementation-actionability": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_total@sonnet-5.5": {
+          "n": 1,
+          "mean": 32.0,
+          "median": 32.0,
+          "sd": null,
+          "min": 32.0,
+          "max": 32.0,
+          "ci95": null
+        },
+        "eq_total@fable-5": {
+          "n": 1,
+          "mean": 40.0,
+          "median": 40.0,
+          "sd": null,
+          "min": 40.0,
+          "max": 40.0,
+          "ci95": null
+        },
+        "checklist_coverage": {
+          "n": 1,
+          "mean": 0.7708,
+          "median": 0.7708,
+          "sd": null,
+          "min": 0.7708,
+          "max": 0.7708,
+          "ci95": null
+        },
+        "traps_present": {
+          "n": 1,
+          "mean": 0.0,
+          "median": 0.0,
+          "sd": null,
+          "min": 0.0,
+          "max": 0.0,
+          "ci95": null
+        },
+        "lint_score": {
+          "n": 1,
+          "mean": 0.0625,
+          "median": 0.0625,
+          "sd": null,
+          "min": 0.0625,
+          "max": 0.0625,
+          "ci95": null
+        },
+        "words": {
+          "n": 1,
+          "mean": 1419.0,
+          "median": 1419,
+          "sd": null,
+          "min": 1419,
+          "max": 1419,
+          "ci95": null
+        },
+        "visible_tokens_est": {
+          "n": 1,
+          "mean": 2205.0,
+          "median": 2205,
+          "sd": null,
+          "min": 2205,
+          "max": 2205,
+          "ci95": null
+        },
+        "output_tokens": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "cost_usd": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "latency_s": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "eq_per_1k_tokens": {
+          "n": 1,
+          "mean": 16.3265,
+          "median": 16.3265,
+          "sd": null,
+          "min": 16.3265,
+          "max": 16.3265,
+          "ci95": null
+        },
+        "adherence_per_1k_tokens": {
+          "n": 1,
+          "mean": 7.2562,
+          "median": 7.2562,
+          "sd": null,
+          "min": 7.2562,
+          "max": 7.2562,
+          "ci95": null
+        }
+      }
+    },
+    {
+      "prompt": "P3",
+      "condition": "dfa-v1",
+      "generator": "opus-5.5-max",
+      "n_generations": 1,
+      "n_failed": 0,
+      "metrics": {
+        "adherence_total": {
+          "n": 1,
+          "mean": 20.0,
+          "median": 20,
+          "sd": null,
+          "min": 20,
+          "max": 20,
+          "ci95": null
+        },
+        "adherence_mean": {
+          "n": 1,
+          "mean": 20.0,
+          "median": 20.0,
+          "sd": null,
+          "min": 20.0,
+          "max": 20.0,
+          "ci95": null
+        },
+        "eq_total": {
+          "n": 1,
+          "mean": 38.0,
+          "median": 38.0,
+          "sd": null,
+          "min": 38.0,
+          "max": 38.0,
+          "ci95": null
+        },
+        "eq_core": {
+          "n": 1,
+          "mean": 30.0,
+          "median": 30.0,
+          "sd": null,
+          "min": 30.0,
+          "max": 30.0,
+          "ci95": null
+        },
+        "eq_dim_technical-correctness": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_requirement-fit": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_architectural-coherence": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_validation-quality": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_assumption-quality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_failure-mode-coverage": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_operational-feasibility": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_cost-realism": {
+          "n": 1,
+          "mean": 1.5,
+          "median": 1.5,
+          "sd": null,
+          "min": 1.5,
+          "max": 1.5,
+          "ci95": null
+        },
+        "eq_dim_decision-reversibility": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_proportionality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_implementation-actionability": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_total@sonnet-5.5": {
+          "n": 1,
+          "mean": 35.0,
+          "median": 35.0,
+          "sd": null,
+          "min": 35.0,
+          "max": 35.0,
+          "ci95": null
+        },
+        "eq_total@fable-5": {
+          "n": 1,
+          "mean": 41.0,
+          "median": 41.0,
+          "sd": null,
+          "min": 41.0,
+          "max": 41.0,
+          "ci95": null
+        },
+        "checklist_coverage": {
+          "n": 1,
+          "mean": 0.8333,
+          "median": 0.8333,
+          "sd": null,
+          "min": 0.8333,
+          "max": 0.8333,
+          "ci95": null
+        },
+        "traps_present": {
+          "n": 1,
+          "mean": 0.0,
+          "median": 0.0,
+          "sd": null,
+          "min": 0.0,
+          "max": 0.0,
+          "ci95": null
+        },
+        "lint_score": {
+          "n": 1,
+          "mean": 0.1875,
+          "median": 0.1875,
+          "sd": null,
+          "min": 0.1875,
+          "max": 0.1875,
+          "ci95": null
+        },
+        "words": {
+          "n": 1,
+          "mean": 3969.0,
+          "median": 3969,
+          "sd": null,
+          "min": 3969,
+          "max": 3969,
+          "ci95": null
+        },
+        "visible_tokens_est": {
+          "n": 1,
+          "mean": 6138.0,
+          "median": 6138,
+          "sd": null,
+          "min": 6138,
+          "max": 6138,
+          "ci95": null
+        },
+        "output_tokens": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "cost_usd": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "latency_s": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "eq_per_1k_tokens": {
+          "n": 1,
+          "mean": 6.1909,
+          "median": 6.1909,
+          "sd": null,
+          "min": 6.1909,
+          "max": 6.1909,
+          "ci95": null
+        },
+        "adherence_per_1k_tokens": {
+          "n": 1,
+          "mean": 3.2584,
+          "median": 3.2584,
+          "sd": null,
+          "min": 3.2584,
+          "max": 3.2584,
+          "ci95": null
+        }
+      }
+    },
+    {
+      "prompt": "P4",
+      "condition": "baseline",
+      "generator": "opus-5.5-max",
+      "n_generations": 1,
+      "n_failed": 0,
+      "metrics": {
+        "adherence_total": {
+          "n": 1,
+          "mean": 13.0,
+          "median": 13,
+          "sd": null,
+          "min": 13,
+          "max": 13,
+          "ci95": null
+        },
+        "adherence_mean": {
+          "n": 1,
+          "mean": 13.0,
+          "median": 13.0,
+          "sd": null,
+          "min": 13.0,
+          "max": 13.0,
+          "ci95": null
+        },
+        "eq_total": {
+          "n": 1,
+          "mean": 39.5,
+          "median": 39.5,
+          "sd": null,
+          "min": 39.5,
+          "max": 39.5,
+          "ci95": null
+        },
+        "eq_core": {
+          "n": 1,
+          "mean": 32.0,
+          "median": 32.0,
+          "sd": null,
+          "min": 32.0,
+          "max": 32.0,
+          "ci95": null
+        },
+        "eq_dim_technical-correctness": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_requirement-fit": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_architectural-coherence": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_validation-quality": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_assumption-quality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_failure-mode-coverage": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_operational-feasibility": {
+          "n": 1,
+          "mean": 3.0,
+          "median": 3.0,
+          "sd": null,
+          "min": 3.0,
+          "max": 3.0,
+          "ci95": null
+        },
+        "eq_dim_cost-realism": {
+          "n": 1,
+          "mean": 3.0,
+          "median": 3.0,
+          "sd": null,
+          "min": 3.0,
+          "max": 3.0,
+          "ci95": null
+        },
+        "eq_dim_decision-reversibility": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_proportionality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_implementation-actionability": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_total@sonnet-5.5": {
+          "n": 1,
+          "mean": 37.0,
+          "median": 37.0,
+          "sd": null,
+          "min": 37.0,
+          "max": 37.0,
+          "ci95": null
+        },
+        "eq_total@fable-5": {
+          "n": 1,
+          "mean": 42.0,
+          "median": 42.0,
+          "sd": null,
+          "min": 42.0,
+          "max": 42.0,
+          "ci95": null
+        },
+        "checklist_coverage": {
+          "n": 1,
+          "mean": 0.9375,
+          "median": 0.9375,
+          "sd": null,
+          "min": 0.9375,
+          "max": 0.9375,
+          "ci95": null
+        },
+        "traps_present": {
+          "n": 1,
+          "mean": 0.0,
+          "median": 0.0,
+          "sd": null,
+          "min": 0.0,
+          "max": 0.0,
+          "ci95": null
+        },
+        "lint_score": {
+          "n": 1,
+          "mean": 0.0625,
+          "median": 0.0625,
+          "sd": null,
+          "min": 0.0625,
+          "max": 0.0625,
+          "ci95": null
+        },
+        "words": {
+          "n": 1,
+          "mean": 3165.0,
+          "median": 3165,
+          "sd": null,
+          "min": 3165,
+          "max": 3165,
+          "ci95": null
+        },
+        "visible_tokens_est": {
+          "n": 1,
+          "mean": 5044.0,
+          "median": 5044,
+          "sd": null,
+          "min": 5044,
+          "max": 5044,
+          "ci95": null
+        },
+        "output_tokens": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "cost_usd": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "latency_s": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "eq_per_1k_tokens": {
+          "n": 1,
+          "mean": 7.8311,
+          "median": 7.8311,
+          "sd": null,
+          "min": 7.8311,
+          "max": 7.8311,
+          "ci95": null
+        },
+        "adherence_per_1k_tokens": {
+          "n": 1,
+          "mean": 2.5773,
+          "median": 2.5773,
+          "sd": null,
+          "min": 2.5773,
+          "max": 2.5773,
+          "ci95": null
+        }
+      }
+    },
+    {
+      "prompt": "P4",
+      "condition": "dfa-v1",
+      "generator": "opus-5.5-max",
+      "n_generations": 1,
+      "n_failed": 0,
+      "metrics": {
+        "adherence_total": {
+          "n": 1,
+          "mean": 20.0,
+          "median": 20,
+          "sd": null,
+          "min": 20,
+          "max": 20,
+          "ci95": null
+        },
+        "adherence_mean": {
+          "n": 1,
+          "mean": 20.0,
+          "median": 20.0,
+          "sd": null,
+          "min": 20.0,
+          "max": 20.0,
+          "ci95": null
+        },
+        "eq_total": {
+          "n": 1,
+          "mean": 41.0,
+          "median": 41.0,
+          "sd": null,
+          "min": 41.0,
+          "max": 41.0,
+          "ci95": null
+        },
+        "eq_core": {
+          "n": 1,
+          "mean": 33.0,
+          "median": 33.0,
+          "sd": null,
+          "min": 33.0,
+          "max": 33.0,
+          "ci95": null
+        },
+        "eq_dim_technical-correctness": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_requirement-fit": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_architectural-coherence": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_validation-quality": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_assumption-quality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_failure-mode-coverage": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_operational-feasibility": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_cost-realism": {
+          "n": 1,
+          "mean": 3.0,
+          "median": 3.0,
+          "sd": null,
+          "min": 3.0,
+          "max": 3.0,
+          "ci95": null
+        },
+        "eq_dim_decision-reversibility": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_proportionality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_implementation-actionability": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_total@sonnet-5.5": {
+          "n": 1,
+          "mean": 39.0,
+          "median": 39.0,
+          "sd": null,
+          "min": 39.0,
+          "max": 39.0,
+          "ci95": null
+        },
+        "eq_total@fable-5": {
+          "n": 1,
+          "mean": 43.0,
+          "median": 43.0,
+          "sd": null,
+          "min": 43.0,
+          "max": 43.0,
+          "ci95": null
+        },
+        "checklist_coverage": {
+          "n": 1,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": null,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": null
+        },
+        "traps_present": {
+          "n": 1,
+          "mean": 0.0,
+          "median": 0.0,
+          "sd": null,
+          "min": 0.0,
+          "max": 0.0,
+          "ci95": null
+        },
+        "lint_score": {
+          "n": 1,
+          "mean": 0.1875,
+          "median": 0.1875,
+          "sd": null,
+          "min": 0.1875,
+          "max": 0.1875,
+          "ci95": null
+        },
+        "words": {
+          "n": 1,
+          "mean": 5817.0,
+          "median": 5817,
+          "sd": null,
+          "min": 5817,
+          "max": 5817,
+          "ci95": null
+        },
+        "visible_tokens_est": {
+          "n": 1,
+          "mean": 8939.0,
+          "median": 8939,
+          "sd": null,
+          "min": 8939,
+          "max": 8939,
+          "ci95": null
+        },
+        "output_tokens": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "cost_usd": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "latency_s": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "eq_per_1k_tokens": {
+          "n": 1,
+          "mean": 4.5866,
+          "median": 4.5866,
+          "sd": null,
+          "min": 4.5866,
+          "max": 4.5866,
+          "ci95": null
+        },
+        "adherence_per_1k_tokens": {
+          "n": 1,
+          "mean": 2.2374,
+          "median": 2.2374,
+          "sd": null,
+          "min": 2.2374,
+          "max": 2.2374,
+          "ci95": null
+        }
+      }
+    },
+    {
+      "prompt": "P5",
+      "condition": "baseline",
+      "generator": "opus-5.5-max",
+      "n_generations": 1,
+      "n_failed": 0,
+      "metrics": {
+        "adherence_total": {
+          "n": 1,
+          "mean": 12.0,
+          "median": 12,
+          "sd": null,
+          "min": 12,
+          "max": 12,
+          "ci95": null
+        },
+        "adherence_mean": {
+          "n": 1,
+          "mean": 12.0,
+          "median": 12.0,
+          "sd": null,
+          "min": 12.0,
+          "max": 12.0,
+          "ci95": null
+        },
+        "eq_total": {
+          "n": 1,
+          "mean": 32.5,
+          "median": 32.5,
+          "sd": null,
+          "min": 32.5,
+          "max": 32.5,
+          "ci95": null
+        },
+        "eq_core": {
+          "n": 1,
+          "mean": 25.5,
+          "median": 25.5,
+          "sd": null,
+          "min": 25.5,
+          "max": 25.5,
+          "ci95": null
+        },
+        "eq_dim_technical-correctness": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_requirement-fit": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_architectural-coherence": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_validation-quality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_assumption-quality": {
+          "n": 1,
+          "mean": 3.0,
+          "median": 3.0,
+          "sd": null,
+          "min": 3.0,
+          "max": 3.0,
+          "ci95": null
+        },
+        "eq_dim_failure-mode-coverage": {
+          "n": 1,
+          "mean": 2.5,
+          "median": 2.5,
+          "sd": null,
+          "min": 2.5,
+          "max": 2.5,
+          "ci95": null
+        },
+        "eq_dim_operational-feasibility": {
+          "n": 1,
+          "mean": 1.5,
+          "median": 1.5,
+          "sd": null,
+          "min": 1.5,
+          "max": 1.5,
+          "ci95": null
+        },
+        "eq_dim_cost-realism": {
+          "n": 1,
+          "mean": 1.0,
+          "median": 1.0,
+          "sd": null,
+          "min": 1.0,
+          "max": 1.0,
+          "ci95": null
+        },
+        "eq_dim_decision-reversibility": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_proportionality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_implementation-actionability": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_total@sonnet-5.5": {
+          "n": 1,
+          "mean": 27.0,
+          "median": 27.0,
+          "sd": null,
+          "min": 27.0,
+          "max": 27.0,
+          "ci95": null
+        },
+        "eq_total@fable-5": {
+          "n": 1,
+          "mean": 38.0,
+          "median": 38.0,
+          "sd": null,
+          "min": 38.0,
+          "max": 38.0,
+          "ci95": null
+        },
+        "checklist_coverage": {
+          "n": 1,
+          "mean": 0.75,
+          "median": 0.75,
+          "sd": null,
+          "min": 0.75,
+          "max": 0.75,
+          "ci95": null
+        },
+        "traps_present": {
+          "n": 1,
+          "mean": 0.0,
+          "median": 0.0,
+          "sd": null,
+          "min": 0.0,
+          "max": 0.0,
+          "ci95": null
+        },
+        "lint_score": {
+          "n": 1,
+          "mean": 0.0625,
+          "median": 0.0625,
+          "sd": null,
+          "min": 0.0625,
+          "max": 0.0625,
+          "ci95": null
+        },
+        "words": {
+          "n": 1,
+          "mean": 802.0,
+          "median": 802,
+          "sd": null,
+          "min": 802,
+          "max": 802,
+          "ci95": null
+        },
+        "visible_tokens_est": {
+          "n": 1,
+          "mean": 1236.0,
+          "median": 1236,
+          "sd": null,
+          "min": 1236,
+          "max": 1236,
+          "ci95": null
+        },
+        "output_tokens": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "cost_usd": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "latency_s": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "eq_per_1k_tokens": {
+          "n": 1,
+          "mean": 26.2945,
+          "median": 26.2945,
+          "sd": null,
+          "min": 26.2945,
+          "max": 26.2945,
+          "ci95": null
+        },
+        "adherence_per_1k_tokens": {
+          "n": 1,
+          "mean": 9.7087,
+          "median": 9.7087,
+          "sd": null,
+          "min": 9.7087,
+          "max": 9.7087,
+          "ci95": null
+        }
+      }
+    },
+    {
+      "prompt": "P5",
+      "condition": "dfa-v1",
+      "generator": "opus-5.5-max",
+      "n_generations": 1,
+      "n_failed": 0,
+      "metrics": {
+        "adherence_total": {
+          "n": 1,
+          "mean": 20.0,
+          "median": 20,
+          "sd": null,
+          "min": 20,
+          "max": 20,
+          "ci95": null
+        },
+        "adherence_mean": {
+          "n": 1,
+          "mean": 20.0,
+          "median": 20.0,
+          "sd": null,
+          "min": 20.0,
+          "max": 20.0,
+          "ci95": null
+        },
+        "eq_total": {
+          "n": 1,
+          "mean": 38.5,
+          "median": 38.5,
+          "sd": null,
+          "min": 38.5,
+          "max": 38.5,
+          "ci95": null
+        },
+        "eq_core": {
+          "n": 1,
+          "mean": 31.0,
+          "median": 31.0,
+          "sd": null,
+          "min": 31.0,
+          "max": 31.0,
+          "ci95": null
+        },
+        "eq_dim_technical-correctness": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_requirement-fit": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_architectural-coherence": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_validation-quality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_assumption-quality": {
+          "n": 1,
+          "mean": 3.0,
+          "median": 3.0,
+          "sd": null,
+          "min": 3.0,
+          "max": 3.0,
+          "ci95": null
+        },
+        "eq_dim_failure-mode-coverage": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_operational-feasibility": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_cost-realism": {
+          "n": 1,
+          "mean": 2.0,
+          "median": 2.0,
+          "sd": null,
+          "min": 2.0,
+          "max": 2.0,
+          "ci95": null
+        },
+        "eq_dim_decision-reversibility": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_dim_proportionality": {
+          "n": 1,
+          "mean": 3.5,
+          "median": 3.5,
+          "sd": null,
+          "min": 3.5,
+          "max": 3.5,
+          "ci95": null
+        },
+        "eq_dim_implementation-actionability": {
+          "n": 1,
+          "mean": 4.0,
+          "median": 4.0,
+          "sd": null,
+          "min": 4.0,
+          "max": 4.0,
+          "ci95": null
+        },
+        "eq_total@sonnet-5.5": {
+          "n": 1,
+          "mean": 34.0,
+          "median": 34.0,
+          "sd": null,
+          "min": 34.0,
+          "max": 34.0,
+          "ci95": null
+        },
+        "eq_total@fable-5": {
+          "n": 1,
+          "mean": 43.0,
+          "median": 43.0,
+          "sd": null,
+          "min": 43.0,
+          "max": 43.0,
+          "ci95": null
+        },
+        "checklist_coverage": {
+          "n": 1,
+          "mean": 0.9792,
+          "median": 0.9792,
+          "sd": null,
+          "min": 0.9792,
+          "max": 0.9792,
+          "ci95": null
+        },
+        "traps_present": {
+          "n": 1,
+          "mean": 0.0,
+          "median": 0.0,
+          "sd": null,
+          "min": 0.0,
+          "max": 0.0,
+          "ci95": null
+        },
+        "lint_score": {
+          "n": 1,
+          "mean": 0.125,
+          "median": 0.125,
+          "sd": null,
+          "min": 0.125,
+          "max": 0.125,
+          "ci95": null
+        },
+        "words": {
+          "n": 1,
+          "mean": 5123.0,
+          "median": 5123,
+          "sd": null,
+          "min": 5123,
+          "max": 5123,
+          "ci95": null
+        },
+        "visible_tokens_est": {
+          "n": 1,
+          "mean": 8027.0,
+          "median": 8027,
+          "sd": null,
+          "min": 8027,
+          "max": 8027,
+          "ci95": null
+        },
+        "output_tokens": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "cost_usd": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "latency_s": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "sd": null,
+          "min": null,
+          "max": null,
+          "ci95": null
+        },
+        "eq_per_1k_tokens": {
+          "n": 1,
+          "mean": 4.7963,
+          "median": 4.7963,
+          "sd": null,
+          "min": 4.7963,
+          "max": 4.7963,
+          "ci95": null
+        },
+        "adherence_per_1k_tokens": {
+          "n": 1,
+          "mean": 2.4916,
+          "median": 2.4916,
+          "sd": null,
+          "min": 2.4916,
+          "max": 2.4916,
+          "ci95": null
+        }
+      }
+    }
+  ],
+  "conditions": [
+    {
+      "condition": "baseline",
+      "generator": "opus-5.5-max",
+      "kind": "plain",
+      "length_cap_words": null,
+      "n_prompts": 5,
+      "n_generations": 5,
+      "note": "pooled: generations of one prompt are not independent; the prompt-level statistics are the ones to read",
+      "metrics": {
+        "adherence_total": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 11.6,
+            "median": 12.0,
+            "sd": 3.2094,
+            "min": 8.0,
+            "max": 16.0,
+            "ci95": [
+              7.6151,
+              15.5849
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 11.6,
+            "median": 12,
+            "sd": 3.2094,
+            "min": 8,
+            "max": 16,
+            "ci95": [
+              7.6151,
+              15.5849
+            ]
+          }
+        },
+        "adherence_mean": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 11.6,
+            "median": 12.0,
+            "sd": 3.2094,
+            "min": 8.0,
+            "max": 16.0,
+            "ci95": [
+              7.6151,
+              15.5849
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 11.6,
+            "median": 12.0,
+            "sd": 3.2094,
+            "min": 8.0,
+            "max": 16.0,
+            "ci95": [
+              7.6151,
+              15.5849
+            ]
+          }
+        },
+        "eq_total": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 36.0,
+            "median": 36.0,
+            "sd": 2.5739,
+            "min": 32.5,
+            "max": 39.5,
+            "ci95": [
+              32.8041,
+              39.1959
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 36.0,
+            "median": 36.0,
+            "sd": 2.5739,
+            "min": 32.5,
+            "max": 39.5,
+            "ci95": [
+              32.8041,
+              39.1959
+            ]
+          }
+        },
+        "eq_core": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 29.0,
+            "median": 29.0,
+            "sd": 2.3717,
+            "min": 25.5,
+            "max": 32.0,
+            "ci95": [
+              26.0551,
+              31.9449
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 29.0,
+            "median": 29.0,
+            "sd": 2.3717,
+            "min": 25.5,
+            "max": 32.0,
+            "ci95": [
+              26.0551,
+              31.9449
+            ]
+          }
+        },
+        "eq_dim_technical-correctness": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.5,
+            "median": 3.5,
+            "sd": 0.0,
+            "min": 3.5,
+            "max": 3.5,
+            "ci95": [
+              3.5,
+              3.5
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.5,
+            "median": 3.5,
+            "sd": 0.0,
+            "min": 3.5,
+            "max": 3.5,
+            "ci95": [
+              3.5,
+              3.5
+            ]
+          }
+        },
+        "eq_dim_requirement-fit": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.7,
+            "median": 3.5,
+            "sd": 0.2739,
+            "min": 3.5,
+            "max": 4.0,
+            "ci95": [
+              3.36,
+              4.04
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.7,
+            "median": 3.5,
+            "sd": 0.2739,
+            "min": 3.5,
+            "max": 4.0,
+            "ci95": [
+              3.36,
+              4.04
+            ]
+          }
+        },
+        "eq_dim_architectural-coherence": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.4,
+            "median": 3.5,
+            "sd": 0.2236,
+            "min": 3.0,
+            "max": 3.5,
+            "ci95": [
+              3.1224,
+              3.6776
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.4,
+            "median": 3.5,
+            "sd": 0.2236,
+            "min": 3.0,
+            "max": 3.5,
+            "ci95": [
+              3.1224,
+              3.6776
+            ]
+          }
+        },
+        "eq_dim_validation-quality": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.5,
+            "median": 3.5,
+            "sd": 0.6124,
+            "min": 2.5,
+            "max": 4.0,
+            "ci95": [
+              2.7396,
+              4.2604
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.5,
+            "median": 3.5,
+            "sd": 0.6124,
+            "min": 2.5,
+            "max": 4.0,
+            "ci95": [
+              2.7396,
+              4.2604
+            ]
+          }
+        },
+        "eq_dim_assumption-quality": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.3,
+            "median": 3.5,
+            "sd": 0.2739,
+            "min": 3.0,
+            "max": 3.5,
+            "ci95": [
+              2.96,
+              3.64
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.3,
+            "median": 3.5,
+            "sd": 0.2739,
+            "min": 3.0,
+            "max": 3.5,
+            "ci95": [
+              2.96,
+              3.64
+            ]
+          }
+        },
+        "eq_dim_failure-mode-coverage": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.1,
+            "median": 3.0,
+            "sd": 0.6519,
+            "min": 2.5,
+            "max": 4.0,
+            "ci95": [
+              2.2905,
+              3.9095
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.1,
+            "median": 3.0,
+            "sd": 0.6519,
+            "min": 2.5,
+            "max": 4.0,
+            "ci95": [
+              2.2905,
+              3.9095
+            ]
+          }
+        },
+        "eq_dim_operational-feasibility": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 2.5,
+            "median": 2.5,
+            "sd": 0.6124,
+            "min": 1.5,
+            "max": 3.0,
+            "ci95": [
+              1.7396,
+              3.2604
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 2.5,
+            "median": 2.5,
+            "sd": 0.6124,
+            "min": 1.5,
+            "max": 3.0,
+            "ci95": [
+              1.7396,
+              3.2604
+            ]
+          }
+        },
+        "eq_dim_cost-realism": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 2.4,
+            "median": 2.5,
+            "sd": 0.8216,
+            "min": 1.0,
+            "max": 3.0,
+            "ci95": [
+              1.3799,
+              3.4201
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 2.4,
+            "median": 2.5,
+            "sd": 0.8216,
+            "min": 1.0,
+            "max": 3.0,
+            "ci95": [
+              1.3799,
+              3.4201
+            ]
+          }
+        },
+        "eq_dim_decision-reversibility": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.5,
+            "median": 3.5,
+            "sd": 0.3536,
+            "min": 3.0,
+            "max": 4.0,
+            "ci95": [
+              3.061,
+              3.939
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.5,
+            "median": 3.5,
+            "sd": 0.3536,
+            "min": 3.0,
+            "max": 4.0,
+            "ci95": [
+              3.061,
+              3.939
+            ]
+          }
+        },
+        "eq_dim_proportionality": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.5,
+            "median": 3.5,
+            "sd": 0.3536,
+            "min": 3.0,
+            "max": 4.0,
+            "ci95": [
+              3.061,
+              3.939
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.5,
+            "median": 3.5,
+            "sd": 0.3536,
+            "min": 3.0,
+            "max": 4.0,
+            "ci95": [
+              3.061,
+              3.939
+            ]
+          }
+        },
+        "eq_dim_implementation-actionability": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.6,
+            "median": 3.5,
+            "sd": 0.2236,
+            "min": 3.5,
+            "max": 4.0,
+            "ci95": [
+              3.3224,
+              3.8776
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.6,
+            "median": 3.5,
+            "sd": 0.2236,
+            "min": 3.5,
+            "max": 4.0,
+            "ci95": [
+              3.3224,
+              3.8776
+            ]
+          }
+        },
+        "eq_total@sonnet-5.5": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 31.8,
+            "median": 32.0,
+            "sd": 3.9623,
+            "min": 27.0,
+            "max": 37.0,
+            "ci95": [
+              26.8801,
+              36.7199
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 31.8,
+            "median": 32.0,
+            "sd": 3.9623,
+            "min": 27.0,
+            "max": 37.0,
+            "ci95": [
+              26.8801,
+              36.7199
+            ]
+          }
+        },
+        "eq_total@fable-5": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 40.2,
+            "median": 40.0,
+            "sd": 1.4832,
+            "min": 38.0,
+            "max": 42.0,
+            "ci95": [
+              38.3583,
+              42.0417
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 40.2,
+            "median": 40.0,
+            "sd": 1.4832,
+            "min": 38.0,
+            "max": 42.0,
+            "ci95": [
+              38.3583,
+              42.0417
+            ]
+          }
+        },
+        "checklist_coverage": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 0.8739,
+            "median": 0.9318,
+            "sd": 0.1054,
+            "min": 0.75,
+            "max": 0.9792,
+            "ci95": [
+              0.743,
+              1.0048
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 0.8739,
+            "median": 0.9318,
+            "sd": 0.1054,
+            "min": 0.75,
+            "max": 0.9792,
+            "ci95": [
+              0.743,
+              1.0048
+            ]
+          }
+        },
+        "traps_present": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 0.0,
+            "median": 0.0,
+            "sd": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 0.0,
+            "median": 0.0,
+            "sd": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "lint_score": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 0.0625,
+            "median": 0.0625,
+            "sd": 0.0,
+            "min": 0.0625,
+            "max": 0.0625,
+            "ci95": [
+              0.0625,
+              0.0625
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 0.0625,
+            "median": 0.0625,
+            "sd": 0.0,
+            "min": 0.0625,
+            "max": 0.0625,
+            "ci95": [
+              0.0625,
+              0.0625
+            ]
+          }
+        },
+        "words": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 2613.6,
+            "median": 2397.0,
+            "sd": 1746.16,
+            "min": 802.0,
+            "max": 5285.0,
+            "ci95": [
+              445.456,
+              4781.744
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 2613.6,
+            "median": 2397,
+            "sd": 1746.16,
+            "min": 802,
+            "max": 5285,
+            "ci95": [
+              445.456,
+              4781.744
+            ]
+          }
+        },
+        "visible_tokens_est": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 4165.0,
+            "median": 3592.0,
+            "sd": 2937.9202,
+            "min": 1236.0,
+            "max": 8748.0,
+            "ci95": [
+              517.0903,
+              7812.9097
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 4165.0,
+            "median": 3592,
+            "sd": 2937.9202,
+            "min": 1236,
+            "max": 8748,
+            "ci95": [
+              517.0903,
+              7812.9097
+            ]
+          }
+        },
+        "output_tokens": {
+          "prompt_means": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "sd": null,
+            "min": null,
+            "max": null,
+            "ci95": null
+          },
+          "pooled": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "sd": null,
+            "min": null,
+            "max": null,
+            "ci95": null
+          }
+        },
+        "cost_usd": {
+          "prompt_means": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "sd": null,
+            "min": null,
+            "max": null,
+            "ci95": null
+          },
+          "pooled": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "sd": null,
+            "min": null,
+            "max": null,
+            "ci95": null
+          }
+        },
+        "latency_s": {
+          "prompt_means": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "sd": null,
+            "min": null,
+            "max": null,
+            "ci95": null
+          },
+          "pooled": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "sd": null,
+            "min": null,
+            "max": null,
+            "ci95": null
+          }
+        },
+        "eq_per_1k_tokens": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 12.9507,
+            "median": 10.3007,
+            "sd": 8.7004,
+            "min": 4.0009,
+            "max": 26.2945,
+            "ci95": [
+              2.1478,
+              23.7537
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 12.9507,
+            "median": 10.3007,
+            "sd": 8.7004,
+            "min": 4.0009,
+            "max": 26.2945,
+            "ci95": [
+              2.1478,
+              23.7537
+            ]
+          }
+        },
+        "adherence_per_1k_tokens": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 4.5925,
+            "median": 2.5773,
+            "sd": 3.7154,
+            "min": 0.9145,
+            "max": 9.7087,
+            "ci95": [
+              -0.0207,
+              9.2057
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 4.5925,
+            "median": 2.5773,
+            "sd": 3.7154,
+            "min": 0.9145,
+            "max": 9.7087,
+            "ci95": [
+              -0.0207,
+              9.2057
+            ]
+          }
+        }
+      }
+    },
+    {
+      "condition": "dfa-v1",
+      "generator": "opus-5.5-max",
+      "kind": "skill",
+      "length_cap_words": null,
+      "n_prompts": 5,
+      "n_generations": 5,
+      "note": "pooled: generations of one prompt are not independent; the prompt-level statistics are the ones to read",
+      "metrics": {
+        "adherence_total": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 20.0,
+            "median": 20.0,
+            "sd": 0.0,
+            "min": 20.0,
+            "max": 20.0,
+            "ci95": [
+              20.0,
+              20.0
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 20.0,
+            "median": 20,
+            "sd": 0.0,
+            "min": 20,
+            "max": 20,
+            "ci95": [
+              20.0,
+              20.0
+            ]
+          }
+        },
+        "adherence_mean": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 20.0,
+            "median": 20.0,
+            "sd": 0.0,
+            "min": 20.0,
+            "max": 20.0,
+            "ci95": [
+              20.0,
+              20.0
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 20.0,
+            "median": 20.0,
+            "sd": 0.0,
+            "min": 20.0,
+            "max": 20.0,
+            "ci95": [
+              20.0,
+              20.0
+            ]
+          }
+        },
+        "eq_total": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 39.4,
+            "median": 39.5,
+            "sd": 1.1937,
+            "min": 38.0,
+            "max": 41.0,
+            "ci95": [
+              37.9178,
+              40.8822
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 39.4,
+            "median": 39.5,
+            "sd": 1.1937,
+            "min": 38.0,
+            "max": 41.0,
+            "ci95": [
+              37.9178,
+              40.8822
+            ]
+          }
+        },
+        "eq_core": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 31.5,
+            "median": 31.5,
+            "sd": 1.118,
+            "min": 30.0,
+            "max": 33.0,
+            "ci95": [
+              30.1118,
+              32.8882
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 31.5,
+            "median": 31.5,
+            "sd": 1.118,
+            "min": 30.0,
+            "max": 33.0,
+            "ci95": [
+              30.1118,
+              32.8882
+            ]
+          }
+        },
+        "eq_dim_technical-correctness": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.5,
+            "median": 3.5,
+            "sd": 0.0,
+            "min": 3.5,
+            "max": 3.5,
+            "ci95": [
+              3.5,
+              3.5
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.5,
+            "median": 3.5,
+            "sd": 0.0,
+            "min": 3.5,
+            "max": 3.5,
+            "ci95": [
+              3.5,
+              3.5
+            ]
+          }
+        },
+        "eq_dim_requirement-fit": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.8,
+            "median": 4.0,
+            "sd": 0.2739,
+            "min": 3.5,
+            "max": 4.0,
+            "ci95": [
+              3.46,
+              4.14
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.8,
+            "median": 4.0,
+            "sd": 0.2739,
+            "min": 3.5,
+            "max": 4.0,
+            "ci95": [
+              3.46,
+              4.14
+            ]
+          }
+        },
+        "eq_dim_architectural-coherence": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.8,
+            "median": 4.0,
+            "sd": 0.2739,
+            "min": 3.5,
+            "max": 4.0,
+            "ci95": [
+              3.46,
+              4.14
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.8,
+            "median": 4.0,
+            "sd": 0.2739,
+            "min": 3.5,
+            "max": 4.0,
+            "ci95": [
+              3.46,
+              4.14
+            ]
+          }
+        },
+        "eq_dim_validation-quality": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.9,
+            "median": 4.0,
+            "sd": 0.2236,
+            "min": 3.5,
+            "max": 4.0,
+            "ci95": [
+              3.6224,
+              4.1776
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.9,
+            "median": 4.0,
+            "sd": 0.2236,
+            "min": 3.5,
+            "max": 4.0,
+            "ci95": [
+              3.6224,
+              4.1776
+            ]
+          }
+        },
+        "eq_dim_assumption-quality": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.4,
+            "median": 3.5,
+            "sd": 0.2236,
+            "min": 3.0,
+            "max": 3.5,
+            "ci95": [
+              3.1224,
+              3.6776
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.4,
+            "median": 3.5,
+            "sd": 0.2236,
+            "min": 3.0,
+            "max": 3.5,
+            "ci95": [
+              3.1224,
+              3.6776
+            ]
+          }
+        },
+        "eq_dim_failure-mode-coverage": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.9,
+            "median": 4.0,
+            "sd": 0.2236,
+            "min": 3.5,
+            "max": 4.0,
+            "ci95": [
+              3.6224,
+              4.1776
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.9,
+            "median": 4.0,
+            "sd": 0.2236,
+            "min": 3.5,
+            "max": 4.0,
+            "ci95": [
+              3.6224,
+              4.1776
+            ]
+          }
+        },
+        "eq_dim_operational-feasibility": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.5,
+            "median": 3.5,
+            "sd": 0.0,
+            "min": 3.5,
+            "max": 3.5,
+            "ci95": [
+              3.5,
+              3.5
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.5,
+            "median": 3.5,
+            "sd": 0.0,
+            "min": 3.5,
+            "max": 3.5,
+            "ci95": [
+              3.5,
+              3.5
+            ]
+          }
+        },
+        "eq_dim_cost-realism": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 2.2,
+            "median": 2.0,
+            "sd": 0.5701,
+            "min": 1.5,
+            "max": 3.0,
+            "ci95": [
+              1.4921,
+              2.9079
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 2.2,
+            "median": 2.0,
+            "sd": 0.5701,
+            "min": 1.5,
+            "max": 3.0,
+            "ci95": [
+              1.4921,
+              2.9079
+            ]
+          }
+        },
+        "eq_dim_decision-reversibility": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 4.0,
+            "median": 4.0,
+            "sd": 0.0,
+            "min": 4.0,
+            "max": 4.0,
+            "ci95": [
+              4.0,
+              4.0
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 4.0,
+            "median": 4.0,
+            "sd": 0.0,
+            "min": 4.0,
+            "max": 4.0,
+            "ci95": [
+              4.0,
+              4.0
+            ]
+          }
+        },
+        "eq_dim_proportionality": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 3.4,
+            "median": 3.5,
+            "sd": 0.2236,
+            "min": 3.0,
+            "max": 3.5,
+            "ci95": [
+              3.1224,
+              3.6776
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 3.4,
+            "median": 3.5,
+            "sd": 0.2236,
+            "min": 3.0,
+            "max": 3.5,
+            "ci95": [
+              3.1224,
+              3.6776
+            ]
+          }
+        },
+        "eq_dim_implementation-actionability": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 4.0,
+            "median": 4.0,
+            "sd": 0.0,
+            "min": 4.0,
+            "max": 4.0,
+            "ci95": [
+              4.0,
+              4.0
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 4.0,
+            "median": 4.0,
+            "sd": 0.0,
+            "min": 4.0,
+            "max": 4.0,
+            "ci95": [
+              4.0,
+              4.0
+            ]
+          }
+        },
+        "eq_total@sonnet-5.5": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 36.4,
+            "median": 36.0,
+            "sd": 2.0736,
+            "min": 34.0,
+            "max": 39.0,
+            "ci95": [
+              33.8252,
+              38.9748
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 36.4,
+            "median": 36.0,
+            "sd": 2.0736,
+            "min": 34.0,
+            "max": 39.0,
+            "ci95": [
+              33.8252,
+              38.9748
+            ]
+          }
+        },
+        "eq_total@fable-5": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 42.4,
+            "median": 43.0,
+            "sd": 0.8944,
+            "min": 41.0,
+            "max": 43.0,
+            "ci95": [
+              41.2894,
+              43.5106
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 42.4,
+            "median": 43.0,
+            "sd": 0.8944,
+            "min": 41.0,
+            "max": 43.0,
+            "ci95": [
+              41.2894,
+              43.5106
+            ]
+          }
+        },
+        "checklist_coverage": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 0.9451,
+            "median": 0.9583,
+            "sd": 0.0651,
+            "min": 0.8333,
+            "max": 1.0,
+            "ci95": [
+              0.8643,
+              1.0259
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 0.9451,
+            "median": 0.9583,
+            "sd": 0.0651,
+            "min": 0.8333,
+            "max": 1.0,
+            "ci95": [
+              0.8643,
+              1.0259
+            ]
+          }
+        },
+        "traps_present": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 0.0,
+            "median": 0.0,
+            "sd": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 0.0,
+            "median": 0.0,
+            "sd": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "lint_score": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 0.175,
+            "median": 0.1875,
+            "sd": 0.028,
+            "min": 0.125,
+            "max": 0.1875,
+            "ci95": [
+              0.1403,
+              0.2097
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 0.175,
+            "median": 0.1875,
+            "sd": 0.028,
+            "min": 0.125,
+            "max": 0.1875,
+            "ci95": [
+              0.1403,
+              0.2097
+            ]
+          }
+        },
+        "words": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 5288.2,
+            "median": 5297.0,
+            "sd": 857.8632,
+            "min": 3969.0,
+            "max": 6235.0,
+            "ci95": [
+              4223.0222,
+              6353.3778
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 5288.2,
+            "median": 5297,
+            "sd": 857.8632,
+            "min": 3969,
+            "max": 6235,
+            "ci95": [
+              4223.0222,
+              6353.3778
+            ]
+          }
+        },
+        "visible_tokens_est": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 8217.2,
+            "median": 8153.0,
+            "sd": 1367.6864,
+            "min": 6138.0,
+            "max": 9829.0,
+            "ci95": [
+              6518.993,
+              9915.407
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 8217.2,
+            "median": 8153,
+            "sd": 1367.6864,
+            "min": 6138,
+            "max": 9829,
+            "ci95": [
+              6518.993,
+              9915.407
+            ]
+          }
+        },
+        "output_tokens": {
+          "prompt_means": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "sd": null,
+            "min": null,
+            "max": null,
+            "ci95": null
+          },
+          "pooled": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "sd": null,
+            "min": null,
+            "max": null,
+            "ci95": null
+          }
+        },
+        "cost_usd": {
+          "prompt_means": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "sd": null,
+            "min": null,
+            "max": null,
+            "ci95": null
+          },
+          "pooled": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "sd": null,
+            "min": null,
+            "max": null,
+            "ci95": null
+          }
+        },
+        "latency_s": {
+          "prompt_means": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "sd": null,
+            "min": null,
+            "max": null,
+            "ci95": null
+          },
+          "pooled": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "sd": null,
+            "min": null,
+            "max": null,
+            "ci95": null
+          }
+        },
+        "eq_per_1k_tokens": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 4.8977,
+            "median": 4.7963,
+            "sd": 0.7855,
+            "min": 4.0696,
+            "max": 6.1909,
+            "ci95": [
+              3.9223,
+              5.873
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 4.8977,
+            "median": 4.7963,
+            "sd": 0.7855,
+            "min": 4.0696,
+            "max": 6.1909,
+            "ci95": [
+              3.9223,
+              5.873
+            ]
+          }
+        },
+        "adherence_per_1k_tokens": {
+          "prompt_means": {
+            "n": 5,
+            "mean": 2.495,
+            "median": 2.4531,
+            "sd": 0.4644,
+            "min": 2.0348,
+            "max": 3.2584,
+            "ci95": [
+              1.9184,
+              3.0717
+            ]
+          },
+          "pooled": {
+            "n": 5,
+            "mean": 2.495,
+            "median": 2.4531,
+            "sd": 0.4644,
+            "min": 2.0348,
+            "max": 3.2584,
+            "ci95": [
+              1.9184,
+              3.0717
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "contrasts": [
+    {
+      "treatment": "dfa-v1",
+      "control": "baseline",
+      "generator": "opus-5.5-max",
+      "metric": "adherence_total",
+      "n_prompts": 5,
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 8.4,
+      "diff": {
+        "n": 5,
+        "mean": 8.4,
+        "median": 8.0,
+        "sd": 3.2094,
+        "min": 4.0,
+        "max": 12.0,
+        "ci95": [
+          4.4151,
+          12.3849
+        ]
+      },
+      "dz": 2.6173,
+      "hedges_g": null,
+      "cliffs_delta": 1.0,
+      "cluster_bootstrap_ci": [
+        6.0,
+        10.8
+      ],
+      "bootstrap": {
+        "resamples": 10000,
+        "seed": 469739483
+      },
+      "per_prompt": [
+        {
+          "prompt": "P1",
+          "treatment_mean": 20.0,
+          "control_mean": 9.0,
+          "diff": 11.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P2",
+          "treatment_mean": 20.0,
+          "control_mean": 8.0,
+          "diff": 12.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P3",
+          "treatment_mean": 20.0,
+          "control_mean": 16.0,
+          "diff": 4.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P4",
+          "treatment_mean": 20.0,
+          "control_mean": 13.0,
+          "diff": 7.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P5",
+          "treatment_mean": 20.0,
+          "control_mean": 12.0,
+          "diff": 8.0,
+          "n_treatment": 1,
+          "n_control": 1
+        }
+      ],
+      "notes": [
+        "ceiling: 100% of treatment generations at max",
+        "no variation within prompts: g undefined"
+      ]
+    },
+    {
+      "treatment": "dfa-v1",
+      "control": "baseline",
+      "generator": "opus-5.5-max",
+      "metric": "eq_total",
+      "n_prompts": 5,
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 3.4,
+      "diff": {
+        "n": 5,
+        "mean": 3.4,
+        "median": 2.5,
+        "sd": 1.9812,
+        "min": 1.5,
+        "max": 6.0,
+        "ci95": [
+          0.9401,
+          5.8599
+        ]
+      },
+      "dz": 1.7162,
+      "hedges_g": null,
+      "cliffs_delta": 1.0,
+      "cluster_bootstrap_ci": [
+        1.9,
+        5.0
+      ],
+      "bootstrap": {
+        "resamples": 10000,
+        "seed": 469739483
+      },
+      "per_prompt": [
+        {
+          "prompt": "P1",
+          "treatment_mean": 39.5,
+          "control_mean": 37.0,
+          "diff": 2.5,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P2",
+          "treatment_mean": 40.0,
+          "control_mean": 35.0,
+          "diff": 5.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P3",
+          "treatment_mean": 38.0,
+          "control_mean": 36.0,
+          "diff": 2.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P4",
+          "treatment_mean": 41.0,
+          "control_mean": 39.5,
+          "diff": 1.5,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P5",
+          "treatment_mean": 38.5,
+          "control_mean": 32.5,
+          "diff": 6.0,
+          "n_treatment": 1,
+          "n_control": 1
+        }
+      ],
+      "notes": [
+        "no variation within prompts: g undefined"
+      ]
+    },
+    {
+      "treatment": "dfa-v1",
+      "control": "baseline",
+      "generator": "opus-5.5-max",
+      "metric": "eq_core",
+      "n_prompts": 5,
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 2.5,
+      "diff": {
+        "n": 5,
+        "mean": 2.5,
+        "median": 1.5,
+        "sd": 1.8371,
+        "min": 1.0,
+        "max": 5.5,
+        "ci95": [
+          0.2189,
+          4.7811
+        ]
+      },
+      "dz": 1.3608,
+      "hedges_g": null,
+      "cliffs_delta": 1.0,
+      "cluster_bootstrap_ci": [
+        1.3,
+        4.1
+      ],
+      "bootstrap": {
+        "resamples": 10000,
+        "seed": 469739483
+      },
+      "per_prompt": [
+        {
+          "prompt": "P1",
+          "treatment_mean": 31.5,
+          "control_mean": 30.0,
+          "diff": 1.5,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P2",
+          "treatment_mean": 32.0,
+          "control_mean": 29.0,
+          "diff": 3.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P3",
+          "treatment_mean": 30.0,
+          "control_mean": 28.5,
+          "diff": 1.5,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P4",
+          "treatment_mean": 33.0,
+          "control_mean": 32.0,
+          "diff": 1.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P5",
+          "treatment_mean": 31.0,
+          "control_mean": 25.5,
+          "diff": 5.5,
+          "n_treatment": 1,
+          "n_control": 1
+        }
+      ],
+      "notes": [
+        "no variation within prompts: g undefined"
+      ]
+    },
+    {
+      "treatment": "dfa-v1",
+      "control": "baseline",
+      "generator": "opus-5.5-max",
+      "metric": "checklist_coverage",
+      "n_prompts": 5,
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.0712,
+      "diff": {
+        "n": 5,
+        "mean": 0.0712,
+        "median": 0.0625,
+        "sd": 0.0948,
+        "min": -0.0208,
+        "max": 0.2292,
+        "ci95": [
+          -0.0465,
+          0.1889
+        ]
+      },
+      "dz": 0.7514,
+      "hedges_g": null,
+      "cliffs_delta": 0.6,
+      "cluster_bootstrap_ci": [
+        0.0125,
+        0.1545
+      ],
+      "bootstrap": {
+        "resamples": 10000,
+        "seed": 469739483
+      },
+      "per_prompt": [
+        {
+          "prompt": "P1",
+          "treatment_mean": 0.9545,
+          "control_mean": 0.9318,
+          "diff": 0.0227,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P2",
+          "treatment_mean": 0.9583,
+          "control_mean": 0.9792,
+          "diff": -0.0208,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P3",
+          "treatment_mean": 0.8333,
+          "control_mean": 0.7708,
+          "diff": 0.0625,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P4",
+          "treatment_mean": 1.0,
+          "control_mean": 0.9375,
+          "diff": 0.0625,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P5",
+          "treatment_mean": 0.9792,
+          "control_mean": 0.75,
+          "diff": 0.2292,
+          "n_treatment": 1,
+          "n_control": 1
+        }
+      ],
+      "notes": [
+        "ceiling: 20% of treatment generations at max",
+        "no variation within prompts: g undefined"
+      ]
+    },
+    {
+      "treatment": "dfa-v1",
+      "control": "baseline",
+      "generator": "opus-5.5-max",
+      "metric": "traps_present",
+      "n_prompts": 5,
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.0,
+      "diff": {
+        "n": 5,
+        "mean": 0.0,
+        "median": 0.0,
+        "sd": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "dz": null,
+      "hedges_g": null,
+      "cliffs_delta": 0.0,
+      "cluster_bootstrap_ci": [
+        0.0,
+        0.0
+      ],
+      "bootstrap": {
+        "resamples": 10000,
+        "seed": 469739483
+      },
+      "per_prompt": [
+        {
+          "prompt": "P1",
+          "treatment_mean": 0.0,
+          "control_mean": 0.0,
+          "diff": 0.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P2",
+          "treatment_mean": 0.0,
+          "control_mean": 0.0,
+          "diff": 0.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P3",
+          "treatment_mean": 0.0,
+          "control_mean": 0.0,
+          "diff": 0.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P4",
+          "treatment_mean": 0.0,
+          "control_mean": 0.0,
+          "diff": 0.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P5",
+          "treatment_mean": 0.0,
+          "control_mean": 0.0,
+          "diff": 0.0,
+          "n_treatment": 1,
+          "n_control": 1
+        }
+      ],
+      "notes": [
+        "no variation in the per-prompt differences: dz undefined",
+        "no variation within prompts: g undefined"
+      ]
+    },
+    {
+      "treatment": "dfa-v1",
+      "control": "baseline",
+      "generator": "opus-5.5-max",
+      "metric": "lint_score",
+      "n_prompts": 5,
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 0.1125,
+      "diff": {
+        "n": 5,
+        "mean": 0.1125,
+        "median": 0.125,
+        "sd": 0.028,
+        "min": 0.0625,
+        "max": 0.125,
+        "ci95": [
+          0.0778,
+          0.1472
+        ]
+      },
+      "dz": 4.0249,
+      "hedges_g": null,
+      "cliffs_delta": 1.0,
+      "cluster_bootstrap_ci": [
+        0.0875,
+        0.125
+      ],
+      "bootstrap": {
+        "resamples": 10000,
+        "seed": 469739483
+      },
+      "per_prompt": [
+        {
+          "prompt": "P1",
+          "treatment_mean": 0.1875,
+          "control_mean": 0.0625,
+          "diff": 0.125,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P2",
+          "treatment_mean": 0.1875,
+          "control_mean": 0.0625,
+          "diff": 0.125,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P3",
+          "treatment_mean": 0.1875,
+          "control_mean": 0.0625,
+          "diff": 0.125,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P4",
+          "treatment_mean": 0.1875,
+          "control_mean": 0.0625,
+          "diff": 0.125,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P5",
+          "treatment_mean": 0.125,
+          "control_mean": 0.0625,
+          "diff": 0.0625,
+          "n_treatment": 1,
+          "n_control": 1
+        }
+      ],
+      "notes": [
+        "no variation within prompts: g undefined"
+      ]
+    },
+    {
+      "treatment": "dfa-v1",
+      "control": "baseline",
+      "generator": "opus-5.5-max",
+      "metric": "words",
+      "n_prompts": 5,
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 2674.6,
+      "diff": {
+        "n": 5,
+        "mean": 2674.6,
+        "median": 2652.0,
+        "sd": 1199.1371,
+        "min": 950.0,
+        "max": 4321.0,
+        "ci95": [
+          1185.6746,
+          4163.5254
+        ]
+      },
+      "dz": 2.2304,
+      "hedges_g": null,
+      "cliffs_delta": 1.0,
+      "cluster_bootstrap_ci": [
+        1660.0,
+        3646.8
+      ],
+      "bootstrap": {
+        "resamples": 10000,
+        "seed": 469739483
+      },
+      "per_prompt": [
+        {
+          "prompt": "P1",
+          "treatment_mean": 5297.0,
+          "control_mean": 2397.0,
+          "diff": 2900.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P2",
+          "treatment_mean": 6235.0,
+          "control_mean": 5285.0,
+          "diff": 950.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P3",
+          "treatment_mean": 3969.0,
+          "control_mean": 1419.0,
+          "diff": 2550.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P4",
+          "treatment_mean": 5817.0,
+          "control_mean": 3165.0,
+          "diff": 2652.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P5",
+          "treatment_mean": 5123.0,
+          "control_mean": 802.0,
+          "diff": 4321.0,
+          "n_treatment": 1,
+          "n_control": 1
+        }
+      ],
+      "notes": [
+        "no variation within prompts: g undefined"
+      ]
+    },
+    {
+      "treatment": "dfa-v1",
+      "control": "baseline",
+      "generator": "opus-5.5-max",
+      "metric": "eq_per_1k_tokens",
+      "n_prompts": 5,
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": -8.0531,
+      "diff": {
+        "n": 5,
+        "mean": -8.0531,
+        "median": -5.4558,
+        "sd": 8.3806,
+        "min": -21.4982,
+        "max": 0.0687,
+        "ci95": [
+          -18.459,
+          2.3528
+        ]
+      },
+      "dz": -0.9609,
+      "hedges_g": null,
+      "cliffs_delta": -0.6,
+      "cluster_bootstrap_ci": [
+        -15.0812,
+        -2.3615
+      ],
+      "bootstrap": {
+        "resamples": 10000,
+        "seed": 469739483
+      },
+      "per_prompt": [
+        {
+          "prompt": "P1",
+          "treatment_mean": 4.8448,
+          "control_mean": 10.3007,
+          "diff": -5.4558,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P2",
+          "treatment_mean": 4.0696,
+          "control_mean": 4.0009,
+          "diff": 0.0687,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P3",
+          "treatment_mean": 6.1909,
+          "control_mean": 16.3265,
+          "diff": -10.1356,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P4",
+          "treatment_mean": 4.5866,
+          "control_mean": 7.8311,
+          "diff": -3.2444,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P5",
+          "treatment_mean": 4.7963,
+          "control_mean": 26.2945,
+          "diff": -21.4982,
+          "n_treatment": 1,
+          "n_control": 1
+        }
+      ],
+      "notes": [
+        "no variation within prompts: g undefined"
+      ]
+    },
+    {
+      "treatment": "dfa-v1",
+      "control": "baseline",
+      "generator": "opus-5.5-max",
+      "metric": "cost_usd",
+      "n_prompts": 0,
+      "n_treatment": 0,
+      "n_control": 0,
+      "mean_diff": null,
+      "diff": {
+        "n": 0,
+        "mean": null,
+        "median": null,
+        "sd": null,
+        "min": null,
+        "max": null,
+        "ci95": null
+      },
+      "dz": null,
+      "hedges_g": null,
+      "cliffs_delta": null,
+      "cluster_bootstrap_ci": null,
+      "bootstrap": {
+        "resamples": 10000,
+        "seed": 469739483
+      },
+      "per_prompt": [],
+      "notes": [
+        "no prompt has data for both arms",
+        "n_prompts < 5: interval is wide"
+      ]
+    },
+    {
+      "treatment": "dfa-v1",
+      "control": "baseline",
+      "generator": "opus-5.5-max",
+      "metric": "eq_total@sonnet-5.5",
+      "n_prompts": 5,
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 4.6,
+      "diff": {
+        "n": 5,
+        "mean": 4.6,
+        "median": 3.0,
+        "sd": 3.2094,
+        "min": 2.0,
+        "max": 9.0,
+        "ci95": [
+          0.6151,
+          8.5849
+        ]
+      },
+      "dz": 1.4333,
+      "hedges_g": null,
+      "cliffs_delta": 1.0,
+      "cluster_bootstrap_ci": [
+        2.2,
+        7.2
+      ],
+      "bootstrap": {
+        "resamples": 10000,
+        "seed": 469739483
+      },
+      "per_prompt": [
+        {
+          "prompt": "P1",
+          "treatment_mean": 36.0,
+          "control_mean": 34.0,
+          "diff": 2.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P2",
+          "treatment_mean": 38.0,
+          "control_mean": 29.0,
+          "diff": 9.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P3",
+          "treatment_mean": 35.0,
+          "control_mean": 32.0,
+          "diff": 3.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P4",
+          "treatment_mean": 39.0,
+          "control_mean": 37.0,
+          "diff": 2.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P5",
+          "treatment_mean": 34.0,
+          "control_mean": 27.0,
+          "diff": 7.0,
+          "n_treatment": 1,
+          "n_control": 1
+        }
+      ],
+      "notes": [
+        "no variation within prompts: g undefined"
+      ]
+    },
+    {
+      "treatment": "dfa-v1",
+      "control": "baseline",
+      "generator": "opus-5.5-max",
+      "metric": "eq_total@fable-5",
+      "n_prompts": 5,
+      "n_treatment": 5,
+      "n_control": 5,
+      "mean_diff": 2.2,
+      "diff": {
+        "n": 5,
+        "mean": 2.2,
+        "median": 1.0,
+        "sd": 1.7889,
+        "min": 1.0,
+        "max": 5.0,
+        "ci95": [
+          -0.0212,
+          4.4212
+        ]
+      },
+      "dz": 1.2298,
+      "hedges_g": null,
+      "cliffs_delta": 1.0,
+      "cluster_bootstrap_ci": [
+        1.0,
+        3.8
+      ],
+      "bootstrap": {
+        "resamples": 10000,
+        "seed": 469739483
+      },
+      "per_prompt": [
+        {
+          "prompt": "P1",
+          "treatment_mean": 43.0,
+          "control_mean": 40.0,
+          "diff": 3.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P2",
+          "treatment_mean": 42.0,
+          "control_mean": 41.0,
+          "diff": 1.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P3",
+          "treatment_mean": 41.0,
+          "control_mean": 40.0,
+          "diff": 1.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P4",
+          "treatment_mean": 43.0,
+          "control_mean": 42.0,
+          "diff": 1.0,
+          "n_treatment": 1,
+          "n_control": 1
+        },
+        {
+          "prompt": "P5",
+          "treatment_mean": 43.0,
+          "control_mean": 38.0,
+          "diff": 5.0,
+          "n_treatment": 1,
+          "n_control": 1
+        }
+      ],
+      "notes": [
+        "no variation within prompts: g undefined"
+      ]
+    }
+  ],
+  "judge_reliability": [
+    {
+      "rubric": "methodology-adherence-v1",
+      "coders": [
+        "sonnet-5.5#1"
+      ],
+      "n_coders": 1,
+      "n_units": 0,
+      "alpha_interval": null,
+      "mean_abs_diff": null,
+      "rank_consistency": [],
+      "per_judge": [
+        {
+          "judge": "sonnet-5.5",
+          "n": 10,
+          "mean_total": 15.8
+        }
+      ],
+      "notes": [
+        "coders are (judge, repeat) pairs; units are generations",
+        "fewer than 2 coders: agreement cannot be estimated"
+      ]
+    },
+    {
+      "rubric": "engineering-quality-v1",
+      "coders": [
+        "sonnet-5.5#1",
+        "fable-5#1"
+      ],
+      "n_coders": 2,
+      "n_units": 10,
+      "alpha_interval": -0.3421,
+      "mean_abs_diff": 7.2,
+      "rank_consistency": [
+        {
+          "coders": [
+            "sonnet-5.5#1",
+            "fable-5#1"
+          ],
+          "n": 10,
+          "spearman": 0.7113,
+          "mean_offset": 7.2
+        }
+      ],
+      "per_judge": [
+        {
+          "judge": "sonnet-5.5",
+          "n": 10,
+          "mean_total": 34.1
+        },
+        {
+          "judge": "fable-5",
+          "n": 10,
+          "mean_total": 41.3
+        }
+      ],
+      "notes": [
+        "coders are (judge, repeat) pairs; units are generations"
+      ]
+    }
+  ],
+  "leakage": [
+    {
+      "judge": "sonnet-5.5",
+      "generator": "opus-5.5-max",
+      "n_probes": 10,
+      "n_ok": 10,
+      "skill_vs_plain": {
+        "n": 10,
+        "n_positive": 5,
+        "n_negative": 5,
+        "auc": 1.0,
+        "accuracy": 0.6,
+        "accuracy_ci95": [
+          0.3127,
+          0.8318
+        ]
+      },
+      "contrasts": [
+        {
+          "treatment": "dfa-v1",
+          "control": "baseline",
+          "n": 10,
+          "n_positive": 5,
+          "n_negative": 5,
+          "auc": 1.0,
+          "accuracy": 0.6,
+          "accuracy_ci95": [
+            0.3127,
+            0.8318
+          ]
+        }
+      ],
+      "note": "AUC 0.5 = judges cannot tell; 1.0 = fully identifiable. Accuracy counts p_methodology > 0.5 as a 'methodology' guess; it is n/a when both arms used a skill, where only the AUC is meaningful."
+    }
+  ],
+  "length": [
+    {
+      "condition": "baseline",
+      "generator": "opus-5.5-max",
+      "n": 5,
+      "words": {
+        "n": 5,
+        "mean": 2613.6,
+        "median": 2397,
+        "sd": 1746.16,
+        "min": 802,
+        "max": 5285,
+        "ci95": [
+          445.456,
+          4781.744
+        ]
+      },
+      "spearman_words_eq_total": 0.4,
+      "spearman_words_adherence_total": -0.5,
+      "length_cap_words": null,
+      "within_cap": null,
+      "cap_compliance": null
+    },
+    {
+      "condition": "dfa-v1",
+      "generator": "opus-5.5-max",
+      "n": 5,
+      "words": {
+        "n": 5,
+        "mean": 5288.2,
+        "median": 5297,
+        "sd": 857.8632,
+        "min": 3969,
+        "max": 6235,
+        "ci95": [
+          4223.0222,
+          6353.3778
+        ]
+      },
+      "spearman_words_eq_total": 0.9,
+      "spearman_words_adherence_total": null,
+      "length_cap_words": null,
+      "within_cap": null,
+      "cap_compliance": null
+    }
+  ],
+  "cost": {
+    "generation": {
+      "n_calls": 10,
+      "cost_usd": 0.0,
+      "n_unknown_cost": 10,
+      "n_unknown_usage": 10,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "thinking_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "judging": {
+      "n_calls": 30,
+      "cost_usd": 7.1163,
+      "n_unknown_cost": 0,
+      "n_unknown_usage": 0,
+      "input_tokens": 106,
+      "output_tokens": 117362,
+      "thinking_tokens": 51424,
+      "cache_read_input_tokens": 38806,
+      "cache_creation_input_tokens": 433318
+    },
+    "probe": {
+      "n_calls": 10,
+      "cost_usd": 0.2679,
+      "n_unknown_cost": 0,
+      "n_unknown_usage": 0,
+      "input_tokens": 40,
+      "output_tokens": 3865,
+      "thinking_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 91665
+    },
+    "superseded": {
+      "n_calls": 0,
+      "cost_usd": 0.0,
+      "n_unknown_cost": 0,
+      "n_unknown_usage": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "thinking_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "total": {
+      "n_calls": 50,
+      "cost_usd": 7.3842,
+      "n_unknown_cost": 10,
+      "n_unknown_usage": 10,
+      "input_tokens": 146,
+      "output_tokens": 121227,
+      "thinking_tokens": 51424,
+      "cache_read_input_tokens": 38806,
+      "cache_creation_input_tokens": 524983
+    }
+  },
+  "flags": [
+    "manifest note: Imported, not generated: the plans in examples/ as committed, verified against the SHA-256 recorded in examples/scoring/generation.json at generation time (2026-10-02, model claude-opus-5-5, effort max, skill commit 3ba6b70). Tokens, cost and latency were not recorded in v1.",
+    "small n: 1 run(s) per cell (< 3)"
+  ]
+}

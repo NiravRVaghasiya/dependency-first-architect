@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "259293bb558e.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "259293bb558e",
+  "blind_sha256": "8992285013ce10ee2b34cd2a24de60ff2c5f4e672a9aa83a86c2bd799c4a6158",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 273,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "MVP: catalog with versioning, flat/seat subscriptions, PSP integration with webhook inbox, invoices, basic dunning, ledger, entitlements.",
+      "rationale": "Phases roughly go core then usage then enterprise then scale, but the MVP bundles everything and the ledger is listed after invoices and payments, so the ordering isn't clearly substrate-first."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "MVP: catalog with versioning, flat/seat subscriptions, PSP integration with webhook inbox, invoices, basic dunning, ledger, entitlements.",
+      "rationale": "The MVP is a feature bundle, not a thin end-to-end slice running in production first."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Fail-open vs. fail-closed is decided per feature. Usually fail-open for core access and fail-closed for expensive overages.",
+      "rationale": "Some decisions have defaults (pooled vs silo, build vs buy, proration policy), but there is no consolidated irreversible-decision list and no explicit flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Abstract this behind a tenant→cell routing table from day one.",
+      "rationale": "Some widest-impact items are placed early (tenant routing, RLS, immutable invariants), but no explicit blast-radius ordering appears within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "PCI: collect cards with the PSP's hosted fields or elements and store only tokens.",
+      "rationale": "Security is covered in detail in standalone sections (RLS, PCI, RBAC) but isn't tied to the phases."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "SLOs: ingestion durability (no lost events), invoice finalization within N minutes of period end, and entitlement p99 latency.",
+      "rationale": "There are only SLOs and alerts in a standalone section, with no observability in Phase 0 or any later phase."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Test clocks: let a subscription run against simulated time.",
+      "rationale": "Test clocks, raw events kept for re-rating and shadow re-rate rehearsal support reproducibility, but there is nothing on environments or builds and nothing threaded per phase."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Exactly-once effects come from idempotency keys plus unique constraints plus the inbox/outbox pattern.",
+      "rationale": "Resilience is strong in the design (inbox/outbox, kill switches, reconciliation) but sits in standalone sections, not per phase."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, so there is no N/A declaration."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Scale and finance: cells, reconciliation automation, RevRec feed, e-invoicing, re-rating tooling.",
+      "rationale": "Later work is deferred into phases 2–4, but there are no explicit pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is a strong domain architecture, but it has weak phase discipline: no walking skeleton, no observability per phase, and no AI N/A declaration.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1150,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7803
+  },
+  "cost_usd": 0.0310155,
+  "latency_s": 21.943,
+  "raw_file": "raw/judge-259293bb558e.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

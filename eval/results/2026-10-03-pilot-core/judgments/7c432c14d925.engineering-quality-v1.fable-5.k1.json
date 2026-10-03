@@ -1,0 +1,183 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "7c432c14d925.engineering-quality-v1.fable-5.k1",
+  "blind_id": "7c432c14d925",
+  "blind_sha256": "a43ca3082f085acd6a1c70d548780669492ca01ddd8e914e4e10a2de2829fa91",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 350,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Slot-availability searches used for booking, and any session that wrote in the last 60 seconds, always read from the writable database.",
+      "rationale": "CDC mechanics, replica-lag read fencing, read-your-writes, leader locks for batch jobs, and reverse-replication rollback are all described accurately, including the subtle consistency pitfalls."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Reads never go down. Writes pause for 30 seconds or less, once, at cutover.",
+      "rationale": "It resolves the ambiguity of 'zero downtime' explicitly, covers every implied need (data, interfaces, cutover, rollback, compliance), and defers out-of-scope work with stated triggers."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Change data capture (CDC), one database writing at a time ... The application never writes to both databases.",
+      "rationale": "The single-write-authority decision is honored everywhere — proxy, batch leader locks, interface routes, rollback direction — with no contradictions across phases or the cross-cutting table."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "14 days in a row with zero unexplained reconciliation differences, p99 lag under 2 seconds",
+      "rationale": "Shadow-diffing, continuous reconciliation, 2× peak load tests, synthetic-day replay, injected-failure game days and post-cutover checks all target the plan's stated riskiest failure (silent drift) before commitment."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "I don't know these about your system yet; Phase 0, task 1 confirms them, and any difference changes the gates below",
+      "rationale": "Assumptions are explicit, confirmed first, and every numeric default (30s pause, 5s lag, 300ms, RPO/RTO) carries a revisit trigger rather than being stated as fact."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "The on-prem and cloud copies silently drift apart, so appointments are lost or double-booked and nobody notices",
+      "rationale": "Covers the domain's hardest failures — silent drift, double-booking, duplicate reminders, CDC stalls, schema drift, link loss, held-write loss — each with concrete detection, containment and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "All cloud resources are defined in Terraform ... Dashboards and alerts for lag, diff rate and latency ... A lag alert triggers an on-call runbook.",
+      "rationale": "IaC pipelines, domain-meaningful alerts, scripted runbooks, named cutover owners, dependency owners, hypercare and SLOs give a realistic team a complete operating model."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Cost optimisation (reserved capacity, right-sizing) ... 90 days of steady-state usage data. Optimising before cutover adds risk and saves nothing.",
+      "rationale": "Cost trade-offs appear in major decisions (active-active, buy-vs-build, licensing) but the dominant drivers — dual-running infrastructure, private links, engineering time — are never estimated or sized."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Changing database engines (e.g. Oracle → Postgres) ... Never at the same time as the migration.",
+      "rationale": "Hard-to-reverse choices get rehearsals and a 30-day reverse-CDC exit path, same-engine rehost preserves retreat options, and reversible decisions are made quickly with explicit revisit triggers."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Keep the monolith as it is. The only new part is a strangler proxy in front of it.",
+      "rationale": "Rehost-only scope with one new component, every mechanism justified by patient-safety need, and all speculative work (microservices, FHIR, active-active) explicitly deferred with pull-forward triggers."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Find out how clients connect (HTTP to an app server, or straight to the database). This decides how the proxy is built, so it has to come first.",
+      "rationale": "Dependency-justified ordering, concrete first tasks, step-by-step cutover with per-step abort rules, and checkable exit criteria per phase let a team start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "a HIPAA-eligible cloud with a **signed BAA** ... Customer-managed encryption keys, TLS 1.2+ everywhere, PHI only over private links ... PHI-access audit to the SIEM"
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "Map every dependency: HL7 SIU (S12, S14, S15) and ADT feeds, patient portal and IVR/call centre, SMS reminders, billing/registration, reporting"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "row counts and per-partition checksums every 15 minutes, with full-table checksums nightly ... p99 lag under 2 seconds"
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "There is one writable database at any moment ... The application never writes to both databases."
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "Keep reverse CDC running and on-prem warm for 30 days as a tested rollback path ... at least 2 full rehearsals in staging and 1 game day"
+    },
+    {
+      "id": "P6-06",
+      "status": 2,
+      "evidence": "Two redundant dedicated private links (Direct Connect / ExpressRoute) on separate physical paths, plus an encrypted VPN as a backup ... p95 clinic → cloud booking time above 300 ms"
+    },
+    {
+      "id": "P6-07",
+      "status": 2,
+      "evidence": "synchronously copied across availability zones ... up to 5 minutes of data loss, back up within 1 hour ... fall back to the hospital's existing paper downtime procedures"
+    },
+    {
+      "id": "P6-08",
+      "status": 2,
+      "evidence": "Connect on-prem Active Directory to Entra ID/Okta, with MFA and break-glass accounts ... Break-glass access tested beforehand ... limited to named people, logged"
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "Mirror 100% of read traffic and compare the answers ... Load-test at the real peak (Monday 8 a.m. call-centre surge, ×2)"
+    },
+    {
+      "id": "P6-10",
+      "status": 2,
+      "evidence": "Run the production cutover in a low-volume window (e.g. Sunday 03:00) ... Brief nursing supervisors, the ED and the call centre ... Hypercare review every day"
+    },
+    {
+      "id": "P6-11",
+      "status": 1,
+      "evidence": "take a final encrypted archive under the hospital's records-retention policy, get a certificate of media destruction"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "Read traffic, integrations and batch jobs move earlier, one consumer at a time ... at least 2 full rehearsals in staging and 1 game day"
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "The application never writes to both databases. ... Having the application write to both is ruled out for a patient-safety system."
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "Masked data only in staging ... a HIPAA-eligible cloud with a signed BAA ... No PHI on the public internet."
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "Set up interface-engine routes to and from the cloud app, disabled for now, with a test message validated in non-prod."
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "Keep the monolith as it is ... No code changes during the migration."
+    }
+  ],
+  "note": "An exemplary, patient-safety-aware migration plan with single write authority, shadow validation and rehearsed rollback; its only material weakness is the absence of grounded cost estimates, plus an implicit vendor-licensing check.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7324,
+    "thinking_tokens": 4518,
+    "cache_read_input_tokens": 864,
+    "cache_creation_input_tokens": 14085
+  },
+  "cost_usd": 0.5431465,
+  "latency_s": 125.049,
+  "raw_file": "raw/judge-7c432c14d925.engineering-quality-v1.fable-5.k1.txt"
+}

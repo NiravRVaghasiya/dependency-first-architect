@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "53851b25a767.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "53851b25a767",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 179,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: Phase 1, V2, V3\"; Phase 3 \"Depends on: Phase 2, V1, V5\"; Phase 4 \"Depends on: Phase 3, V4, V5, V6\"",
+      "rationale": "Phases run substrate → defenses → features → model → enforcement → feedback, each gated by prior validation, with an explicit dependency map."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "a small real purchase on an allow-listed staff test card... auth host sends the incumbent's normal response... writes it to its audit record",
+      "rationale": "Phase 0 is a real production end-to-end slice with deploy, trace, alert and rollback, verified by V0."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Decision | Reversibility | Default (chosen now) | Assumption | Validated by | Flip condition",
+      "rationale": "Irreversible decisions are tabulated with defaults, assumptions and concrete flip conditions, and unknowns are labeled."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Enforce in this order: staff cohort, then 1% of tokens in one segment, then 5%, 25%, 100%.",
+      "rationale": "Shared substrate and boundary work (PAN controls, tap on all nodes, fallback and breaker) precede leaf work, and widening is staged by exposure, though blast-radius ordering within phases is only partly explicit."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Token-only payload; mTLS; Vault for secrets; cardholder-data network segment; flag off by default",
+      "rationale": "The cross-cutting table gives concrete security treatment in every phase from 0 to 6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "One OpenTelemetry trace per auth message ID; timeout alert; logs classified as cardholder data",
+      "rationale": "Observability is concrete in Phase 0 and in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform, Argo CD, signed and pinned images; versions recorded in every decision",
+      "rationale": "Reproducibility is concrete in every phase, covering infrastructure, replay corpora, backfill pinned to offsets, and lineage."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "80 ms timeout; incumbent always decides",
+      "rationale": "Failure handling is specified in every phase from Phase 0, and V4 and V5 exercise it with fault injection."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Guardrail defense... Phase 2; Human-in-the-loop... Phase 2 (change control), Phase 5 (queue); Retrieval Phase 3; Model access Phase 4",
+      "rationale": "Defenses, budgets and human controls precede retrieval, model, orchestration and feedback. Memory ordering is a documented exception (E1), and routing is explicitly deferred."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Retiring the incumbent (point of no return). Pull forward when the new path has run at 100% for ≥ 2 quarters",
+      "rationale": "Each deferred item has a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A very strong plan on all ten dimensions. Its one small gap is that human-in-the-loop for enforcement only lands in Phase 5, but it is documented and gated.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 8,
+    "output_tokens": 2452,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 12529,
+    "cache_creation_input_tokens": 11399
+  },
+  "cost_usd": 0.0555393,
+  "latency_s": 68.993,
+  "raw_file": "raw/judge-53851b25a767.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

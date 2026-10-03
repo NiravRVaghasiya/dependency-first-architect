@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "c45672fb6bfd.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "c45672fb6bfd",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 61,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "PR builds run on ephemeral runners with no secrets. Only protected-branch workflows get a short-lived OIDC identity scoped per environment.",
+      "rationale": "Mechanisms (OIDC, pull-based Argo CD, cosign/SLSA, Kyverno, Rollouts) are used correctly, with minor imprecision such as unspecified fork-signing semantics and no mention of fork-PR edge cases like pull_request_target."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Wave A: about 5 low-tier internal services. Wave B: about 15 mid-tier services. Wave C: about 20 remaining services.",
+      "rationale": "Covers migration, trust, templates, progressive delivery and decommission credibly, but gaps remain in test environments, flaky tests, caching, and contract testing."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Exactly one deployer owns each service at a time (ownership flag per service). The old pipeline is the fallback. Git holds desired state.",
+      "rationale": "Pull-based deploys, OIDC, immutable digests, ownership flag and break-glass are applied consistently across sections with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Red-team corpus: unsigned image, tampered digest, image signed from a fork or PR workflow, wrong-branch provenance, a PR job attempting OIDC token exchange.",
+      "rationale": "Validation targets the riskiest assumptions early with labeled provisional thresholds, but post-launch regression validation and test-quality validation are thin."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "ASSUMED: the SCM is GitHub, workloads run on Kubernetes, and the old pipelines are Jenkins or scripted helm/kubectl. If services are not containerized... the order does not.",
+      "rationale": "Assumptions, unknowns and design parameters are explicitly labeled with owners, confirmation steps and the effect if wrong."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Break-glass deploy is allowed with two-person approval and an audit log, and a reconcile step follows.",
+      "rationale": "Covers tampered artifacts, fork PRs, platform outage, dual-deploy and decommission loss with detection and recovery, but omits DB migration failures, flaky tests and runner-side/pipeline-definition tampering."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Deploy-path SLIs with burn-rate alerts; canary analysis metrics",
+      "rationale": "Deployment, rollback, monitoring, HA/restore and ownership are concrete, though incident response and on-call for the platform are implicit and a named owner is only a missing input."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Runner and registry cost | No number | UNKNOWN: needs a monthly budget from the budget owner",
+      "rationale": "Identifies runner cost as a driver with load-replay sizing and a hosted fallback, but gives no estimate from commit and build volume and few concrete controls."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: a leak of production credentials cannot be undone",
+      "rationale": "Decisions carry reversibility ratings, validated early with revisit triggers, and the point of no return is isolated behind a 90-day window and V5."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Managed or OSS components only, with no custom orchestrator",
+      "rationale": "Uses off-the-shelf tools, defers portal, previews and multi-region with pull-forward triggers, and sizes the burden for a small team; the full stack is justified by its security focus."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Depends on: V1, the runner budget, and the Phase 0 baseline.",
+      "rationale": "Phases have dependencies, tasks, rollback and exit checks, a concrete first slice, and failure branches for each validation."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "Classify all 50 services by tier and stack. ... Define the versioned template interface (build, test, scan, publish) and the service config schema."
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Each service goes through the ownership flag, so exactly one deployer owns it."
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Registry with immutable digests."
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "PR builds run on ephemeral runners with no secrets. Only protected-branch workflows get a short-lived OIDC identity scoped per environment."
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Signing (cosign) and SLSA provenance in the pipeline. ... template changes need review"
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Argo Rollouts canary with metric analysis. Automated rollback."
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Publish a breaking v2 of the template and check that pinned v1 services are unaffected."
+    },
+    {
+      "id": "P3-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-09",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Replay the Phase 0 peak-hour concurrency, scaled to 1.5× (design parameter), on the autoscaled fleet"
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Deploy-path SLIs with burn-rate alerts; HA and backup of platform state, with restore tested."
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "Break-glass needs two-person approval and is audited"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Wave A: about 5 low-tier internal services."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "The image registry is shared, with immutable digests."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "OIDC short-lived credentials from the first commit"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Versioned reusable workflows. Services pin a major version and the platform owns the templates."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Build only the glue and templates."
+    }
+  ],
+  "note": "Strong, security- and migration-focused plan with rigorous sequencing and reversibility; weak on test environments and flaky tests, caching and build speed, contract compatibility, DB migrations, and cost estimation.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2260,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 13856
+  },
+  "cost_usd": 0.057433000000000005,
+  "latency_s": 50.791,
+  "raw_file": "raw/judge-c45672fb6bfd.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

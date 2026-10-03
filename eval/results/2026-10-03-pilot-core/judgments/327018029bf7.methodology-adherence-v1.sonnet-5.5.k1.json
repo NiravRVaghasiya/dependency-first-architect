@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "327018029bf7.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "327018029bf7",
+  "blind_sha256": "6405f227155fff79a1de0c5722bbf9e64445f1a14663d7f0069526a822f711e8",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 449,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 0 Discovery ... build the golden set, pick the stack; Phase 1 Prototype: Ingestion, hybrid retrieval, prompt, offline eval harness",
+      "rationale": "Rollout roughly goes discovery→ingestion/retrieval→agent assist→beta, but it is a product-rollout sequence and not a substrate-up dependency ordering with proven gates."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 1 Prototype ... Internal testing only",
+      "rationale": "Phase 0 is discovery and there is no thin end-to-end slice in production first; the first real deployment comes only at beta."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Use pgvector if you already run Postgres. Otherwise use a managed vector database",
+      "rationale": "Some defaults with conditions exist (vector store, model tier, embeddings), but there is no consolidated irreversible-decision list with explicit flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No ordering of work by blast radius within phases is stated."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Visibility filter at index time *and* at query time",
+      "rationale": "Security is covered in standalone guardrails/risk sections (PII, rate limits, injection) but not tied to each rollout phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "trace every turn (query, rewrite, retrieved IDs, scores, prompt version, model, latency, cost)",
+      "rationale": "Observability is detailed but in a standalone operations section, not in Phase 0 and each phase; dashboards show up only at GA."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "version prompts, the index and the embedding model, and be able to roll back.",
+      "rationale": "Versioning and blue/green indexes are mentioned, and CI evals run on changes, but reproducibility is not threaded per phase."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "nightly full sync to catch anything missed",
+      "rationale": "Failure handling such as escalation, fallback sync and refusal exists but is scattered and not phased; nothing covers provider outages or timeouts."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Build a golden dataset before tuning anything",
+      "rationale": "The plan has guardrails, cost caps, human handoff and retrieval→generation→feedback, but these are described as architecture rather than sequenced defenses-first. Budgets are late and the rollout puts the prototype before guardrails. Memory and orchestration are barely treated."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Out of scope for v1: account-specific actions such as refunds, order lookup or password resets. Plan for these as tool calls in v2.",
+      "rationale": "Deferred items are named (v2 tool calls, proactive suggestions), but there is no explicit pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "This is a solid, practical RAG design, but it isn't ordered as a build plan: it has no production walking skeleton, no blast-radius ordering, and security, observability and resilience aren't threaded through the phases.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1117,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 5126
+  },
+  "cost_usd": 0.023993,
+  "latency_s": 36.542,
+  "raw_file": "raw/judge-327018029bf7.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

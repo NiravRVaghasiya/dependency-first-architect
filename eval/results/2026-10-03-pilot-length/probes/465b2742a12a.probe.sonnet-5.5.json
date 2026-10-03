@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "465b2742a12a.probe.sonnet-5.5",
+  "blind_id": "465b2742a12a",
+  "judge": "sonnet-5.5",
+  "order_index": 14,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens with an explicit 'Scope and Assumptions' section listing scale targets and non-negotiable requirements, which fits a methodology but is also common in unguided plans",
+    "Ends with 'Key Design Principles' and 'Phased Delivery' sections, which look like a standard architecture template",
+    "Thorough and polished, but it has no explicit risks/open-questions section, no alternatives-considered section, and no verification or acceptance criteria tied to steps",
+    "Technology choices are labeled '(Suggested)' and there are no trade-off or decision-rationale tables, which points to free-form generation",
+    "The structure is typical of a default LLM architecture answer: numbered sections, ASCII diagram, entity table, and a mix of bold terms"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 321,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 5715
+  },
+  "cost_usd": 0.0175055,
+  "latency_s": 30.245,
+  "raw_file": "raw/probe-465b2742a12a.probe.sonnet-5.5.txt"
+}

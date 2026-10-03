@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "3dc9ab8d85c3.engineering-quality-v1.fable-5.k1",
+  "blind_id": "3dc9ab8d85c3",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 62,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "if GitHub is down, nothing new deploys, but running workloads aren't affected (Argo keeps the last applied state)",
+      "rationale": "Claims about OIDC federation, keyless cosign signing, Argo CD pull semantics, PreSync hooks, Kyverno audit/enforce modes, Renovate minimumReleaseAge and ECR immutability are all accurate, including the subtle areas (fork-PR trust, expand/contract rollback safety)."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "The real critical path is migration throughput, not platform features. Building the platform takes roughly 10 weeks. Moving 50 services... 5–7 months",
+      "rationale": "Directly answers the sequencing request, resolves unspecified constraints with stated defaults, excludes scope explicitly with reasons, and the schedule is credible for the assumed team."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "System of record for desired state in each environment... Exactly one writer path per environment",
+      "rationale": "Responsibilities, data ownership and trust boundaries are stated per component and honored everywhere, including break-glass reconciling back to git; no contradictions found."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Run an expand-style migration via the chart's migration Job in staging. Deploy, then revert... Run the old app against the new schema.",
+      "rationale": "Time-boxed spikes test the riskiest assumptions before commitment, each with explicit results that change the plan, plus fixture harness, timed rollback drills, load tests before waves, and a continuous production canary."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "all targets are assumptions until confirmed... Impact if wrong | How and when it's checked",
+      "rationale": "Every design-bearing assumption is explicit with sensitivity (what changes if wrong) and a confirmation date; numbers are consistently labeled as estimates to verify."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "The v1.5.0 tag is withdrawn... the other 45 services never see v1.5.0",
+      "rationale": "Covers the hard domain failures—bad template fan-out, unsafe migration rollback, CI compromise, GitHub outage, duplicate promotes (idempotency), fork-PR abuse—each with concrete detection, containment and recovery; only flaky-test erosion is unaddressed."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Alerts on symptoms, each linked to a runbook... platform-canary hasn't reached dev in 60 minutes",
+      "rationale": "Ownership split, business-hours on-call sized to a 4–5 person team, meaningful health signals, rehearsed break-glass and rollback, and migration/rollback paths for every change are all concrete."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Runner minutes: about 150–250k a month... Check against current GitHub pricing before you budget.",
+      "rationale": "Identifies the dominant cost driver with a stated volume basis, scaling behavior, concrete controls (caching, concurrency cancel, budget alert) and a costed hosted-vs-self-hosted tradeoff with a revisit trigger."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Reversibility | ... Hard. It sets the trust model and what every team does day to day.",
+      "rationale": "Each decision carries an explicit reversibility rating and revisit trigger; the genuinely hard commitments (GitOps trust model, legacy shutdown) get early validation and archived fallbacks, while easy choices are made quickly."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Deferred item | Trigger to build it",
+      "rationale": "Uses existing tools throughout, defers preview environments, Backstage, multi-region and contract testing with explicit build triggers, and lists M1 stubs so simplicity doesn't drop essentials."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T3... A workflow in the pilot repo pushes an image with no stored secrets. The same workflow run from a branch or another repo is denied",
+      "rationale": "Tasks T1–T13 have concrete done-when criteria, dependency-justified ordering, day-1 first steps, and each spike states exactly which result would change the plan and how."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Build the service inventory with columns: service, owner team, tier, stack + build tool, current CI... Escape hatch: a pre-build/post-test hook input"
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Add ci.yml running alongside the legacy pipeline, build-only. Compare test results and image contents for one week."
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Build once and promote the same signed image digest through dev, staging, and prod... Immutable. Referenced by digest, never by latest."
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "GitHub OIDC to AWS with a push-only role... No static keys anywhere... Fork PRs get read-only tokens and no OIDC."
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Third-party actions pinned by SHA... signs keyless with cosign... Kyverno checks the signature when pods are admitted"
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "This is safe only if the migration was additive (expand/contract...). Spike S1 tests whether that holds."
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Contract testing between services | Integration breakages between services found in staging more than twice a month"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Per-PR preview environments | Repeated staging contention or teams asking for them after M4"
+    },
+    {
+      "id": "P3-09",
+      "status": 2,
+      "evidence": "PR checks p95 under 10 minutes... Docker layer cache goes to ECR with cache-to type=registry... Path filters."
+    },
+    {
+      "id": "P3-10",
+      "status": 2,
+      "evidence": "Runner minutes: about 150–250k a month. At GitHub's current list prices that's roughly $1.5–6k/month"
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Platform target: 99.5% of business hours for the 'merge to dev' path, measured by the synthetic platform-canary service"
+    },
+    {
+      "id": "P3-12",
+      "status": 2,
+      "evidence": "Prod: PR needing approval from the service's CODEOWNERS... Git history is the audit trail."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "The legacy pipeline keeps deploying prod for now... Legacy job disabled (not deleted) and kept as a fallback for 2 weeks."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Build once and promote the digest... Immutable. Referenced by digest, never by latest."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "No static keys anywhere... Fork PRs get no secrets or OIDC."
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "an ApplicationSet in each cluster creates one Argo Application per apps/*/<env>"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "GitHub Actions reusable workflows, not a custom-built orchestrator."
+    }
+  ],
+  "note": "An exemplary plan: technically precise, risk-sequenced with early spikes and a pilot-to-waves migration, avoiding every trap; only flaky-test handling and contract-compatibility checks (deferred) are gaps.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6874,
+    "thinking_tokens": 4268,
+    "cache_read_input_tokens": 929,
+    "cache_creation_input_tokens": 26206
+  },
+  "cost_usd": 0.672224,
+  "latency_s": 208.032,
+  "raw_file": "raw/judge-3dc9ab8d85c3.engineering-quality-v1.fable-5.k1.txt"
+}

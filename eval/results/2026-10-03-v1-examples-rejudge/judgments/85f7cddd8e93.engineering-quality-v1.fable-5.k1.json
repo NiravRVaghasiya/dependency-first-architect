@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "85f7cddd8e93.engineering-quality-v1.fable-5.k1",
+  "blind_id": "85f7cddd8e93",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 23,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Merge the two result lists with reciprocal rank fusion (RRF), then reorder the top results with a reranking model.",
+      "rationale": "Technical claims (hybrid search, RRF, pgvector adequacy at this scale, prompt caching, citation validation, the Air Canada precedent) are accurate and the plan states real limits, e.g. deflection measurement caveats."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Version 1 answers questions from the docs only. It can't look up or change customer accounts.",
+      "rationale": "Fits the request precisely, resolves ambiguities with stated assumptions and explicit scope exclusions (community posts, account access), weighs build-vs-buy, and is clearly buildable by 1–2 engineers."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "generate (mid-tier LLM, streamed, cites doc ids) ... After the answer is complete, check it for promises",
+      "rationale": "The pipeline is clear and internally consistent with clean data ownership, but the post-completion commitment check conflicts with streaming: users may see a bad answer before it is replaced."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Run the tests automatically on every change to prompts, models, chunking or embeddings, and block changes that make scores worse.",
+      "rationale": "Test set is built before the bot exists, retrieval is scored separately, the LLM grader is validated against human labels, deflection uses an A/B control, and validation continues post-launch via weekly reviews."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "100–5,000 articles on a help-center platform with an API (Zendesk, Intercom, Freshdesk…) or Markdown files in git.",
+      "rationale": "Assumptions are explicitly listed, estimates are labeled as such, and a 'Questions that would change the plan' section identifies exactly which assumptions the design is sensitive to."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "The nightly check also removes archived or unpublished articles. Old articles left in the index lead to confident wrong answers.",
+      "rationale": "Stale content, leaked internal docs, injection, fabricated commitments, duplicates and abuse are all handled concretely, but runtime partial failures (LLM/embedding provider outage or degradation) have no stated fallback."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Keep prompts in version control. For every conversation turn, log the rewritten query, the retrieved IDs and scores, the prompt, index and model versions",
+      "rationale": "Logging, versioning, ownership (support-ops owner) and phased rollout are concrete and sized to a small team, but deployment/rollback mechanics, alerting and incident response are not spelled out."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "each message uses about 5–10k input tokens and about 300 output tokens. That's a few cents per conversation",
+      "rationale": "Dominant driver (inference) is estimated with a stated token basis, controls (caching, model tiers, rate limits, spending cap) are concrete, and build-vs-buy with per-resolution vendor pricing is weighed."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Default tech stack (swap freely)",
+      "rationale": "Build-vs-buy is examined early, orchestration is kept thin to avoid framework lock-in, and alternatives are listed, but hard-to-reverse items like chunk/citation ID schemes and embedding-model migration are not explicitly flagged."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "You don't need a separate vector database. A help center is only thousands of chunks, so Postgres with the pgvector extension is enough.",
+      "rationale": "Starts with the simplest workable design, explicitly defers agentic retrieval, vision models and contextual retrieval until tests show need, and every component (reranker, router, rewrite) is justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "1. Doc loading, search, test harness | 2 wk | Right article in the top 5 for ≥ 90% of answerable questions",
+      "rationale": "Phases have checkable 'done when' gates, the first step (coverage audit) is concrete, decisions are implementable, and the plan states how it adapts if retrieval or multi-part questions disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "Sync on publish events plus a nightly full check. ... The nightly check also removes archived or unpublished articles."
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Split articles at H2/H3 headings into chunks of about 200–800 tokens. Never split a numbered procedure or a table."
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "Build a test set of 200–300 cases from real tickets, with personal data removed"
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "Answer only from the provided docs. If they don't cover the question, say so plainly and offer a human."
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "The ticket includes the transcript, a two-line summary, what the user wanted, the articles shown and the user's plan"
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "users can plant instructions in them that the model might follow (prompt injection)"
+    },
+    {
+      "id": "P1-07",
+      "status": 2,
+      "evidence": "Index only public articles, or store the permissions and filter on them. Leaking internal-only articles is the most common failure here."
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "Mask emails, phone numbers and card numbers before anything is logged, and never store card numbers. Set how long transcripts are kept (e.g. 30–90 days)."
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Version 1 answers questions from the docs only. It can't look up or change customer accounts."
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "Each week, review about 50 random conversations plus every thumbs-down, and add the failures to the test set."
+    },
+    {
+      "id": "P1-11",
+      "status": 2,
+      "evidence": "each message uses about 5–10k input tokens and about 300 output tokens. That's a few cents per conversation"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Answer only from the provided docs. If they don't cover the question, say so plainly and offer a human."
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Index only public articles, or store the permissions and filter on them."
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Sync on publish events plus a nightly full check."
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Run the tests automatically on every change to prompts, models, chunking or embeddings, and block changes that make scores worse."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "Use a fixed pipeline in v1: always retrieve, then answer. It's predictable, cheap and easy to test."
+    }
+  ],
+  "note": "An exemplary, proportionate RAG plan that avoids every listed trap and concretely addresses the full checklist; only gaps are the streaming-vs-post-hoc commitment check tension, provider-outage handling, and rollback/incident detail.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7789,
+    "thinking_tokens": 5205,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 13319
+  },
+  "cost_usd": 0.5559575,
+  "latency_s": 101.88,
+  "raw_file": "raw/judge-85f7cddd8e93.engineering-quality-v1.fable-5.k1.txt"
+}

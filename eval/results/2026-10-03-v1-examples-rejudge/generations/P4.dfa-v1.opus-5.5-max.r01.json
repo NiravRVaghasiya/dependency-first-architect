@@ -1,0 +1,50 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P4.dfa-v1.opus-5.5-max.r01",
+  "prompt_id": "P4",
+  "condition": "dfa-v1",
+  "generator": "opus-5.5-max",
+  "run_index": 1,
+  "seed": null,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Plan an autonomous agent that triages and resolves GitHub issues.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P4.dfa-v1.opus-5.5-max.r01.md",
+  "output_sha256": "0d0c79e23dc2a0d41d58893ea6d6462933b7c20a81a57b9b759f0d3df9178a34",
+  "metrics": {
+    "words": 5817,
+    "chars": 35754,
+    "visible_tokens_est": 8939
+  },
+  "turns": 4,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugin/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugin/skills/dependency-first-architect/reference/ai-systems.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugin/skills/dependency-first-architect/reference/evals.md",
+      "ok": true
+    }
+  ],
+  "skills_available": null,
+  "instructions_loaded": null,
+  "started_at": null,
+  "finished_at": null,
+  "provider": "imported",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [],
+  "model_mismatch": false,
+  "usage": null,
+  "cost_usd": null,
+  "latency_s": null,
+  "raw_file": null
+}

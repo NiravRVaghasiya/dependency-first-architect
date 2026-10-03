@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "71e750a228cf.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "71e750a228cf",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 8,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Restore: load snapshot, discard all ops after snapshot, replay any user-requested edits",
+      "rationale": "Several material errors: CRDT ops as {pos, content} and 'serializable' atomic apply, a 'restore' that discards ops in a CRDT, 'CRDT algorithm reviewed for side-channel attacks', 'add Raft consensus' as a CRDT fallback, and Redis-based session sharing."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Use CodeMirror or ProseMirror (proven editors with real-time support)",
+      "rationale": "Covers a plain-text collaborative core, auth, sharing, history and scale, but rich text document model is absent and 1000 users on one document is a questionable leap."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Choice of CRDT vs OT is irreversible once data is in the database (R3).",
+      "rationale": "Mostly recognizable design but contradictions: 'Full CRDT history' vs snapshot/discard restore, auth deferred after skeleton, 'Phase 7 sharded' vs single server per document, Phase 4 UI with offline support vs sync core, per-op ops vs Yjs updates."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "V1: Spike 2-user Yjs editor, 50 concurrent edits, p99 latency <500ms, zero data loss",
+      "rationale": "Many measurable gates and early spikes, but 50 edits is not property-based convergence testing, thresholds are invented, and testing Yjs correctness is largely pointless while real risks (rich text, crash durability) are undertested."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Latency: p99 keystroke-to-render <200ms (ASSUMPTION: derived from user expectations, not stated in request; confirm with product owner).",
+      "rationale": "Assumptions are labeled and missing inputs with impacts listed, though some numbers like $0.10/user are invented and 'Scale: assumed not-small' is loose."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Chaos test: kill server mid-sync, restart, verify recovery",
+      "rationale": "Covers crash, reconnect, revoke, rate-limit and validation at a shallow level, but misses malicious oversized updates, corruption detection, tombstone growth and acked-before-durable handling."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Canary deployment (10% users → monitor 24h → 50% → 100%); if issues arise, rollback",
+      "rationale": "Deployment, rollback, logs, dashboards and on-call are addressed, but WebSocket deploy compatibility and migrations are thin and burden is heavy for 4-6 engineers (K8s, Jaeger, multi-region)."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Total cost per concurrent user confirmed <$0.10/month (or updated ASSUMPTION)",
+      "rationale": "Storage and infra cost spikes and build-vs-buy are considered, but the targets are invented and the full-history growth is only partly controlled; team cost is barely addressed."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "| **CRDT vs Operational Transform** | R3 (data migration, user experience break) | **CRDT** (Yjs library)",
+      "rationale": "Explicit reversibility tiers and revisit triggers with early validation, though flip paths (CRDT to OT after data) are glib and schema/protocol versioning is missed."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Multi-zone / multi-region deployment (if needed for high availability); failover <10s.",
+      "rationale": "Mostly phased, but ceremony-heavy (12 gates, Kubernetes, Jaeger, multi-region, Raft fallback) and a whole-system of invented spikes; core rich-text essentials are under-built."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Exit check V0 (all must pass): Real request succeeds ... Deploy repeatable ... Rollback succeeds",
+      "rationale": "Concrete phased steps with exit checks and fallbacks, but ordering puts sync spike and auth before real sync hardening and rich text is unspecified."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 1,
+      "evidence": "CRDT (Yjs library) — simpler merge semantics, offline-first, industry trend"
+    },
+    {
+      "id": "P5-02",
+      "status": 0,
+      "evidence": "`op (JSON CRDT op)`; no schema for blocks/inline formatting or schema versioning; only ytext plain text"
+    },
+    {
+      "id": "P5-03",
+      "status": 1,
+      "evidence": "Test: 5 concurrent clients, 200 edits each (1000 total), verify all clients converge to same state"
+    },
+    {
+      "id": "P5-04",
+      "status": 1,
+      "evidence": "Bulk inserts (batch every 10 ops or 100ms) ... Full CRDT history (every edit operation stored immutably)"
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "Sticky sessions: client connects to same server (via load balancer session affinity); Alternative: Shared cache (Redis)"
+    },
+    {
+      "id": "P5-06",
+      "status": 1,
+      "evidence": "Client queues edits while offline (in IndexedDB) ... Deduplicate on reconnect (use operation ID)"
+    },
+    {
+      "id": "P5-07",
+      "status": 1,
+      "evidence": "server closes their WebSocket connection on next heartbeat"
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Yjs undo manager: `const uiManager = new UndoManager([ytext])`"
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "Broadcast cursor position on keystroke / mouse click (throttled, max 1 per 100ms)"
+    },
+    {
+      "id": "P5-10",
+      "status": 1,
+      "evidence": "Phase 0 skeleton with Yjs, but auth in Phase 2 and sync hardening in Phase 3; convergence test only 5 clients"
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "Every N operations (e.g., 1000) or every T time (e.g., 1h), store compressed doc state in `document_snapshots` table"
+    },
+    {
+      "id": "P5-12",
+      "status": 0,
+      "evidence": "API schema versioned (Swagger/OpenAPI 3.0); no sync protocol/client version compatibility or document schema migration"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "CRDT handles automatically, no user intervention needed"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Yjs is proven, open-source, industry standard; building from scratch is not viable."
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Phase 0: Server applies to document CRDT, broadcasts to all connected clients"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "Transaction: apply op to CRDT + insert to DB atomically (serializable isolation)"
+    },
+    {
+      "id": "P5-T5",
+      "present": true,
+      "evidence": "Restore: load snapshot, discard all ops after snapshot; 'add Raft consensus layer' for strong consistency; 'Undo respects CRDT semantics'"
+    }
+  ],
+  "note": "Well-structured, risk-gated phased plan with labeled assumptions, but it leaves out the rich-text document model, protocol versioning and proper convergence fuzzing, and it has several shaky CRDT/durability/restore claims.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2590,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 25705
+  },
+  "cost_usd": 0.0903555,
+  "latency_s": 28.118,
+  "raw_file": "raw/judge-71e750a228cf.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

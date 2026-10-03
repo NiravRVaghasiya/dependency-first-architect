@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9f798e35dd26.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "9f798e35dd26",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 195,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Creating a PaymentIntent doesn't move money and is idempotent, so after step 2 we always know which PaymentIntent to ask about.",
+      "rationale": "Mechanisms (RLS FORCE, transaction-scoped set_config, Stripe idempotency, re-fetch on webhook, outbox) are accurate; minor imprecision like the billing_scheduler role bypassing RLS and 'RPO 0' claims, and 'stale failure' handling, carry no design consequence."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "I've read it as a billing platform sold to many businesses (tenants), each of which bills its own customers",
+      "rationale": "Resolves the ambiguity explicitly, covers core billing capabilities, gives explicit non-goals with reasons and a buildable milestone plan."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "each module is the only writer of its tables",
+      "rationale": "Consistent ownership, transactions and boundaries; minor loose ends such as Payments writing ledger entries while Ledger is sole writer and the scheduler bypass role."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Changes the plan if overhead > 25% or any leak can't be fixed → move to schema-per-tenant",
+      "rationale": "Early spikes on RLS, Stripe, ingest, and rules with explicit pivot criteria, fault injection, scenario corpus, shadow billing, and production nightly invariants and reconciliation."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "| A2 | Scale as in §3: ≤2k usage events/s peak, 200k invoices/month | Much higher ingest means raw events need a dedicated store",
+      "rationale": "Numbered assumptions with impact-if-wrong and validation timing; open questions have defaults and deadlines."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "The stale failure triggers a re-fetch, which shows `succeeded`. The state machine refuses `succeeded → failed`.",
+      "rationale": "Covers timeouts, duplicate/out-of-order webhooks, provider outage without dunning, SSRF, late usage, load shedding, stuck attempts, with detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Code: redeploy the previous image (migrations are backward compatible by rule).",
+      "rationale": "Deployment, rollback, expand/contract migrations, alerts with runbooks, on-call and restore drills are addressed; on-call of 5 for 6 engineers and reconciliation ownership are slightly thin."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Total ≈ $2–3.5k/month, plus ~$800 for staging.",
+      "rationale": "Infra line items and controls given as ranges and drivers named; Stripe fees, people costs and usage-growth scaling are thin."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "| Hard | Spike S1 shows >25% overhead or context leaks; or a tenant contractually needs a dedicated DB.",
+      "rationale": "Decision table marks reversibility and revisit triggers, isolates via ports/seams, and validates one-way choices through early spikes and ADRs."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Postgres-backed jobs (Graphile Worker) + outbox; no message broker",
+      "rationale": "Modular monolith, single datastore and deferral of Kinesis/ClickHouse are proportionate; ledger, test clocks, egress proxy, SAML, pen test are somewhat heavy for 6 engineers but mostly domain-justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Done when | CI fails on a deliberately illegal cross-module import and passes once it's removed",
+      "rationale": "Task breakdown with locations, dependencies, checkable done-criteria and change-course triggers lets a team start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "amounts are `bigint` in minor units, with an ISO 4217 `currency` on every money row... rounded half-up to minor units per line"
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "A trigger then rejects any `UPDATE` to lines of a non-draft invoice. Corrections go through credit notes."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "stores the raw event (unique on Stripe event ID, so duplicates are dropped)... Idempotency-Key = attempt.id"
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "Hosted pages use Stripe Elements, so card data stays in Stripe iframes... checks the signature"
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "`ENABLE` and `FORCE ROW LEVEL SECURITY`... cross-tenant test suite on every PR"
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "unique `(env_id, meter_id, idempotency_key, event_month)`... stored with `late=true` and billed on the next invoice"
+    },
+    {
+      "id": "P2-07",
+      "status": 1,
+      "evidence": "`next_billing_at` comes from `billing_anchor` using calendar-month addition in UTC, clamped to the anchor day"
+    },
+    {
+      "id": "P2-08",
+      "status": 1,
+      "evidence": "Starts with `ManualTaxProvider`: tenant-defined rates keyed by country/region, with reverse-charge flagged"
+    },
+    {
+      "id": "P2-09",
+      "status": 2,
+      "evidence": "default: retry on days 3, 5 and 7; email the customer on each failure; after the last failure set the subscription to `past_due` or `canceled`"
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "pulls the previous day's balance transactions for each connected account, matches them to attempts and refunds, and sends mismatches to an ops queue"
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "feature entitlements listed as non-goal"
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Build our own rating/invoicing engine; processors are pluggable | (a) Wrap Stripe Billing; (b) own engine"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "amounts are `bigint` in minor units... Unit prices are `numeric(24,12)`"
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "The app DB role has no `UPDATE` or `DELETE` grants on ledger tables."
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "re-fetches the PaymentIntent from Stripe (we don't trust the payload)"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "Card data never touches us (PCI SAQ A)."
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "`FORCE ROW LEVEL SECURITY`, and a policy `env_id = current_setting('app.env_id')::uuid`"
+    }
+  ],
+  "note": "Exceptionally strong, well-validated billing plan with explicit assumptions and pivots; weak spots are entitlements (deferred), thin tax/invoice-compliance detail, and some heavyweight scope for six engineers.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2499,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 31795
+  },
+  "cost_usd": 0.10467049999999999,
+  "latency_s": 26.897,
+  "raw_file": "raw/judge-9f798e35dd26.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

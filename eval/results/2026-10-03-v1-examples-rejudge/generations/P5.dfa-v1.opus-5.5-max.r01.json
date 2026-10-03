@@ -1,0 +1,45 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P5.dfa-v1.opus-5.5-max.r01",
+  "prompt_id": "P5",
+  "condition": "dfa-v1",
+  "generator": "opus-5.5-max",
+  "run_index": 1,
+  "seed": null,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Order the build of a real-time collaborative document editor.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P5.dfa-v1.opus-5.5-max.r01.md",
+  "output_sha256": "293e880b6304752539e73743b60318b265f8a8397a22b5ac7707d06bc7fe0f55",
+  "metrics": {
+    "words": 5123,
+    "chars": 32105,
+    "visible_tokens_est": 8027
+  },
+  "turns": 3,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugin/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugin/skills/dependency-first-architect/reference/evals.md",
+      "ok": true
+    }
+  ],
+  "skills_available": null,
+  "instructions_loaded": null,
+  "started_at": null,
+  "finished_at": null,
+  "provider": "imported",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [],
+  "model_mismatch": false,
+  "usage": null,
+  "cost_usd": null,
+  "latency_s": null,
+  "raw_file": null
+}

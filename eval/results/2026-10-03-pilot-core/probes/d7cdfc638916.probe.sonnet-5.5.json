@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "d7cdfc638916.probe.sonnet-5.5",
+  "blind_id": "d7cdfc638916",
+  "blind_sha256": "97453212479edebfcf57d2f297c7b18c93d9cc346d80bac21a7e1832261e95c2",
+  "judge": "sonnet-5.5",
+  "order_index": 143,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Well-organized numbered sections (goals/non-goals, architecture, lifecycle, security, evaluation, rollout, milestones) typical of a strong default LLM plan rather than a distinct methodology template",
+    "Ends with 'Questions to settle before building' and an offer to produce specs, a common default assistant closing",
+    "No visible methodology artifacts such as explicit assumptions ledger, risk register with IDs, decision log, or stated planning-phase labels",
+    "Heavy use of tables, ASCII diagrams, and bolded phrases consistent with ordinary polished model output",
+    "Content is thorough and security-first but generic; rollout phases and milestones are standard rather than methodology-driven"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 306,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 5320
+  },
+  "cost_usd": 0.016368,
+  "latency_s": 27.509,
+  "raw_file": "raw/probe-d7cdfc638916.probe.sonnet-5.5.txt"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "7c432c14d925.probe.sonnet-5.5",
+  "blind_id": "7c432c14d925",
+  "blind_sha256": "a43ca3082f085acd6a1c70d548780669492ca01ddd8e914e4e10a2de2829fa91",
+  "judge": "sonnet-5.5",
+  "order_index": 61,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Fixed section scaffold: Classification (type, dominant constraint, worst failure), Key decisions table with 'Default' and 'Revisit trigger' columns, then Phase 0 first end-to-end slice, Cross-cutting per-phase table, AI layer, Deferred. A generic plan would be unlikely to use this template.",
+    "Explicit 'AI gates: N/A' row and a separate 'AI layer: N/A' section even though the request has no AI component. This reads like a methodology checklist item being addressed.",
+    "Phase 0 is a 'first end-to-end slice' with a tiers-crossed list, a deploy/log/monitor spec, and an exit check. Every phase also has 'Unlocks', 'Depends on' and 'Exit check' fields, which looks like a prescribed template.",
+    "A 'Deferred' table where each item has a 'Pull forward when' trigger. The decisions table pairs each default with a revisit trigger. This matches a structured decision-gating approach.",
+    "Up-front assumptions with the note that 'Phase 0 task 1 confirms them', plus a security/observability/reproducibility/resilience matrix for every phase 'from the first commit'. This is methodical cross-cutting coverage that an unguided plan rarely gives."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 497,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7429
+  },
+  "cost_usd": 0.0235505,
+  "latency_s": 30.484,
+  "raw_file": "raw/probe-7c432c14d925.probe.sonnet-5.5.txt"
+}

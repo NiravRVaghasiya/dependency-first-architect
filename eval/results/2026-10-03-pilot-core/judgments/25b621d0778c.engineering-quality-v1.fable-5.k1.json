@@ -1,0 +1,172 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "25b621d0778c.engineering-quality-v1.fable-5.k1",
+  "blind_id": "25b621d0778c",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 113,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "`DateTimeOriginal` (tag 0x9003), the moment the shutter fired",
+      "rationale": "Tag numbers, EXIF date format, SubSecTimeOriginal/OffsetTimeOriginal semantics, library capabilities (Pillow, pillow-heif, ExifTool for RAW), and the two-step rename for swap cycles are all accurate; the only imprecision (macOS case-insensitivity is a default, not universal) is conservative and has no design consequence."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "I suggest leaving that out of scope at first and adding it later as `--organize`",
+      "rationale": "Solves exactly the stated problem, resolves ambiguities (dry-run default, skip-vs-mtime, local time) with sensible defaults, and defers or excludes scope explicitly with reasons."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Keep `planner.py` free of side effects: it takes a list of `(path, datetime)` pairs and returns a plan.",
+      "rationale": "Module responsibilities (scan/dates/planner/executor/undo) are crisp, the data flow connects end-to-end, and safety decisions made in one section (no-overwrite, undo log) are honored consistently everywhere else."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "`--apply` followed by `undo` restores the original state exactly ... Swap and loop cases",
+      "rationale": "Tests target the real domain risks (collisions, swaps, idempotence, undo round-trip, cross-OS CI), but rollback-on-partial-failure is never explicitly tested and there is no plan to validate against real-camera corpora or corrupt files before release."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "should names use the local capture time (simpler, matches what people expect) or convert to UTC (consistent across trips)? I suggest local time",
+      "rationale": "Key ambiguities are surfaced as open questions with reasoned defaults and no invented specifics, though the plan does not fully say how wrong assumptions would be confirmed or how they would change the design."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "If anything fails partway, stop and roll back the completed renames using the log.",
+      "rationale": "Covers the hard domain failures concretely: duplicate timestamps, bogus/missing EXIF, swap/loop renames, partial-failure rollback, case-insensitive clashes, and reserved Windows names, each with specific detection and handling."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "**CI:** run on Windows, macOS and Linux, since file-system behavior differs.",
+      "rationale": "For a CLI, distribution (pipx, PyPI, PyInstaller), cross-platform CI, exit codes and verbosity flags are concrete and sized to a small team, though release/versioning and user-issue diagnosis are only lightly sketched."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "1. **MVP:** JPEG only, Pillow backend, dry run and `--apply`",
+      "rationale": "A zero-infrastructure tool has negligible run costs, and the phased milestones implicitly manage the dominant cost (engineering time), but effort is never explicitly estimated or discussed."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Optional: shell out to **ExifTool** with `--backend exiftool`",
+      "rationale": "Backends are isolated behind an interface, the planner is pure, one-way scope (`--organize`, video support) is deferred, and the default naming is configurable, though reversibility is handled implicitly rather than analyzed."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "`argparse` (no extra dependency) or `typer` (nicer help text)",
+      "rationale": "The simplest design that fully meets the need: no databases, services or speculative machinery, every component earns its place, and growth (RAW, sidecars, --organize) is staged rather than pre-built."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "1. **MVP:** JPEG only, Pillow backend ... 2. **Safety:** two-step rename, undo log",
+      "rationale": "A team could start immediately: full CLI spec, module layout, exact fallback order and collision rules, concrete tests per risk, and dependency-ordered milestones with checkable results at each stage."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "`DateTimeOriginal` (tag 0x9003), the moment the shutter fired"
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "Parse it strictly and reject placeholder values like `0000:00:00 00:00:00`"
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "First, add subseconds if available (`_123`). Otherwise, add a counter: `_01`, `_02`"
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "It previews changes by default and only renames when you pass `--apply`"
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "First rename every file to a unique temporary name... This handles swaps and loops (A→B while B→A) without overwriting"
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "Before any file is touched, write the undo log (JSON Lines: {\"old\": ..., \"new\": ..., \"tmp\": ...})"
+    },
+    {
+      "id": "P7-07",
+      "status": 2,
+      "evidence": "Read `OffsetTimeOriginal` if present. By default the name uses the local time the photo was taken, with no time-zone conversion."
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "Group files that share a base name and rename them together: ... `IMG_1234.xmp` ... `IMG_1234.MOV` (iPhone Live Photo)"
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "Remove characters that are invalid on Windows (`: * ? \" < > |`). This matters because the EXIF date format contains colons."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Never use a rename call that silently overwrites an existing file. Check that the target doesn't exist first."
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "The file's modified time, only if `--fallback mtime` is set. Otherwise skip the file and report it."
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "`argparse` (no extra dependency) or `typer`"
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "strftime template (default: \"%Y-%m-%d_%H-%M-%S\")"
+    }
+  ],
+  "note": "An exemplary, proportionate plan that nails every domain trap and checklist item (safe two-step renames, undo log, collision and sidecar handling); only cost accounting and a few validation/assumption details fall short of perfect.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 9180,
+    "thinking_tokens": 4220,
+    "cache_read_input_tokens": 11510,
+    "cache_creation_input_tokens": 16443
+  },
+  "cost_usd": 0.6760875000000001,
+  "latency_s": 146.793,
+  "raw_file": "raw/judge-25b621d0778c.engineering-quality-v1.fable-5.k1.txt"
+}

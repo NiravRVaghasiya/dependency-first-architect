@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "6790d0906aef.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "6790d0906aef",
+  "blind_sha256": "40875cbaa11185bc8f0ca4ae0c5d812fa608a6ec8b36ba528cfaca3460d04753",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 462,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 3 \"Depends on: Templates proven on varied services, and signing and provenance proven in audit mode.\"",
+      "rationale": "Each phase names its dependency and proof, and enforcement follows audit-mode proof, so ordering runs from substrate upward."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Merge a one-line change to one real, low-risk, stateless service... commit running in prod and serving real traffic.",
+      "rationale": "Phase 0 is a real end-to-end commit-to-prod slice with a demonstrated rollback."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Consistency for deploy state... Flip condition: Git-host outages block hotfixes more than once a quarter.",
+      "rationale": "The table lists irreversible decisions, each with a default and a concrete flip condition, and states its assumptions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks (widest blast radius first)... A template change reaches all 50 services, so this mechanism comes first.",
+      "rationale": "Each phase orders its work by blast radius and justifies it. The one exception, onboarding waves, is called out and explained."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "OIDC to the registry from day one, with no static keys. Branch protection on `main` and `deploy-config`.",
+      "rationale": "The cross-cutting table gives concrete security work in every phase from 0 to 5."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Every pipeline stage emits an OpenTelemetry span, with commit SHA and digest as attributes.",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Base image pinned by digest. Actions pinned by SHA. Lockfiles. Platform infra in Terraform. Build once, promote the digest.",
+      "rationale": "Reproducibility work appears in each phase, from pinning and Terraform through to deterministic test-impact analysis."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Rollback by `git revert`, demonstrated. A documented manual break-glass deploy of the last known-good manifest.",
+      "rationale": "Resilience work starts in Phase 0 and continues through every phase, ending in DR and chaos drills."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A. This is a pure infra system with no model, retrieval or agent components.",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Ephemeral preview environments per PR. Pull forward when review or QA cycle time becomes the top bottleneck",
+      "rationale": "Each deferred item has a specific pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan: a real walking skeleton, explicit gates with flip conditions, per-phase cross-cutting treatment, and deferred items with triggers.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1057,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7251
+  },
+  "cost_usd": 0.028705499999999995,
+  "latency_s": 18.501,
+  "raw_file": "raw/judge-6790d0906aef.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f7c6e069a59c.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "f7c6e069a59c",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 56,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "CRDT (Yjs + y-prosemirror). Every copy ends up identical without the server deciding order. The server relays, checks and stores edits",
+      "rationale": "Mostly correct on Yjs, durable confirm, and server-side validation; minor imprecision (Yjs markers vs. 'log ≤3× snapshot', Redis pub/sub without routing, validating edits server-side is nontrivial) but no design-breaking errors."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Rich text: headings, lists, marks, links and images. Works online first, and can survive short offline gaps.",
+      "rationale": "Covers core needs with explicit deferrals (long offline, comments, E2EE) and realistic buildable scope; merge semantics for structural conflicts are only lightly treated."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Confirm only after the Postgres commit... Permissions stay strictly consistent: the server is the authority and checks every incoming edit",
+      "rationale": "Consistent design with clear data ownership and honoured choices; minor loose ends like Redis pub/sub vs. per-document routing and persistence path through Hocuspocus."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Property-based fuzzing (fast-check): 2–20 simulated clients ... messages reordered, duplicated and delayed ... chaos harness kill -9 ... restore drill",
+      "rationale": "Validation is tied to specific risks, runs early for the riskiest decision (V1), has labeled provisional thresholds, and continues in production via divergence detector, SLO and canaries."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "If A3 is false (users work offline for days), the default merge choice stays, but Phase 2 grows.",
+      "rationale": "Assumptions are explicit, numbers labeled ASSUMPTION/UNKNOWN, sensitivity and revisit triggers stated, and confirmation path given."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Divergence detector: clients send a hash of their document state every 30 s; the server compares and alerts on any mismatch.",
+      "rationale": "Covers crashes, failover, divergence, malformed/oversized edits, revocation, rate limits, Redis loss, XSS links; lacks detail on malicious-yet-valid CRDT updates, poisoned history and recovery from detected divergence."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Canary deploys: 1 replica first, rolled out further after 30 min clean.",
+      "rationale": "Deployment, rollback, kill switch, SLO, on-call and runbooks are concrete and sized to a small team; incident response and schema migration ops are somewhat thin."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Infra cost per concurrent session | UNKNOWN: finance or product supplies a ceiling; needed before V5",
+      "rationale": "Cost is a gated input with build-vs-buy trade-off and a V5 cost check, but no drivers, scaling estimates or concrete cost controls are given."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: the stored format and the sync protocol are locked once real documents exist",
+      "rationale": "Every decision is labeled by reversibility, R3 ones are validated first with exit paths, point of no return is named, and reversible ones are deferred."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "One TypeScript service. The REST and WebSocket sync roles share an image; a background-worker role runs from the same image",
+      "rationale": "Starts simple with managed services and deferred items; phased gating and heavy ceremony (DPAs, canary, 5 phases, feature flags with Unleash) are slightly much but mostly justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: V1 and V3 pass. The divergence detector fires on a mismatch planted in staging.",
+      "rationale": "Walking-skeleton first, dependency-justified phases, specific tasks, checkable exits and explicit flip-on-failure plans let a team start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "CRDT (Yjs + y-prosemirror)... V1 fails → server decides edit order with operational transforms (ShareDB)"
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Content schema v1 carries a version number; clients below the minimum schema version are rejected at connect"
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "Property-based fuzzing (fast-check): 2–20 simulated clients make random schema-valid edits, with messages reordered, duplicated and delayed"
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "Confirm only after the Postgres commit... keeps the raw log 30 days before deleting"
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "Redis pub/sub between replicas; reconnect with exponential backoff and jitter"
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Client offline queue in IndexedDB that resends unconfirmed edits; Long offline sessions (days) deferred"
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "checked on the server: on WebSocket connect, on every incoming edit... Revocation closes the session ≤5 s"
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Per-user undo and redo (Yjs UndoManager); Version-history UI built on the snapshots"
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "Presence and cursors (Yjs awareness; temporary, never stored)"
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Phase 0 end-to-end slice with 2 replicas; Phase 1 V1 convergence before format spec"
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "~1 MB text with 100k edits of history loads ≤1 s, ≤50 MB memory; 50 editors at the latency budget"
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "Sync protocol and schema versioned in the repo; min-version handshake; V3 old and new clients edit the same document"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "CRDT (Yjs + y-prosemirror)"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Phase 0: Browser: TipTap + Yjs ... second internal user connected to the other server replica"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "Confirm only after the Postgres commit, using a managed HA database with synchronous replication"
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "Yjs keeps markers for deleted content"
+    }
+  ],
+  "note": "Strong, risk-ordered plan with sync-first build, early CRDT fuzzing, durability-before-ack, explicit reversibility and assumptions; weaker on rich-text structural merge semantics, scaling/cost detail, and some large-doc/hot-doc handling.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2475,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 15989
+  },
+  "cost_usd": 0.0649155,
+  "latency_s": 32.995,
+  "raw_file": "raw/judge-f7c6e069a59c.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "45b02f85d7e5.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "45b02f85d7e5",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 40,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "CI commits the new tag to the config repo. Argo CD syncs it ... so CI holds no cluster credentials",
+      "rationale": "OIDC, cosign, admission pinning and GitOps pull are used correctly; minor issue that tag-based config commits are not explicitly digest-pinned and CI still has write access to the config repo."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Brownfield (ASSUMED): the 50 services already ship through existing per-team pipelines.",
+      "rationale": "Covers migration, trust, capacity, and decommission credibly, but omits contract testing, flaky tests and DB migration compatibility as core needs."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Exactly one deployer per service. ... Sync is one-way, with no dual deploy.",
+      "rationale": "Responsibilities, flag-based ownership and phase dependencies are consistent; small loose ends such as config repo vs old pipeline as release history."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "unsigned image, image signed by another identity, image from a PR or fork, cross-service credential use, tampered digest",
+      "rationale": "Validation tied to specific risks, early (V0, V3 before prod), with shadow-run digest compare and post-launch SLIs; thresholds are labelled baseline or assumption."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "UNKNOWN: needs the availability engineering leadership commits to, before Phase 3",
+      "rationale": "Assumptions and unknowns are explicitly labelled, ranked, with triggers and what changes if wrong."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Worst failure: A compromised or misconfigured pipeline deploys an unverified artifact to prod across many services at once.",
+      "rationale": "Covers compromise, outage/hotfix, double-deploy, break-glass and rollback; thin on flaky tests, schema migration failures and partial-failure retries."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "SLIs and burn-rate alerts against the SLO. Platform backup/restore and DR drill.",
+      "rationale": "Rollback, monitoring, DR drills and on-call are addressed, but owner and team size are unknown and delivery metrics are thin."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Load-test runners at 2× peak and record the cost per build. Meter cost per team and service.",
+      "rationale": "Identifies cost measurement and controls and buy-vs-build, but gives no volume-based estimate and the budget is UNKNOWN."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: trust boundary; prod admission and every service's credentials rest on it",
+      "rationale": "Explicit reversibility classes, validation and revisit triggers per decision, defined point of no return and exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Adopt the org's existing or a managed CI engine and GitOps controller; build only the templates and policy layer",
+      "rationale": "Uses existing tools, defers portal, multi-region and per-PR environments with pull-forward triggers; sized sensibly."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Wave 1: ~5 non-critical services. Wave 2: ~15 services. Wave 3: the rest, tier-1 last.",
+      "rationale": "Dependency-justified phases, concrete first slice, checkable exits and failure fallbacks per check."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "Cluster the inventory into archetypes."
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Migrate one pilot per archetype (≥3), including one stateful or migration-heavy service ... Each keeps the old-pipeline fallback."
+    },
+    {
+      "id": "P3-03",
+      "status": 1,
+      "evidence": "shadow-run builds against the old pipeline and compare image digests"
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "OIDC-federated short-lived CI credentials (no long-lived secrets) ... image from a PR or fork"
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "cosign-signed images with provenance and SBOM; admission policy ... pins the platform build identity"
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Revert the config-repo commit."
+    },
+    {
+      "id": "P3-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Ephemeral per-PR environments: Pulled forward if integration-test contention shows up"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "build cache → per-service remote cache"
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Load-test runners at 2× peak and record the cost per build."
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "SLIs and burn-rate alerts against the SLO."
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "an audit log of every deploy and approval."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Service-by-service flag cutover (`use_new_pipeline`), old pipeline kept as fallback."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "compare image digests ... tampered digest"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "OIDC-federated short-lived CI credentials (no long-lived secrets)"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Service-by-service flag cutover"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Adopt the org's existing or a managed CI engine and GitOps controller; build only the templates and policy layer"
+    }
+  ],
+  "note": "Strong, risk-ordered migration plan with excellent assumption and reversibility handling; gaps are contract tests, flaky tests, DB migration compatibility, caching/speed and a quantified cost estimate.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2077,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 13675
+  },
+  "cost_usd": 0.05515049999999999,
+  "latency_s": 39.027,
+  "raw_file": "raw/judge-45b02f85d7e5.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

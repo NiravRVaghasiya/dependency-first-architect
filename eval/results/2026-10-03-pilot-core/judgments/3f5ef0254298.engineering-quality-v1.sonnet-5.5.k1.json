@@ -1,0 +1,172 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "3f5ef0254298.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "3f5ef0254298",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 167,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "`QuickTime:CreateDate` (for HEIC/MOV; note this value is stored in UTC)",
+      "rationale": "Mostly correct (exiftool, QuickTime UTC, two-phase rename), but it lists CreateDate/DateTimeDigitized as the same tag, says 'Pillow for JPEG only' while MVP uses Pillow, and the --tz-offset description is loose; and it doesn't say EXIF times are naive local."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Rename every photo in a folder to a name built from its capture date, e.g. `2024-07-14_18-32-05.jpg`.",
+      "rationale": "Covers core needs with explicit non-goals and sensible defaults; minor gaps like the plan not explaining choice of extras such as {camera}."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "The key design rule is to **build the whole plan before renaming anything.**",
+      "rationale": "Consistent modules and data flow; minor loose ends like the undo log 'before each rename' vs two-phase rename, and MVP Pillow vs exiftool-based date order."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Property test (Hypothesis): for any random plan, applying it and then undoing it restores the original file names exactly.",
+      "rationale": "Domain-appropriate tests (fixtures, platform CI, undo property) but no early risk validation, the 30-second target is invented and unjustified, and nothing continues after release."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Open questions: What should the default name format be?",
+      "rationale": "Open questions are raised but assumptions (scale, platforms, exiftool availability, 1990 cutoff) are mostly implicit, with no sensitivity notes."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Permission errors partway through a run: stop, report what succeeded, and leave the undo log in a consistent state.",
+      "rationale": "Covers collisions, swaps, case-insensitive filesystems, corrupt files, crashes with a write-ahead log, invalid dates; lacks concreteness on recovery from a crash mid two-phase rename and on undo collisions."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Exit codes: `0` success, `1` some files skipped or failed, `2` usage error, `3` dependency missing.",
+      "rationale": "Reasonable for a CLI: exit codes, JSON output, packaging via pipx and PyInstaller, but no versioning or rollback or support discussion."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Run it once in batch mode (`-stay_open`) so large folders stay fast.",
+      "rationale": "A local CLI has few costs; the plan does not discuss build effort, but notes the exiftool dependency and performance."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Should the undo log stay in the photo folder or go to a central place",
+      "rationale": "ExifReader interface isolates the reader, and there is a v2 deferral, but the log format and template defaults are not treated as persisted contracts."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Non-goals (v1) - Moving files into date-based folders ... Editing EXIF metadata. A GUI.",
+      "rationale": "Small CLI with modest modules and explicit non-goals; slightly more than needed with {camera}, PyInstaller and a Pillow fallback reader."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "MVP: JPEG only, Pillow reader, fixed name format, dry run and apply, collision suffixes.",
+      "rationale": "Concrete CLI, modules and milestones; however the MVP ships apply before the two-phase rename and undo log, which is a dependency ordering risk."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "`EXIF:DateTimeOriginal` plus `OffsetTimeOriginal` and `SubSecTimeOriginal` if they're present ... `EXIF:CreateDate` / `DateTimeDigitized`"
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "A date counts as invalid if it's empty, `0000:00:00 00:00:00`, before 1990 or in the future."
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "Sort same-second files by subsecond time, then by original name, so the result is the same every run."
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "The tool runs as a dry run unless you pass `--apply`."
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "First rename everything to temporary names (`.exifrename-tmp-<uuid>`), then to the final names."
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "`--undo LOGFILE` reverses the renames in reverse order and checks that each file still exists under its new name first."
+    },
+    {
+      "id": "P7-07",
+      "status": 1,
+      "evidence": "`--tz-offset ±HH:MM` Shift times ... note this value is stored in UTC"
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "files with the same base name (`IMG_1234.HEIC` + `IMG_1234.MOV` + `IMG_1234.xmp`/`.AAE`) are renamed together and share one base name."
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "default \"{date:%Y-%m-%d_%H-%M-%S}\" ... clean up anything a template produces (`:`, `/`, `\\`, `?`"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Target name already exists on disk and isn't part of this run: add a suffix. Never overwrite."
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "Check these sources in order and use the first valid one: 1. `EXIF:DateTimeOriginal`"
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "Non-goals (v1) ... A GUI."
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "Editing EXIF metadata."
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "default \"{date:%Y-%m-%d_%H-%M-%S}\""
+    }
+  ],
+  "note": "Strong, safe-by-default CLI plan covering the main domain hazards; weaker on timezone semantics, assumptions, early validation and post-release operations.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2234,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 907,
+    "cache_creation_input_tokens": 10002
+  },
+  "cost_usd": 0.047534400000000004,
+  "latency_s": 41.098,
+  "raw_file": "raw/judge-3f5ef0254298.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

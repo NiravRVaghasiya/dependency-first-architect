@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "5a53adcc8b11.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "5a53adcc8b11",
+  "blind_sha256": "6b8ab72c176315b857ffdb412346facc2de162308e754053be8dbfd449057667",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 43,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan is a flat architecture catalogue with no phases, so no substrate-to-upper ordering or proven dependencies."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There is no Phase 0 or thin end-to-end production slice; everything is specified at once."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "Hybrid Approach: Database Per Tenant + Shared Services",
+      "rationale": "The tenancy choice is asserted with rationale but no default, flip condition or revisit trigger. The stack is listed as 'Node.js / Python / Go' with no decision made."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There are no phases, so there is no blast-radius ordering of work."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Encryption at rest (AES-256)",
+      "rationale": "There is a detailed security section with middleware, but it is a standalone section, not tied to phases."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Alerting thresholds: if (metrics.api_latency_p95 > 500) alert('API latency exceeds 500ms');",
+      "rationale": "Monitoring is described in detail but in standalone sections, not from a first phase onward."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Docker (containerization)",
+      "rationale": "CI/CD, Docker and npm ci are present but there are no phases, and there is no reproducible-data or environment story."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Retry logic & exponential backoff",
+      "rationale": "Idempotency keys, retries, dunning and blue-green deployment appear, but as a feature catalogue, not threaded across phases."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never addresses whether an AI layer applies, and nothing declares it N/A."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Nothing is listed as deferred, and there are no pull-forward conditions. The plan claims it is 'production-ready'."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is a broad, detailed design catalogue (schemas, code, security, CI/CD) with no phasing, no skeleton, no decision gates and no deferrals, so it scores very low against this rubric.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 847,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 23702
+  },
+  "cost_usd": 0.067733,
+  "latency_s": 34.029,
+  "raw_file": "raw/judge-5a53adcc8b11.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

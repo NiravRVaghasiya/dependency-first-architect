@@ -1,0 +1,107 @@
+{
+  "schema": "dfa-eval/checklist@1",
+  "prompt_id": "P4",
+  "request": "Plan an autonomous agent that triages and resolves GitHub issues.",
+  "provenance": "eval/rubrics/authoring/eq-rubric-and-checklists-p1-p5.json (blind-authored; see eval/rubrics/AUTHORING.md)",
+  "items": [
+    {
+      "id": "P4-01",
+      "title": "Tiers of autonomy and approval",
+      "addressed_means": "The plan lists which actions the agent may take on its own (labeling, commenting, asking for details), which need human approval (opening pull requests, closing issues), and which are forbidden (merging to protected branches, changing repository settings), and says how autonomy expands as trust is earned.",
+      "category": "product"
+    },
+    {
+      "id": "P4-02",
+      "title": "Least-privilege GitHub credentials",
+      "addressed_means": "The agent acts through a scoped GitHub App installation, or an equivalent fine-grained identity, with short-lived tokens limited to the needed permissions and repositories. It cannot change workflows, branch protection or secrets.",
+      "category": "security"
+    },
+    {
+      "id": "P4-03",
+      "title": "Untrusted issue content and prompt injection",
+      "addressed_means": "Issue bodies, comments, linked content and repository files are treated as attacker-controlled. Instructions found in them cannot trigger privileged actions or data leaks, and actions are checked against policy rather than left to the model's judgment.",
+      "category": "security"
+    },
+    {
+      "id": "P4-04",
+      "title": "Sandboxed code execution",
+      "addressed_means": "Repository code and tests run in isolated, short-lived environments with no access to secrets, restricted network access, and limits on resources and run time.",
+      "category": "security"
+    },
+    {
+      "id": "P4-05",
+      "title": "Fix verification",
+      "addressed_means": "Before fixing, the agent reproduces the issue, ideally as a failing test, then shows the test passing along with the full existing test suite and CI. Pull requests include evidence of the fix, and humans review any tests the agent wrote.",
+      "category": "correctness"
+    },
+    {
+      "id": "P4-06",
+      "title": "Offline triage evaluation",
+      "addressed_means": "Labeling, prioritization, duplicate detection and routing are measured against historical issues with known outcomes before any action is enabled, with precision thresholds required for each action.",
+      "category": "correctness"
+    },
+    {
+      "id": "P4-07",
+      "title": "Human feedback and outcome tracking",
+      "addressed_means": "Agent-generated pull requests and comments are clearly marked. Acceptance, rejection, revert and reopen rates are tracked and used to adjust or reduce the agent's autonomy.",
+      "category": "product"
+    },
+    {
+      "id": "P4-08",
+      "title": "Loop prevention, rate limits and kill switch",
+      "addressed_means": "There are attempt and time limits per issue and protection against bot-to-bot loops and comment spam, so the agent cannot keep re-triggering itself, plus global rate limits and an immediate way to switch the agent off.",
+      "category": "reliability"
+    },
+    {
+      "id": "P4-09",
+      "title": "Model cost budgets",
+      "addressed_means": "Each task has a token or cost budget with stop conditions, and cost per triaged issue and per accepted fix is tracked against the value it delivers.",
+      "category": "cost"
+    },
+    {
+      "id": "P4-10",
+      "title": "Audit trail of agent actions",
+      "addressed_means": "Every action, tool call, model input and output, and code change is logged and attributable, so any action can be reconstructed and reverted.",
+      "category": "operations"
+    },
+    {
+      "id": "P4-11",
+      "title": "Codebase context retrieval",
+      "addressed_means": "The plan specifies how the agent finds relevant code in repositories larger than its context window, for example through code search, indexing or symbol navigation, and how that index stays current.",
+      "category": "correctness"
+    },
+    {
+      "id": "P4-12",
+      "title": "Event handling and coordination with humans",
+      "addressed_means": "Webhook events are processed idempotently, issue edits and new comments during work are handled, and the agent claims or yields issues so it does not collide with humans or other agents working on the same issue.",
+      "category": "reliability"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "title": "Auto-merging without human review",
+      "recognize": "The agent can push to default or protected branches, or merge its own pull requests based on its own judgment or passing CI alone, with no human approval step."
+    },
+    {
+      "id": "P4-T2",
+      "title": "Broad credentials reachable by the agent",
+      "recognize": "A personal access token with wide scope, or CI or production secrets, are available inside the environment where the agent runs untrusted code or reads untrusted text. This makes injection-driven theft of credentials possible."
+    },
+    {
+      "id": "P4-T3",
+      "title": "Issue text treated as trusted instructions",
+      "recognize": "The plan feeds issue and comment content to the model as task instructions, with no acknowledgment of prompt injection and no policy layer limiting what an issue can make the agent do."
+    },
+    {
+      "id": "P4-T4",
+      "title": "Activity counted as success",
+      "recognize": "Success is measured by issues closed or pull requests opened rather than verified, accepted fixes, or the agent auto-closes issues as resolved or stale without evidence."
+    },
+    {
+      "id": "P4-T5",
+      "title": "Unbounded agent loops",
+      "recognize": "No limits on iterations, retries, time or spend, and no kill switch, so the agent can retry endlessly, post spam, or run up unbounded model costs."
+    }
+  ]
+}

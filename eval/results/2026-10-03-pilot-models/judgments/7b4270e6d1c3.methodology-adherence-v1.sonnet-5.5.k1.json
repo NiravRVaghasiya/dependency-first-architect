@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "7b4270e6d1c3.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "7b4270e6d1c3",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 55,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1: \"Load into production vector store (Weaviate, Milvus, or Pinecone; choice made in V1 test).\"",
+      "rationale": "Broadly substrate→upward with gates, but ordering slips: guardrail gate V1 is validated after V2 prep in Phase 1, HITL is in Phase 2 after capabilities, and the vector store choice is left to a later test."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Deployed via same CI/CD pipeline as production (to validate rollback + log pipeline on day one).",
+      "rationale": "Phase 0 is a real end-to-end slice (embed→retrieve→LLM→response) deployed with CI/CD, logging, and a rollback drill, though retrieval is mocked over 3–5 docs."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "LLM provider | R3 ... Default OpenAI gpt-4o-mini ... Flip condition: V1 fails or inference cost >$0.02/query or latency p99 >8s.",
+      "rationale": "Irreversible decisions have reversibility tier, default, assumption, validation and concrete flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Rework runs widest first: Tradeoff decisions (LLM provider, retrieval strategy) are in Phase 1, before leaf work",
+      "rationale": "Exposure is ordered smallest-first and UI is deferred, but within phases there's no explicit blast-radius ordering, and the Phase 1 task list places sync and observability alongside wider guardrail work."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: Input validation (max length, alphanumeric), prompt-injection regex block, hard token limit (200). Allow-list of internal user IDs.",
+      "rationale": "The cross-cutting table and phase tasks give concrete security measures in every phase from Phase 0 onward."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Structured JSON logs: timestamp, trace_id, question, latency, tokens, cost, confidence, errors. Metrics dashboard... Daily spend alert.",
+      "rationale": "Observability is concrete in Phase 0 with alerts and dashboards and extended in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Git repo: config, code, Dockerfile, CI/CD pipeline. Seed help-doc corpus in Git... Versioned help-doc corpus snapshot (git-lfs or external store with hash).",
+      "rationale": "Reproducibility is addressed concretely in every phase, covering config, corpus versions, and experiment harnesses."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "if LLM times out (>10s), return fallback... If vector store unreachable... Sync job: retry failed upserts 3x; alert if 3 consecutive failures.",
+      "rationale": "Specific failure handling is present in every phase from Phase 0, plus rollback per phase."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Human-in-the-loop | Escalation path... | Phase 2",
+      "rationale": "Injection defense and budgets are in Phase 0, but human-in-the-loop lands in Phase 2 after retrieval in Phase 1, and Phase 0 already includes model access and orchestration, so the required order is not followed."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Multi-turn conversation memory | Phase 4, after single-turn chatbot stable for 4 weeks with escalation rate < 20%",
+      "rationale": "A dedicated deferred table lists items, each with an observable pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, concrete plan with a real walking skeleton, gates, and threaded cross-cutting concerns; weaknesses are the AI layer order (human-in-the-loop after retrieval) and only loose blast-radius ordering within phases.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1369,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 13916
+  },
+  "cost_usd": 0.048601000000000005,
+  "latency_s": 27.823,
+  "raw_file": "raw/judge-7b4270e6d1c3.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

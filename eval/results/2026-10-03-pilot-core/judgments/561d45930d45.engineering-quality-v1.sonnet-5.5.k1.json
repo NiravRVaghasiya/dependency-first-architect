@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "561d45930d45.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "561d45930d45",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 171,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "The webhook handler checks the HMAC, stores the event, enqueues it and returns 202 well within GitHub's 10s timeout.",
+      "rationale": "Mechanisms (HMAC, delivery ID idempotency, SKIP LOCKED, installation tokens, pull_request vs pull_request_target, 5,000/hr limit) are accurate; minor issues like Contents read-only yet pushing a branch have small consequence."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Resolve runs only when a user with verified write permission comments `/agent resolve` or adds the label.",
+      "rationale": "Covers triage and resolution with explicit deferrals and narrow starting classes; some feasibility leaps (30% hidden-test pass) but credible."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "The orchestrator, which is outside the sandbox, is the only thing holding write credentials.",
+      "rationale": "Clear responsibilities and data ownership; small inconsistencies (Contents read vs branch creation; triage auto-comment vs Phase 0 suggest-only) are minor."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Run 2 weeks in shadow mode (predictions logged, nothing posted), then go live on the pilot repos.",
+      "rationale": "Validation tied to specific risks: frozen eval, shadow mode, red-team fixtures, escape suite, hidden-test replay, per-phase exit checks, thresholds labeled as starting targets, and production outcome tracking."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "85% on the held-out set (a starting target, recalibrated after measuring how often maintainers agree with each other)",
+      "rationale": "Assumptions mostly explicit with revisit triggers, but budgets ($3, 400 lines, 90%/50 PRs) lack basis and team size/scale are not stated."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Replaying 100 recorded webhooks twice produces exactly one set of actions.",
+      "rationale": "Covers injection, replays, crash resume, poison events, sandbox escape, feedback poisoning, budget runaway, human edits mid-run, with concrete detection and containment."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Alerts fire on job failure rate above 5% or queue age above 5 min.",
+      "rationale": "Observability, deployment, migrations, kill switch, prompt rollback are concrete, but incident ownership/on-call and explicit deployment rollback are thin."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Triage: at most 8k input tokens, $0.05 and 60 s. Resolution: at most $3, 20 min and 40 tool calls.",
+      "rationale": "Per-job caps, daily caps, routing to cheap model, and build/buy and self-host triggers; lacks aggregate cost estimates and sandbox/people cost."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Changing this later means asking every installation to re-approve, so it goes first.",
+      "rationale": "Identifies one-way decisions (App permissions, schema, event contract), isolates provider via interface, and gives revisit triggers for everything else."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Postgres holds the jobs table and the queue (`SKIP LOCKED`, no extra broker yet).",
+      "rationale": "Modular monolith, Postgres for queue and vectors, explicit deferrals; eight phases and routing/multi-repo machinery are somewhat heavy but mostly justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Exit check: a real issue on the sandbox repo gets a real comment in production",
+      "rationale": "Thin first slice, dependency-justified phases, concrete tasks, checkable exit criteria and explicit adaptation triggers."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Runs without approval: reading, retrieval, sandbox runs... Requires approval: starting a resolution, opening a PR... Never allowed: merging, pushing to the default branch, editing workflows."
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "Do **not** grant Workflows or Administration. Tokens are per installation and short-lived"
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Every external write is described as an action and checked against an allow-list... Anything else is denied by default."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "Each job gets a new gVisor or Firecracker microVM, destroyed after the job. There's no GitHub token and no cloud credentials inside it."
+    },
+    {
+      "id": "P4-05",
+      "status": 1,
+      "evidence": "The orchestrator opens a draft PR on `agent/issue-<n>` with a link to the issue, the reasoning, the tests run and the trace link."
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Duplicate detection reaches precision of at least 0.9 at the operating threshold."
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Record PR merged, merged after edits, or closed, plus label corrections by maintainers and 👍/👎 reactions on agent comments"
+    },
+    {
+      "id": "P4-08",
+      "status": 1,
+      "evidence": "A global **kill switch** (a config flag checked before every external write) exists from the start."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Resolution: at most $3, 20 min and 40 tool calls."
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "The `action_log` table is append-only and records who, what, why, the model version, the prompt hash and the approval reference."
+    },
+    {
+      "id": "P4-11",
+      "status": 2,
+      "evidence": "For code, use search inside the sandbox (ripgrep plus a symbol index) instead of embedding the whole repo."
+    },
+    {
+      "id": "P4-12",
+      "status": 2,
+      "evidence": "Allow one active job per issue, give every outbound write an idempotency key, and re-read issue state before writing"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent never merges and never pushes to the default branch."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "There's no GitHub token and no cloud credentials inside it."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Issue text, comments, repo files, tool output and test logs are all treated as untrusted data."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "at least 30% produce PRs that pass the hidden tests, with zero diff-policy violations"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "Hard caps on tokens, cost, wall-clock time and tool calls for each job, plus a daily cap per repo and a global circuit breaker."
+    }
+  ],
+  "note": "Strong, security-first, well-sequenced plan with early validation and explicit deferrals; weaknesses are unbased budget numbers, thin ops ownership, no explicit bot-loop or self-trigger protection, and no failing-test-first reproduction step.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 5016,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 17703,
+    "cache_creation_input_tokens": 18487
+  },
+  "cost_usd": 0.09993010000000001,
+  "latency_s": 54.399,
+  "raw_file": "raw/judge-561d45930d45.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

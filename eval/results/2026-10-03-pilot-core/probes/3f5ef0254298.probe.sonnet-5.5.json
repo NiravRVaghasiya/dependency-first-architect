@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "3f5ef0254298.probe.sonnet-5.5",
+  "blind_id": "3f5ef0254298",
+  "blind_sha256": "10e4c8f87c57369c523d9ad4be5a87d91b7e1241ccf43c05e23c24d649bba566",
+  "judge": "sonnet-5.5",
+  "order_index": 12,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Well-organized numbered sections (goals/non-goals, CLI, libraries comparison, architecture, edge cases, safety, testing, milestones, open questions) look like a template, though they are also typical of a strong unguided plan",
+    "Explicit non-goals and an 'Open questions' section at the end suggest a prescribed structure",
+    "Comparison table of library options with a single stated recommendation, which looks like a methodology step of weighing alternatives",
+    "The key design rule ('build the whole plan before renaming anything') and the explicit data flow are stated as principles",
+    "No sign of methodology artifacts such as labeled phases, assumptions lists, risk registers or verification checklists, so the evidence is moderate"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 308,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3789
+  },
+  "cost_usd": 0.0125605,
+  "latency_s": 14.725,
+  "raw_file": "raw/probe-3f5ef0254298.probe.sonnet-5.5.txt"
+}

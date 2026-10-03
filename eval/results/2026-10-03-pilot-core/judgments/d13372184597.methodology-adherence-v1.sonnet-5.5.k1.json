@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "d13372184597.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "d13372184597",
+  "blind_sha256": "f3affe0854fcc3f874aae4de17c7ddd4befb7be0a338e5807fcdeb3a059135d6",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 316,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Verifier (M2). Same image, no model token... exists because a coding agent's own report of passing tests is not evidence.",
+      "rationale": "Overall order is substrate-first in tasks, but M1 wires a resolver to a draft PR before the Verifier exists and before injection red-team proof (M3), so a dependency is specified after use."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "a deployed slice that runs end to end on a test repository: issue opened → triage labels → `agent:fix` → sandbox run → draft PR.",
+      "rationale": "M1 is a real end-to-end thin slice, although in staging on a test repo rather than production proper."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "D1 ... Revisit if: After 6 months, if >60% of a narrow class merge unedited",
+      "rationale": "Decision table lists options, reversibility, and a revisit trigger for each, plus assumptions with defaults and validation."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Flow/M1 order: Week 1: T0, T1, T2, T13...; Week 2: T3–T8 in parallel",
+      "rationale": "Some widest-first ordering (scaffold, infra, schema, gateway before leaf triage/resolver) but no explicit blast-radius reasoning and ordering is mostly parallel."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Action Gateway v0 ... modes, kill switch, allowlist, idempotency marker, diff policy (paths, size, gitleaks)",
+      "rationale": "Security (HMAC, credential split, import-linter, egress limits, permission check) is built in M1 and continues in M2 (policy) and M3 (red-team, sign-off)."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "T18 Add baseline observability: JSON logs with correlation ID, OTel traces, an alarm on dead jobs and on daily spend",
+      "rationale": "Observability is in M1 with model_calls logging and action_log, then dashboard in M2 and alerts in M3; though T18 is scheduled mid-M1 rather than first."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Alembic migrations ... Terraform in `infra/` ... prompts as versioned files ... Only merged config on the default branch is ever read",
+      "rationale": "Reproducibility (uv, Terraform, versioned datasets/prompts, pinned-commit images) is substantial but not explicitly stated per phase for M2–M4."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Failures retry up to 3 times with exponential backoff plus jitter, and then the job goes to `dead`... Reconciler covers lost webhooks",
+      "rationale": "Idempotency, queue retries, reconciler, kill switch, and failure flows are built in M1 and extended in later phases."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Evaluation first: §14, built in M1... Limits: 40 steps, $5 and 25 minutes per attempt... Human approval points: the fix trigger",
+      "rationale": "Budgets, human gates, and sandbox defenses are early and retrieval (pgvector) precedes model use, but the Verifier and red-team come later than the resolver capability, and memory/routing/feedback ordering is not laid out explicitly."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Auto-attempt fixes without a label (M4) | M3 merge rate ≥30% and cost within budget",
+      "rationale": "Deferred table lists items with explicit pull-forward triggers, plus deliberate shortcuts and non-goals."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, concrete plan with a real thin slice, decision table with revisit triggers, and threaded security/resilience; weaker on strict dependency ordering (resolver before Verifier/red-team) and explicit AI layer sequencing.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1368,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 23177
+  },
+  "cost_usd": 0.0716305,
+  "latency_s": 21.153,
+  "raw_file": "raw/judge-d13372184597.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

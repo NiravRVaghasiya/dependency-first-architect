@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "102ac83384c6.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "102ac83384c6",
+  "blind_sha256": "a311d1c92a01b74c5258e3eb900e7664d05cedd1a81038cd223ecf067d3280e3",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 315,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 4 \"Depends on: Phase 3 retrieval quality being proven. Generation can't be tuned until its inputs are right.\"",
+      "rationale": "Each phase names its dependency and gates on an exit check, running from skeleton to eval/data contract to defenses to retrieval to model to memory to routing to feedback."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"An internal employee types 'How do I reset my password?' into the widget. The answer streams back with a link to the real article.\"",
+      "rationale": "Phase 0 is a real end-to-end slice deployed to prod via CI/CD with logging, tracing and a fallback."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"Availability, with bounded staleness... | A doc class where any staleness causes harm (pricing, legal, outage status).\"",
+      "rationale": "The gate table lists many irreversible decisions, each with a default and a concrete flip condition, and the assumptions are tied to the gates."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "\"Unpublish/delete propagation... This has the widest blast radius because a stale policy is the worst failure.\"",
+      "rationale": "Widest-impact work is placed first within phases: the data contract first in Phase 1, unpublish propagation first in Phase 3, and leaf UI work last in Phase 7."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "\"Secrets in a secret manager; staff-only flag; PII redacted before logging; provider zero-retention\"",
+      "rationale": "The cross-cutting table gives concrete security measures for every phase starting at Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"OpenTelemetry trace with spans chat → retrieve → llm... Dashboard: request rate, error rate, p50/p95 latency, tokens per request, $/day.\"",
+      "rationale": "Observability is built in Phase 0 and extended with concrete metrics in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"Terraform infra, CI deploy only, lockfile, pinned model version\"",
+      "rationale": "Reproducibility is covered in every phase through infrastructure as code, versioned golden sets and prompts, idempotent upserts and pinned judge models."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"Hard timeout, max tokens, fixed 'contact support' fallback\"",
+      "rationale": "Failure handling appears in every phase: fallbacks, DLQ, a kill-switch, router failure modes and rollback."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"Phase 2 — Defenses, budgets, human handoff\" followed by retrieval (3), model access (4), memory+orchestration (5), routing (6), feedback (7)",
+      "rationale": "Defenses, budgets and HITL come before capabilities, and the order follows retrieval → model → memory → orchestration → routing → feedback exactly."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Authenticated account tools | ≥20% of escalations need account data. It then gets its own HITL-gated phase\"",
+      "rationale": "The deferred table lists many items, each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is strong on all ten dimensions, with concrete content and no empty labels; the main caveat is that Phase 2 defenses come after a skeleton that is already live but limited to staff.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1222,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9056
+  },
+  "cost_usd": 0.034867999999999996,
+  "latency_s": 20.487,
+  "raw_file": "raw/judge-102ac83384c6.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

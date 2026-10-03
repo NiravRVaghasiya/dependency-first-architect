@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "2519f538447b.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "2519f538447b",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 12,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Keyword search matters for error codes, feature names and SKUs, which embeddings handle poorly.",
+      "rationale": "Technical claims are accurate (hybrid search, cross-encoder reranking, re-index on embedding change), with minor issues such as LLM self-reported confidence and the vague cache invalidation."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Non-goals for v1: account-specific actions (refunds, password resets), multi-turn troubleshooting flows",
+      "rationale": "Covers the core RAG needs with explicit non-goals and a buildable phased path; it leaves channel and platform open, and the 'right article in top 5' recall target assumes one-article mapping."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Metadata filters: locale, product, and plan tier (if known from the session).",
+      "rationale": "The design is mostly consistent, but visibility is handled by exclusion at ingestion while plan tier filtering is session-dependent and only loosely tied to identity; some unowned data such as transcripts."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Regression gate: run the eval in CI for any change to prompts, chunking, models or the index. Block a release if a metric drops.",
+      "rationale": "Golden set from tickets, LLM judge calibrated on human grading, CI gate, agent-assist pilot and online metrics are strong, but the targets are not justified beyond 'starting point' and the riskiest assumptions are not tested explicitly early."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "I don't know your stack, doc platform or volume yet, so this plan is vendor-neutral and lists its assumptions.",
+      "rationale": "Open questions and 'starting point' and 'est.' labels are good, but there is little sensitivity analysis, and numbers like 85% and 95% have no stated basis."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Customers stuck in a bot loop | An always-visible \"talk to a human\" button, and auto-escalation after 2 failed turns",
+      "rationale": "Covers the main domain failures (hallucinated policy, stale docs, loops, injection, multilingual) with concrete mitigations, but lacks detail on partial ingestion failures, outage and fallback, and poisoned content."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "monitor ingestion lag and alert if an updated article isn't re-indexed within N minutes.",
+      "rationale": "Covers tracing, freshness alerting and weekly review, but has no rollback or deployment mechanism, index migration path, incident ownership or on-call."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "cache answers to frequent questions (invalidate when the source article changes), set token budgets, and rate-limit per session.",
+      "rationale": "Controls are named, but there is no cost-per-conversation estimate, no cost breakdown and no build-cost estimate."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Changing the embedding model means a full re-index.",
+      "rationale": "It notes versioning and re-index cost and offers vendor-neutral store options, but it does not frame one-way versus reversible decisions or provide exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Starting with agent assist (phase 2) is the lowest-risk path.",
+      "rationale": "Mostly proportionate, with a phased rollout; query rewriting, reranking and hypothetical questions are included from the start without baseline evidence, though they are mostly standard and some are marked optional."
+    },
+    {
+      "dim": 11,
+      "score": 2,
+      "evidence": "Prototype | 2 wks | Ingestion, hybrid retrieval, generation with citations, offline eval passing the targets",
+      "rationale": "Phases are ordered sensibly with deliverables, but the plan is generic and vendor-neutral, offers little on concrete first steps or on what to do if targets are missed, and defers specifics to the open questions."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "use a CMS webhook on publish, update or delete, plus a nightly full reconciliation. Deletes must remove chunks from the index."
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Chunk by document structure (H2/H3 sections), not fixed tokens."
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "Golden dataset (200–500 questions): take them from real historical tickets and chat logs"
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "If the context doesn't contain the answer, say so and offer escalation."
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "create a ticket with the full transcript, the retrieved articles, and the bot's draft answer"
+    },
+    {
+      "id": "P1-06",
+      "status": 1,
+      "evidence": "treat retrieved text and user text as data, not instructions. The bot should have no tools that can take actions in v1."
+    },
+    {
+      "id": "P1-07",
+      "status": 1,
+      "evidence": "Exclude internal-only articles, drafts, and anything with agent-only notes. Filter on article visibility metadata."
+    },
+    {
+      "id": "P1-08",
+      "status": 1,
+      "evidence": "redact card numbers, SSNs and similar data before logging. Set a log retention policy."
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Non-goals for v1: account-specific actions (refunds, password resets)"
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "Content-gap report: list questions with low retrieval scores or that escalated, clustered by topic."
+    },
+    {
+      "id": "P1-11",
+      "status": 1,
+      "evidence": "cache answers to frequent questions (invalidate when the source article changes), set token budgets, and rate-limit per session."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Answer only from the provided context."
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Exclude internal-only articles, drafts, and anything with agent-only notes."
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "webhook / nightly sync"
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Regression gate: run the eval in CI for any change to prompts, chunking, models or the index."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "Query rewriting: turn the conversation into one self-contained search query"
+    }
+  ],
+  "note": "Solid, sensible vendor-neutral RAG plan with strong eval and a safe agent-assist rollout; weak on retrieval-time entitlements, cost estimates, data-protection detail and operational rollback.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2282,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11800
+  },
+  "cost_usd": 0.052328,
+  "latency_s": 27.535,
+  "raw_file": "raw/judge-2519f538447b.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "21b0769b5f8f.probe.sonnet-5.5",
+  "blind_id": "21b0769b5f8f",
+  "blind_sha256": "a8c07c8db10382ac8d23dfb5fc58622b800367498b9c71c0fda04a346763a5cf",
+  "judge": "sonnet-5.5",
+  "order_index": 83,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens with a dependency-ordering rationale and a 'Phase 0' for hard-to-reverse decisions, which looks deliberate but is also typical of a strong default answer",
+    "Includes an explicit 'Critical path' and ranked 'Biggest risks' section, which could reflect a methodology template",
+    "Each phase has a 'Test:' step (fault injection, restart test), which suggests a verification habit but not a clearly prescribed format",
+    "Ends with a hedge offering to order a specific list of tasks if the user pastes it, which reads like a default-model clarification rather than a methodology artifact",
+    "No explicit assumptions, unknowns, or scoped-out sections, and no structured metadata, so there's no strong sign of a rigid written planning format"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 325,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2352
+  },
+  "cost_usd": 0.009138,
+  "latency_s": 31.811,
+  "raw_file": "raw/probe-21b0769b5f8f.probe.sonnet-5.5.txt"
+}

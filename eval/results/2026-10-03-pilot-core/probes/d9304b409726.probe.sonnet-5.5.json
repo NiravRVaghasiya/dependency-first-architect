@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "d9304b409726.probe.sonnet-5.5",
+  "blind_id": "d9304b409726",
+  "blind_sha256": "e4b36723088e488a06cae2724c2140f4c4ed235016d67761c1d804c2363035d5",
+  "judge": "sonnet-5.5",
+  "order_index": 117,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.9,
+  "cues": [
+    "Highly rigid, numbered section structure (Summary, Context and Goals, Drivers, Current State, Assumptions and Open Questions, Architecture, Key Decisions, Cross-Cutting, Build Sequence, Rollout, Risks, Deferred Work, Next Steps) that reads like a prescribed template",
+    "Explicit ranked quality-attribute table with measurable targets, each tied back to decisions by 'driver' number (e.g., 'serves drivers 1 and 4')",
+    "Decision table with Options considered / Rationale / Reversibility / Revisit-if columns, plus a 'Known shortcut' and reversibility rating ('Hard (data model)')",
+    "Assumptions explicitly tagged '(assumption)' with impact-if-wrong and how/when validated, and open questions each with a default; a 'Current State' section that inspects the empty workspace",
+    "Spikes with time-boxes and 'Changes the plan if' clauses, milestones with exit criteria/size, plus a task breakdown with 'Done when' and a deferred-work table with triggers"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 435,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 12747
+  },
+  "cost_usd": 0.0362255,
+  "latency_s": 31.488,
+  "raw_file": "raw/probe-d9304b409726.probe.sonnet-5.5.txt"
+}

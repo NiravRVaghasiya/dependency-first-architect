@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "7b90d0189120.probe.sonnet-5.5",
+  "blind_id": "7b90d0189120",
+  "judge": "sonnet-5.5",
+  "order_index": 4,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens with a note that no spec was found in the workspace and lists explicit assumptions in §1, which suggests a procedure of stating assumptions",
+    "Clear structure: summary, assumptions and quality targets table, design principles, architecture, then phasing and variants, which is common in strong unguided outputs too",
+    "Ends by offering follow-up help, which reads like a typical chat answer and not a methodology-mandated artifact",
+    "No explicit methodology artifacts such as numbered steps, decision logs, risk registers, or verification checklists; the structure is domain-driven",
+    "Very dense and polished, with concrete SQL and pseudocode and a worked example cycle. This fits a strong model's default thoroughness and doesn't clearly show a prescribed process"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 324,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 13645
+  },
+  "cost_usd": 0.0373605,
+  "latency_s": 25.322,
+  "raw_file": "raw/probe-7b90d0189120.probe.sonnet-5.5.txt"
+}

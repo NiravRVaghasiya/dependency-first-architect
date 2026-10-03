@@ -1,0 +1,115 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P6.generic-control.opus-5.5.r01",
+  "prompt_id": "P6",
+  "condition": "generic-control",
+  "generator": "opus-5.5",
+  "run_index": 1,
+  "seed": 164929822,
+  "seed_honored": false,
+  "request": "/architecture-planner Plan migrating our hospital's on-premises patient scheduling system to the cloud without downtime.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P6.generic-control.opus-5.5.r01.md",
+  "output_sha256": "0d7131812636fba4f37f3ccb493b78a5c2de8ed310cbb3f61a13a7db0f3a2f37",
+  "metrics": {
+    "words": 8461,
+    "chars": 51369,
+    "visible_tokens_est": 12843
+  },
+  "turns": 4,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p2ab33809/skills/architecture-planner/reference/document-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p2ab33809/skills/architecture-planner/reference/guidance.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "weef95d5c/README.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "architecture-planner:architecture-planner",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "eval/conditions/generic-architect/reference/document-template.md",
+      "sha256": "517670de5932f7ab0ecf24b9552eef0898f2878615236f7a28d2df41ea230c02",
+      "words": 1195
+    },
+    {
+      "path": "eval/conditions/generic-architect/reference/guidance.md",
+      "sha256": "a1221cbaa4130a04df554c6ee69526c259863c4ac6c0c5975970a4bbb636b6ad",
+      "words": 2023
+    }
+  ],
+  "started_at": "2026-10-03T00:12:56+00:00",
+  "finished_at": "2026-10-03T00:21:38+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [
+    "claude-opus-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 8,
+    "output_tokens": 37675,
+    "thinking_tokens": 17624,
+    "cache_read_input_tokens": 18622,
+    "cache_creation_input_tokens": 12451
+  },
+  "cost_usd": 0.8195114,
+  "latency_s": 521.295,
+  "raw_file": "raw/gen-P6.generic-control.opus-5.5.r01.txt"
+}

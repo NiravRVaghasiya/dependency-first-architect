@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "cec4b451191c.engineering-quality-v1.fable-5.k1",
+  "blind_id": "cec4b451191c",
+  "blind_sha256": "34979c7d987231e88ac316f841b44a0f7f0cd710d4bd0ed6529610b83070ff5a",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 414,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Merges are commutative and idempotent, offline editing comes for free, and the library is mature.",
+      "rationale": "Claims about Yjs/CRDT semantics, idempotent resends, relative positions, UndoManager scoping and the real tombstone/memory overheads of CRDTs are all accurate, including the subtle areas."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "A browser-based editor where many people edit the same rich-text document at once. It shows live cursors and presence, keeps working offline",
+      "rationale": "Covers every implied core capability (co-editing, presence, offline, history, comments, sharing), is credibly buildable by a small team, and every exclusion is explicit with a pull-forward trigger."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "One process owns each doc, assigned by consistent hash on doc ID. The doc lives in memory on one node",
+      "rationale": "Data ownership (content AP in the update log, metadata CP in Postgres), per-doc routing, and identity/authz are applied consistently across all phases with no contradictions found."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "10k fuzz sessions with zero divergence. A `kill -9` on the collab node mid-edit loses zero acked updates.",
+      "rationale": "The riskiest assumption (convergence) is fuzz-tested in Phase 1 before features, every phase has checkable exit criteria, and a production divergence detector continues validation after launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Switch to OT (ShareDB-style, server-ordered) if CRDT tombstone or memory overhead goes over budget (for example, more than 50 MB",
+      "rationale": "Numbers are hedged as estimates ('about 200', 'about 50 ms') and every default decision states the condition that would overturn it and how it would be observed."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "clients report a doc state hash periodically, the server compares, and a divergence counter has an alert at zero tolerance.",
+      "rationale": "Covers the domain's hardest failures—silent divergence, lost acked edits, bad snapshots, revoked-while-offline edits, detached anchors, paste XSS, memory DoS, duplicates—each with concrete detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "On deploy, a node flushes its docs and hands them off before shutting down.",
+      "rationale": "Deploy/rollback, migrations, drain-and-handoff, meaningful alerts and SLO burn rates are concrete and sized to a small team, but incident ownership and on-call/runbook response are never assigned."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Use WebRTC peer-to-peer for presence only, if server egress cost for presence dominates.",
+      "rationale": "Some cost drivers (egress, storage growth, build-vs-buy) and controls (compaction, S3 trigger, load shedding) appear, but there are no estimates, ranges, or reasoning about how run cost grows with usage."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Concurrency algorithm (most irreversible: it fixes the stored data format)",
+      "rationale": "Explicitly ranks the irreversible decisions (stored format, add-only schema), validates them earliest, defers lock-ins like multi-region and microservices, and names exit paths (OT, hosted backend)."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Modular monolith: one repo, one codebase, two process types. ... They are split because they scale differently, not for organizational reasons.",
+      "rationale": "Starts with a textarea-plus-Y.Text slice, Postgres-for-everything, single region, and defers every heavier component behind a stated trigger; nothing essential is cut."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "A logged-in user opens `/d/:docId` and types \"hello\". A second browser, signed in as a different user, sees \"hello\" appear.",
+      "rationale": "A team could start immediately: dependency-justified phase order, named libraries and table schemas, checkable exit criteria per phase, and revisit triggers that say how to change course."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "CRDT using Yjs. Merges are commutative and idempotent, offline editing comes for free, and the library is mature."
+    },
+    {
+      "id": "P5-02",
+      "status": 2,
+      "evidence": "A versioned ProseMirror/TipTap schema, add-only: node and mark types are never removed or renamed."
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "N simulated clients make random concurrent edits under partition, reordering and duplication."
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "Each update is appended to the Postgres update log before the ack. ... Never delete log entries until the snapshot is verified."
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "One process owns each doc, assigned by consistent hash on doc ID. ... Client reconnect with exponential backoff and jitter."
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Two devices that each edit offline for 24 hours merge correctly."
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "the JWT and role are checked when the WebSocket connects, and on every message. ... the server closes or downgrades active sockets within 5 seconds."
+    },
+    {
+      "id": "P5-08",
+      "status": 2,
+      "evidence": "Per-user undo with Y.UndoManager, tracking local edits only. ... A restore is applied as a new forward update; the log is never rewritten."
+    },
+    {
+      "id": "P5-09",
+      "status": 2,
+      "evidence": "It is ephemeral (never persisted), throttled to about 50 ms, and capped in size. ... no awareness data reaches doc_updates."
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "plain text in a <textarea> bound to a Y.Text ... Rich text depends on proven sync, so it waits."
+    },
+    {
+      "id": "P5-11",
+      "status": 2,
+      "evidence": "Max update size of 1 MB ... above N editors, cursor fidelity is dropped. ... Hot docs go read-only for overflow viewers."
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "Clients below the minimum schema version are forced to reload. ... A schema v1→v2 migration passes against an anonymized copy of the snapshot corpus."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "CRDT using Yjs. Merges are commutative and idempotent"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "Buy or adopt: Yjs, y-protocols, TipTap/ProseMirror"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Rich text depends on proven sync, so it waits."
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "Never ack before the write is durable."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "The server still relays, stores and authorizes."
+    }
+  ],
+  "note": "An exemplary plan—correct CRDT/durability semantics, sync proven first, thorough domain failure coverage, explicit reversibility reasoning—weak only on money-cost estimation and incident ownership.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8050,
+    "thinking_tokens": 5415,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 13751
+  },
+  "cost_usd": 0.5752775,
+  "latency_s": 269.878,
+  "raw_file": "raw/judge-cec4b451191c.engineering-quality-v1.fable-5.k1.txt"
+}

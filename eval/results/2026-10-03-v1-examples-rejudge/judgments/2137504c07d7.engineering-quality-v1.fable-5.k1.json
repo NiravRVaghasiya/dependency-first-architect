@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "2137504c07d7.engineering-quality-v1.fable-5.k1",
+  "blind_id": "2137504c07d7",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 21,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Signing waits until now because that identity only becomes stable once the template exists.",
+      "rationale": "Claims about Argo CD pull-based sync, keyless cosign identity, Kyverno Audit/Enforce, OIDC federation, expand/contract migrations and Renovate behavior are all accurate, including subtle sequencing reasoning."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Phases (ordered by dependency; within a phase, widest impact first)",
+      "rationale": "It answers exactly the sequencing question with a dependency-justified order, covers all core CI/CD capabilities, and explicitly defers non-essentials with bring-forward triggers."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "CI never holds cluster credentials.",
+      "rationale": "The pull-based GitOps, digest-only, trust-tier decisions made up front are honored consistently in every phase and cross-cutting row with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "a deliberately bad build (injected 5xx errors) on a pilot is stopped and rolled back in prod with no human action, within 10 min",
+      "rationale": "Each phase has measurable exit checks tied to its specific risks, the riskiest assumptions (rollback, template blast radius) are drilled early, and SLOs/DORA metrics continue validation in production."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Assumption: the 50 services already ship some other way today.",
+      "rationale": "Key assumptions (existing shipping path, Kubernetes targets, existing observability stack) are explicit, and the revisit-trigger table states exactly what changes if each assumption fails and how it is measured."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "A bad or malicious artifact reaches prod in many services at once and can't be rolled back fast.",
+      "rationale": "Template blast radius, stolen credentials, registry/Prometheus outages, drift and migration failures all have concrete handling, but flaky tests and fork-PR secret exposure are unaddressed."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Platform SLOs with error budgets: pipeline availability, queue time p95, lead time p95.",
+      "rationale": "Observability precedes the first pipeline run, rollback and break-glass are drilled, HA and disaster-recovery rebuilds are tested, and alerting/ownership (owning teams paged on aborts) fit a realistic team."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "hosted-runner spend exceeds the cost of running our own",
+      "rationale": "The dominant compute driver is identified with a measure-then-switch control and a cost-per-build metric, but there are no volume-based estimates, growth reasoning, or people-cost accounting anywhere."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Widest impact: it sets the layout of every future app.",
+      "rationale": "Hard-to-reverse choices (desired-state layout, template interface, artifact model) are validated earliest, every default has an explicit revisit trigger, and vendor coupling is deliberately isolated (GitLab swap noted)."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Use off-the-shelf tools for standard layers; build only the glue.",
+      "rationale": "Mesh, previews, Kargo, Backstage and hermetic builds are deferred with concrete triggers, and every included component is justified by the stated worst failure or scale, with no gold-plating."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "a developer merges a real, trivial change to main of service #1",
+      "rationale": "Concrete first slice, dependency-justified ordering, specific tool and policy decisions, checkable exit criteria per phase, and revisit triggers that say how the plan adapts if results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "One standard pipeline template (versioned, each service pins a version)... Services can only add steps at declared hook points."
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "They will move over in waves, and each keeps its old pipeline switched off but ready as a fallback."
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Build once, promote the same digest through dev → staging → prod... Manifests never use mutable tags."
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "OIDC login to a short-lived cloud role that can push to only one registry repo."
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Each image gets a keyless cosign signature, an SBOM (Syft) and SLSA build provenance... Promotion rejects digests that fail verification."
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "canary at 10 → 25 → 50 → 100%... A migration linter in CI (squawk or Atlas) enforces expand/contract."
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Cross-service test gates: Pact contract tests (can-i-deploy)... Bring forward when at least 20% of rollbacks"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Migration rehearsals run on a masked, versioned staging snapshot."
+    },
+    {
+      "id": "P3-09",
+      "status": 2,
+      "evidence": "PR checks stay synchronous and blocking (≤ 10 min p95)... A pull-through cache for base images and packages"
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Self-hosted runners (short-lived, via Actions Runner Controller): bring forward when... queue time p95 passes 5 min"
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Platform SLOs with error budgets... Per-team DORA dashboards (deploy frequency, lead time, change failure rate, recovery time)"
+    },
+    {
+      "id": "P3-12",
+      "status": 2,
+      "evidence": "prod needs owner approval... Break-glass needs two people and is audited."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Waves 2–4, about 12 services each, lowest risk first... old pipeline kept as a fallback."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Never rebuild per environment... Manifests never use mutable tags."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "OIDC to a short-lived role that can only push to one registry repo. No cluster credentials in CI"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Never a full end-to-end gate across the fleet, which would tie 50 release schedules back together."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Use off-the-shelf tools for standard layers; build only the glue."
+    }
+  ],
+  "note": "An exceptionally strong, technically accurate and well-sequenced GitOps plan that avoids every trap; its only real gaps are absent cost/volume estimates, flaky-test handling, and contract testing being deferred rather than baseline.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 11268,
+    "thinking_tokens": 6117,
+    "cache_read_input_tokens": 16317,
+    "cache_creation_input_tokens": 25448
+  },
+  "cost_usd": 0.8978570000000001,
+  "latency_s": 231.288,
+  "raw_file": "raw/judge-2137504c07d7.engineering-quality-v1.fable-5.k1.txt"
+}

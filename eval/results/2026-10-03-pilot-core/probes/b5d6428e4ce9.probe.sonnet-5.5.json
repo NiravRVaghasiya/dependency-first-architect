@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "b5d6428e4ce9.probe.sonnet-5.5",
+  "blind_id": "b5d6428e4ce9",
+  "blind_sha256": "babd2015e4a34ea4fe1473591c8a7d3d45ebb7aab7c796e6f1b1695141bb5191",
+  "judge": "sonnet-5.5",
+  "order_index": 133,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens by stating missing info/assumptions ('I don't know your stack...') and ends with targeted clarifying questions, which could be a methodology step or just good default behavior",
+    "Well-organized but generic sections (goals, architecture, ingestion, retrieval, eval, rollout, risks) that follow a standard RAG template rather than a distinctive prescribed structure",
+    "Metrics table with 'set a goal after measuring' and 'agree before building' hints at some rigor, but no explicit methodology artifacts (e.g., numbered assumptions, decision log, verification steps per phase)",
+    "Phases include durations and deliverables but lack explicit exit criteria or verification gates that a formal methodology would typically add",
+    "Closing offer to inspect workspace paths is a generic agent-style ending, not a sign of a specific planning protocol"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 351,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4319
+  },
+  "cost_usd": 0.0143155,
+  "latency_s": 32.73,
+  "raw_file": "raw/probe-b5d6428e4ce9.probe.sonnet-5.5.txt"
+}

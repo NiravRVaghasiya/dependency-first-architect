@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "3ad0d603eae2.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "3ad0d603eae2",
+  "blind_sha256": "4ad854619696aad0fa57b4f6d6da22afa5774939c14a33bd9b3c0ca2ef5af766",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 272,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Week 1–2: GitHub App, webhook gateway, state machine skeleton, audit log, kill switch. Week 3–4: Triage agent in shadow mode",
+      "rationale": "Milestones go roughly substrate-up (gateway, audit, triage, sandbox, fix), but the fix agent is specified before the eval harness and red-team suite are proven, and the ordering is not justified by dependencies."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Week 1–2: GitHub App, webhook gateway, state machine skeleton, audit log, kill switch.",
+      "rationale": "Phase 1 is infrastructure skeleton with no end-to-end path through production; the first real action is triage shadow mode in weeks 3–4."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Decisions That Depend on Your Setup: 1. Scope ... 2. Stack ... 3. Hosting ... 4. Risk tolerance",
+      "rationale": "Open decisions are listed, but with no defaults or flip conditions; the tradeoffs are mostly posed as questions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Week 1–2: GitHub App, webhook gateway, state machine skeleton, audit log, kill switch.",
+      "rationale": "Broad foundational pieces come first, but there is no explicit within-phase ordering by blast radius."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Write every action (tool call, prompt, diff, comment) to an immutable audit log.",
+      "rationale": "Security is strong, but it sits in a standalone section; phase 1 has the kill switch and audit log, while the red-team suite doesn't arrive until weeks 7–8."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Observability: OpenTelemetry traces per issue, with prompt and response logging.",
+      "rationale": "Audit log is in week 1–2 and dashboards in weeks 3–4, but observability is mainly in the stack section and not threaded through every phase."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Nothing on reproducible builds, pinned environments, versioned prompts or data, apart from the ephemeral sandbox and the benchmark checkout."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Use a polling job as a backup to catch missed webhooks.",
+      "rationale": "Retries, dedupe, resumable states, budgets and flaky-test handling exist, but they live in component and failure-mode sections and are not tied to each phase."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "L0 Shadow ... L4; Budget limits: maximum iterations, tokens, wall-clock time; Week 7–8: Fix and Verify agents, red-team suite",
+      "rationale": "Defenses, budgets, human review, and autonomy gating are strong, but the kill switch and audit log come first while the red-team suite and budgets arrive with the fix agent, and retrieval, model access, memory, orchestration and routing have no explicit sequence."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Non-Goals (v1): Auto-merging to protected branches. ... 6. Ongoing: Expand to more repos, move to L3 based on metrics.",
+      "rationale": "Non-goals and L4 are stated, and autonomy levels have exit criteria, but deferred items have no explicit pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is strong on security design and autonomy gating, but it lacks a true production walking skeleton, reproducibility, explicit decision defaults with flip conditions, and per-phase threading of observability and resilience.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1295,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 6191
+  },
+  "cost_usd": 0.028435500000000002,
+  "latency_s": 19.882,
+  "raw_file": "raw/judge-3ad0d603eae2.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "3530206dab54.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "3530206dab54",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 5,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "PHASE 1: Setup & Authentication ... PHASE 2: Core Infrastructure ... PHASE 3: Intelligence ... PHASE 4: Automation",
+      "rationale": "Phases roughly go substrate to upward, but nothing is gated on proof, and guardrails and auth come without ordering logic."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "PHASE 1: Setup & Authentication",
+      "rationale": "Phase 1 is setup only; no thin end-to-end production slice exists before features."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "LLM Integration | Claude API / OpenAI GPT-4",
+      "rationale": "Choices are left as 'X or Y' with no default, flip condition or irreversible-decision list."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Items within phases are listed without any blast-radius ordering."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Never auto-close without high confidence (>0.95) ... Maintain audit log of all agent decisions",
+      "rationale": "Safety measures sit in a standalone section, not in the phases, and prompt injection and credential scoping get no real treatment."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Logging & monitoring",
+      "rationale": "Monitoring appears only in Phase 2 and in a metrics table, not from a Phase 0 and not in every phase."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "Nothing on pinned environments, reproducible builds, or versioned data, prompts or models."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Polling Fallback: Periodic checks for new/updated issues",
+      "rationale": "Failure handling is limited to a polling fallback, rate limits and an undo mechanism, and none of it is tied to phases."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Start with read-only actions before automation",
+      "rationale": "Guardrails and human escalation exist and read-only start is mentioned, but it is a late note, and the phases put intelligence before guardrails, budgets and HITL, with no cost budgets."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There is no explicit deferred-work list and no pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Generic feature-oriented plan with a sensible component list and standalone safety section, but it has no walking skeleton, no decision gates, no reproducibility, and no deferral logic.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 915,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 5343
+  },
+  "cost_usd": 0.0226285,
+  "latency_s": 25.853,
+  "raw_file": "raw/judge-3530206dab54.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

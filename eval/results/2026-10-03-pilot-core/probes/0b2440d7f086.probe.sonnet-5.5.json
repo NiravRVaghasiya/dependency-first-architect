@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "0b2440d7f086.probe.sonnet-5.5",
+  "blind_id": "0b2440d7f086",
+  "blind_sha256": "538113404853d9cf3f23f0d94f17143da5ebfbff067b4154a65ee524260d8f50",
+  "judge": "sonnet-5.5",
+  "order_index": 58,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Rigid labeled structure: numbered sections for classification/constraints, dependencies, key decisions, first end-to-end slice (Phase 0), phases, validation checks, cross-cutting concerns, AI layer, Exceptions, Deferred",
+    "Budget table uses explicit tags (REQUIREMENT / ASSUMPTION / UNKNOWN / BASELINE) and names which check or phase verifies each one",
+    "Key decisions table with reversibility ratings (R2/R3), default, assumption, validated-by, and revisit trigger columns",
+    "Validation checks V0–V6 each have hypothesis, method, acceptance threshold, evidence, 'unlocks and if it fails' and phase; Phase 0 is a thin end-to-end slice through all tiers",
+    "Explicit '9. Exceptions: None', a 'Deferred' list with pull-forward triggers, an 'N/A' line for migration, and an AI-layer sublayer table with a build phase for each"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 403,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 10512
+  },
+  "cost_usd": 0.030318,
+  "latency_s": 32.57,
+  "raw_file": "raw/probe-0b2440d7f086.probe.sonnet-5.5.txt"
+}

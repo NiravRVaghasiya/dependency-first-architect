@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "7eb41f45cf2b.engineering-quality-v1.fable-5.k1",
+  "blind_id": "7eb41f45cf2b",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 67,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Hybrid search helps with product names and error codes that embeddings handle poorly.",
+      "rationale": "Claims about pgvector/HNSW, RRF, SSE, circuit breakers, idempotency keys, token economics and provider behavior are accurate, with real limits stated (e.g. revisit pgvector past 5M chunks) and uncertain API semantics explicitly deferred to spike S3."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Public docs and anonymous users only in v1. No account-specific answers. Those questions are routed to a human.",
+      "rationale": "Solves exactly the stated problem, resolves ambiguities with stated defaults, scopes v1 to what 2 engineers can build, and every exclusion is explicit with a reason and a revisit trigger."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "One writer per table: the Ingestion Worker owns the doc tables and the Chat API owns the conversation tables.",
+      "rationale": "Components, data ownership, interfaces and trust boundaries are explicit and mutually consistent; decisions made once (adapters, gateway, trace tables) are honored throughout with no contradictions found."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "The eval set comes first. We build 100–150 cases from real ticket history in Milestone 1.",
+      "rationale": "Validation is designed around the actual risks: eval-first with CI gates, early spikes (S1–S4) before commitment, a calibrated LLM judge, targets labeled provisional, and continuing production transcript review."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "each one is marked **[A#]** and collected in Section 5. The questions at the end are the ones whose answers would change the plan most.",
+      "rationale": "Every design-bearing assumption is explicit with impact-if-wrong and a validation date, numbers are labeled as estimates or assumptions to confirm, and no unsupported certainty is stated."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "The transactions for articles 1–6 and 8–12 commit. Article 7's old chunks stay in place (stale but consistent)",
+      "rationale": "Covers the hard domain failures — hallucinated policy answers, injection, duplicate handoffs, partial ingestion failure, provider outage, abuse/cost exhaustion, model drift — each with concrete detection, containment and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Alerts, each linked to a runbook: Error or degraded rate > 5% for 10 min.",
+      "rationale": "Deployment, rollback, kill switch, migrations, domain-meaningful alerts with runbooks, ownership and a business-hours on-call model justified by the fallback path are all sized to the 2-engineer team."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "roughly $0.015–0.025 per turn, or about $0.05 for a 2–3 turn conversation. At 30k conversations per month, that's about $1.5k",
+      "rationale": "Identifies LLM inference as the dominant driver with token-level basis labeled illustrative, scaling behavior, concrete controls (spend cap, caching, limits), and a build-vs-buy cost comparison including engineering time."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "To change the embedding model, add a new column `embedding_v2`, backfill it... switch the Retriever by config, then drop the old column.",
+      "rationale": "Every key decision carries a reversibility rating and revisit trigger, hard-to-reverse commitments (vendor coupling, embedding model, store) are isolated behind adapters, and an explicit stop-and-buy exit exists after M1."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Build a fixed pipeline, not an agent... Postgres with pgvector... not a dedicated vector database.",
+      "rationale": "The simplest design that meets the need — no agent loop, no framework, no reranker, one database — with each deferral tied to a measurable trigger and essentials (evals, handoff, security) not sacrificed."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "`python -m app.ingestion run --full` against the real help center loads into staging. The active doc count equals the API's public published count.",
+      "rationale": "Tasks have owners, dependencies, checkable done-when criteria, day-1 first steps, and each spike states explicitly what result would change the plan and how."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "every 15 minutes it does an incremental sync... Nightly at 02:00 it does a full reconciliation: list every article ID and mark missing ones `deleted`"
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "split at H2/H3. Each chunk is 300–500 tokens with a 50-token overlap and is prefixed with `Article title > Heading path`"
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "Write 100–150 cases: about 60% answerable (with gold article ids and reference answer), 10% multi-article, 10% unanswerable"
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "It must answer only from the docs, cite `[n]`, and output `NOT_FOUND` if the docs don't cover the question."
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "`account_specific` or `human_request` → offer handoff and skip generation... Creates a ticket... The body contains the transcript and cited article links"
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "The model has no tools that act on anything... Adversarial eval cases are a CI gate."
+    },
+    {
+      "id": "P1-07",
+      "status": 2,
+      "evidence": "Ingestion allowlist (published, visible to everyone, sections not excluded). A CI test asserts no `visibility != public` rows exist."
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "card numbers are redacted before storage and before any LLM call, and message content is not written to application logs"
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Public docs and anonymous users only in v1. No account-specific answers. Those questions are routed to a human."
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "Weekly sampling of 50 transcripts (thumbs-down, abstained, high-stakes) labelled by the SME; failures become eval cases"
+    },
+    {
+      "id": "P1-11",
+      "status": 2,
+      "evidence": "roughly $0.015–0.025 per turn... Controls: per-message cost accounting, daily cap with automatic degraded mode"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "An answer with no citations becomes an abstain."
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Ingestion allowlist (published, visible to everyone...). A CI test asserts no `visibility != public` rows exist."
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "Non-goals (v1): ... Fine-tuning models."
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "CI quality gates must pass before any customer sees the bot."
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "A hosted reranker is **not** in v1. It gets added only if Spike S1 shows recall@6 below 90%."
+    }
+  ],
+  "note": "An exemplary, reference-quality plan: grounded, eval-gated, proportionate, operationally realistic, avoids all five traps, and addresses every domain checklist item concretely.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6270,
+    "thinking_tokens": 3682,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 29781
+  },
+  "cost_usd": 0.6857825,
+  "latency_s": 104.65,
+  "raw_file": "raw/judge-7eb41f45cf2b.engineering-quality-v1.fable-5.k1.txt"
+}

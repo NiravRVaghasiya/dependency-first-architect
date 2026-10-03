@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9a06a6a54f1f.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "9a06a6a54f1f",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 25,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Same-engine CDC is far more reliable, and an engine change on top of a migration compounds risk.",
+      "rationale": "Mechanisms (CDC, reverse CDC, write-hold, read-your-writes, NIST 800-88) are accurate; minor imprecision such as reverse CDC on managed DBs and 'zero data loss' claims, and replicated-replica read-only via SELECT grants, have no major consequence."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Worst failure: Split-brain writes. On-prem and cloud both accept bookings during cutover, which causes double-booked OR or clinic slots",
+      "rationale": "Solves the real problem, defines 'no downtime' sensibly as a short held-write pause, is buildable, and defers scope explicitly with reasons; vendor-licensing check is only a pre-assumption."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "CP, one writer. Exactly one database is authoritative at any moment. No dual-writes, no multi-master.",
+      "rationale": "Single-writer principle, write-authority flag, proxy indirection, and singleton guard are applied consistently across all phases with no notable contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "At least 3 full rehearsals and at least 1 full rollback rehearsal on a staging environment built from IaC, using a masked clone",
+      "rationale": "Validation targets specific risks (shadow diff, reconciliation, dry-run message match, load test at 2x peak, rollback rehearsal) with checkable criteria, early slice, and post-cutover continuous monitoring; some thresholds are invented but mostly labeled as targets."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Assumptions to confirm before Phase 0: Vendor product? If the system is a vendor product such as Epic Cadence",
+      "rationale": "Key assumptions and revisit triggers are stated and RTO/RPO flagged as to-confirm, but scale, team size and budget are not stated, and many thresholds (30 s, 5 s) appear without basis."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "outbound feeds firing twice, which sends duplicate SMS reminders to patients and duplicate SIU messages to the EHR.",
+      "rationale": "Covers split-brain, duplicate outbound sends, stale reads, missed consumers, CDC lag, DLQs, rollback triggers, and PHI incident tabletop with concrete detection and recovery; adversarial input is thinner."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Infra and app deploy from Terraform/Bicep through a CI pipeline. Nothing is set up by hand.",
+      "rationale": "Deployment as code, dashboards, alerts, on-call, war-room, and rollback are concrete, but ownership/team sizing and runbook staffing are not detailed."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Revisit after migration only if licensing cost is over budget.",
+      "rationale": "Build vs buy is noted and cost dashboards appear, but there is no estimate of dual-running costs, egress, circuits, or 30–90 day standby, and no cost controls."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Flip to rehost (lift-and-shift VMs) if licensing or OS dependencies block managed services. Re-architecting is deferred (§7).",
+      "rationale": "Decisions table lists revisit triggers, indirection via proxy/DNS, same-engine choice, rollback via reverse CDC, and deferred one-way changes with pull-forward conditions."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Keep the monolith as-is.",
+      "rationale": "Scope is held to replatform with explicit deferrals; some ceremony (AI N/A rows, 3 rehearsals, 14-day gates, pen test) and the all-phase table add weight but are mostly domain-justified."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Tasks, executed from the rehearsed script: 1. The proxy holds writes, with a bounded queue. 2. Confirm CDC lag is 0 and checksums match.",
+      "rationale": "Dependency-ordered phases, concrete first slice, per-phase exit checks, and revisit triggers let a team start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P6-01",
+      "status": 2,
+      "evidence": "BAA signed; landing-zone policy guardrails; private endpoints only; CMK encryption; TLS 1.2+; AD federation; read-only DB login"
+    },
+    {
+      "id": "P6-02",
+      "status": 2,
+      "evidence": "list every reader and writer: ADT inbound, SIU outbound, reminder/IVR vendor, billing, reporting/BI, and ODBC links from Access or Excel"
+    },
+    {
+      "id": "P6-03",
+      "status": 2,
+      "evidence": "hourly row counts plus per-table checksums, and a nightly full-hash comparison of the appointment and slot tables."
+    },
+    {
+      "id": "P6-04",
+      "status": 2,
+      "evidence": "A single flag says which side is authoritative. Every outbound interface and batch job ... checks it before acting"
+    },
+    {
+      "id": "P6-05",
+      "status": 2,
+      "evidence": "The rollback rehearsal restores on-prem authority in under 15 min with zero data loss."
+    },
+    {
+      "id": "P6-06",
+      "status": 1,
+      "evidence": "Redundant private link: ExpressRoute or Direct Connect, plus a backup IPsec VPN"
+    },
+    {
+      "id": "P6-07",
+      "status": 2,
+      "evidence": "The DR failover test meets RTO ≤ 1 h and RPO ≤ 5 min (targets to confirm with clinical ops)."
+    },
+    {
+      "id": "P6-08",
+      "status": 1,
+      "evidence": "Federate to the existing hospital AD (Entra ID / SAML). No new user store."
+    },
+    {
+      "id": "P6-09",
+      "status": 2,
+      "evidence": "Load-test the cloud at 2× the observed peak, for example the Monday 08:00 booking surge."
+    },
+    {
+      "id": "P6-10",
+      "status": 1,
+      "evidence": "Choose a low-volume window (e.g. Sunday 02:00, avoiding month-end and holidays)."
+    },
+    {
+      "id": "P6-11",
+      "status": 1,
+      "evidence": "Decommission with NIST 800-88 media sanitization certificates."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P6-T1",
+      "present": false,
+      "evidence": "Hold a 4-hour war-room watch, then a 72 h heightened watch."
+    },
+    {
+      "id": "P6-T2",
+      "present": false,
+      "evidence": "No dual-writes, no multi-master."
+    },
+    {
+      "id": "P6-T3",
+      "present": false,
+      "evidence": "staging environment built from IaC, using a masked clone of production data"
+    },
+    {
+      "id": "P6-T4",
+      "present": false,
+      "evidence": "Dependency inventory ... ADT inbound, SIU outbound, reminder/IVR vendor, billing, reporting/BI"
+    },
+    {
+      "id": "P6-T5",
+      "present": false,
+      "evidence": "Replatform. Same app code on cloud VMs or containers ... No refactoring during the move."
+    }
+  ],
+  "note": "Strong, coherent single-writer migration plan with staged reads, rehearsed rollback, and interface handling; weak on cost, team sizing, break-glass, and clinical cutover communication/hypercare detail.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2516,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 919,
+    "cache_creation_input_tokens": 13818
+  },
+  "cost_usd": 0.0598968,
+  "latency_s": 26.592,
+  "raw_file": "raw/judge-9a06a6a54f1f.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

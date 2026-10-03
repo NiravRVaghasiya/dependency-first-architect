@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "0334d7a90c94.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "0334d7a90c94",
+  "blind_sha256": "9a56fbcd24202e1ff04e39fbd0fbcc19e23671f240c772787ef3ac719fead682",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 427,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "MVP: catalog, flat and per-seat subscriptions, Stripe payments, invoices, basic dunning, entitlements, outbox and ledger from day one.",
+      "rationale": "The four phases run roughly from simple to complex, with the ledger and outbox placed early, but Phase 1 bundles nearly everything and no phase has proof gates or dependency reasoning."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "MVP: catalog, flat and per-seat subscriptions, Stripe payments, invoices, basic dunning, entitlements, outbox and ledger from day one.",
+      "rationale": "The MVP is a first vertical slice, but it is a large feature bundle rather than a thin end-to-end production path, and it does not say it deploys to production."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Build the full core yourself if pricing is a competitive differentiator, you need complex enterprise contracts, or vendor fees ... become significant at scale.",
+      "rationale": "The build-vs-buy choice and the Assumption note give some flip conditions, but the other irreversible decisions (Postgres sharding, ledger, Kafka, numbering) are not collected in one place with defaults and triggers."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Billing Core ... Postgres with ACID; ... outbox and ledger from day one. A ledger is very painful to retrofit.",
+      "rationale": "The plan puts foundational pieces such as the ledger and outbox first, but it has no explicit within-phase ordering by blast radius."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Postgres row-level security keyed on a session variable set by middleware. This protects data even if application code has a bug.",
+      "rationale": "The plan has solid security content (RLS, PCI, RBAC, GDPR), but it sits in standalone sections and is not tied to each rollout phase."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan has no metrics, logging, tracing or SLOs. The only monitoring is alerts on reconciliation and ledger invariant checks, and none of it is tied to Phase 0 or later phases."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "each invoice line stores the price version, aggregate value and contract version used, so any invoice can be recomputed and explained.",
+      "rationale": "Data reproducibility is handled well (S3 replay, versioned prices, test clocks, shadow billing), but build and environment reproducibility is absent and none of it is tied to phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Transactional outbox → event bus | Every state change in Billing Core. No dual writes.",
+      "rationale": "Resilience patterns (idempotency, outbox, sagas, dunning) are thorough, but they live in a standalone table and are not assigned to each phase."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never states that no AI layer applies. It is silent on the question, so it does not earn the N/A credit."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Global: multiple currencies and entities, e-invoicing, regional PSPs, rev-rec automation.",
+      "rationale": "Later phases and some deferrals (sharding 'can wait', optional per-tenant keys) are listed, but no pull-forward conditions are given."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is a strong domain architecture with good money-correctness detail, but its rollout is a thin four-bullet list. It has no observability, no AI N/A declaration, and no phase-threaded security or resilience, and it lacks explicit decision gates and pull-forward triggers.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1286,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8580
+  },
+  "cost_usd": 0.034318,
+  "latency_s": 21.589,
+  "raw_file": "raw/judge-0334d7a90c94.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

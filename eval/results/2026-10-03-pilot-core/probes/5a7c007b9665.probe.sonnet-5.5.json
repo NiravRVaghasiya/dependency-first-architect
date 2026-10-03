@@ -1,0 +1,36 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "5a7c007b9665.probe.sonnet-5.5",
+  "blind_id": "5a7c007b9665",
+  "blind_sha256": "8ad9e9bc3f413989fa90877d4b5df1a8e91079ddc98356946d343bc1e9916597",
+  "judge": "sonnet-5.5",
+  "order_index": 159,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Rigid numbered template (§1 Classification, §2 Dependencies, §3 Key decisions, §4 first slice, §8 AI layer N/A, §9 Exceptions, §10 Deferred) that looks like a prescribed methodology output",
+    "Explicit labeling of every budget as ASSUMPTION or UNKNOWN with named owner and deadline phase, plus a 'Missing inputs' list",
+    "Decision table with reversibility classes (R2/R3), default, assumption, validating check, and revisit trigger for each decision",
+    "Validation checks V0–V8 with hypothesis, method, acceptance threshold, evidence, and 'unlocks (and if it fails)' columns, cross-referenced throughout",
+    "Phase 0 walking-skeleton end-to-end slice through all tiers, 'widest rework first' phase ordering, and per-phase rollback/point-of-no-return notes and cross-cutting matrix by phase",
+    "Self-referential methodology artifacts such as 'Every kind has at least one instance' and 'N/A: AI rows' show checklist-style compliance"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 442,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11016
+  },
+  "cost_usd": 0.031967999999999996,
+  "latency_s": 22.964,
+  "raw_file": "raw/probe-5a7c007b9665.probe.sonnet-5.5.txt"
+}

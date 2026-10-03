@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "75ef09a532a1.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "75ef09a532a1",
+  "blind_sha256": "de9a604478ecaa41e95ade199c44087b07561b24d73c46e6bca80bd8d77028ff",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 383,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Duplicate resends are harmless because Yjs updates can be applied more than once.",
+      "rationale": "Yjs, state-vector diff, awareness, UndoManager and relative positions are described accurately. Minor issues remain: the Redis pub/sub claim is loosely worded, and the \"CRDT history that compaction can't reclaim\" trigger is imprecise."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Offline editing. y-indexeddb stores the document locally, and a queue of unsynced edits is sent on reconnect.",
+      "rationale": "The plan covers the core needs and separates essentials from deferrals with explicit triggers. Offline editing sits in late Phase 6 even though CRDT choice implies it, and large-document behavior is thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Document content favours availability... Permissions, document metadata and tenant data favour strong consistency and live in Postgres.",
+      "rationale": "The design is consistent, with clear data ownership. Small loose ends: Phase 0 already uses Redis-free single node while Phase 2 adds it, and client-confirmed edits versus Yjs local-first \"confirm\" semantics are not fully reconciled."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "A seeded fuzz test with 50 simulated clients making 10k random concurrent edits ends with byte-identical document states.",
+      "rationale": "Validation targets the main risks (convergence, chaos, divergence alarm, XSS, revocation) and runs early, with production monitoring. Thresholds such as 100 ms and 10k connections are not justified, and fuzz tests do not explicitly cover duplicated or reordered delivery."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Fewer than 3 engineers and under 3 months to market, with no data-residency requirement → use Liveblocks or Tiptap Cloud.",
+      "rationale": "Revisit triggers are stated for many assumptions, but scale, team size and budget are never stated outright. Numbers like 20k connections and 10 MB are presented without basis."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Clients periodically send a hash of their document state. The server compares it with its own copy, raises an alert on mismatch and forces a full resync.",
+      "rationale": "The plan covers divergence, crash, Redis partition, failover, drain, revocation, XSS, rate limits and retries with concrete detection. Malicious update payloads and schema-invalid updates from a client, and corruption of the log, get little attention."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "CI on every merge to main: build → test → deploy to staging → manual promote to production.",
+      "rationale": "Deploy, traces, metrics, alerts, PITR drills, drain and SLO burn alerts are concrete. Rollback and on-call ownership are not explicit, and the operational burden suits a small team only moderately."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Peer-to-peer sync over WebRTC. Pull forward only if server bandwidth cost dominates.",
+      "rationale": "Cost appears only as a build-versus-buy trigger and a bandwidth note. There are no estimates, cost drivers (Redis, Postgres log growth, storage, egress) or controls."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Merge algorithm: CRDT vs OT (the hardest to reverse, because it fixes the stored format)... must be decided before Phase 1 locks the data contract.",
+      "rationale": "The plan names the one-way decisions (CRDT format, schema, E2E encryption, tenancy, protocol envelope), puts them first, and gives each a revisit trigger and a migration hook. Reversible choices get light treatment."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Modular monolith. One repo and one image, run as two processes: an HTTP API and a WebSocket sync server.",
+      "rationale": "The plan starts simple with a monolith, Hocuspocus and buy-versus-build decisions, and defers much. Some ceremony is unneeded: the empty AI sections, row-level security plus multi-tenant from day one, and a divergence detector plus chaos testing up front."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phase 0 exit check: In production, user B's browser renders user A's typing. One trace shows all the hops.",
+      "rationale": "Each phase lists dependencies, ordered tasks and checkable exit criteria, and it starts with a concrete thin slice. Adapting to disappointing results is covered by the revisit triggers."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "CRDT using Yjs. Edits apply locally first and merge automatically. It works offline and has a mature ecosystem"
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "A ProseMirror/TipTap schema v1 stored as a Y.XmlFragment... Every document records its schema_version, and there is a forward-migration hook."
+    },
+    {
+      "id": "P5-03",
+      "status": 1,
+      "evidence": "A seeded fuzz test with 50 simulated clients making 10k random concurrent edits ends with byte-identical document states."
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "The server confirms an edit only after it is durably written to the update log."
+    },
+    {
+      "id": "P5-05",
+      "status": 2,
+      "evidence": "Redis pub/sub between stateless sync servers... Client reconnect with exponential backoff and jitter"
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Edits made during 1 h offline merge cleanly."
+    },
+    {
+      "id": "P5-07",
+      "status": 2,
+      "evidence": "The sync server checks permissions on every incoming message, not only at connect"
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Yjs UndoManager tracking only local changes, so undo never removes a collaborator's text."
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "sent over the ephemeral awareness channel and never persisted."
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Phase 1: Data and identity substrate... Phase 2: Sync correctness under failure"
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "Load test at the targets: 10k concurrent connections and 50 editors on one document."
+    },
+    {
+      "id": "P5-12",
+      "status": 2,
+      "evidence": "The Yjs sync protocol wrapped in an envelope carrying protocol_version, with a server-side rule for rejecting clients that are too old."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "Edits apply locally first and merge automatically."
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "CRDT using Yjs... Use open-source Yjs, TipTap/ProseMirror and Hocuspocus."
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "types \"hello\" into a plain-text shared field (Y.Text, not rich text yet). A second browser... sees \"hello\" appear live."
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "Never confirm an edit before it is durably stored."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "Duplicate resends are harmless because Yjs updates can be applied more than once."
+    }
+  ],
+  "note": "A strong, actionable plan that uses Yjs, defers risky decisions sensibly, and is weak mainly on cost, large-document limits, and unjustified numeric thresholds. Offline editing arrives late.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2614,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 13907
+  },
+  "cost_usd": 0.061088699999999996,
+  "latency_s": 32.898,
+  "raw_file": "raw/judge-75ef09a532a1.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

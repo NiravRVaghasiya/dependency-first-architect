@@ -1,0 +1,109 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P4.dfa.haiku-4.5.r03",
+  "prompt_id": "P4",
+  "condition": "dfa",
+  "generator": "haiku-4.5",
+  "run_index": 3,
+  "seed": 4091421102,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Plan an autonomous agent that triages and resolves GitHub issues.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P4.dfa.haiku-4.5.r03.md",
+  "output_sha256": "c79c25548c8a38aa0b14f66aea8b64c4af5fe8914beb5e8ff894386be70b994f",
+  "metrics": {
+    "words": 4074,
+    "chars": 26657,
+    "visible_tokens_est": 6665
+  },
+  "turns": 5,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/ai-systems.md",
+      "ok": false
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/validation.md",
+      "ok": false
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "dependency-first-architect:dependency-first-architect",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [],
+  "started_at": "2026-10-02T23:56:05+00:00",
+  "finished_at": "2026-10-02T23:57:53+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-haiku-4-5-20251001",
+  "models_used": [
+    "claude-haiku-4-5-20251001"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 24,
+    "output_tokens": 8259,
+    "thinking_tokens": 284,
+    "cache_read_input_tokens": 10608,
+    "cache_creation_input_tokens": 6123
+  },
+  "cost_usd": 0.05003355000000001,
+  "latency_s": 107.246,
+  "raw_file": "raw/gen-P4.dfa.haiku-4.5.r03.txt"
+}

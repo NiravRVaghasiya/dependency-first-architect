@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "4dbc1895a26b.engineering-quality-v1.fable-5.k1",
+  "blind_id": "4dbc1895a26b",
+  "blind_sha256": "72ff6d38bd3fffe10355244f149decb9d6fa1a4c9c6c6e30a5cfef4fe3bf15fe",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 279,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "CI gets short-lived credentials through OIDC (no stored secrets). Runners are ephemeral and isolated.",
+      "rationale": "Claims about OIDC federation, Argo CD GitOps, Kyverno verifyImages, cosign/SLSA provenance, digest-based identity and expand/contract migrations are all accurate, including the subtle areas (fail-closed admission, fork-PR isolation)."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Re-platform service by service in waves (strangler). Each service has exactly one deploy authority at a time",
+      "rationale": "Directly answers the sequencing request for 50 brownfield services, resolves ambiguities with stated assumptions, and defers out-of-scope items explicitly with triggers."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "The environment repo becomes the system of record for desired state at cutover",
+      "rationale": "The pull-based GitOps choice, trust boundary, fail-closed admission and digest identity are honored consistently across phases, validation and the cross-cutting table with no contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Red-team scenarios: secret theft from a fork PR; deploying an unsigned image directly; an unreviewed push to the environment repo",
+      "rationale": "V0–V6 tie checkable thresholds to the plan's specific risks, the riskiest assumption (supply-chain boundary) is validated before any wider exposure, failure contingencies are stated, and validation continues post-launch via SLOs and per-wave metrics."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "ASSUMPTION (common target for a single-service pipeline; confirm against the Phase 0 baseline)",
+      "rationale": "Every figure is labeled ASSUMPTION, BASELINE or UNKNOWN with a confirmation path, and sensitivity is explicit (e.g. >20% non-Kubernetes targets flips the deploy model)."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "a compromised pull request, CI runner or token pushes an unreviewed or malicious artifact into production across all 50 services",
+      "rationale": "Supply-chain compromise, platform outage during a hotfix, bad migrations and hidden legacy jobs all have concrete detection and recovery, but flaky-test erosion and cross-service contract breakage are not addressed."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Alerts fire on pipeline failure, Argo sync failure or degraded state, and runner queue depth.",
+      "rationale": "Deployment, Git-revert rollback, meaningful health signals, SLOs, break-glass incident path and explicit ownership are all sized to a stated ≤4-engineer team."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "projected monthly cost ≤ budget (UNKNOWN until finance supplies it in Phase 0)",
+      "rationale": "The dominant driver (runner compute) is identified with a measured projection method, retention and caching controls, but no order-of-magnitude estimate is attempted before deferring to finance."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: a pipeline that holds production credentials and is compromised does irreversible harm to all 50 services",
+      "rationale": "Decisions carry explicit reversibility ratings with revisit triggers, the hardest one-way choices are validated earliest, and the single point of no return (legacy deletion) is guarded by V6."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "composed from off-the-shelf tools, no custom platform service",
+      "rationale": "Buys and composes existing tooling, caps operated components at six, and defers Backstage, Bazel, SLSA L3 and multi-region behind explicit need-based triggers without omitting essentials."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phase 3. If it fails: change runner model, spot or caching, and re-run",
+      "rationale": "A team could start immediately: a concrete end-to-end first slice, dependency-justified phase order, checkable exit criteria per phase, and stated adaptations for every failed check."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Record all 50 services: language, deploy target, current CI, DB migrations, owner, criticality tier."
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Run shadow builds for one week and compare test results with the legacy pipeline."
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Build once, deploy by immutable digest, and promote the same digest dev → staging → prod."
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "Untrusted or fork PRs run on a separate pool with no secrets"
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "Signed with cosign using a KMS key, plus SLSA provenance and an SBOM"
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "Expand/contract, so schema N works with image N-1... Rollback means reverting the image only"
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "Each service has exactly one deploy authority at a time"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Tests use synthetic fixtures."
+    },
+    {
+      "id": "P3-09",
+      "status": 2,
+      "evidence": "Runner autoscaling across availability zones; build caching... build p95 ≤ 15 min"
+    },
+    {
+      "id": "P3-10",
+      "status": 2,
+      "evidence": "Replay 2× peak concurrency for 1 h using pilot-group builds"
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Platform SLO (99.5%, ASSUMPTION) with error-budget alerts... DORA dashboards"
+    },
+    {
+      "id": "P3-12",
+      "status": 2,
+      "evidence": "CODEOWNERS and a production-promotion review rule on the environment repo (two-person if compliance requires it)."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Re-platform service by service in waves (strangler)... the legacy prod job is disabled, not deleted, and re-enabling it is the fallback."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Build once, deploy by immutable digest, and promote the same digest dev → staging → prod."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "OIDC federation for all cloud access; remove static secrets... an untrusted-PR pool with no secrets"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Each service has exactly one deploy authority at a time"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "Buy and compose: source-control-native CI (GitHub Actions) with self-hosted ephemeral runners on Kubernetes (ARC), Argo CD"
+    }
+  ],
+  "note": "An exceptionally rigorous, well-sequenced migration plan that avoids every trap; the only material gaps are cross-service contract compatibility testing, flaky-test quarantine, and an upfront compute-cost estimate.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6730,
+    "thinking_tokens": 4162,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 15536
+  },
+  "cost_usd": 0.53159,
+  "latency_s": 99.567,
+  "raw_file": "raw/judge-4dbc1895a26b.engineering-quality-v1.fable-5.k1.txt"
+}

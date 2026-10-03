@@ -1,0 +1,21 @@
+{
+  "schema": "dfa-eval/outcomes-config@1",
+  "name": "webhook-ledger-v1",
+  "description": "Does the plan an implementer is given change the correctness and rework of the code it writes? Four arms: no plan, a bare-model plan, a Dependency-First Architect plan, and an active-control plan; the same implementer for all.",
+  "seed": 20261003,
+  "task": "eval/outcomes/tasks/webhook-ledger",
+  "planner": {"id": "opus-5.5", "provider": "claude-cli", "model": "claude-opus-5-5", "effort": "high"},
+  "implementer": {"id": "sonnet-5.5", "provider": "claude-cli", "model": "claude-sonnet-5-5", "effort": "high",
+                  "options": {"tools": ["Read", "Write", "Edit"], "permission_mode": "acceptEdits"}},
+  "conditions": {
+    "baseline": {"kind": "plain", "description": "The planning request alone, no planning instructions."},
+    "dfa": {"kind": "skill", "description": "Dependency-First Architect (this repository's SKILL.md).",
+            "skill_dir": ".", "skill_name": "dependency-first-architect"},
+    "generic-control": {"kind": "skill", "description": "Active control: an independently written generic planning skill.",
+                        "skill_dir": "eval/conditions/generic-architect", "skill_name": "architecture-planner"}
+  },
+  "arms": {"no-plan": null, "baseline-plan": "baseline", "dfa-plan": "dfa", "generic-plan": "generic-control"},
+  "runs_per_arm": 5,
+  "workspace": {"readme": "eval/conditions/neutral-workspace-README.md"},
+  "limits": {"max_cost_usd": 80, "jobs": 6, "timeout_s": 3600, "implement_timeout_s": 2400, "test_timeout_s": 120}
+}

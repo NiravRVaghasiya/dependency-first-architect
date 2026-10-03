@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "40ea22ee07cf.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "40ea22ee07cf",
+  "blind_sha256": "e488fb3f56cb6de7189e254bfa1cba9edff2616431c1cfaeb0c588f762e39f1c",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 32,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Week 1: Data pipeline setup, document ingestion; Week 2: Vector DB setup; Week 3: LLM integration",
+      "rationale": "Ingestion → index → LLM is loosely substrate-upward, but nothing is proven before dependents and security/evals come late or unordered."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Week 5: Deployment & monitoring",
+      "rationale": "No thin end-to-end production slice first; deployment is last after component-by-component build."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "Pinecone (managed) Weaviate (self-hosted) Milvus (scalable) FAISS (lightweight)",
+      "rationale": "Options are listed with no defaults or flip conditions; irreversible choices are left open."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No within-phase ordering by blast radius."
+    },
+    {
+      "dim": 5,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No security, PII, access control, or prompt-injection treatment anywhere."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Production (gradual rollout) ↓ Monitoring & Analytics",
+      "rationale": "Monitoring appears only at the end plus a tool mention, not from phase zero."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "Version control + update schedule",
+      "rationale": "No pinned versions, reproducible builds, or data/index versioning; only a passing mention of doc version control."
+    },
+    {
+      "dim": 8,
+      "score": 0,
+      "evidence": "Caching + pre-computed embeddings",
+      "rationale": "No failure handling (timeouts, fallbacks, LLM outages) across phases; only escalation to humans as a feature."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Constraints: \"Only use provided context\", \"If unsure, escalate\"",
+      "rationale": "Has retrieval, generation, escalation, and feedback, but no budgets or defenses first, and order is features-first with human escalation only as a feature."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No explicit deferred list or pull-forward conditions; features are all listed as included."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Generic RAG overview with a weekly timeline; lacks walking skeleton, decision gates, threaded security/resilience/reproducibility, and deferral conditions.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 860,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4280
+  },
+  "cost_usd": 0.019308,
+  "latency_s": 27.269,
+  "raw_file": "raw/judge-40ea22ee07cf.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

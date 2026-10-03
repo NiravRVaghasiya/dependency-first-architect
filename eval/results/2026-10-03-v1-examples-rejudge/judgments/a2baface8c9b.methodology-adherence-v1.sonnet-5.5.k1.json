@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "a2baface8c9b.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "a2baface8c9b",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 1,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1. Doc loading, search, test harness ... Phase 2. Answer generation, safeguards, handoff, logging",
+      "rationale": "Order is broadly substrate-up (data, retrieval, generation, rollout), but safeguards and logging arrive in Phase 2 and the test set precedes any system."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "0. Coverage audit, test set, choose the stack",
+      "rationale": "Phase 0 is an audit and planning phase with no end-to-end production path; first user-facing slice is a beta at phase 4."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Only let the model run its own searches (\"agentic\" retrieval) if tests show multi-part questions failing.",
+      "rationale": "There are defaults with some flip conditions (agentic, contextual retrieval, build vs buy), but no consolidated irreversible-decision list and many assumptions stay implicit."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Index only public articles, or store the permissions and filter on them. Leaking internal-only articles is the most common failure here.",
+      "rationale": "Some wide-impact items (permissions, deletes, chunking) are emphasised, but there is no explicit blast-radius ordering within phases."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Phase 2 ... Test targets met, security review passed",
+      "rationale": "Security is covered concretely in a standalone section and some ingestion details, but phase-tied security mainly lands in Phase 2 and not in earlier phases."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Phase 2. Answer generation, safeguards, handoff, logging",
+      "rationale": "Logging and tracing are detailed but first scheduled in Phase 2, not day zero; the test harness in Phase 1 gives partial coverage."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Keep prompts in version control. ... log the ... prompt, index and model versions",
+      "rationale": "Prompt versioning, version logging and automated eval on changes exist, but no reproducible environment, build or data-snapshot treatment across phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "nightly reconcile, incl. deletes ... replace it with a safe fallback message and offer a human.",
+      "rationale": "Failure handling (fallbacks, handoff, reconcile) is present but not tied to phases, with no provider outage, retry or timeout treatment."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "Run the tests automatically on every change ... Rate-limit per session and IP address, cap conversation length, and cap daily spending.",
+      "rationale": "Retrieval→generation ordering is sound and handoff and budgets exist, but defenses, budgets and human-in-the-loop are built in Phase 2 alongside generation, not clearly before capabilities."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Later (v2): have a vision model describe key screenshots",
+      "rationale": "Several deferrals are named (v2 vision, forums excluded, account lookups, agentic retrieval), but pull-forward conditions are only sporadic and there is no deferred list."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong RAG content and evaluation discipline, but it is phased as audit-then-build with no production walking skeleton, and security, observability and resilience are not threaded from Phase 0.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1201,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 6710
+  },
+  "cost_usd": 0.028793,
+  "latency_s": 26.174,
+  "raw_file": "raw/judge-a2baface8c9b.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

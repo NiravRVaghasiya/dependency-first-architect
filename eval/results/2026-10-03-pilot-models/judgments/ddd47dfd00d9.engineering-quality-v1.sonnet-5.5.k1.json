@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ddd47dfd00d9.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "ddd47dfd00d9",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 62,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "OIDC federation for CI (no long-lived credentials), and RBAC.",
+      "rationale": "Claims are accurate (expand/contract, OIDC, Pact, canary with SLO rollback) but generic, and the \"semantic versioning or commit SHA tags\" option is loosely stated."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Migrate services in waves of 8–10, ordered by archetype and risk: low-criticality first, then core services last.",
+      "rationale": "It covers inventory, pilot, CI, CD, security and waves in a buildable order, but there's no explicit scope exclusion, and the fork-PR, cost and test-environment needs are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Observability must come before automated rollback. Templates must come before mass onboarding.",
+      "rationale": "The phases and dependencies are consistent, with minor loose ends such as the pipeline/GitOps config split and the undecided CI engine."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Compare the results against the baseline metrics... Run a rollback and disaster recovery drill.",
+      "rationale": "It has a baseline, a pilot review and a rollback drill, but criteria are thin, the 10-minute target is unjustified, and there's no per-service migration acceptance test or production validation beyond DORA."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "I can go deeper... if you tell me your cloud, language mix, and current tooling.",
+      "rationale": "It lists the choices as open and offers to tailor the plan, but it never states assumptions about team size, cloud, compliance or commit volume, or what would change if they were wrong."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Start in warn-only mode, then move to blocking once noise is tuned.",
+      "rationale": "It covers flaky tests, noisy gates, rollback on SLO breach and a DR drill, but it misses CI platform outages, fork-PR and untrusted-build threats, and pipeline tampering."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "treat the platform as a product, with an owning team, SLOs, a roadmap, and a feedback channel.",
+      "rationale": "It covers observability, rollback, an owning team and SLOs, but gives no detail on platform monitoring, incident response, or how templates are versioned and changed."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Cost and speed: autoscaling runners, build caching, and test selection.",
+      "rationale": "Cost is only a passing mention in an ongoing phase, with no estimate, no hosted versus self-hosted analysis, and no people cost."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "CI engine (GitHub Actions, GitLab CI, Jenkins, or Tekton)... Deploy model (GitOps with Argo CD or Flux, versus push-based).",
+      "rationale": "It flags the key choices as decisions to make in Phase 0 and runs legacy pipelines in parallel until each wave is done, but it doesn't say which choices are costly to undo or how to isolate them."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Group them into 3–5 archetypes... Provide a scaffolding tool (a template repo or an Backstage software template)",
+      "rationale": "It uses existing tools and stages the work by need; Backstage, OPA and the full set of scanners are somewhat heavy but deferred or optional."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Each phase ends with something usable.",
+      "rationale": "It gives a week-by-week ordering with reasons for the dependencies, but tool choices are left open and the exit criteria are vague."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 2,
+      "evidence": "Record language, build tool, runtime, data stores, owners, and deploy targets. Group them into 3–5 archetypes"
+    },
+    {
+      "id": "P3-02",
+      "status": 1,
+      "evidence": "Migrate services in waves of 8–10, ordered by archetype and risk... Decommission legacy pipelines after each wave."
+    },
+    {
+      "id": "P3-03",
+      "status": 1,
+      "evidence": "semantic versioning or commit SHA tags, with an SBOM and image signing."
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "a secrets manager, OIDC federation for CI (no long-lived credentials), and RBAC."
+    },
+    {
+      "id": "P3-05",
+      "status": 1,
+      "evidence": "SBOM and image signing... SAST, dependency scanning (SCA), secret scanning, and container image scanning."
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "canary or blue/green with Argo Rollouts or Flagger, with automated rollback on SLO breach... expand/contract pattern"
+    },
+    {
+      "id": "P3-07",
+      "status": 1,
+      "evidence": "contract tests (Pact), which matter a lot with 50 services."
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Environment capacity and ephemeral preview environments... Neglecting flaky tests, which destroys trust"
+    },
+    {
+      "id": "P3-09",
+      "status": 2,
+      "evidence": "dependency caching, parallel tests, and a PR-time target of under 10 minutes."
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "autoscaling runners, build caching, and test selection."
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Use the DORA metrics: lead time, deploy frequency, change failure rate, and MTTR... an owning team, SLOs"
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "Continuous compliance: audit trails, approvals, and periodic policy review."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "prove each layer on a few services before scaling to all 50"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "semantic versioning or commit SHA tags, with an SBOM and image signing."
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "OIDC federation for CI (no long-lived credentials)"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Standardize deployment packaging... dev (auto) → staging → prod"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "CI engine (GitHub Actions, GitLab CI, Jenkins, or Tekton)."
+    }
+  ],
+  "note": "A sound, well-sequenced generic roadmap: pilot first, then waves, with templates, OIDC, immutable artifacts, GitOps and expand/contract. It is weak on stated assumptions, cost, supply-chain and untrusted-build threats, and measurable criteria.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2306,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 9148
+  },
+  "cost_usd": 0.046123,
+  "latency_s": 62.778,
+  "raw_file": "raw/judge-ddd47dfd00d9.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "f8d97bc78699.probe.sonnet-5.5",
+  "blind_id": "f8d97bc78699",
+  "blind_sha256": "f2c83fbe401591695f142cf388aea3cc0d8b00b7cb573a67287cc3ec833374fa",
+  "judge": "sonnet-5.5",
+  "order_index": 140,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens with an interpretation of the request (\"I read this as...\"), which could reflect a scripted step or ordinary clarification",
+    "Organized around a single stated rule (decide merge strategy first) with an explicit \"Things that must happen in order\" dependency section",
+    "Includes a \"Smallest useful first release\" section and a closing offer to refine with team size, timeline and stack",
+    "Polished, generic phase/step structure with no visible verification, assumptions log, or risk register typical of a rigid methodology template",
+    "Reads like a typical strong unguided answer: concrete tooling names, numbered list and tidy headings, with no unusual methodology-specific artifacts"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 296,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2046
+  },
+  "cost_usd": 0.008083,
+  "latency_s": 31.921,
+  "raw_file": "raw/probe-f8d97bc78699.probe.sonnet-5.5.txt"
+}

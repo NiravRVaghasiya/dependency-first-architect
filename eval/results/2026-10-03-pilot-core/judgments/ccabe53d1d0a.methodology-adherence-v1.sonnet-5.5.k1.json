@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ccabe53d1d0a.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "ccabe53d1d0a",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 51,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Depends on: tenancy and ledger, proven by the Phase 1 exit checks.",
+      "rationale": "Each phase names its dependency and the earlier exit check that proves it, going substrate → catalog → invoicing → payments → usage → UI."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "calls POST /v1/invoices with an Idempotency-Key ... In production the first run uses Stripe test-mode keys. Once that passes, run one live $1 charge",
+      "rationale": "Phase 0 is a real end-to-end production slice across edge, app, DB, async, and webhook, with deploy and an exit check."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Extract `usage` first if it sustains more than ~5k events/s or needs its own scaling or deploy cadence.",
+      "rationale": "The irreversible decisions are each listed with a default and a flip condition, or an explicit 'None' where no flip applies."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Tasks, widest blast radius first: 1. Tenant isolation model ... 7. Tenant onboarding API. Leaf work.",
+      "rationale": "Every phase lists tasks in blast-radius order, with leaf items such as emails and theming placed last."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "RLS with a non-bypass role. Cross-tenant fuzz suite blocks merges. Scoped API keys. RBAC. Append-only audit log.",
+      "rationale": "The cross-cutting table gives concrete security measures for every phase from 0 to 6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "OTel traces across every tier including async. ... `ledger_imbalance` alarm.",
+      "rationale": "Phase 0 has traces, logs, metrics, and a billing alarm, and each later phase adds specific metrics."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform for all infra. Lockfiles and pinned image digests. Versioned migrations (Flyway/Atlas).",
+      "rationale": "Reproducibility gets concrete treatment in every phase, including the billing clock, golden files, fixed seeds, and raw payload replay."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "The outbox means a Stripe outage cannot lose a write. Idempotency key on the skeleton request.",
+      "rationale": "Failure handling appears in every phase, from Phase 0 rollback and PITR through checkpointed runs, unknown-outcome handling, and DLQs."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "**N/A.** This system has no AI or agentic component.",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Silo tenancy (dedicated DB per tenant) | An enterprise deal requires it contractually. The routing table already exists from Phase 1.",
+      "rationale": "The deferred table lists each item with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan: it meets all ten dimensions with concrete, phase-tied content, and I found no significant gaps.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1120,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 8905
+  },
+  "cost_usd": 0.033583499999999995,
+  "latency_s": 22.994,
+  "raw_file": "raw/judge-ccabe53d1d0a.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

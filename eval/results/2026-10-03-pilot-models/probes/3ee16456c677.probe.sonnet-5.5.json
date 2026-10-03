@@ -1,0 +1,34 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "3ee16456c677.probe.sonnet-5.5",
+  "blind_id": "3ee16456c677",
+  "judge": "sonnet-5.5",
+  "order_index": 25,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.97,
+  "cues": [
+    "Opens with \"I'll proceed with the 10-step procedure using the guidance in the method specification\", which refers to a written methodology directly.",
+    "The plan has exactly 10 numbered sections (Classification, Dependencies, Key decisions, First slice, Phases, Validation, Cross-cutting, AI Layer, Exceptions, Deferred). This looks like a fixed template, not a natural layout.",
+    "It uses a reversibility scheme (R1/R2/R3) with a default, assumption, validation and revisit trigger for each decision. It also labels budgets as REQUIREMENT, ASSUMPTION or BASELINE.",
+    "A Phase 0 \"production first end-to-end slice\" has an exit check, and there is a validation gate table with hypothesis, method, threshold, evidence and unlocks fields.",
+    "It includes a mandatory \"AI Layer: N/A\" section and an \"Exceptions: None\" section. It ends with a Self-Check of checkmarks that restates methodology rules, such as \"Rework runs widest first\" and \"all four cross-cutting moves\"."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 445,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11518
+  },
+  "cost_usd": 0.033253000000000005,
+  "latency_s": 24.559,
+  "raw_file": "raw/probe-3ee16456c677.probe.sonnet-5.5.txt"
+}

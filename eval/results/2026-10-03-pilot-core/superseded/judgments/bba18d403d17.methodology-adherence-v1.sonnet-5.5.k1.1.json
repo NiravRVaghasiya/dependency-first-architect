@@ -1,0 +1,41 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "bba18d403d17.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "bba18d403d17",
+  "blind_sha256": "050681c546e8369d9c2a44336e4a3644fa3d616685b78af3c4d63b164836ebf8",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 395,
+  "status": "invalid",
+  "error": null,
+  "validation_errors": [
+    "attempt 1: $.dimensions: missing dim 3",
+    "attempt 1: $.dimensions: dim 2 given more than once",
+    "attempt 2: $.dimensions: missing dim 3, 4, 5, 6, 7, 8, 9, 10",
+    "attempt 2: $.dimensions: dim 2 given more than once",
+    "attempt 3: $.dimensions: missing dim 3",
+    "attempt 3: $.dimensions: dim 2 given more than once"
+  ],
+  "scores": [],
+  "checklist": null,
+  "traps": null,
+  "note": null,
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 12,
+    "output_tokens": 3633,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 24756,
+    "cache_creation_input_tokens": 12378
+  },
+  "cost_usd": 0.0722502,
+  "latency_s": 78.586,
+  "raw_file": "superseded/raw/judge-bba18d403d17.methodology-adherence-v1.sonnet-5.5.k1.1.txt"
+}

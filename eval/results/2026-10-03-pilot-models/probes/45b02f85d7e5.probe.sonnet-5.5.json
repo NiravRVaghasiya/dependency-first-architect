@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "45b02f85d7e5.probe.sonnet-5.5",
+  "blind_id": "45b02f85d7e5",
+  "judge": "sonnet-5.5",
+  "order_index": 22,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Heavy structured scaffolding with fixed sections (Classification and constraints, Dependencies, Key decisions, First end-to-end slice, Validation checks, Cross-cutting concerns, AI layer, Exceptions, Deferred) that looks like a prescribed template",
+    "Reversibility labels (R2/R3) on each decision, plus 'Default / Assumption / Validated by / Revisit trigger' columns",
+    "Budgets labeled BASELINE / ASSUMPTION / UNKNOWN, with a ranked 'Missing inputs' list ordered by plan impact",
+    "Numbered validation checks V0–V4 with hypothesis, method, acceptance threshold, evidence, and what each unlocks if it fails; these are referenced throughout the phases",
+    "Phase 0 is a thin end-to-end slice through every tier with a day-zero deploy/log/rollback/access spec, and a 'point of no return' is marked explicitly",
+    "Boilerplate sections such as 'AI layer: N/A', 'Exceptions: None', and a 'Deferred' list with pull-forward triggers, which is methodology-style bookkeeping that an unguided plan rarely has"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 470,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7109
+  },
+  "cost_usd": 0.0224805,
+  "latency_s": 19.32,
+  "raw_file": "raw/probe-45b02f85d7e5.probe.sonnet-5.5.txt"
+}

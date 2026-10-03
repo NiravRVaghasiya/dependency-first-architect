@@ -1,0 +1,172 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "3f5ef0254298.engineering-quality-v1.fable-5.k1",
+  "blind_id": "3f5ef0254298",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 59,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "QuickTime:CreateDate (for HEIC/MOV; note this value is stored in UTC)",
+      "rationale": "Technical claims are accurate throughout, including subtle points: exiftool -stay_open batching, QuickTime UTC semantics, OffsetTimeOriginal/SubSecTimeOriginal usage, Pillow's weak HEIC/RAW support, and two-phase renames for swap cycles."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Rename every photo in a folder to a name built from its capture date",
+      "rationale": "Solves exactly the stated problem, resolves ambiguities (fallback behavior, formats, templates) with sensible defaults, and explicitly defers non-goals (folder moves, EXIF editing, GUI) with versioned reasoning."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "build the whole plan before renaming anything. That lets the tool catch collisions and cycles up front.",
+      "rationale": "Modules have single clear responsibilities, the scan→read→date→plan→apply flow connects them, and the plan-before-execute rule is honored consistently in collisions, dry-run, and undo handling."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "for any random plan, applying it and then undoing it restores the original file names exactly.",
+      "rationale": "Tests target the actual risks (date selection order, collision suffixes, two-phase rename, apply/undo round-trip property test, cross-platform CI for case-insensitivity) with checkable criteria and a stated performance target."
+    },
+    {
+      "dim": 5,
+      "score": 3,
+      "evidence": "Requires exiftool to be installed",
+      "rationale": "Key dependencies and defaults are stated, open questions are flagged honestly, and library trade-offs are explicit, but the 10,000-file/30-second target and some sensitivities lack stated basis or what-if analysis."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Permission errors partway through a run: stop, report what succeeded, and leave the undo log in a consistent state.",
+      "rationale": "Covers the hard domain failures concretely: same-second collisions, swap chains, crash mid-run (log written before each rename), corrupt files, case-insensitive filesystems, illegal characters, and partial-failure recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Exit codes: 0 success, 1 some files skipped or failed, 2 usage error, 3 dependency missing.",
+      "rationale": "Appropriately sized operations for a CLI: pipx/PyInstaller distribution, defined exit codes and JSON output for scripting, dependency-missing fallback with a clear warning, and undo as the rollback path."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Run it once in batch mode (`-stay_open`) so large folders stay fast.",
+      "rationale": "Compute cost scaling with file count is addressed via batch exiftool, but engineering effort for the milestones and any build-vs-buy cost reasoning are absent."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "ExifReader interface: ExiftoolReader, PillowReader",
+      "rationale": "The genuinely irreversible action (renaming user files) is made reversible via a pre-written undo log, the metadata library is isolated behind an interface, the name template is configurable, and risky scope is deferred to v2."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "Non-goals (v1) ... Editing EXIF metadata. A GUI.",
+      "rationale": "The simplest design that fully meets the need: no databases, services, or speculative machinery, every module earns its place, and a clear v2 growth path exists."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "MVP: JPEG only, Pillow reader, fixed name format, dry run and apply, collision suffixes.",
+      "rationale": "A team could start immediately: full CLI spec, module layout, milestone ordering by risk, concrete decisions (date source order, suffix rules, log format), and checkable results per stage."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P7-01",
+      "status": 2,
+      "evidence": "EXIF:DateTimeOriginal plus OffsetTimeOriginal and SubSecTimeOriginal if they're present ... EXIF:CreateDate / DateTimeDigitized"
+    },
+    {
+      "id": "P7-02",
+      "status": 2,
+      "evidence": "A date counts as invalid if it's empty, 0000:00:00 00:00:00, before 1990 or in the future ... (default: skip)"
+    },
+    {
+      "id": "P7-03",
+      "status": 2,
+      "evidence": "Sort same-second files by subsecond time, then by original name, so the result is the same every run."
+    },
+    {
+      "id": "P7-04",
+      "status": 2,
+      "evidence": "The tool runs as a dry run unless you pass `--apply`."
+    },
+    {
+      "id": "P7-05",
+      "status": 2,
+      "evidence": "if a file already has its target name, leave it alone so re-running the tool changes nothing. ... Never overwrite."
+    },
+    {
+      "id": "P7-06",
+      "status": 2,
+      "evidence": "writes .exifrename-log-<timestamp>.jsonl in the target folder *before* each rename ... `--undo LOGFILE` reverses the renames in reverse order"
+    },
+    {
+      "id": "P7-07",
+      "status": 2,
+      "evidence": "plus OffsetTimeOriginal ... QuickTime:CreateDate (for HEIC/MOV; note this value is stored in UTC)"
+    },
+    {
+      "id": "P7-08",
+      "status": 2,
+      "evidence": "files with the same base name (IMG_1234.HEIC + IMG_1234.MOV + IMG_1234.xmp/.AAE) are renamed together and share one base name"
+    },
+    {
+      "id": "P7-09",
+      "status": 2,
+      "evidence": "default \"{date:%Y-%m-%d_%H-%M-%S}\" ... clean up anything a template produces (`:`, `/`, `\\`, `?` and so on)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P7-T1",
+      "present": false,
+      "evidence": "Target name already exists on disk and isn't part of this run: add a suffix. Never overwrite."
+    },
+    {
+      "id": "P7-T2",
+      "present": false,
+      "evidence": "1. EXIF:DateTimeOriginal ... --fallback MODE ... (default: skip)"
+    },
+    {
+      "id": "P7-T3",
+      "present": false,
+      "evidence": "Non-goals (v1) ... A GUI."
+    },
+    {
+      "id": "P7-T4",
+      "present": false,
+      "evidence": "Non-goals (v1) ... Editing EXIF metadata."
+    },
+    {
+      "id": "P7-T5",
+      "present": false,
+      "evidence": "2024-07-14_18-32-05 sorts correctly and works on every platform"
+    }
+  ],
+  "note": "An exemplary, proportionate CLI plan: correct EXIF semantics, collision-safe two-phase renames, pre-written undo log, and risk-targeted tests; only effort/cost reasoning and some sensitivity analysis are thin.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6003,
+    "thinking_tokens": 3505,
+    "cache_read_input_tokens": 911,
+    "cache_creation_input_tokens": 10002
+  },
+  "cost_usd": 0.426106,
+  "latency_s": 186.489,
+  "raw_file": "raw/judge-3f5ef0254298.engineering-quality-v1.fable-5.k1.txt"
+}

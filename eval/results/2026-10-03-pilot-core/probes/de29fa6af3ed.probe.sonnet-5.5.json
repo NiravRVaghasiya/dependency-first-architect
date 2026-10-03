@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "de29fa6af3ed.probe.sonnet-5.5",
+  "blind_id": "de29fa6af3ed",
+  "blind_sha256": "fe281cecfad58d9156ac411a161b06733e86bbd85dbe080c5d9c20b9cc0340ae",
+  "judge": "sonnet-5.5",
+  "order_index": 86,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Fixed templated section structure: '1. Classification', '2. Key decisions (resolved up front)', '3. First end-to-end slice (Phase 0)', 'Cross-cutting concerns', 'AI layer', 'Deferred'. It reads like a checklist from a written methodology.",
+    "Decision table with 'Default (chosen now)' and 'Revisit trigger' columns. It covers consistency vs availability, monolith vs services, sync vs async, and build vs buy. This is a methodology-style rubric, not ordinary planning prose.",
+    "It includes an 'AI gates' row and a whole '6. AI layer' section that say N/A. A methodology written for AI systems would force this. A plan written without one would almost never mention it.",
+    "Phase 0 is a 'first end-to-end slice' that crosses every layer. Each phase has 'Unlocks / Depends on / Exit check' fields. Tasks are ordered 'most rework-prone first'.",
+    "A per-phase cross-cutting table covers security, observability, reproducibility and resilience 'from the first commit'. There is also an explicit 'Deferred' list with bring-forward triggers, and a 'Classification' section with 'Dominant constraint' and 'Worst failure'."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 489,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 6785
+  },
+  "cost_usd": 0.0218605,
+  "latency_s": 28.059,
+  "raw_file": "raw/probe-de29fa6af3ed.probe.sonnet-5.5.txt"
+}

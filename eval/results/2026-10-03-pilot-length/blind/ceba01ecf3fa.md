@@ -1,0 +1,172 @@
+# Plan: Multi-tenant SaaS billing
+
+## 1. Classification and constraints
+- **What:** Billing for a multi-tenant SaaS product: plan catalog, subscriptions, entitlements, usage metering, invoicing, tax, payments, dunning and a ledger.
+- **Type:** Software. Greenfield. Not small, because it handles money and outside customers.
+- **Dominant constraint:** Correctness.
+- **Worst failure:** A customer is charged twice or charged the wrong amount on a live card, at scale.
+
+| Budget | Target | Label | Checked by |
+|---|---|---|---|
+| Charge correctness | 0 duplicate or lost charges | ASSUMPTION (money must be exact) | V3 |
+| Entitlement check latency | p99 < 50 ms | ASSUMPTION (it sits in the product's request path) | Phase 2 load test |
+| Entitlement availability | 99.95% | ASSUMPTION (outages block the product) | Phase 5 SLO dashboard |
+| Usage ingest throughput | UNKNOWN: product team supplies peak events/sec before Phase 3 | UNKNOWN | V4 |
+| Invoice run window | All tenants invoiced ≤ 4 h after period close | ASSUMPTION | V5 |
+| Ledger RPO / RTO | 0 / 1 h | ASSUMPTION (lost ledger rows mean lost revenue) | Phase 1 restore drill |
+| Invoice retention | UNKNOWN: finance/legal set it per jurisdiction before Phase 4 | UNKNOWN | Phase 4 |
+| Operational complexity | ≤ 3 deployables | ASSUMPTION | Phase 5 |
+
+**Missing inputs:**
+- Pricing models (per-seat, usage, tiered, hybrid).
+- Currencies and tax jurisdictions.
+- Usage volumes.
+- Target ERP and revenue-recognition needs.
+
+**Assumption the phase order rests on:** we bill *our own* tenants. If this is instead a billing platform that tenants use to bill *their* customers, the order changes. Merchant onboarding (KYC), payment-processor sub-accounts (Connect) and isolation between a tenant's own customers then come before Phase 2.
+
+## 2. Dependencies
+
+| What waits | Depends on | Kind | Blocked from being |
+|---|---|---|---|
+| Live charging (Phase 5) | Payment-processor live account, business verification | organizational (start in Phase 0) | exposed |
+| First real invoice | Tax vendor contract, plus tax counsel's decision on where we must collect tax (nexus) | organizational | exposed |
+| Rating engine (Phase 3) | Pricing catalog signed off by product and finance | decision | specified |
+| Invoicing (Phase 4) | V1 ledger invariants | validation | specified |
+| Any external tenant's data | V2 tenant isolation | risk-security | exposed |
+| Live card charges | V3 exactly-once charging | risk-security | exposed |
+| Usage pricing at scale | V4 ingest cost and throughput | economic | scaled |
+| First live invoice | V5 parallel run, plus finance controller sign-off | risk-security | exposed |
+
+No runtime dependencies beyond what the phase order shows.
+
+## 3. Key decisions (resolved up front)
+
+| Decision | Reversibility | Default | Assumption | Validated by | Revisit trigger |
+|---|---|---|---|---|---|
+| Consistency vs availability | R3: a wrong ledger is financial harm | Ledger on ACID Postgres, serializable writes. Usage ingest eventually consistent | One primary handles ledger write volume | V1 | Ledger write p99 > 100 ms at 3× load → split the ledger by tenant |
+| Ledger model | R3: data model plus legal records | Append-only double-entry ledger. Invoices are derived from it. Fixes are credit notes, never edits | Finance accepts this chart of accounts | V1 | V1 fails, or finance requires a different structure |
+| Money representation | R3: baked into every row | Integer minor units plus ISO 4217 currency. Decimal rating with one documented rounding rule | One rounding point, at the invoice line | V1 | Tax vendor requires rounding per line item |
+| Tenancy and isolation | R3: a leak exposes customer financial data | Shared Postgres, `tenant_id` on every row, row-level security (RLS) enforced | No tenant needs physical isolation | V2 | V2 fails, or a contract requires a dedicated database |
+| Build vs buy | R3: our data would live at a vendor | **Buy:** payment processor (Stripe; card data never reaches us, so PCI SAQ A) and tax engine (Stripe Tax or Avalara). **Build:** ledger, metering, rating, entitlements | Pricing is complex enough to justify owning it | Pricing catalog review in Phase 2 | Pricing turns out to be flat per-seat → buy Stripe Billing outright |
+| Data-privacy boundary | R3: personal data | Card data only as processor tokens. Billing personal data (contacts, tax IDs) lives in an encrypted column group and is kept out of logs | One region is enough | V2 plus log-scrub test | An EU-residency contract → add a regional deployment |
+| Sync vs async | R2: affects integration contracts | Entitlement checks synchronous. Invoice runs, charges and webhooks asynchronous through an outbox, with idempotency keys | Processor webhooks arrive at least once | V3 | — |
+| Monolith vs services | R2: weeks to split | Modular monolith, plus a separate usage-ingest service and a worker | One team owns billing | Phase 5 complexity review | Ingest load or team count forces a split |
+
+**minor defaults:** Go; GitHub Actions; Terraform; UUIDv7 identifiers; Kafka-compatible queue for usage.
+**N/A:** migration, cutover, system of record (greenfield); AI rows (no AI component).
+
+## 4. First end-to-end slice (Phase 0)
+- **The request:** an internal admin subscribes the internal tenant to a $0 plan. The product's entitlement check returns "allowed". An invoice-run job produces a $0 invoice, sends a charge to the processor in **test mode**, receives the webhook, posts it to the ledger, and emails the invoice PDF to an internal inbox.
+- **Tiers crossed:** API gateway → billing monolith → Postgres → outbox → worker → processor sandbox → webhook endpoint → email service.
+- **Deploy, log, monitor, roll back:** deployed through CI/CD with Terraform. Structured logs and an OpenTelemetry trace keyed by tenant and request ID. Alerts for webhook failures and job lag. Rollback is a blue/green switch.
+- **Who can reach it:** the internal tenant only, behind a flag. The processor stays in test mode until V3 and V5 pass, because live money comes before its guarding control otherwise.
+
+Exit check is V0.
+
+## 5. Phases
+
+**Phase 1: Data model and tenancy**
+- Unlocks: everything that writes billing data.
+- Depends on: V0.
+- Tasks:
+  1. Ledger schema and money types.
+  2. Tenant RLS and identifiers.
+  3. Append-only audit log.
+  4. Point-in-time recovery and a restore drill.
+- Rollback: schema migrations run forward and back. No real data exists yet.
+- Exit check: V1 and V2 pass. Restore achieves RPO 0 and RTO ≤ 1 h.
+
+**Phase 2: Catalog, subscriptions, entitlements**
+- Unlocks: pricing and access control in the product.
+- Depends on: Phase 1 and the pricing sign-off.
+- Tasks:
+  1. Versioned plans and prices (immutable once published).
+  2. Subscription lifecycle and proration.
+  3. Entitlement API with a cache and a fail-open/fail-closed policy per feature.
+- Rollback: flag off; the product falls back to static entitlements.
+- Exit check: entitlement p99 < 50 ms at 3× load in a load test.
+
+**Phase 3: Usage metering and rating**
+- Unlocks: usage-based charges.
+- Depends on: Phase 2, plus the usage-volume input (needed before V4).
+- Tasks:
+  1. Idempotent ingest API that deduplicates on event ID.
+  2. Aggregation by billing period.
+  3. Rating against price versions.
+  4. Handling for late-arriving events.
+- Rollback: stop ingest consumers; raw events stay replayable.
+- Exit check: V4 passes.
+
+**Phase 4: Invoicing, tax, payments**
+- Unlocks: end-to-end billing in sandbox.
+- Depends on: V1, Phase 3, and the tax contract.
+- Tasks:
+  1. Invoice run.
+  2. Tax-engine calls.
+  3. Idempotent charges and webhook handling.
+  4. Dunning and retries.
+  5. Credit notes and refunds.
+  6. Daily reconciliation between the processor and the ledger.
+- Rollback: the processor stays in test mode.
+- Exit check: V3 passes, and reconciliation shows zero unexplained differences over 7 days.
+
+**Phase 5: Parallel run and staged exposure**
+- Unlocks: real revenue.
+- Depends on: V2, V3, live processor account.
+- Tasks:
+  1. V5 shadow cycle.
+  2. Live billing for the internal tenant.
+  3. One design-partner tenant.
+  4. 10% of tenants.
+  5. All tenants. Each step widens only after a clean reconciliation cycle.
+- **Point of no return:** the first live charge to an external customer. It requires V5 to pass and a go/no-go from the finance controller.
+- Rollback: a flag halts live charging; mistakes are corrected with refunds and credit notes.
+- Exit check: one full cycle at 100% with zero reconciliation breaks.
+
+**Phase 6: Finance integrations**
+- Unlocks: closing the books.
+- Depends on: Phase 5.
+- Tasks:
+  1. ERP export.
+  2. Revenue-recognition schedules.
+  3. SOC 2 evidence automation.
+- Rollback: exports are idempotent and can be re-run.
+- Exit check: finance closes one month using exports only.
+
+## 6. Validation checks
+
+| ID | Hypothesis | Method | Acceptance threshold | Evidence | Unlocks (if it fails) | Phase |
+|---|---|---|---|---|---|---|
+| V0 | Change can be deployed, observed and rolled back through every tier in production | Run the §4 request, deploy, roll back, inject a webhook failure | The §4 exit check | Trace ID, pipeline logs, alert record in the ops wiki | Phase 1 (fix the skeleton) | 0 |
+| V1 | Ledger always balances and can be replayed | Property-based test of 1M random operations, replay from the event log, finance review | Debits = credits on every run; replay matches to the minor unit (ASSUMPTION); controller signs off on accounts | Test report and signed review in the repo `/evidence` | Phase 4 specification (fail: redesign the ledger) | 1 |
+| V2 | No tenant can read or write another tenant's data | Automated cross-tenant suite on every endpoint and job, plus an external pentest | 0 cross-tenant accesses; pentest has no high findings (named security lead signs) | Suite output and pentest report | Exposure in Phase 5 (fail: dedicated schema per tenant) | 1, re-run before 5 |
+| V3 | Each charge happens exactly once | 10k sandbox charges with injected faults: worker kills, duplicate webhooks, processor timeouts | 0 duplicate, 0 lost, 100% reconciled (ASSUMPTION) | Fault-injection report and reconciliation diff | Live charging (fail: redesign the outbox and idempotency) | 4 |
+| V4 | Ingest keeps up within budget | Load test at 3× the supplied peak for 1 h | 0 lost events; lag < 5 min; cost per million events within finance budget (both UNKNOWN until inputs arrive) | Load-test dashboard export | Usage pricing at scale (fail: batch ingest or a cap on the pricing model) | 3 |
+| V5 | Real invoices are correct | Shadow invoice cycle for all tenants, compared with an independent finance calculation on a 200-invoice sample | 100% of sample matches to the minor unit; run ≤ 4 h (ASSUMPTION); controller signs off | Diff report and signed go/no-go | First live invoice (fail: fix and re-run the cycle) | 5 |
+
+## 7. Cross-cutting concerns
+
+| Phase | Security | Observability | Reproducibility | Resilience |
+|---|---|---|---|---|
+| 0 | Secrets in a vault; processor test keys only; access via SSO | Traces, logs, job-lag alert | IaC; pinned builds | Blue/green rollback |
+| 1 | RLS; encrypted personal-data columns | Audit-log metrics | Versioned migrations | Point-in-time recovery; restore drill |
+| 2 | Scoped API tokens for the entitlement API | Entitlement p99 and error SLO | Immutable price versions | Per-feature fail-open/fail-closed with a cache |
+| 3 | Signed ingest requests | Ingest lag and dedupe-rate dashboards | Raw events kept for replay | Dead-letter queue (DLQ); backpressure |
+| 4 | Webhook signature checks; personal data scrubbed from logs | Reconciliation-break alerts | Invoices rebuildable from the ledger | Outbox; retries with jitter |
+| 5 | Live keys under dual control | Per-tenant revenue anomaly alerts | Shadow-run artifacts archived | Kill switch for live charging |
+| 6 | Least-privilege ERP credentials | Export success metrics | Idempotent exports | Re-runnable exports |
+
+## 8. AI layer
+N/A: no AI component.
+
+## 9. Exceptions
+None.
+
+## 10. Deferred
+- **Billing-as-a-service (tenants bill their own customers):** pulled forward if the assumption in §1 is false.
+- **Multi-currency beyond one:** when a contract needs a second currency.
+- **Regional data residency:** when an EU or other residency contract is signed.
+- **Self-serve plan editor:** when the catalog changes more than monthly.
+- **Splitting the monolith into services:** when V4 or the team count forces it.
+- **Usage-based alerts and spend caps for customers:** when design partners ask for them.

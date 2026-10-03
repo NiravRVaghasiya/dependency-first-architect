@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "0e0d17c2277a.probe.sonnet-5.5",
+  "blind_id": "0e0d17c2277a",
+  "blind_sha256": "6aff2b59e60e5be97e4ccbfadc29da5a4849062e15697946059d9e936c1bae90",
+  "judge": "sonnet-5.5",
+  "order_index": 15,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Fixed section structure: Classification and constraints, Dependencies, Key decisions, First end-to-end slice (Phase 0), Phases, Validation checks, Cross-cutting concerns, AI layer, Exceptions, Deferred",
+    "Decisions carry reversibility grades (R2/R3) and explicit 'Revisit trigger' columns",
+    "Validation checks V0–V3 with hypothesis, method, acceptance threshold, evidence and 'unlocks (and if it fails)' columns",
+    "Phase 0 is a walking skeleton that covers deploy, log, monitor and rollback, and is exit-checked by V0",
+    "The plan tags budgets as ASSUMPTION with 'Missing inputs' ranked by importance, and has an 'N/A' AI layer section and an 'Exceptions: None... the method calls for that' line that refers to a methodology directly"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 370,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 6624
+  },
+  "cost_usd": 0.020267999999999998,
+  "latency_s": 30.569,
+  "raw_file": "raw/probe-0e0d17c2277a.probe.sonnet-5.5.txt"
+}

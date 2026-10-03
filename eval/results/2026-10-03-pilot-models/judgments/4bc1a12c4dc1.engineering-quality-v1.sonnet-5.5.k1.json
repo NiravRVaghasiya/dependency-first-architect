@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "4bc1a12c4dc1.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "4bc1a12c4dc1",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 75,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Declarative (GitOps, e.g., ArgoCD) vs. imperative (step-based, e.g., Jenkins)?",
+      "rationale": "The ArgoCD-vs-Jenkins comparison conflates CD with CI, and the plan claims bit-identical Docker builds and \"99% of errors surface in < 2 min\" without basis. Signing, OIDC and GitOps mechanisms are mostly sound, but several material misstatements remain."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Wave 1: 10 services (Week 6) ... Select 10 non-critical services (internal tools, non-financial, low traffic).",
+      "rationale": "It covers build, deploy, canary and rollout in waves, but it never surveys the service stacks. It also omits PR and test stages, flaky tests, and a build-once promotion model, and it places prod rollout before the full pipeline."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Decided in Phase 1a... Rollout strategy ... canary mandatory",
+      "rationale": "The plan is recognizable but inconsistent: the CI engine is left undecided, phase timings disagree between sections (Weeks 5–8 vs 11–18), and the canary is tested on the test cluster but labeled \"prod\"."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "Inject failures (1% error rate, latency spike) during canary stages 1 and 2; verify auto-rollback triggers.",
+      "rationale": "Validation is tied to specific risks (reproducibility, canary, RBAC, secret scanning) with measurable gates and early spikes. Some thresholds are invented, and post-launch validation is thin."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Missing inputs that would change the plan: ... Assumed: single region to start",
+      "rationale": "Several assumptions are listed and labeled, but the figures are invented and labeled REQUIREMENT (99.5% SLO, 30-day retention, 5 min RTO), and 15 TB priced at 50–150 USD is unsupported."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Scenario: artifact registry down → deploys queued; ... Vault unsealed → all builds pause",
+      "rationale": "The plan covers registry outage, Vault sealed, secret leaks, bad canaries and retries. It omits fork PRs, supply-chain attacks and migration failures, and it gives no plan for the CI platform's own outage."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "On-call rotation: infra team rotates; SLA for response < 15 min.",
+      "rationale": "It covers dashboards, runbooks, on-call, DR backups and rollback, but the team sizing is unrealistic, ownership of shared templates is unclear, and it has no migration path for legacy pipelines."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Review CI orchestrator cost (if managed: AWS CodePipeline, GitHub Actions, etc.; if self-hosted: K8s pods, storage).",
+      "rationale": "Cost focuses on artifact storage with an unsupported figure; runner compute, the dominant driver, has no estimate or autoscaling or hosted/self-hosted decision."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "R3 decisions (hard-to-reverse, gated) ... Revisit trigger",
+      "rationale": "The plan explicitly classifies reversibility, spikes the engine and registry choices, and gives revisit triggers. Some classifications are odd (secret rotation as R3) and the artifact naming scheme is set without a spike."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Multi-region readiness (Weeks 11–12) ... anomaly detection (unusual deploy patterns).",
+      "rationale": "It is mostly proportionate and defers multi-region and chargeback, but it adds speculative items such as multi-region design, Jaeger tracing, ELK and compliance mapping, and it skips essentials such as CI test stages."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Define naming scheme: `{service-name}:{git-branch}-{git-sha}-{build-number}`. Example: `payment-api:main-abc123-42`.",
+      "rationale": "It gives day-level tasks, exit checks, gates and fallbacks that a team could follow, but the engine choice is unresolved and the timelines are inconsistent."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "Declarative pipeline template in Git (one per service; teams copy and customize)."
+    },
+    {
+      "id": "P3-02",
+      "status": 1,
+      "evidence": "Wave 1: 10 services (Week 6)"
+    },
+    {
+      "id": "P3-03",
+      "status": 1,
+      "evidence": "Docker image (with exact tag, no \"latest\")"
+    },
+    {
+      "id": "P3-04",
+      "status": 1,
+      "evidence": "Workload Identity or OIDC configured (if using AWS/GCP): no long-lived credentials in environment variables."
+    },
+    {
+      "id": "P3-05",
+      "status": 1,
+      "evidence": "deploy verifies signature (fail if unsigned or invalid)."
+    },
+    {
+      "id": "P3-06",
+      "status": 1,
+      "evidence": "Auto-rollback trigger: if error rate > 5% for 1 min"
+    },
+    {
+      "id": "P3-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-08",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Measure: build success rate (target: ≥ 99%), build time (target: ≤ 10 min per service)"
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "total capacity ~15 builds/min across platform"
+    },
+    {
+      "id": "P3-11",
+      "status": 1,
+      "evidence": "On-call rotation: infra team rotates; SLA for response < 15 min."
+    },
+    {
+      "id": "P3-12",
+      "status": 1,
+      "evidence": "Audit trail (who deployed what, when, why, to where)"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Exposure runs smallest first: 1 pilot service, then 10, 20, 15, 5 in waves"
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "Docker image (with exact tag, no \"latest\")"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "Secrets (registry auth, cluster token, Vault credentials) passed via environment variables from a secret store"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "multiple services deploy at once, one fails → canary catches one, others proceed independently."
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "CI orchestrator (e.g., Jenkins, GitLab CI, or GitHub Actions)"
+    }
+  ],
+  "note": "Well-structured, gated, dependency-ordered plan with a good waved rollout, but it never surveys the service stacks or sizes runners, and it lacks fork-PR, supply-chain and promote-the-same-artifact rigor. Its numbers and timelines are also inconsistent.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2453,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 26095
+  },
+  "cost_usd": 0.0899605,
+  "latency_s": 53.275,
+  "raw_file": "raw/judge-4bc1a12c4dc1.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

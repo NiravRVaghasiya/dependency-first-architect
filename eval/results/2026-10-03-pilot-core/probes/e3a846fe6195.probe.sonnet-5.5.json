@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "e3a846fe6195.probe.sonnet-5.5",
+  "blind_id": "e3a846fe6195",
+  "blind_sha256": "e72df4f802e38244c60b75120379edc36ce7a5b048515d1aa7e3b30b2b3505aa",
+  "judge": "sonnet-5.5",
+  "order_index": 116,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Explicit reversibility labels (R1/R2/R3) on each decision with revisit triggers, a structured decision table",
+    "Validation checks table with IDs (V0/V1/V2), hypothesis, method, acceptance threshold, evidence, unlocks/if-fails, and phase",
+    "Budgets and assumptions explicitly labeled 'ASSUMPTION' with 'Missing inputs' list stating the plan proceeds on stated assumptions",
+    "Phase 0 'first end-to-end slice' with deploy, rollback, and monitoring, plus dependency table with 'Kind' and 'Blocked from being'",
+    "Fixed section scaffolding including 'N/A' sections (AI layer), 'Exceptions', 'Deferred', and cross-cutting concerns matrix by phase"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 344,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 6635
+  },
+  "cost_usd": 0.0200355,
+  "latency_s": 29.455,
+  "raw_file": "raw/probe-e3a846fe6195.probe.sonnet-5.5.txt"
+}

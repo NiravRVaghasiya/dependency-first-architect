@@ -1,0 +1,110 @@
+{
+  "schema": "dfa-eval/generation@1",
+  "gen_id": "P8.dfa.opus-5.5.r02",
+  "prompt_id": "P8",
+  "condition": "dfa",
+  "generator": "opus-5.5",
+  "run_index": 2,
+  "seed": 2803161179,
+  "seed_honored": false,
+  "request": "/dependency-first-architect Plan a real-time fraud-detection pipeline for card transactions.",
+  "status": "ok",
+  "error": null,
+  "output_file": "generations/P8.dfa.opus-5.5.r02.md",
+  "output_sha256": "3191f982dc51f5aee268c260322e0adc685b4ff732a06d91f549d92c6582581d",
+  "metrics": {
+    "words": 4654,
+    "chars": 28622,
+    "visible_tokens_est": 7156
+  },
+  "turns": 3,
+  "tool_calls": [
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/plan-template.md",
+      "ok": true
+    },
+    {
+      "tool": "Read",
+      "path": "plugins/p140aff59/skills/dependency-first-architect/reference/ai-systems.md",
+      "ok": true
+    }
+  ],
+  "skills_available": [
+    "__remote-workflow",
+    "agents",
+    "auto-mode-setup",
+    "autocompact",
+    "batch",
+    "claude-api",
+    "clear",
+    "code-review",
+    "color",
+    "compact",
+    "config",
+    "context",
+    "dataviz",
+    "debug",
+    "deep-research",
+    "dependency-first-architect:dependency-first-architect",
+    "doctor",
+    "effort",
+    "fast",
+    "fewer-permission-prompts",
+    "focus",
+    "goal",
+    "heapdump",
+    "init",
+    "insights",
+    "list-agents",
+    "loop",
+    "mcp",
+    "model",
+    "output-style",
+    "plugin-authoring",
+    "recap",
+    "reload-plugins",
+    "reload-skills",
+    "rename",
+    "run",
+    "run-skill-generator",
+    "security-review",
+    "simplify",
+    "team-onboarding",
+    "update-config",
+    "usage",
+    "verify",
+    "workflow-authoring",
+    "workflow-launch-exec"
+  ],
+  "instructions_loaded": [
+    {
+      "path": "reference/ai-systems.md",
+      "sha256": "623e02a2b37bbf9bd637a2689d1510179b4a3a65cada3e2f162c1ed11444d579",
+      "words": 855
+    },
+    {
+      "path": "reference/plan-template.md",
+      "sha256": "95ccaec942bf8a640ff4d830daada167a340b6b652242e2ed41aec6d24605c2a",
+      "words": 1257
+    }
+  ],
+  "started_at": "2026-10-03T00:24:32+00:00",
+  "finished_at": "2026-10-03T00:30:32+00:00",
+  "provider": "claude-cli",
+  "model_requested": "claude-opus-5-5",
+  "models_used": [
+    "claude-opus-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 26541,
+    "thinking_tokens": 15556,
+    "cache_read_input_tokens": 7073,
+    "cache_creation_input_tokens": 11223
+  },
+  "cost_usd": 0.5883736,
+  "latency_s": 360.168,
+  "raw_file": "raw/gen-P8.dfa.opus-5.5.r02.txt"
+}

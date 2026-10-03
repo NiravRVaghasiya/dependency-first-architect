@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "f7872a714707.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "f7872a714707",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 48,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1 Prototype: \"Ingestion, hybrid retrieval, basic answers with citations. Offline eval baseline.\"",
+      "rationale": "Phases broadly go discovery → ingestion/retrieval → pilot → launch, but guardrails come after generation and no proof gates between phases."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "Phase 0. Discovery: \"Confirm sources, metrics, and ticket-topic analysis. Build the golden set.\"",
+      "rationale": "Phase 0 is discovery, not a thin end-to-end production slice; first prod exposure is Phase 3."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "\"pgvector, if you already run Postgres, is enough for most help centers. Use Qdrant, Weaviate, or OpenSearch if you need scale\"",
+      "rationale": "Some defaults with conditions and an assumptions list exist, but no explicit irreversible-decision gates with flip triggers."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No ordering of widest-impact work within phases; deliverables are just lists."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "\"Resist prompt injection, since docs and user input are untrusted.\" / \"tenant isolation if there is private content\"",
+      "rationale": "Security items exist but sit in standalone sections and the guardrails land in Phase 2, not every phase."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "\"trace each request (query, rewrite, retrieved chunks, scores, answer, latency, tokens)\"",
+      "rationale": "Good observability design but in a standalone Operations section; dashboards only in Phase 3, not Phase 0."
+    },
+    {
+      "dim": 7,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No reproducible builds, environments, or versioned data/index pipelines addressed, beyond CI eval runs."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "\"Deletions must propagate\" / \"make human handoff always one click away\"",
+      "rationale": "Some failure handling (confidence gate, handoff, sync) but not threaded per phase; no retries, fallbacks, or timeouts."
+    },
+    {
+      "dim": 9,
+      "score": 1,
+      "evidence": "\"Confidence gate: if the top rerank score is below a threshold, don't answer. Offer handoff\"",
+      "rationale": "Has guardrails, confidence gate, handoff and eval, but defenses/budgets/HITL arrive after retrieval and generation (Phase 2), cost caps are late, and no memory/routing/feedback ordering."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "\"Actions (later): authenticated tools such as order status\" / \"Slack or Teams can come later.\"",
+      "rationale": "Some items are deferred but without explicit pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A sound, content-rich RAG design, but it's organized by component rather than built as a dependency-ordered, secured, observable walking skeleton, and it lacks explicit decision gates and pull-forward triggers.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1116,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 3218
+  },
+  "cost_usd": 0.019326,
+  "latency_s": 38.41,
+  "raw_file": "raw/judge-f7872a714707.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

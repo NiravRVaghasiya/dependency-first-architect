@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "cbf0af150eee.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "cbf0af150eee",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 100,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Inline call on production traffic | V2 (falls back safely), V5 (latency at load)",
+      "rationale": "An explicit dependency map and gates (V1→mirror, V3→schema, V4→training, V2/V5→inline, V6/V7→enforcement) order phases from substrate upward."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A real authorization on an issuer test-BIN card ... goes through the production auth host. The auth host calls the decision service",
+      "rationale": "Phase 0 is a real end-to-end production slice, with deploy, rollback and trace, before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Failure behavior (fail open vs closed) | R3 ... Default: Fall back to the current decision ... Flip condition: V2 fails",
+      "rationale": "Irreversible decisions are listed with reversibility, default, assumption, validation and flip conditions, and unknowns are labelled."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1: Contracts, privacy boundary and fail-safe guardrails ... Phase 5: Randomized enforcement on 1%, then 5%, 25% and 100% of one portfolio",
+      "rationale": "Widest-impact items (contracts, privacy boundary, fail-safes, schema identifiers) come before leaf work, and exposure widens in stages."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Test BINs only; tokenized PAN; mTLS; secrets in Vault; CDE segment; least-privilege IAM",
+      "rationale": "The per-phase table gives concrete security controls in every phase from 0 to 6."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "The auth host's trace ID is propagated through OpenTelemetry across every tier. Prometheus metrics ... An alert fires when timeouts exceed 1% over 5 min.",
+      "rationale": "Phase 0 has observability, and every later phase has specific signals."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform, image digests, signed artifacts, everything through CI/CD",
+      "rationale": "Every phase has concrete reproducibility measures, such as snapshots, pinned seeds and versioned config."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "80 ms hard timeout; flag off; rollback rehearsed",
+      "rationale": "Each phase has specific failure handling, including fallback, breaker, idempotent backfill, state rebuild and no auto-promotion."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "1. Guardrail defense ... Phase 1; 2. Cost + latency budget; 3. Human-in-the-loop gating ... 4. Retrieval ... 5. Model access ... 9. Feedback",
+      "rationale": "Defenses, budgets and human gating are built in Phase 1, and the later layers follow in order: retrieval, model, memory, orchestration, routing (deferred), feedback. Memory comes in Phase 3 alongside retrieval, which is a minor nit."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Decommissioning the rules engine (this is the point of no return): pull forward when it is proposed after ≥ 2 quarters at 100% enforcement.",
+      "rationale": "Each deferred item comes with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "This is a very strong plan. It has a real production walking skeleton, explicit gates and flip conditions, concerns threaded through every phase, and the AI layers in the right order. I found no significant gaps.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1261,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 11785
+  },
+  "cost_usd": 0.0421935,
+  "latency_s": 33.241,
+  "raw_file": "raw/judge-cbf0af150eee.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

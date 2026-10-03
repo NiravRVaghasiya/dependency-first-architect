@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "ab786c57263a.probe.sonnet-5.5",
+  "blind_id": "ab786c57263a",
+  "blind_sha256": "3224bc5fcbf5c092a909788870282ec1cff151e9936a20c87687ec08cdb3aced",
+  "judge": "sonnet-5.5",
+  "order_index": 127,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.3,
+  "cues": [
+    "Opens with explicit stated assumptions (Kubernetes, team of 4–6, mixed languages) and 'Adjust if any don't fit', which is a common habit of a generic good-quality answer",
+    "Each phase has a Goal and a 'Done when' exit criterion, which looks systematic. The criteria are missing from Phase 4 and Phase 6, so it isn't applied rigidly",
+    "A critical path diagram and a 'Common Mistakes' section are included, but these are standard for a strong unguided answer",
+    "It ends with an offer to go deeper (tool choices, RACI), which is typical chat-assistant behavior and not a methodology artifact",
+    "Overlapping week ranges and a wave table are practical. There are no sections for risks, open questions, verification steps, or an explicit methodology structure"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 342,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 3139
+  },
+  "cost_usd": 0.0112755,
+  "latency_s": 27.028,
+  "raw_file": "raw/probe-ab786c57263a.probe.sonnet-5.5.txt"
+}

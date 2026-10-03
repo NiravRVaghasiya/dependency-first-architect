@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "aa2c17c486ad.probe.sonnet-5.5",
+  "blind_id": "aa2c17c486ad",
+  "blind_sha256": "5a7681f6e2f4ec4c921f8821fa1b8cc9133bdee940b935f29d89e7badadff6d8",
+  "judge": "sonnet-5.5",
+  "order_index": 151,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.93,
+  "cues": [
+    "Fixed scaffold with numbered sections: Classification (type, dominant constraint, worst failure), Key decisions table with 'Default' and 'Revisit trigger' columns, First end-to-end slice, Phases, Cross-cutting, AI layer, Deferred",
+    "Includes explicit '(AI) prompt+RAG vs fine-tune' and '(AI) hosted API vs self-host' rows marked N/A, plus a 'AI layer: N/A' section. This is template residue that a plan with no methodology wouldn't contain.",
+    "Phase 0 is a 'first end-to-end slice' that crosses every tier with a real request. Each phase has Unlocks, Depends on, Tasks 'widest first', and Exit fields, which is methodology-style ordering by dependency and impact.",
+    "Cross-cutting concerns matrix (security, observability, reproducibility, resilience) is applied per phase 'from the first commit'. It is a systematic structure rather than ad hoc.",
+    "Labeled assumptions, with 'each one changes the plan if it's wrong', and a dedicated Deferred section listing items with triggers to do them. This reflects a prescribed planning format."
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 469,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7132
+  },
+  "cost_usd": 0.022528000000000003,
+  "latency_s": 29.226,
+  "raw_file": "raw/probe-aa2c17c486ad.probe.sonnet-5.5.txt"
+}

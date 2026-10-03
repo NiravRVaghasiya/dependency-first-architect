@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "8d1b7144e7fa.probe.sonnet-5.5",
+  "blind_id": "8d1b7144e7fa",
+  "blind_sha256": "071594c2a9b7f66638b1ea9d6084b3f5c8451630cbf4a1a1d9e7700a6788a636",
+  "judge": "sonnet-5.5",
+  "order_index": 142,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.96,
+  "cues": [
+    "Fixed template sections: Classification with 'Dominant constraint' and 'Worst failure', then 'Key decisions (resolved up front)' table with 'Default' and 'Revisit trigger' columns",
+    "Explicit N/A rows for '(AI) prompt+RAG vs fine-tune' and '(AI) hosted API vs self-host', plus a dedicated 'AI layer' section stating N/A, which looks like a mandated checklist",
+    "Phase 0 'first end-to-end slice' defined as one real request crossing all tiers, with day-zero deploy/logs/monitoring/rollback and an 'Exit check'",
+    "Every phase uses the same 'Unlocks / Depends on / Tasks (widest → narrowest) / Exit check' structure, and the plan repeats the ordering rule",
+    "Cross-cutting concerns matrix (security/observability/reproducibility/resilience per phase 'from the first commit') and a 'Deferred' list with pull-forward triggers"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 407,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 7504
+  },
+  "cost_usd": 0.022838,
+  "latency_s": 29.836,
+  "raw_file": "raw/probe-8d1b7144e7fa.probe.sonnet-5.5.txt"
+}

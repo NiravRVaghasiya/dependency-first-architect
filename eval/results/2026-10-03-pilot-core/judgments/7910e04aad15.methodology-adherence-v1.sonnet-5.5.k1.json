@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "7910e04aad15.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "7910e04aad15",
+  "blind_sha256": "6eb694439af04058e270927bb1ed4cbbe02aae848947939fd1773ef350150c9c",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 424,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: Phase 1 and V1\"; Phase 3 \"Depends on: Phase 2 and V2\"; Phase 4 \"Depends on: Phase 3 and V4; V6\"",
+      "rationale": "Phases go from schema/tokenization to defenses to features to model to enforcement, with each gated on a validation gate and an explicit dependency map."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "A real authorization from an allow-listed internal test or employee card at a real merchant... The switch logs the response and ignores it",
+      "rationale": "Phase 0 is a real production end-to-end slice across 7 tiers with deploy, rollback and a trace."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Fail open: fall back to existing rules plus network score... Flip condition: V3 fails, or measured fraud during fail-open windows exceeds the risk owner's limit",
+      "rationale": "The gates table gives reversibility, default, assumption, validator and flip condition for every irreversible decision, and the assumptions are labeled."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 5: \"Enforcement rollout (exposure smallest first)\"; Phase 2 puts circuit breaker and kill switch before widening 1%→10%→100%",
+      "rationale": "Within phases, the widest-impact items (schema freeze, defenses, kill switch) come before leaf work. Rollouts go from the smallest exposure to the widest."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"PAN stays in the switch; mTLS; segmented namespace; secrets in Vault; card allow-list\"",
+      "rationale": "The per-phase table has concrete security content in every phase 0–6, starting with the first phase."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: \"One OpenTelemetry trace across all tiers; latency and timeout alerts; logs hold tokens only\"",
+      "rationale": "Observability is concrete in Phase 0 and in every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Phase 0: \"Terraform and ArgoCD; signed images\"; Phase 4: \"MLflow: data snapshot, code hash, hyperparameters, feature version\"",
+      "rationale": "Reproducibility has concrete content in each phase: IaC, schema versions, a shared feature library, snapshot IDs and deterministic retraining."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: \"Timeout plus fail open; rollback by flag\"; Phase 2: \"Circuit breaker; kill switch; store recovery drill (RTO)\"",
+      "rationale": "Failure handling and rollback appear in every phase, starting with Phase 0 fault injection."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Guardrail defense, cost+latency budget and human-in-the-loop are built in Phase 2; retrieval 3, model access 4, memory, orchestration 3–4, routing 6, feedback 1/6",
+      "rationale": "Defenses, budgets and human-in-the-loop come before the capabilities, and the rest follow the required order. Feedback capture starting early is a justified exception (E1) with its own constraints."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Decommissioning the existing rules engine. Pull forward when: two quarters at 100% enforcement pass V7.",
+      "rationale": "The plan lists several deferred items, each with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "This plan is very strong on every dimension. It has a production walking skeleton, up-front gates with flip conditions, security, observability, reproducibility and resilience threaded through each phase, and a justified feedback-early exception.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1338,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 11577
+  },
+  "cost_usd": 0.0423305,
+  "latency_s": 22.517,
+  "raw_file": "raw/judge-7910e04aad15.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

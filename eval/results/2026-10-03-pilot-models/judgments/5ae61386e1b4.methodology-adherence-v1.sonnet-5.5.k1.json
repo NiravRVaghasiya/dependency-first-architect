@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "5ae61386e1b4.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "5ae61386e1b4",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 85,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 1 \"Depends on: V0, the security reviewer, and change-board approval.\" Phase 4 \"Depends on: V2, V3, V4, and the confirmed dependency inventory.\"",
+      "rationale": "Phases run from skeleton to trust to CI contract to progressive delivery to migration to decommission, and each has an explicit gate that must pass first."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "One real change to one low-tier internal service moves commit → build → test → image → push → deploy to production → health check → a deliberate rollback.",
+      "rationale": "Phase 0 is a real production end-to-end path with rollback, tracing and alerting, built before any features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Trust boundary... Default: PR builds run on ephemeral runners with no secrets... Flip condition: V1 fails, or any PR-triggered job can obtain a production credential",
+      "rationale": "The plan lists irreversible decisions with reversibility class, default, assumption, validation and flip condition, and labels its assumptions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 4 — Migration waves (exposure smallest first)... Wave D: the tier-1, customer-facing, and payment-critical services, last",
+      "rationale": "Within phases, shared substrate such as identity, registry and admission comes before leaf work, and waves run from least to most exposure, though the ordering principle is not stated for every phase."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "OIDC short-lived credentials from the first commit; allow-listed exposure; logs masked",
+      "rationale": "The cross-cutting table gives concrete security measures in every phase from 0 to 5."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Trace and build-ID chain; pipeline duration and queue-time dashboards; failed-rollout alert",
+      "rationale": "Phase 0 has observability, and every later phase has concrete observability items."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform for the platform; pinned tool versions",
+      "rationale": "Reproducibility has concrete content in every phase, including Terraform, digest-pinned artifacts, versioned templates and restorable archives."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Old pipeline kept as fallback; the rollback was exercised",
+      "rationale": "Resilience appears in every phase, with per-phase rollback plans, break-glass, HA and restore drills, and pausing waves."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A — no AI component.",
+      "rationale": "The plan explicitly declares the AI layer not applicable and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Developer portal and service catalog: pulled forward when teams report that discovering templates or status is a bottleneck after Wave B.",
+      "rationale": "Each deferred item comes with a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "This is a very strong plan. It has a real production skeleton, gates with flip conditions, per-phase threading of the cross-cutting concerns, and explicit deferrals. I found no significant gaps.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1123,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 7675
+  },
+  "cost_usd": 0.0305385,
+  "latency_s": 30.617,
+  "raw_file": "raw/judge-5ae61386e1b4.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

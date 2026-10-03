@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "6babd8bc8af7.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "6babd8bc8af7",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 24,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "With Yjs, its built-in snapshots require turning off garbage collection, which makes documents bigger.",
+      "rationale": "Claims are accurate (Yjs snapshots/GC, relative positions, OT vs CRDT tradeoffs) and reach some subtle areas, though 'cheap with a CRDT' and 'free them from memory' are a bit glib."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Get a thin end-to-end version working early, and add features only once the things they depend on exist.",
+      "rationale": "Covers core needs with sensible sequencing and explicit deferrals, but leaves targets and scale unspecified and is more a build order than a resolved design."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Use a placeholder user ID for now... This needs the real user identities from step 5.",
+      "rationale": "Dependencies and ownership are consistent; minor loose ends, e.g. the Phase 1 single-user editor and the undo note 'fix it soon after step 3' placed in Phase 2."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "run randomized tests with several in-memory copies of the document, sending edits late, out of order and twice. Done when: thousands of random runs all end with identical copies.",
+      "rationale": "Riskiest merge correctness is tested early with checkable criteria and hash-drift detection in production, but load and perf criteria are not quantified."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Targets: how many editors per document, maximum document size, acceptable delay, and whether you need offline editing and version history.",
+      "rationale": "Unknowns are listed as decisions to make, with conditional branches, but no concrete defaults or sensitivity analysis are given."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Detect when copies drift apart by having clients compare hashes of the document.",
+      "rationale": "Covers adversarial input (schema, size, rate limits), reconnects, drift and fault tests, but detection and recovery are thin and revocation, corruption and poison updates are not addressed."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Metrics such as how long edits take to reach other users, how often clients reconnect and how long documents take to load.",
+      "rationale": "Only metrics are mentioned; no deployment, rollback, migration, alerting or ownership plan."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "which makes documents bigger",
+      "rationale": "Cost is barely addressed beyond a build-vs-hosted shortcut and storage growth from disabled GC."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "settle the hard-to-reverse decisions first... If you change it later, you have to migrate every stored document.",
+      "rationale": "Explicitly front-loads the hard-to-reverse choices (sync library, schema, history), though exit paths and schema versioning are not detailed."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Shortcut: If you use Yjs + Tiptap + Hocuspocus (a ready-made Yjs server), or a hosted service like Liveblocks",
+      "rationale": "Starts simple, defers scale and product features, and recommends off-the-shelf parts; suggestion mode and the Redis option are reasonably deferred."
+    },
+    {
+      "dim": 11,
+      "score": 3,
+      "evidence": "Done when: two browsers can edit together live, and a dropped connection catches up with nothing lost.",
+      "rationale": "Ordered by dependencies with checkable done-criteria and parallelization, but some steps are vague and there is no contingency if early results disappoint."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 2,
+      "evidence": "Use Yjs by default. Pick OT only if you want one authoritative server and don't need offline editing."
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Document schema: the block types, text formatting and embeds a document can contain."
+    },
+    {
+      "id": "P5-03",
+      "status": 2,
+      "evidence": "sending edits late, out of order and twice. Done when: thousands of random runs all end with identical copies."
+    },
+    {
+      "id": "P5-04",
+      "status": 2,
+      "evidence": "Store periodic snapshots plus a log of every edit, and shrink the log from time to time."
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "send everyone editing the same document to the same server, even if you start with only one server."
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Keep a local copy in the browser (IndexedDB), queue edits while offline, merge them on reconnect"
+    },
+    {
+      "id": "P5-07",
+      "status": 1,
+      "evidence": "Enforce owner, editor, commenter and viewer roles on the server."
+    },
+    {
+      "id": "P5-08",
+      "status": 2,
+      "evidence": "A restore should be applied as a new edit, never by rewriting the edit log."
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "over a separate channel that isn't saved."
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Prove that edits made at the same time merge correctly before building anything on top."
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "Keep large documents fast."
+    },
+    {
+      "id": "P5-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "a CRDT (Yjs, Automerge) or OT/a central server that orders edits (ShareDB, prosemirror-collab)"
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Single-user editor on the real schema. Every edit goes through the document model"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "restarting the server loses no edit the server had confirmed."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "This is cheap with a CRDT and hard with OT."
+    }
+  ],
+  "note": "Strong risk-ordered build sequence with early convergence testing and durable logging; weak on operations, cost, protocol versioning and quantified assumptions.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2092,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9874
+  },
+  "cost_usd": 0.045613,
+  "latency_s": 26.647,
+  "raw_file": "raw/judge-6babd8bc8af7.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "754395614bd5.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "754395614bd5",
+  "blind_sha256": "d635a0e6d8896b6da5ca0a19a384e50b2b363688ced63197e0035d7fbc5fda13",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 296,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "CI's only production-related write is a pull request that bumps the image digest in the environment repo. CI holds no cluster credentials",
+      "rationale": "GitOps pull, digest promotion, expand/contract and the rollback-doesn't-undo-schema point are accurate; minor issues like a pre-sync migration job and 'kill policy controller' fail-closed nuance don't break the design."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "a shared build, test, sign and deploy path for 50 services: CI on short-lived runners, an artifact registry, GitOps continuous delivery",
+      "rationale": "Covers core needs with phased waves and explicit deferrals; gaps include flaky tests, contract testing and test environments, and the sequencing is credible."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Exactly one authoritative deployer per service: the old CI before cutover, the environment repo after.",
+      "rationale": "Trust model, ownership, consistency choices and rollback are honored consistently across decisions, phases and validations; I can't name a significant inconsistency."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Red-team test from a feature-branch job and a fork pull request... All 5 attempts fail, and the security lead signs off",
+      "rationale": "Risk-specific validations (red team, canary fault injection, break-glass game day, template shadow, retirement restore) are done early with thresholds labeled as assumptions, though post-launch validation is lighter."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "ASSUMPTION: a common developer feedback target; confirm with eng leadership. The per-service floor is a BASELINE taken in Phase 0",
+      "rationale": "Assumptions, unknowns and baselines are labeled, with explicit changes to the design if they're wrong and ranked missing inputs."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Fail-closed admission for unsigned images. Break-glass path: a KMS key held by two named people, a pull-through registry mirror, full audit.",
+      "rationale": "Covers compromise, platform outage, bad canary, schema rollback, and hidden old-CI duties with detection and recovery; flaky tests, duplicate or partial runs and dependency poisoning are thinner."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Staff the platform on-call rotation.",
+      "rationale": "Deploy, rollback, alerting, ownership and on-call are concrete and sized to 4–6 engineers, but SLOs are left unknown until Phase 4 and runbooks or upgrade procedures for the platform itself are thin."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "CI compute + storage cost | — | UNKNOWN: finance or eng leadership supplies a monthly budget by the end of Phase 0.",
+      "rationale": "Cost is a tracked budget with a V3 projection check and retention policies, but there's no compute cost estimate, the hosted versus self-hosted trade-off is thin, and concrete cost controls are limited."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: if CI holds prod credentials and is compromised, the harm cannot be undone",
+      "rationale": "Reversibility is rated per decision, with validation ordering, revisit triggers, fallbacks, and a named point of no return guarded by restore rehearsal."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "managed CI + runner controller + Argo CD + policy controller + managed registry; no custom platform services",
+      "rationale": "Adopts existing tools and defers portal, previews and multi-cluster; signing, SBOM, provenance and canary analysis add some weight but fit the risk."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Cut over about 8 low-criticality services with the per-service checklist: disable the old job, auto-sync the Argo app, first deploy as a canary",
+      "rationale": "Phases are ordered by dependency with unlocks, exit checks, rollback and fallback at each step, and a concrete Phase 0 slice."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P3-01",
+      "status": 1,
+      "evidence": "Versioned, reusable pipeline templates plus a small `service.yaml` per repo."
+    },
+    {
+      "id": "P3-02",
+      "status": 2,
+      "evidence": "Run them alongside the old pipelines on 5 representative services... Prod stays on old CI."
+    },
+    {
+      "id": "P3-03",
+      "status": 2,
+      "evidence": "Build once, then promote the same immutable image digest through each environment."
+    },
+    {
+      "id": "P3-04",
+      "status": 2,
+      "evidence": "Per-repo OIDC roles... Secrets from the secret manager, never stored in CI."
+    },
+    {
+      "id": "P3-05",
+      "status": 2,
+      "evidence": "KMS-backed signing plus provenance... Fail-closed admission for unsigned images."
+    },
+    {
+      "id": "P3-06",
+      "status": 2,
+      "evidence": "Database migrations run as a pre-sync job using expand/contract"
+    },
+    {
+      "id": "P3-07",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P3-08",
+      "status": 1,
+      "evidence": "Preview environment per pull request: when contention for staging is measured as a delivery bottleneck."
+    },
+    {
+      "id": "P3-09",
+      "status": 1,
+      "evidence": "Runner autoscaling and caching."
+    },
+    {
+      "id": "P3-10",
+      "status": 1,
+      "evidence": "Replay the BASELINE peak-hour job mix at 2× for 1 hour"
+    },
+    {
+      "id": "P3-11",
+      "status": 2,
+      "evidence": "Set platform SLOs and burn-rate alerts... lead-time and change-failure dashboard"
+    },
+    {
+      "id": "P3-12",
+      "status": 2,
+      "evidence": "CODEOWNERS, branch protection, bot-only digest bumps... Audit logs sent to the SIEM."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P3-T1",
+      "present": false,
+      "evidence": "Start each wave only after the previous wave's exit check passes."
+    },
+    {
+      "id": "P3-T2",
+      "present": false,
+      "evidence": "promote the same immutable image digest through each environment"
+    },
+    {
+      "id": "P3-T3",
+      "present": false,
+      "evidence": "CI holds no cluster credentials"
+    },
+    {
+      "id": "P3-T4",
+      "present": false,
+      "evidence": "Each wave: service-team time scheduled; Cut over per service with checklist"
+    },
+    {
+      "id": "P3-T5",
+      "present": false,
+      "evidence": "no custom platform services"
+    }
+  ],
+  "note": "Strong, risk-ordered, well-validated plan with a GitOps trust boundary and a brownfield migration; it is weak on cost quantification, flaky tests, contract tests and test environments.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2270,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 16186
+  },
+  "cost_usd": 0.063173,
+  "latency_s": 25.255,
+  "raw_file": "raw/judge-754395614bd5.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "21b0769b5f8f.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "21b0769b5f8f",
+  "blind_sha256": "a8c07c8db10382ac8d23dfb5fc58622b800367498b9c71c0fda04a346763a5cf",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 243,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "OT: needs a central server to order edits, and the server is harder to build correctly.",
+      "rationale": "Mostly correct on Yjs/CRDT choice, but says the CRDT server can be simpler and that CRDT is the default, and glosses over durability-ack, intent-preservation limits, and tombstone/metadata overhead."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Decide on maximum users per document, maximum document size, whether offline editing is needed, and how much history to keep.",
+      "rationale": "Covers the main capabilities and a sensible build order, but defers scope decisions rather than making them and omits sizes, revocation, and version compatibility."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Every edit should go through the CRDT, so you have one source of truth.",
+      "rationale": "A recognizable consistent design, but server-side ownership, routing, and revocation are loosely sketched; offline is placed in Phase 6 although local persistence is foundational."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "two browsers edit at once, and you simulate network drops and messages arriving out of order (fault injection). Both copies must end up the same.",
+      "rationale": "Convergence and restart tests are placed early and fit the domain, but there are no measurable targets, no property-based duplication testing, and little production validation beyond a drift alert."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Decide on maximum users per document, maximum document size, whether offline editing is needed",
+      "rationale": "Assumptions are left as decisions to be made, with no stated defaults or sensitivity to what would change."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "alerts if two copies of a document drift apart",
+      "rationale": "Only a few failures are named (drift, client-only permission checks, restart), with little concrete detection, containment, or recovery and no handling of malicious updates, corruption, or backpressure."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Add observability: sync delay, number of connections, and alerts if two copies of a document drift apart.",
+      "rationale": "Observability is mentioned briefly, but deployment, rollback, migrations, ownership, and incident response are absent."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "These answers decide your infrastructure.",
+      "rationale": "Cost is essentially not discussed beyond rate limits and size caps; there is no build-vs-buy or cost-driver reasoning."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Decisions you can't easily change later (before writing code)",
+      "rationale": "It recognizes the merge approach and document model as one-way decisions and puts them first, but misses persisted format, ID schemes, protocol versioning and exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Recommendation: use Yjs unless you have a specific reason not to.",
+      "rationale": "It uses an existing library and a lean phased build with little speculative machinery, though it leaves some essentials thin."
+    },
+    {
+      "dim": 11,
+      "score": 2,
+      "evidence": "Phase 0 decisions → editor + CRDT working locally → sync → persistence → permissions.",
+      "rationale": "Ordering is concrete with some checkable tests, but the decisions are left open, there are no exit criteria, and the trailing line about sorting a ticket list is irrelevant."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P5-01",
+      "status": 1,
+      "evidence": "use Yjs unless you have a specific reason not to."
+    },
+    {
+      "id": "P5-02",
+      "status": 1,
+      "evidence": "Decide whether documents are plain text, rich text, or a block structure (like Notion)."
+    },
+    {
+      "id": "P5-03",
+      "status": 1,
+      "evidence": "you simulate network drops and messages arriving out of order (fault injection). Both copies must end up the same."
+    },
+    {
+      "id": "P5-04",
+      "status": 1,
+      "evidence": "Store document updates in a database (Postgres or a key-value store) as an append-only log."
+    },
+    {
+      "id": "P5-05",
+      "status": 1,
+      "evidence": "Either route each document to one server (sticky routing by document ID) or use pub/sub (e.g., Redis) between servers."
+    },
+    {
+      "id": "P5-06",
+      "status": 2,
+      "evidence": "Save a local copy in the browser (IndexedDB), so documents open instantly and can be edited offline."
+    },
+    {
+      "id": "P5-07",
+      "status": 1,
+      "evidence": "checked on the server for every incoming update."
+    },
+    {
+      "id": "P5-08",
+      "status": 1,
+      "evidence": "Undo should affect only your own edits, not other people's."
+    },
+    {
+      "id": "P5-09",
+      "status": 1,
+      "evidence": "Keep this data temporary and separate from the document. It should never be saved."
+    },
+    {
+      "id": "P5-10",
+      "status": 2,
+      "evidence": "Phase 0 decisions → editor + CRDT working locally → sync → persistence → permissions."
+    },
+    {
+      "id": "P5-11",
+      "status": 1,
+      "evidence": "Add rate limits, limits on update size, and a cap on document size."
+    },
+    {
+      "id": "P5-12",
+      "status": 0,
+      "evidence": "none"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P5-T1",
+      "present": false,
+      "evidence": "none"
+    },
+    {
+      "id": "P5-T2",
+      "present": false,
+      "evidence": "use Yjs unless you have a specific reason not to."
+    },
+    {
+      "id": "P5-T3",
+      "present": false,
+      "evidence": "Connect the editor to the CRDT locally. Every edit should go through the CRDT"
+    },
+    {
+      "id": "P5-T4",
+      "present": false,
+      "evidence": "Store document updates in a database (Postgres or a key-value store) as an append-only log."
+    },
+    {
+      "id": "P5-T5",
+      "present": false,
+      "evidence": "CRDT (Yjs, Automerge): handles offline editing and peer-to-peer well, and the server can be simpler."
+    }
+  ],
+  "note": "A sensible, lean, library-based CRDT build order with early convergence tests, but thin on durability semantics, revocation, versioning, failure modes, assumptions, cost and operations.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2041,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9901
+  },
+  "cost_usd": 0.0451705,
+  "latency_s": 28.064,
+  "raw_file": "raw/judge-21b0769b5f8f.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "6000ff99eb6f.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "6000ff99eb6f",
+  "blind_sha256": "2b8f99b15ae8ae4599fce819b87cdcbc17e32b58292fa9f09b739dbb80bd2003",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 466,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Because Kinesis delivers at least once, this gives an exactly-once effect within the 35-day window.",
+      "rationale": "Mechanisms (RLS with transaction-local set_config, Stripe idempotency keys, re-fetch on webhook, decimal arithmetic) are accurate, with minor issues like 'bit-for-bit' claims and a few unverified vendor details such as Stripe Tax on connected accounts, which the plan flags for a spike."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "I took \"multi-tenant SaaS billing system\" to mean a billing platform sold as SaaS to many businesses (tenants).",
+      "rationale": "It resolves the ambiguity explicitly, covers core capabilities, and gives explicit, reasoned non-goals and deferrals with triggers."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "All money-affecting state changes are single Postgres transactions inside one module call chain",
+      "rationale": "Ownership, data flows and consistency choices are applied consistently across components, flows and decisions, with no notable contradictions."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "S2 ... leak test (1,000 concurrent requests across 50 tenants, assert no cross-reads)",
+      "rationale": "Early spikes target the riskiest assumptions, domain-specific tests (golden, property, shadow re-rating, invariants, ground-truth load checker) are used, and checks continue in production. Some thresholds are invented but labeled as assumptions."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "| A2. Tenants already use Stripe ... | We would need a PSP abstraction ... adding 6–10 weeks | Design-partner interviews in weeks 1–2; spike S4 |",
+      "rationale": "Assumptions are tabulated with impact-if-wrong and validation, numbers are labeled assumptions, and open questions carry defaults."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "If a call times out, the attempt becomes `unknown`. Nothing retries it until the reconciler has looked it up in Stripe.",
+      "rationale": "Covers unknown payment outcomes, duplicates, out-of-order webhooks, tax outage, worker crash, poison records, key theft, insider access and card testing, each with detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "Alerts tied to what users notice, each linked to a runbook",
+      "rationale": "Covers deployment with auto-rollback, expand/contract migrations, kill switches, meaningful alerts, on-call rotation, a billing-day staffing plan, restore drills and ownership, all sized to a 6-person team."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Datadog | ≈ $1–2.5k (largest variable; set log index quotas)",
+      "rationale": "Run costs are given as ranges with controls, and build-vs-buy is noted. Build staffing cost and tax fees are thin and the scaling cost curve is lightly covered."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Write ADRs for D1, D2, D7, D8, and D9 (the hard-to-reverse ones) in `docs/adr/` so they can be challenged in week 1",
+      "rationale": "A reversibility column covers every decision, hard choices get early validation and ADRs, and adapters and interfaces isolate the easy ones."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "a 6-person team can't run 8 services.",
+      "rationale": "A modular monolith with a single separate ingest service is well justified, but Kinesis plus Firehose, Datadog, Auth0 and a hash-chained audit log add some weight at launch scale."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "T7 ... Unit test: a query without tenant context returns 0 rows. Integration test: key for tenant A only ever sees A.",
+      "rationale": "It gives a task list with locations, done-when criteria and dependencies, time-boxed spikes with plan-changing outcomes, and ordering justified by the critical path."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "integer minor units for amounts, `numeric(38,12)` for unit prices, decimal.js, round once per line half-up"
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "a trigger rejects `UPDATE`/`DELETE` on finalised invoice rows and lines, except for status transitions. Corrections are credit notes."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "The Stripe idempotency key is the `payment_attempt.id`. ... `INSERT … ON CONFLICT DO NOTHING` on `psp_events(stripe_event_id)`"
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "Card data | none (Stripe tokens only) | SAQ A scope ... Verify the signature"
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "RLS enabled and forced ... app_rw, which has no BYPASSRLS ... tenant A tries every endpoint with tenant B's IDs"
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "ON CONFLICT (tenant_id, event_id, event_date) DO NOTHING ... prior-period adjustment ... nightly sample: usage_hourly vs recomputation from raw"
+    },
+    {
+      "id": "P2-07",
+      "status": 2,
+      "evidence": "Catalog with immutable price versions ... proration by seconds within each segment ... anchors on the 29th–31st, daylight saving"
+    },
+    {
+      "id": "P2-08",
+      "status": 1,
+      "evidence": "Tax behind `TaxProvider`. First implementation is Stripe Tax ... gapless per-tenant numbering ... EU e-invoicing deferred"
+    },
+    {
+      "id": "P2-09",
+      "status": 2,
+      "evidence": "retry schedule per tenant (default: days 1, 3, 5, 7), then a terminal action (cancel subscription, mark uncollectible, or leave past_due)"
+    },
+    {
+      "id": "P2-10",
+      "status": 2,
+      "evidence": "Reconciliation (nightly): compare Stripe charges and refunds per connected account against `payment_attempts` and ledger `psp_clearing`."
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "an entitlements or feature-flag service (non-goal)"
+    },
+    {
+      "id": "P2-12",
+      "status": 1,
+      "evidence": "the right call is to buy Stripe Billing, Chargebee, or Orb and build a thin layer for entitlements and usage forwarding."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "floats (rejected)"
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Finalised invoices immutable; corrections only via credit notes"
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "Verify the signature, then `INSERT … ON CONFLICT DO NOTHING` on `psp_events(stripe_event_id)`"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "No card data, ever."
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "Enforced in the database, not only in app code."
+    }
+  ],
+  "note": "Exceptionally thorough, coherent and actionable billing platform plan with explicit assumptions, early spikes, and domain-correct money, ledger and idempotency handling. Weaker areas are cost depth and some launch-time complexity, and it treats tax and the buy option mostly as conditional branches.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2602,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 866,
+    "cache_creation_input_tokens": 34791
+  },
+  "cost_usd": 0.11317870000000002,
+  "latency_s": 35.268,
+  "raw_file": "raw/judge-6000ff99eb6f.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

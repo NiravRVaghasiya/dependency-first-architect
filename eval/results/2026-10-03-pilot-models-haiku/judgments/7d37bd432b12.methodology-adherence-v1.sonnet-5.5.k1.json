@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "7d37bd432b12.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "7d37bd432b12",
+  "blind_sha256": "eb80bcaa7caae632e4c2adf115aacd1330b700d81435388dcc83fd817e2f77a8",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 2,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan is a component catalogue with no phases, so there is no dependency ordering of build steps."
+    },
+    {
+      "dim": 2,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "No Phase 0 or thin end-to-end production slice is defined; the plan describes the full architecture at once."
+    },
+    {
+      "dim": 3,
+      "score": 0,
+      "evidence": "Schema per Tenant (if needed)",
+      "rationale": "Irreversible choices (tenancy model, Kafka, Timescale, gateway) are asserted without defaults and flip conditions; the one hedge has no trigger."
+    },
+    {
+      "dim": 4,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There is no work ordering within phases, and nothing sequences widest-impact work ahead of leaf work."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Row-Level Security (RLS) ... Webhook Signature Verification HMAC-SHA256 with tenant-specific secret",
+      "rationale": "Security content is substantial but sits in standalone sections, not threaded through phases."
+    },
+    {
+      "dim": 6,
+      "score": 1,
+      "evidence": "Prometheus metrics, ELK Stack for logging, Jaeger for distributed tracing",
+      "rationale": "Observability tools are listed in the deployment section only, with no day-zero or per-phase treatment."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Build Docker Image → Deploy to Staging → Canary Deployment",
+      "rationale": "A CI/CD pipeline and Kubernetes are mentioned, but reproducibility (IaC, pinned builds, data and env parity) is not addressed and nothing is phased."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Chaos Testing: Database failure simulation, Payment gateway timeout, Kafka broker failure",
+      "rationale": "Idempotency, retries and chaos tests appear, but as standalone items rather than threaded across phases."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never says whether an AI layer applies, so the N/A declaration is missing."
+    },
+    {
+      "dim": 10,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "There is no list of deferred work and no pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is a broad component and schema catalogue with no phasing, decision gates or deferral list, so it scores low on the ordering dimensions; only security, observability and resilience get partial credit.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 894,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 14408
+  },
+  "cost_usd": 0.044968,
+  "latency_s": 23.271,
+  "raw_file": "raw/judge-7d37bd432b12.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

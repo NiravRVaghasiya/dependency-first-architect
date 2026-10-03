@@ -1,0 +1,35 @@
+{
+  "schema": "dfa-eval/probe@1",
+  "probe_id": "984ba6a287fd.probe.sonnet-5.5",
+  "blind_id": "984ba6a287fd",
+  "blind_sha256": "9900f7bf9cc9fc28b6099ad58bfcd72c8cdacff2908c5ccc4e34fe6e7aec9f93",
+  "judge": "sonnet-5.5",
+  "order_index": 4,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "p_methodology": 0.1,
+  "cues": [
+    "Opens with conversational framing ('I'll outline a detailed plan... let me break it down') typical of a default chat response",
+    "Ends with a menu of follow-up offers ('Would you like me to: 1. Deep dive...') rather than a committed plan",
+    "Generic, template-like structure: architecture ASCII diagram, tech stack, phases by weeks, risks table, with no verification or validation steps tied to tasks",
+    "Emoji checkmarks and heavy bolding; phase 1 items pre-checked [x] oddly for a plan that hasn't started",
+    "Inconsistent confidence thresholds (Auto-Fix >85% vs Bug-Critical create PR >70%) and no stated assumptions, open questions or explicit success criteria per step"
+  ],
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 325,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4877
+  },
+  "cost_usd": 0.0154505,
+  "latency_s": 29.591,
+  "raw_file": "raw/probe-984ba6a287fd.probe.sonnet-5.5.txt"
+}

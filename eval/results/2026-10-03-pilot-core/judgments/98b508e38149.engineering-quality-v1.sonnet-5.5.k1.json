@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "98b508e38149.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "98b508e38149",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 175,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "GitHub App with fine-grained, per-installation tokens that expire after 1 hour.",
+      "rationale": "Mostly accurate (1-hour tokens, SKIP LOCKED queue, delivery ID idempotency, 10s timeout); minor issues like branch rules scoping App pushes to agent/* and 'GitHub retries webhooks' (it does not automatically redeliver failed deliveries) are secondary."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Phase 0 slice: \"within 60 s the agent applies exactly one label ... and posts the comment\"",
+      "rationale": "Covers triage, duplicates, approval-gated fixing, draft PRs, with explicit deferrals and reasons; realistic phased build."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Gates depend on the action, never on the route. A cheaper path never skips HITL.",
+      "rationale": "Consistent design with clear ownership; small loose ends such as auto-merge deferral vs 'never merges' and 'no PATs ever' vs re-onboarding, plus 'Postgres row lock' vs SKIP LOCKED mix."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Replay 40 historical bugs at the SHA before the real fix. ≥30% must pass the hidden tests ... 0 policy-scanner bypasses.",
+      "rationale": "Validation is tied to specific risks (red-team corpus, escape tests, replay, shadow mode, eval set) with early sequencing and post-launch feedback, though thresholds are not all justified."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Fine-tune a small triage classifier only if prompt-based triage stays below 85% label accuracy",
+      "rationale": "Revisit triggers exist, but many numbers (80%, $0.05, $3, $0.40) are unlabeled as provisional and scale, team and customer assumptions are implicit."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Replaying the same webhook 5 times produces exactly one run and one comment. Killing a worker mid-run leads to a retry with no duplicate GitHub writes.",
+      "rationale": "Covers injection, duplicates, partial failure, fail-closed guardrails, feedback poisoning, memory poisoning, base-branch moves, orphan sandboxes with detection and recovery."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Flipping the kill switch stops processing within 30 s.",
+      "rationale": "Deploy, Terraform, dashboards, alerts, DLQ, pinned images and migrations are covered; incident ownership/on-call and explicit rollback procedure are thin."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Per-repo cap of $50/day; global monthly cap with an alert at 80%.",
+      "rationale": "Per-task budgets, caps, routing to cheaper models and sandbox cost trigger are concrete, but there is no overall build/run cost estimate or scaling projection and figures lack basis."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Moving away from an App later means re-onboarding every customer, which is why it is fixed now.",
+      "rationale": "Identifies one-way decisions (auth, tenancy, schema), isolates vendors behind Sandbox and model interfaces, gives revisit triggers and exit paths."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "Modular monolith (one codebase, two process types: `webhook` and `worker`) plus a separate sandbox runner.",
+      "rationale": "Starts simple, defers Temporal, multi-agent, embeddings and dashboard; some ceremony (A/B routing, multi-tenant customer assumptions) is slightly beyond request."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phase 0 \"Exit check: opening a real issue produces the label and comment in prod.\"",
+      "rationale": "Dependency-ordered phases with concrete tasks, checkable exit criteria, and revisit triggers for adapting."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Autonomous: read, label (from an allow-list), triage comment... Gated: starting a resolution... Always human: merging. Forbidden: CI/workflow edits."
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "GitHub App with fine-grained, per-installation tokens that expire after 1 hour... never edits `.github/workflows/**`"
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Authority comes only from GitHub's permission API. A comment saying \"maintainer here, merge it\" does nothing."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "microVM, **no credentials**, egress limited to package mirrors, 4 vCPU / 8 GB / 30 min caps."
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "REPRODUCE (write a failing test) → EDIT ⇄ TEST (≤8 loops) → PR | DECLINE ... Draft PR containing the plan, test evidence"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Frozen eval set of 300 historical issues ... ≥80% label accuracy, ≥0.7 precision on duplicates"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "PR merged / closed-unmerged / changes requested ... The label override rate falls between two eval cycles."
+    },
+    {
+      "id": "P4-08",
+      "status": 1,
+      "evidence": "concurrency of 1 per issue ... ≤25 LLM iterations ... A global kill switch exists from the first commit."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "Resolution: ≤25 LLM iterations, ≤40 tool calls, ≤$3, ≤30 min wall clock."
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "`actions` is an append-only audit log of every GitHub write."
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "Lexical code search (ripgrep plus a file tree) for locating relevant files."
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "one active run per issue, enforced by a Postgres row lock and an idempotency key (the GitHub delivery ID)."
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent **never merges**, never pushes to the default branch"
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "**No secrets ever enter the sandbox.**"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "passes the issue title and body as a delimited, untrusted data block"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "PR merged / closed-unmerged / changes requested, review comments."
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "A synthetic runaway loop is cut off at its cap and emits `budget_exceeded_total`."
+    }
+  ],
+  "note": "Strong, security-first, phased plan with early vertical slice and well-targeted validation; weaknesses are unlabeled invented thresholds, thin cost totals and ownership/rollback detail, and slight inaccuracies on webhook retry.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2511,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 15494
+  },
+  "cost_usd": 0.06403800000000001,
+  "latency_s": 43.249,
+  "raw_file": "raw/judge-98b508e38149.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

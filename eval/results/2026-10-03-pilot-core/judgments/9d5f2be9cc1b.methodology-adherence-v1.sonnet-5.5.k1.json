@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9d5f2be9cc1b.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "9d5f2be9cc1b",
+  "blind_sha256": "3fdc68dd41be0eb222cf7530d3aa1a69df7ea94b62fb269fc6cfbe76543f0e8a",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 252,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: Phase 1's schemas, entity keys and idempotent event stream.\"",
+      "rationale": "Each phase lists explicit dependencies and proceeds substrate→events→features→rules→review→ML→hardening, with exit checks proving prior layers."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "\"a live production authorization from the switch, run in shadow mode... Real traffic, no customer impact.\"",
+      "rationale": "Phase 0 is a real end-to-end production path (ingress, decision, log, dashboards) with an exit check."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "\"Availability on the decision path... | Measured fraud losses from stale counters exceed the agreed loss target\"",
+      "rationale": "A table of irreversible decisions with defaults and concrete flip conditions, plus a flagged assumption."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "\"Entity identity model... Everything else joins on these keys, so this goes first.\"",
+      "rationale": "Tasks within phases are explicitly ordered by blast radius, e.g., contract first, policy/fallback first in Phase 3, taxonomy first in Phase 4."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "\"mTLS to the switch. Tokenized card number only. Secrets in Vault. Least-privilege IAM. CI blocks full card numbers in logs.\"",
+      "rationale": "Concrete security measures for every phase starting with Phase 0."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"OpenTelemetry traces. Request-rate, error and duration metrics, p99 histogram, decision counts per outcome.\"",
+      "rationale": "Observability is concrete in Phase 0 and each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "\"Terraform, images pinned by digest, config in git, GitOps deploys.\"",
+      "rationale": "Reproducibility is specific per phase, including schemas, feature code, rulesets, model snapshots and environments."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "\"Hard timeout with fallback response. 2+ replicas across availability zones. Health and readiness probes.\"",
+      "rationale": "Failure handling is concrete in every phase from 0 onwards, not just at the end."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"Guardrail defense... Latency and cost budget... Human-in-the-loop gating. Retrieval → feature store... Model access... Memory... Orchestration... Routing... Feedback\"",
+      "rationale": "The ML analogue lists defenses, budgets and HITL before retrieval→model→memory→orchestration→routing→feedback, with exit checks, though the phase order places ML later and the layers are translated rather than built in phases."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Graph or sequence models (GNNs, transformers): pull forward if tree-model recall plateaus and fraud rings exceed X% of losses.\"",
+      "rationale": "Nine deferred items each have a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A strong, coherent plan with concrete content on every dimension; only minor looseness is that the AI-layer ordering in §6 is a checklist mapped loosely to phases.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1187,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 9041
+  },
+  "cost_usd": 0.0344805,
+  "latency_s": 15.387,
+  "raw_file": "raw/judge-9d5f2be9cc1b.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

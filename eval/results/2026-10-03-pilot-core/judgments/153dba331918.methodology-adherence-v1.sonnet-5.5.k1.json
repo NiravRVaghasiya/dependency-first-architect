@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "153dba331918.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "153dba331918",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 122,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: Phase 1 durable run state (to pause and resume) and the audit log\"; Phase 3 \"Depends on: Phase 2 defenses being proven\"",
+      "rationale": "Each phase names explicit dependencies and proof exit checks; order runs substrate → defenses → triage → sandbox → resolution → routing → feedback."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "within 60 s the agent applies exactly one label from {bug, feature, question, docs} and posts the comment",
+      "rationale": "Phase 0 is a real end-to-end prod path (webhook→queue→LLM→GitHub) deployed via Terraform with exit check in prod."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Auth model ... Default ... Flip condition; \"Adopt Temporal ... when runs exceed about 8 steps ... (>1% of runs)\"",
+      "rationale": "Comprehensive table of irreversible decisions each with default and concrete flip condition, including AI-specific ones."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phases \"ordered by dependency; within a phase, widest blast radius first\"; Phase 1 tenancy/schema first, Phase 5 state machine before push/PR details",
+      "rationale": "Within phases, wide-impact items (tenancy, tool allow-list before HITL, isolation policy before clone/run) come first, though a few orderings are loose."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: \"HMAC webhook check; minimal App scopes; secrets in a secret manager; ZDR LLM; author allow-list; kill switch\"",
+      "rationale": "Concrete security per phase 0–7 in the cross-cutting table and in phase tasks."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "\"An OpenTelemetry trace runs webhook → queue → LLM → GitHub API, carrying run_id\" plus metrics, dashboard and alert",
+      "rationale": "Observability is concrete in Phase 0 and specified for every later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Phase 0: \"Image pinned by digest; Terraform; prompt versioned in git; model snapshot ID pinned\"",
+      "rationale": "Reproducibility treated concretely in each phase (migrations, frozen evals, pinned base images, replay, versioned config)."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 1: \"Idempotency keys; backoff with jitter; DLQ; per-issue lock; rate-limit-aware client\"",
+      "rationale": "Failure handling appears concretely from Phase 0 through Phase 7, not just at the end."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "Phase 2 \"AI defenses and budgets\" with HITL gate precedes Phase 3 retrieval + model access, Phase 4 memory, Phase 5 orchestration, Phase 6 routing, Phase 7 feedback",
+      "rationale": "Defenses, budgets, HITL come before capabilities, then retrieval → model access → memory → orchestration → routing → feedback in exactly the right order."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "\"Multi-agent split ...: when the single loop plateaus on evals and traces show ... >25% of declined runs.\"",
+      "rationale": "Explicit deferred list with concrete pull-forward conditions for nearly every item."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Very strong plan: thin prod skeleton, dependency-proven phases, defenses-before-capability AI ordering, per-phase cross-cutting matrix, and explicit flip/pull-forward triggers.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1323,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 9328
+  },
+  "cost_usd": 0.036670999999999995,
+  "latency_s": 37.949,
+  "raw_file": "raw/judge-153dba331918.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "53e1509201a2.engineering-quality-v1.fable-5.k1",
+  "blind_id": "53e1509201a2",
+  "blind_sha256": "783523fa2a4d6f339e6e65784c4e7580834a70b940bbc676b61feb70330a2861",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 335,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 4,
+      "evidence": "Because `workflows` is withheld, GitHub itself rejects any change to workflow files.",
+      "rationale": "Precise on the subtle facts plans usually get wrong (no automatic webhook redelivery, installation-token rate limits, Fargate microVM isolation and no Docker-in-Docker, workflow-permission enforcement), with only trivial imprecision (e.g. 'Contents: read & write (branches only)')."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "it **resolves** issues by writing a fix in an isolated sandbox and opening a **draft pull request**",
+      "rationale": "Covers triage and resolution exactly as asked, interprets 'autonomous' sensibly as graduated autonomy with an explicit path to auto mode, and all exclusions (merging, multi-tenant, GHES) are explicit with reasons."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "Only the GitHub Gateway can write to GitHub, and it accepts only a short list of typed actions.",
+      "rationale": "Trust zones, a single-writer rule per table, a system-of-record table, and the capability model are applied consistently across every section with no contradictions found."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "A back-test replays historical issues that were fixed by merged PRs and checks whether the agent's fix passes the real fix's tests.",
+      "rationale": "The riskiest assumption (fix quality) is tested in week 1 before infrastructure exists, adversarial and triage evals gate CI with stated thresholds marked provisional, a contamination caveat is noted, and production sampling continues validation after launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Every default is marked **[A#]** where it first appears and is listed in Section 5.",
+      "rationale": "All ten assumptions carry impact-if-wrong and a validation plan, numbers are labeled as unmeasured or assumed, and the plan ranks which open questions would change the design most."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "`CreateBranch` succeeds but `OpenDraftPR` times out. On retry, the gateway sees the branch exists with the expected commit SHA",
+      "rationale": "Covers duplicates, partial failures, worker crashes, lost webhooks, provider outages, prompt injection, secret-leaking PR CI, cost-exhaustion abuse and reviewer over-trust, each with concrete detection and recovery; only explicit bot-to-bot loop handling is left implicit."
+    },
+    {
+      "dim": 7,
+      "score": 4,
+      "evidence": "**Kill switch** (global or per repository, within 60 s, no deploy).",
+      "rationale": "Deploy/rollback via image tags, Alembic migration discipline, runbook-linked alerts on domain-meaningful signals, a restore drill, named ownership, and a business-hours-only support model justified by graceful degradation to human triage."
+    },
+    {
+      "dim": 8,
+      "score": 4,
+      "evidence": "Fix attempts are expected to cost $1–8. This is *unmeasured* and S1 will produce real numbers.",
+      "rationale": "Identifies model spend as the dominant driver, defines cost per merged PR as the real metric, enforces hard per-attempt/daily caps in a budget gateway, and labels every estimate's basis or lack of one."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Hard to loosen safely, easy to tighten",
+      "rationale": "Every key decision carries a reversibility rating and a 'revisit if' trigger, hard-to-reverse choices (central service shape, capability model, language) get the most scrutiny, and vendor coupling is isolated behind ResolverEngine/SandboxRunner interfaces with explicit exits."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "We chose Postgres over SQS because it is one fewer system, transactional enqueue happens alongside the state write, and the volume is tiny.",
+      "rationale": "Each component is justified by a stated driver (the extra deployables exist for trust-zone reasons), deliberate shortcuts are listed with growth triggers, and nothing essential is omitted."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "an integration test kills a worker mid-job and a second worker completes it after the lease expires",
+      "rationale": "Twenty-plus tasks with checkable done-when criteria, dependency-justified ordering, day-1 long-lead items, and spikes whose 'changes the plan if' clauses plus a branched go/no-go rule say exactly how the plan adapts to bad results."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Each repository moves through four autonomy levels (`off → shadow → assist → auto`), controlled by reviewed config and backed by a kill switch"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "**No** `workflows`, `administration`, `secrets`, or `members` permissions. Because `workflows` is withheld, GitHub itself rejects any change to workflow files."
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Safety comes from what the agent is allowed to do, not from prompt instructions."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "each attempt runs in its own Fargate task, which AWS isolates in a dedicated microVM. **No task IAM role.**"
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "the patch adds or changes at least one test, *or* the harness reports a reproduction test that fails before the patch and passes after it"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "**Triage:** 200–300 closed issues per pilot repository, labelled with the labels maintainers eventually applied."
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Label overridden, PR merged/closed, review count, time to merge"
+    },
+    {
+      "id": "P4-08",
+      "status": 2,
+      "evidence": "≤ 60 harness steps, ≤ 45 minutes wall clock, ≤ $8 in model spend"
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "HMAC-signed, recording attempt ID, model allow-list, dollar cap, and expiry (60 min)."
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "Every write to GitHub passes through one module and is recorded in the audit log."
+    },
+    {
+      "id": "P4-11",
+      "status": 2,
+      "evidence": "a tool configuration that allows file read/edit, search, and shell inside the workspace"
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "Unique `idempotency_key` = `{repo}:{issue}:{kind}:{trigger_id}`"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "A human always reviews and merges. The agent never merges, never closes issues"
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "**No GitHub credential ever enters the sandbox.**"
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "wrapped in marked \"untrusted content\" blocks"
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "The number that matters is cost per *merged* PR, because failed attempts count too."
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "≤ 60 harness steps, ≤ 45 minutes wall clock, ≤ $8 in model spend (enforced by the Model Gateway, not only the harness)"
+    }
+  ],
+  "note": "An exemplary plan: technically precise, capability-based containment avoids every trap, the riskiest assumptions are validated in week 1, and the build sequence is immediately actionable; the only visible gaps are explicit bot-loop handling and coordination on issue edits/concurrent human work.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 9883,
+    "thinking_tokens": 7218,
+    "cache_read_input_tokens": 870,
+    "cache_creation_input_tokens": 33757
+  },
+  "cost_usd": 0.9170024999999999,
+  "latency_s": 141.182,
+  "raw_file": "raw/judge-53e1509201a2.engineering-quality-v1.fable-5.k1.txt"
+}

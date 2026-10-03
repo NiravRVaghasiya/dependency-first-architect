@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "ccdd69b3e8ba.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "ccdd69b3e8ba",
+  "blind_sha256": "ce3f09a210f44b67f0044834c208238f0fcf0b166f2e0ce3b4c826b9054719a6",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 465,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Phase 2 \"Depends on: Phase 1 (entity keys, event-time semantics, replay).\"",
+      "rationale": "Each phase lists explicit dependencies and proofs via exit checks, running substrate → schemas → features/labels → rules → model → review → drift → scale."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "a live production authorization goes from the auth switch to the scorer... inline but non-enforcing",
+      "rationale": "Phase 0 is a real production end-to-end slice across switch, scorer, Redis, Kafka, Flink, Iceberg with deploy and exit check."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Consistency vs availability | Availability on the scoring path... | Card-testing or burst attacks start exploiting the staleness window",
+      "rationale": "A table of irreversible decisions with defaults and concrete flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Entity identity model (widest blast radius)",
+      "rationale": "Each phase explicitly orders the widest-impact task first and leaf work last."
+    },
+    {
+      "dim": 5,
+      "score": 2,
+      "evidence": "Phase 0: PAN tokenized before scorer; mTLS between switch and scorer; secrets in KMS/Vault",
+      "rationale": "Concrete security controls are given for every phase from 0 to 8."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "An OpenTelemetry trace ID is carried from the switch through the scorer and Redis, into the Kafka header, and on to Flink.",
+      "rationale": "Observability is concrete in Phase 0 and each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Terraform + GitOps; image pinned by digest; flag config in git",
+      "rationale": "Reproducibility is addressed concretely in every phase, including pinned snapshots, byte-identical replay and lineage."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "30 ms timeout + circuit breaker; non-enforcing; pod-kill test proves zero impact on auths",
+      "rationale": "Failure handling is concrete in every phase, starting with Phase 0."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "N/A as defined (no LLM, no agent). This is a classical ML system",
+      "rationale": "The request was classified as an AI system, but this is classical ML. The plan explicitly says the LLM layer is N/A, maps the ML equivalents (defenses, budgets, human-in-the-loop, in-process model access, feedback) and orders them sensibly: budget in Phase 0, rules and human gates before the model, feedback last. A strict reader might see this as partial."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Graph and fraud-ring features (or a GNN). Pull forward when ring or mule fraud exceeds about 15% of losses.",
+      "rationale": "Deferred items are explicit and each has a concrete pull-forward condition."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "A very strong plan that scores well on every dimension; the only slight doubt is dimension 9, where the plan declares the LLM layer N/A for a classical-ML system but still covers the ML equivalents.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1134,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8640
+  },
+  "cost_usd": 0.032948,
+  "latency_s": 33.373,
+  "raw_file": "raw/judge-ccdd69b3e8ba.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

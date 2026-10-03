@@ -1,0 +1,182 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9b628afd1392.engineering-quality-v1.fable-5.k1",
+  "blind_id": "9b628afd1392",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "fable-5",
+  "repeat": 1,
+  "order_index": 191,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "combine BM25 (good for error codes, feature names and SKUs) with vector search, top ~30 each, merged with reciprocal rank fusion",
+      "rationale": "Technical mechanisms (RRF, hybrid search, reranking, pgvector, blue/green indexing, embedding versioning) are accurate; the only imprecision is slightly overstating that treating context 'as data' defends against prompt injection, mitigated by having no tools."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "Out of scope for v1: account-specific actions such as refunds, order lookup or password resets. Plan for these as tool calls in v2.",
+      "rationale": "Solves exactly the stated problem, explicitly scopes exclusions with reasons, resolves ambiguities with stated defaults and questions, and is clearly buildable by a small team."
+    },
+    {
+      "dim": 3,
+      "score": 4,
+      "evidence": "have the model return {answer, citations[], confidence, needs_human, reason} so the app can decide what to do next",
+      "rationale": "Components, data flows and responsibilities connect end-to-end (ingestion→index→retrieval→generation→escalation→feedback) with no contradictions; grounding, visibility and versioning choices are honored consistently across sections."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Build a golden dataset before tuning anything... Include about 15–20% questions the docs *can't* answer, to test escalation",
+      "rationale": "Risk-specific validation (retrieval recall, faithfulness, refusal testing, judge calibrated against human labels) runs before commitment, in CI on every change, and continues online with the agent-assist phase de-risking launch."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "I haven't seen your docs or stack, so this plan uses common defaults. The questions at the end are the ones that would change it most.",
+      "rationale": "Assumptions are explicit, targets are labeled 'starting target' and budgets as examples, and the closing questions state which unknowns (volume, auth, compliance, platform) would change the design and how."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "Internal docs leaking | Visibility filter at index time *and* at query time",
+      "rationale": "The major domain failures (hallucinated policies, stale docs, leakage, injection, missed sync events, user frustration) each have concrete detection and mitigation, though subtler cases like duplicate webhook events or index corruption are not covered."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "version prompts, the index and the embedding model, and be able to roll back... blue/green indexes so the live index isn't touched",
+      "rationale": "Tracing, rollback, safe re-indexing and dashboards/runbook are concrete and sized to a small team, but incident ownership and the app's own deployment path are only lightly sketched."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "Cost per conversation | Set a budget, e.g. < $0.02",
+      "rationale": "The dominant driver (inference) is identified with concrete controls (token caps, semantic cache, mid-tier model, rate limits) and per-turn cost tracing, but there is no grounded estimate or scaling calculation, only a provisional budget."
+    },
+    {
+      "dim": 9,
+      "score": 3,
+      "evidence": "Store the embedding model version so you can re-index later",
+      "rationale": "The costliest-to-undo choices (embedding model, index, prompts) have versioning, re-index and rollback paths and the vector-store choice is kept flexible, though reversibility is handled implicitly rather than explicitly weighed per decision."
+    },
+    {
+      "dim": 10,
+      "score": 4,
+      "evidence": "a mid-tier model, such as the GPT-4o-mini, Claude Haiku/Sonnet or Gemini Flash class, is usually enough",
+      "rationale": "Every component (query rewrite for multi-turn, BM25 for error codes, reranker feeding the confidence gate) has a stated justification, agentic complexity is deferred to v2, and no essentials are missing."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "0. Discovery | 1 wk | Audit doc quality and coverage, pull ticket data, build the golden set, pick the stack",
+      "rationale": "Phased build order with durations is justified by dependency and risk (eval harness before tuning, agent-assist before customer exposure), decisions carry specific defaults (chunk sizes, top-k, thresholds), and each phase has checkable results."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P1-01",
+      "status": 2,
+      "evidence": "use webhooks on publish/update/delete if available, plus a nightly full sync to catch anything missed. Deleting an article must remove its chunks."
+    },
+    {
+      "id": "P1-02",
+      "status": 2,
+      "evidence": "Split on headings (H2/H3) first... Keep metadata: article ID, URL, title, section/category, product, plan tier, locale, updated_at, and visibility"
+    },
+    {
+      "id": "P1-03",
+      "status": 2,
+      "evidence": "200–500 real questions taken from past tickets and chat logs, each labeled with the correct article(s)... run in CI on every pipeline or prompt change"
+    },
+    {
+      "id": "P1-04",
+      "status": 2,
+      "evidence": "Answer only from the provided context. If the context doesn't contain the answer, say so and offer a human."
+    },
+    {
+      "id": "P1-05",
+      "status": 2,
+      "evidence": "low confidence, the user asks for a human, frustration detected, billing or legal disputes, or two failed attempts in a row"
+    },
+    {
+      "id": "P1-06",
+      "status": 2,
+      "evidence": "Treat retrieved text as data, not instructions... no tools in v1"
+    },
+    {
+      "id": "P1-07",
+      "status": 2,
+      "evidence": "Metadata filters: locale, product and plan tier, plus *public only*. Internal articles must never reach customers."
+    },
+    {
+      "id": "P1-08",
+      "status": 2,
+      "evidence": "set a transcript retention policy, and confirm your LLM provider doesn't keep or train on your data (DPA, zero-retention options)"
+    },
+    {
+      "id": "P1-09",
+      "status": 2,
+      "evidence": "Out of scope for v1: account-specific actions such as refunds, order lookup or password resets. Plan for these as tool calls in v2."
+    },
+    {
+      "id": "P1-10",
+      "status": 2,
+      "evidence": "Weekly review of the worst conversations. Feed the findings into doc fixes, eval cases and prompt updates."
+    },
+    {
+      "id": "P1-11",
+      "status": 2,
+      "evidence": "cache common questions and their answers (semantic cache with care, keyed by doc version), and cap tokens per turn"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P1-T1",
+      "present": false,
+      "evidence": "Cite sources inline as links to the help article... if the top rerank score is below a tuned threshold, ask a clarifying question or escalate"
+    },
+    {
+      "id": "P1-T2",
+      "present": false,
+      "evidence": "Visibility filter at index time *and* at query time"
+    },
+    {
+      "id": "P1-T3",
+      "present": false,
+      "evidence": "webhooks on publish/update/delete if available, plus a nightly full sync"
+    },
+    {
+      "id": "P1-T4",
+      "present": false,
+      "evidence": "Offline evaluation, run in CI on every pipeline or prompt change"
+    },
+    {
+      "id": "P1-T5",
+      "present": false,
+      "evidence": "Prototype | 2 wks | Ingestion, hybrid retrieval, prompt, offline eval harness. Internal testing only"
+    }
+  ],
+  "note": "A strong, proportionate RAG plan that avoids all listed traps, with explicit assumptions, early evaluation, and concrete grounding/escalation design; weakest spots are ungrounded cost estimates and lightly sketched incident ownership.",
+  "provider": "claude-cli",
+  "model_requested": "claude-fable-5",
+  "models_used": [
+    "claude-fable-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6329,
+    "thinking_tokens": 3724,
+    "cache_read_input_tokens": 923,
+    "cache_creation_input_tokens": 10805
+  },
+  "cost_usd": 0.4524555,
+  "latency_s": 118.075,
+  "raw_file": "raw/judge-9b628afd1392.engineering-quality-v1.fable-5.k1.txt"
+}

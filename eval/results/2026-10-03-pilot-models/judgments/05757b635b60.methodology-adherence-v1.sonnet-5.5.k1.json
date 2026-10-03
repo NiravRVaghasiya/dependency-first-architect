@@ -1,0 +1,94 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "05757b635b60.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "05757b635b60",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 96,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 2,
+      "evidence": "Dependency map table; \"V0 passes (skeleton deployed)\" before Phase 1; \"Phase 1 exit check passes; V2 and V5 pass\" before Phase 2",
+      "rationale": "Phases go skeleton → isolation/consistency → hardening → beta → GA with explicit gates, though a few items (vault, encryption) land later than their stated dependency."
+    },
+    {
+      "dim": 2,
+      "score": 2,
+      "evidence": "Phase 0: authenticated client creates tenant, posts usage event, Stripe test charge, Postgres event, invoice PDF to S3, deployed via CI/CD with rollback",
+      "rationale": "A real end-to-end path through every tier with CI/CD, tracing and rollback precedes all features."
+    },
+    {
+      "dim": 3,
+      "score": 2,
+      "evidence": "Table columns: Reversibility, Default, Assumption, Validated by, Flip condition — e.g. \"V2 fails on cost or latency\" → shard",
+      "rationale": "Seven irreversible decisions each list a default, assumption, validation gate and concrete flip condition."
+    },
+    {
+      "dim": 4,
+      "score": 2,
+      "evidence": "Phase 1 \"Tasks (by blast radius): 1. Query isolation middleware (blast radius: ALL services read/write)\"",
+      "rationale": "Within-phase tasks are ordered widest first, with isolation and audit before leaf items, and self-serve signup is last."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "Phase 0 security: \"API key in vault (hardcoded in code is forbidden)\" vs skeleton \"API keys stored in code (acceptable for skeleton)\"",
+      "rationale": "Security has a row in every phase, but it contradicts itself in Phase 0, and encryption and vault are deferred to Phases 1–2, so Phase 0 treatment is weak."
+    },
+    {
+      "dim": 6,
+      "score": 2,
+      "evidence": "Phase 0: \"every hop logs (trace_id, tenant_id, amount, latency)\"; alert fires on injected failure; baselines recorded; per-phase observability table",
+      "rationale": "Observability is concrete in Phase 0 and in each later phase."
+    },
+    {
+      "dim": 7,
+      "score": 2,
+      "evidence": "Phase 0: \"Dockerfile... Git commit hash tagged\", Docker Compose, CI/CD; Phase 1 Terraform/IaC; Phase 2 Flyway migrations; Phase 3 Helm",
+      "rationale": "Reproducibility is concretely addressed from Phase 0 through Phase 4."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Phase 0: feature-flag kill switch and injected Stripe failure returns 503; Phase 1 circuit breaker, retry, DLQ; Phase 2 failover",
+      "rationale": "Failure handling appears concretely in every phase from the skeleton onward."
+    },
+    {
+      "dim": 9,
+      "score": 2,
+      "evidence": "\"N/A — no AI component in scope.\"",
+      "rationale": "The plan explicitly declares the AI layer N/A and adds no AI components."
+    },
+    {
+      "dim": 10,
+      "score": 2,
+      "evidence": "Deliberately Deferred table with \"Pulled forward when\": \"Chargeback rate hits 0.8% (above 0.5% threshold)\"",
+      "rationale": "Six deferred items each have a reason and a concrete pull-forward trigger."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "Strong, thorough plan with a real skeleton, tradeoff gates and deferrals. The main weakness is Phase 0 security, which is inconsistent and defers encryption and vault use.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1276,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 565,
+    "cache_creation_input_tokens": 26811
+  },
+  "cost_usd": 0.07990850000000001,
+  "latency_s": 32.417,
+  "raw_file": "raw/judge-05757b635b60.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}

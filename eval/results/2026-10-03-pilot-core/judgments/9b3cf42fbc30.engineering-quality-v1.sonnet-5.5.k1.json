@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "9b3cf42fbc30.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "9b3cf42fbc30",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 57,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Integer minor units plus ISO 4217 currency, no floats. Append-only double-entry ledger: a DB trigger rejects UPDATE/DELETE.",
+      "rationale": "Correct on money, RLS, idempotency, SAQ A and Connect; small errors are per-tenant KMS keys not enabling per-customer crypto-shredding and no mention of provider idempotency-key expiry."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Each tenant is the merchant of record and charges through its own payment provider account, so we never hold funds.",
+      "rationale": "Interprets the ambiguity well and defers scope explicitly, but entitlements, pause/trial semantics and dunning policy details are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Ledger, invoices and payments are consistent first... Usage ingest is available first: accept to a durable log, dedupe by idempotency key",
+      "rationale": "Responsibilities, consistency choices and data ownership are applied consistently across phases; only minor loose ends."
+    },
+    {
+      "dim": 4,
+      "score": 3,
+      "evidence": "0 duplicate charges and 0 unreconciled payments over ≥ 10,000 attempts with ≥ 20% fault injection.",
+      "rationale": "Validation is tied to specific risks, run early, and continues in production via hourly ledger checks and daily reconciliation, but several thresholds (1M sequences, 150 cases, 10,000 attempts) are unjustified."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "UNKNOWN: needs projected tenants × peak events/s from the product owner, before Phase 3",
+      "rationale": "Assumptions and unknowns are labeled, ranked, tied to phases and to what changes if wrong (including the alternative product interpretations)."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "a state machine that tolerates \"charge status unknown\"",
+      "rationale": "Covers duplicate charges, webhook reordering, worker crash, tax outage, tenant leaks and PAN leakage with detection and mitigation; dunning, late usage events and entitlement outages are weak."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "GitHub Actions builds a signed image and deploys blue/green to ECS. Migrations are expand-only.",
+      "rationale": "Deploy, rollback, migrations, meaningful alerts, DR drills and kill switches are concrete and sized to a team of 8, though incident ownership and on-call are only lightly described."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Per-invoice unit cost | — | UNKNOWN: needs our pricing from the product owner, before Phase 7",
+      "rationale": "Cost drivers (tax API, platform fees, infra, email) and a cost-metering check are named with controls like batching tax calls, but there are no estimates, build-effort costs or growth analysis."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "R3: tenant ID in every row and key, and data cannot be split cleanly later",
+      "rationale": "Explicit reversibility rating per decision, early validation of the one-way choices, isolation seams (home_cell, TaxProvider) and revisit triggers."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "2 deployables (core, ingest) plus managed Postgres, a managed queue... no self-hosted Kafka",
+      "rationale": "Modular monolith with Postgres and deferred columnar store is proportionate; the heavy process (11 validations, SOC2 prep, cell seam, pentest) adds some overhead."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "The request above succeeds with one trace across every tier. One deploy and one rollback both succeed through the pipeline.",
+      "rationale": "A concrete Phase 0 slice, dependency-justified phase ordering, checkable exit criteria and stated fallbacks on failure make it startable immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 2,
+      "evidence": "Integer minor units plus ISO 4217 currency, no floats... Documented rounding per line."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "Finalized invoices are immutable; corrections go through credit notes."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "`Idempotency-Key` required on every POST... Webhook ingestion with dedupe and out-of-order handling."
+    },
+    {
+      "id": "P2-04",
+      "status": 2,
+      "evidence": "No card numbers ever: only the provider's hosted fields and tokens."
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "Row-level security (RLS) enforced by an app role without `BYPASSRLS`."
+    },
+    {
+      "id": "P2-06",
+      "status": 1,
+      "evidence": "`POST /usage` → durable log → dedupe → hourly aggregates in partitioned Postgres tables."
+    },
+    {
+      "id": "P2-07",
+      "status": 1,
+      "evidence": "Subscription lifecycle with upgrades, downgrades and proration."
+    },
+    {
+      "id": "P2-08",
+      "status": 1,
+      "evidence": "Tax-ID capture and validation (VIES for EU)."
+    },
+    {
+      "id": "P2-09",
+      "status": 1,
+      "evidence": "Dunning schedules, refunds and disputes."
+    },
+    {
+      "id": "P2-10",
+      "status": 1,
+      "evidence": "Daily reconciliation of the ledger against Stripe balance transactions, alerting on any difference."
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "none"
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Build the billing core (it is the product). Buy the payment provider (Stripe Connect), tax engine"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Integer minor units plus ISO 4217 currency, no floats."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "a DB trigger rejects UPDATE/DELETE. Finalized invoices are immutable; corrections go through credit notes."
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "webhook receiver (signature verified)"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "No card numbers ever: only the provider's hosted fields and tokens."
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "a CI lint that fails any table without `tenant_id`, `mode` and RLS."
+    }
+  ],
+  "note": "A rigorous, well-sequenced plan that is strong on money correctness, isolation, idempotency and assumptions. It is weak on entitlements, dunning policy, subscription-lifecycle detail, late-usage cutoffs and cost quantification.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4368,
+    "thinking_tokens": 2065,
+    "cache_read_input_tokens": 925,
+    "cache_creation_input_tokens": 17810
+  },
+  "cost_usd": 0.088398,
+  "latency_s": 45.381,
+  "raw_file": "raw/judge-9b3cf42fbc30.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

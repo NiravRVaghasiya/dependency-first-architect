@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "8860ced8aaba.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "8860ced8aaba",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 140,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "rendered markdown images are a way to leak data",
+      "rationale": "Mechanisms (10 s webhook ack, fork-PR CI without secrets, markdown image exfil, ruleset CODEOWNER approval, proxy-injected API key) are accurate; minor imprecision like the fixed 5,000/h limit and 'suspending the App' as kill switch."
+    },
+    {
+      "dim": 2,
+      "score": 4,
+      "evidence": "\"Resolve\" means the agent opens a draft pull request (PR). A human always merges",
+      "rationale": "Resolves the ambiguity of 'resolve' explicitly, covers triage and resolve, states missing inputs, and defers scope with reasons and triggers."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Three separate planes. (1) Control plane... (2) Sandbox... (3) Publisher",
+      "rationale": "Clear responsibilities and data ownership (Postgres single source); minor loose end: the gateway holding the API key and the kill switch spans components, and a tension between publishing from a fork and 'draft PR' CI secret-less validation."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "Injection suite of ≥ 200 cases... decoy secrets; ... Replay ≥ 300 historical canary issues against maintainer labels, plus a 2-week live shadow",
+      "rationale": "Validation is tied to specific risks, riskiest security gate first, thresholds labeled as assumptions, post-launch regression and outcome tracking."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Assumptions this plan rests on (please correct any that are wrong)",
+      "rationale": "Every number labeled REQUIREMENT/ASSUMPTION/UNKNOWN, missing inputs ranked, and each decision lists assumption and revisit trigger."
+    },
+    {
+      "dim": 6,
+      "score": 4,
+      "evidence": "Text planted in an issue, comment, repo file or tool output makes the agent leak a secret or private code",
+      "rationale": "Covers injection, exfiltration via images, runaway loops, missed webhooks, duplicates via idempotency, provider failure, with detection, containment and rollback; some gaps on mid-work issue edits."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "CI builds an image pinned by digest; Terraform deploys it. Rollback means redeploying the previous digest.",
+      "rationale": "Deployment, rollback, alerts, kill switch and ownership covered; on-call is vague and schema migration is barely addressed."
+    },
+    {
+      "dim": 8,
+      "score": 3,
+      "evidence": "AI cost per resolve attempt | hard cap $3 | ASSUMPTION",
+      "rationale": "Per-task caps, cost per merged PR, spend cap, routing and build-vs-buy are covered with labeled assumptions, but no overall run-cost projection or sandbox/infra cost estimate."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Reversibility | R3: merged malicious code ships, and the harm can't be undone",
+      "rationale": "Decisions are rated by reversibility, with harness behind an interface, revisit triggers, exit paths, and early validation of the one-way ones."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "one orchestrator service, a sandbox pool, Postgres and a queue",
+      "rationale": "Starts from a modest architecture, defers multi-agent and fine-tuning; but gVisor/Firecracker, two providers, gateway and a fork org add some weight, and heavy gating ceremony."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Phase 0 ... Every tier it crosses: 1. GitHub webhook 2. Receiver ... 8. Back to GitHub",
+      "rationale": "Phased with dependency reasoning, concrete tasks, checkable exit gates with evidence locations, and stated fallbacks on failure."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P4-01",
+      "status": 2,
+      "evidence": "Labels are auto-applied once V2 passes. Closing a duplicate or commenting to the reporter needs a maintainer's approval"
+    },
+    {
+      "id": "P4-02",
+      "status": 2,
+      "evidence": "On upstream repos the App can write only issues and PRs; it has read-only access to code"
+    },
+    {
+      "id": "P4-03",
+      "status": 2,
+      "evidence": "Every action the agent takes must stay inside fixed limits, even if an injected instruction succeeds."
+    },
+    {
+      "id": "P4-04",
+      "status": 2,
+      "evidence": "one throwaway gVisor or Firecracker VM per attempt, with no credentials; it reaches the network only through a proxy"
+    },
+    {
+      "id": "P4-05",
+      "status": 2,
+      "evidence": "hidden tests pass, no existing test broken"
+    },
+    {
+      "id": "P4-06",
+      "status": 2,
+      "evidence": "Label precision ≥ 90% at ≥ 70% coverage (the agent abstains on the rest); duplicate precision ≥ 95%"
+    },
+    {
+      "id": "P4-07",
+      "status": 2,
+      "evidence": "Each is labeled `agent-authored` and its body links the trace ID, prompt version and model ID."
+    },
+    {
+      "id": "P4-08",
+      "status": 1,
+      "evidence": "Caps: tokens per request, iterations, wall-clock time, spend per issue and per day; the kill switch."
+    },
+    {
+      "id": "P4-09",
+      "status": 2,
+      "evidence": "hard cap $3 ... Cost per merged agent PR | ≤ $15"
+    },
+    {
+      "id": "P4-10",
+      "status": 2,
+      "evidence": "audit log records every write and its inverse"
+    },
+    {
+      "id": "P4-11",
+      "status": 1,
+      "evidence": "a per-repo index of past issues (for duplicates) and code search (for component labels)"
+    },
+    {
+      "id": "P4-12",
+      "status": 1,
+      "evidence": "idempotency keys on (delivery ID, issue, action) so no duplicate PRs or comments"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P4-T1",
+      "present": false,
+      "evidence": "The agent never merges. It opens draft PRs from a fork."
+    },
+    {
+      "id": "P4-T2",
+      "present": false,
+      "evidence": "Sandbox: ... with no credentials; ... a model gateway that adds the API key."
+    },
+    {
+      "id": "P4-T3",
+      "present": false,
+      "evidence": "Issue text is passed to the model in a delimited block marked as data, never as instructions."
+    },
+    {
+      "id": "P4-T4",
+      "present": false,
+      "evidence": "≥ 30% merged with at most minor edits; median review ≤ 15 min; ≤ $15 per merged PR"
+    },
+    {
+      "id": "P4-T5",
+      "present": false,
+      "evidence": "hard timeout 45 min per attempt, ≤ 2 attempts per issue"
+    }
+  ],
+  "note": "Exceptionally strong, security-first plan with explicit assumptions, gated validation and reversibility analysis; weaker on bot-loop prevention, mid-work issue edits, index freshness, and overall run-cost projection.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2361,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 17665
+  },
+  "cost_usd": 0.0677805,
+  "latency_s": 34.039,
+  "raw_file": "raw/judge-8860ced8aaba.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

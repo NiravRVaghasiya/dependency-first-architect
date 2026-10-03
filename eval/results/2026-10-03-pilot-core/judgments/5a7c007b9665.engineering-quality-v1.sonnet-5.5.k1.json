@@ -1,0 +1,187 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "5a7c007b9665.engineering-quality-v1.sonnet-5.5.k1",
+  "blind_id": "5a7c007b9665",
+  "rubric": "engineering-quality-v1",
+  "rubric_sha256": "a4543669997281df34c2c5d7a4bcf56dc8aa381f50f175677b0442660fa18a68",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 0,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 3,
+      "evidence": "Because card data only enters PSP-hosted fields, our PCI DSS scope stays at SAQ A (reduced, not zero)",
+      "rationale": "Correct on the parts the design depends on (RLS, outbox/inbox, PSP idempotency, SAQ A, at-least-once webhooks), with small gaps such as not explaining how gapless numbering is serialized under concurrency."
+    },
+    {
+      "dim": 2,
+      "score": 3,
+      "evidence": "Tenants set up a catalog and subscriptions and report usage. The platform rates usage, issues invoices, collects payment through a payment provider",
+      "rationale": "Covers the core billing-platform needs and defers extras with reasons, but dunning policy, tax IDs and reverse charge, and trials or anchors are thin."
+    },
+    {
+      "dim": 3,
+      "score": 3,
+      "evidence": "Append-only double-entry ledger is the system of record for balances... Strong (serializable or row-locked transactions on one primary) for ledger",
+      "rationale": "Ownership of data, consistency model and tenancy are applied consistently across phases, with only minor loose ends."
+    },
+    {
+      "dim": 4,
+      "score": 4,
+      "evidence": "0 duplicates and 0 amount mismatches across ≥ 10k fault scenarios; 0 unexplained reconciliation breaks over 2 cycles (ASSUMPTION)",
+      "rationale": "Checks V0–V8 are tied to specific risks, risky items run early, thresholds are labeled provisional, and validation continues in production through reconciliation, balance monitors and shadow runs."
+    },
+    {
+      "dim": 5,
+      "score": 4,
+      "evidence": "Assumptions this plan rests on... If it is the module, buy Stripe Billing or Chargebee, and Phase 5 plus most of §3 drops out.",
+      "rationale": "Assumptions and unknowns are labeled with owners, due dates and what changes if they are wrong."
+    },
+    {
+      "dim": 6,
+      "score": 3,
+      "evidence": "crashes between the PSP call and commit... Duplicate-charge detector... Kill switches for charging, one global and one per tenant.",
+      "rationale": "Covers the major money failures (duplicates, out-of-order webhooks, crashes, cross-tenant leaks, ingest abuse) with detection and recovery, but dunning, async payment states and dispute handling are thin."
+    },
+    {
+      "dim": 7,
+      "score": 3,
+      "evidence": "Rollback is redeploying the previous image. Migrations only add things.",
+      "rationale": "Deployment, rollback, migrations, SLO alerts, on-call and DR are concrete and sized for a 5–8 person team, but incident ownership and the finance-ops runbooks are only sketched."
+    },
+    {
+      "dim": 8,
+      "score": 2,
+      "evidence": "Unit cost per invoice | — | UNKNOWN: needs the target take rate... Measured from Phase 3 (PSP platform fees, tax-engine calls, infra)",
+      "rationale": "It names cost drivers and a unit-cost dashboard and avoids invented figures, but it gives no cost estimates, no growth model and no build-cost or people-cost comparison."
+    },
+    {
+      "dim": 9,
+      "score": 4,
+      "evidence": "Reversibility | R3: rework of every row and query; a leak can't be undone",
+      "rationale": "Every decision is graded by reversibility, the hard ones (tenancy, ledger, IDs, API, funds flow) are validated first, and adapters, cells and token-portability clauses limit lock-in."
+    },
+    {
+      "dim": 10,
+      "score": 3,
+      "evidence": "2 deployables (billing core, usage ingest), managed Postgres, managed queue; no self-hosted clusters",
+      "rationale": "Starts from a modular monolith on Postgres, with Temporal, streaming and cells deferred, but nine validation gates and seven phases add some process weight."
+    },
+    {
+      "dim": 11,
+      "score": 4,
+      "evidence": "Tenant 0... calls POST /v1/subscriptions with an idempotency key for a flat $1/month price. A test clock advances the period",
+      "rationale": "A concrete walking-skeleton slice, phases ordered by rework risk, each with exit checks and fallback flips, so a team can start immediately."
+    }
+  ],
+  "checklist": [
+    {
+      "id": "P2-01",
+      "status": 1,
+      "evidence": "Money is `bigint` minor units plus ISO 4217 currency."
+    },
+    {
+      "id": "P2-02",
+      "status": 2,
+      "evidence": "A finalized invoice never changes; corrections go through credit notes."
+    },
+    {
+      "id": "P2-03",
+      "status": 2,
+      "evidence": "Payment attempts whose PSP idempotency key is derived from `payment_attempt_id`."
+    },
+    {
+      "id": "P2-04",
+      "status": 1,
+      "evidence": "Payment-method capture through PSP-hosted fields only."
+    },
+    {
+      "id": "P2-05",
+      "status": 2,
+      "evidence": "Postgres Row-Level Security reads `app.tenant_id`, which is set per transaction from the authenticated context."
+    },
+    {
+      "id": "P2-06",
+      "status": 2,
+      "evidence": "Late-event policy: events accepted until invoice finalization, then credited to the next period."
+    },
+    {
+      "id": "P2-07",
+      "status": 1,
+      "evidence": "Subscription lifecycle: create, upgrade or downgrade with proration, pause, cancel."
+    },
+    {
+      "id": "P2-08",
+      "status": 1,
+      "evidence": "Invoice numbers are gapless per tenant series, assigned at finalization"
+    },
+    {
+      "id": "P2-09",
+      "status": 1,
+      "evidence": "Dunning schedule; refunds; disputes."
+    },
+    {
+      "id": "P2-10",
+      "status": 1,
+      "evidence": "Daily reconciliation: every PSP balance transaction ↔ a ledger entry."
+    },
+    {
+      "id": "P2-11",
+      "status": 0,
+      "evidence": "Prepaid credits, wallets, entitlements service, quotes/CPQ: pull forward when design partners need them"
+    },
+    {
+      "id": "P2-12",
+      "status": 2,
+      "evidence": "Build the billing core (it is the product). Buy the PSP: Stripe Connect behind a `PaymentProvider` adapter"
+    }
+  ],
+  "traps": [
+    {
+      "id": "P2-T1",
+      "present": false,
+      "evidence": "Money is `bigint` minor units plus ISO 4217 currency."
+    },
+    {
+      "id": "P2-T2",
+      "present": false,
+      "evidence": "Append-only audit log... ledger corrections must be compensating entries."
+    },
+    {
+      "id": "P2-T3",
+      "present": false,
+      "evidence": "duplicate or out-of-order webhooks... Inbound PSP webhooks go through an inbox dedup table"
+    },
+    {
+      "id": "P2-T4",
+      "present": false,
+      "evidence": "Card data never touches our systems (PSP-hosted fields)."
+    },
+    {
+      "id": "P2-T5",
+      "present": false,
+      "evidence": "Postgres Row-Level Security... a connection with no tenant context sees nothing."
+    }
+  ],
+  "note": "A very strong, risk-ordered plan with correct money, ledger, idempotency, PCI and RLS mechanics. Its weak spots are thin dunning, tax ID and reverse-charge detail, rounding stage, entitlements, and cost quantification.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 4215,
+    "thinking_tokens": 1776,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 18513
+  },
+  "cost_usd": 0.0884405,
+  "latency_s": 59.523,
+  "raw_file": "raw/judge-5a7c007b9665.engineering-quality-v1.sonnet-5.5.k1.txt"
+}

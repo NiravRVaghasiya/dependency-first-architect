@@ -1,0 +1,95 @@
+{
+  "schema": "dfa-eval/judgment@1",
+  "judgment_id": "5c7a7d7f3bc4.methodology-adherence-v1.sonnet-5.5.k1",
+  "blind_id": "5c7a7d7f3bc4",
+  "blind_sha256": "38a6becd4acada7135580581043ffc91c9aa9ba87bd68e573d197f69c3d95696",
+  "rubric": "methodology-adherence-v1",
+  "rubric_sha256": "bf982f4485b27afa0abd084759ae75f3610f93a6fd4e506f94c62257ed52c349",
+  "judge": "sonnet-5.5",
+  "repeat": 1,
+  "order_index": 457,
+  "status": "ok",
+  "error": null,
+  "validation_errors": [],
+  "scores": [
+    {
+      "dim": 1,
+      "score": 1,
+      "evidence": "Phase 1 – MVP: Catalog with versioned prices, accounts, flat and per-seat subscriptions, the billing run, a Stripe adapter, basic dunning, the ledger, entitlements",
+      "rationale": "Phases roughly go core before usage before enterprise, but Phase 1 bundles everything together with no proof gates, and tax is deferred to Phase 2 even though the invoice flow needs it."
+    },
+    {
+      "dim": 2,
+      "score": 1,
+      "evidence": "Phase 1 – MVP (≈3 months)",
+      "rationale": "Phase 1 is a broad three-month MVP rather than a thin end-to-end production slice, so there is no true walking skeleton."
+    },
+    {
+      "dim": 3,
+      "score": 1,
+      "evidence": "Before you build, read §10 (build vs. buy).",
+      "rationale": "Build vs. buy, sharding and currency choices are discussed with some conditions, but there is no consolidated list of irreversible decisions with defaults and flip conditions."
+    },
+    {
+      "dim": 4,
+      "score": 1,
+      "evidence": "Split out Usage Ingest and Entitlements first, because their scaling needs are very different.",
+      "rationale": "Some ordering is implied, since principles and the ledger come first, but phases list features without ordering them by blast radius."
+    },
+    {
+      "dim": 5,
+      "score": 1,
+      "evidence": "RLS multi-tenancy",
+      "rationale": "Phase 1 includes RLS, and security content (PCI, encryption, audit) is detailed, but it sits in standalone sections and SOC 2/SOX controls come only in Phase 4."
+    },
+    {
+      "dim": 6,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan has SLOs and alerts but no observability (logs, metrics, tracing) in any phase, including Phase 1."
+    },
+    {
+      "dim": 7,
+      "score": 1,
+      "evidence": "Inject time through a clock. Support per-account \"test clocks\".",
+      "rationale": "Test clocks, golden invoices, replayable rating and shadow billing support reproducibility, but there is no environment or build reproducibility (IaC, CI) in the phases."
+    },
+    {
+      "dim": 8,
+      "score": 1,
+      "evidence": "Chaos tests: duplicate webhooks, out-of-order events, and worker crashes between finalizing an invoice and posting the ledger entry.",
+      "rationale": "Idempotency, outbox, dunning and failure handling are strong in the design sections, but the phase roadmap does not tie resilience work to each phase."
+    },
+    {
+      "dim": 9,
+      "score": 0,
+      "evidence": "none",
+      "rationale": "The plan never says whether an AI layer applies, so there is no explicit N/A declaration."
+    },
+    {
+      "dim": 10,
+      "score": 1,
+      "evidence": "Phase 3 – Enterprise: Account hierarchies, commitments and prepaid credits ... dedicated cells",
+      "rationale": "Later phases show what is deferred, and there is a modular-monolith-first note, but there are no pull-forward conditions."
+    }
+  ],
+  "checklist": null,
+  "traps": null,
+  "note": "The plan is a strong domain architecture, but its roadmap is a feature list that lacks a walking skeleton, observability, gates, and pull-forward triggers. It also never addresses the AI question.",
+  "provider": "claude-cli",
+  "model_requested": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-sonnet-5-5"
+  ],
+  "model_mismatch": false,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1110,
+    "thinking_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8962
+  },
+  "cost_usd": 0.033513,
+  "latency_s": 25.845,
+  "raw_file": "raw/judge-5c7a7d7f3bc4.methodology-adherence-v1.sonnet-5.5.k1.txt"
+}
