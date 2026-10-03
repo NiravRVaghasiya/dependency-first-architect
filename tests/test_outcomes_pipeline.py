@@ -36,11 +36,7 @@ def config(tmp, copy_from, runs=2):
         },
         "arms": {"no-plan": None, "baseline-plan": "baseline", "dfa-plan": "dfa"},
         "runs_per_arm": runs,
-        # jobs=1 so this test does not spawn competing child interpreters of its own, and a
-        # generous test_timeout_s so a child merely starved of CPU on a loaded CI runner still
-        # finishes (the hidden tests run in well under a second): contention must not turn a
-        # correct run into a spurious timeout and a sub-1.0 pass rate.
-        "limits": {"jobs": 1, "test_timeout_s": 300},
+        "limits": {"jobs": 2, "test_timeout_s": 90},
     }
     path = Path(tmp) / "outcomes.json"
     path.write_text(json.dumps(data), encoding="utf-8")
@@ -107,10 +103,13 @@ class OutcomePipelineTest(unittest.TestCase):
         report = (self.run_dir / outcomes.REPORT).read_text(encoding="utf-8")
         for word in ("winner", "best", "beats", "proves"):
             self.assertNotIn(word, report.lower())
-        # An edited attempt record no longer matches the committed summary.
-        record_path = next((self.run_dir / outcomes.OUTCOMES).glob("*.json"))
-        if record_path.name == "config.json":
-            record_path = sorted((self.run_dir / outcomes.OUTCOMES).glob("*.r01.json"))[0]
+        # An edited attempt record no longer matches the committed summary. Pick the record the
+        # same way the harness does (sorted, and excluding config.json and task-files.json):
+        # glob() order is not sorted on every OS, and a bare next() could land on a non-attempt
+        # file (task-files.json has no "rounds"), which failed only where that order differed.
+        folder = self.run_dir / outcomes.OUTCOMES
+        record_path = sorted(p for p in folder.glob("*.json")
+                             if p.name not in ("config.json", outcomes.TASK_FILES))[0]
         record = records.read_json(record_path)
         record["rounds"][0]["tests"]["by_category"]["functional"]["passed"] -= 1
         records.write_json(record_path, record)
