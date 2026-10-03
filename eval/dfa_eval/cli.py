@@ -436,7 +436,8 @@ def validate_run(run_dir, repo_root=None):
                 errors.append("summary.json: run_id differs from the manifest")
     if (run.root / OUTCOMES / "config.json").is_file():  # an outcome run: its task is pinned
         errors += [f"{OUTCOMES}/task-files.json: the task changed since this run: {change}"
-                   for change in _analysis("outcomes").task_changes(run.root, root)]
+                   for change in _analysis("outcomes").task_changes(run.root, root,
+                                                                    finished=True)]
     for path in sorted((run.root / OUTCOMES).glob("*.json")):  # outcome-benchmark attempts
         if path.name in ("config.json", "task-files.json"):
             continue

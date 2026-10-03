@@ -89,7 +89,10 @@ version:
   difference between plan arms could show up.
 
 Task files are pinned per run (`outcomes/task-files.json`), so the fix (accept either a rejection
-or an acknowledged, unapplied, recorded event) belongs in a new task id, not in this one.
+or an acknowledged, unapplied, recorded event) belongs in a new task id, not in this one. The
+runner is shared by every task, so each run keeps a copy of the one it used
+(`outcomes/runner.py`) instead: `check` verifies that copy, and `implement` will not continue a run
+with a different runner.
 
 ## What it does not measure
 
@@ -112,8 +115,6 @@ without `--allow-code-execution`. Each test run happens in a child Python proces
 implementation package, the hidden tests and the provided `ledgerkit`, with a scrubbed environment (no API keys, tokens, or cloud credentials)
 and a timeout. That is not a sandbox: the code can still read and write your files and use the
 network. Run it inside a container or a throwaway VM. See [`SECURITY.md`](../../SECURITY.md).
-(`runner.py`'s docstring still says `-I`; the file is pinned by the committed run, so the wording
-is corrected here instead.)
 
 ## Running it
 

@@ -247,9 +247,13 @@ Adapters and build:
     and a timeout. This is not a sandbox (see `SECURITY.md`).
   - A run pins the task's files and the runner (`outcomes/task-files.json`); `implement` and
     `check` refuse a run whose task has changed since, so results from two test versions cannot
-    mix, and `implement` refuses a config other than the one the run was planned with. The
-    summary lists which hidden tests failed, per arm, and the planner's and implementer's
-    session settings.
+    mix, and `implement` refuses a config other than the one the run was planned with. Each run
+    keeps a copy of the runner it used (`outcomes/runner.py`), which `check` verifies, so the
+    shared runner can evolve. The summary lists which hidden tests failed, per arm, and the
+    planner's and implementer's session settings.
+  - The test child keeps the interpreter's library path (`LD_LIBRARY_PATH`,
+    `DYLD_LIBRARY_PATH`): a Python built as a shared library, such as actions/setup-python's on
+    Linux, could not start without it, which failed every outcome test in CI on Ubuntu.
 - **Evaluation matrix** (`docs/evaluation-matrix.md`), generated from `eval/agents.json` and the
   committed runs. Each agent and model is marked Supported, Tested or Experimentally evaluated,
   following definitions stated in the matrix.
