@@ -36,7 +36,11 @@ def config(tmp, copy_from, runs=2):
         },
         "arms": {"no-plan": None, "baseline-plan": "baseline", "dfa-plan": "dfa"},
         "runs_per_arm": runs,
-        "limits": {"jobs": 2, "test_timeout_s": 90},
+        # jobs=1 so this test does not spawn competing child interpreters of its own, and a
+        # generous test_timeout_s so a child merely starved of CPU on a loaded CI runner still
+        # finishes (the hidden tests run in well under a second): contention must not turn a
+        # correct run into a spurious timeout and a sub-1.0 pass rate.
+        "limits": {"jobs": 1, "test_timeout_s": 300},
     }
     path = Path(tmp) / "outcomes.json"
     path.write_text(json.dumps(data), encoding="utf-8")

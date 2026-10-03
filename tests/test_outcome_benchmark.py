@@ -24,7 +24,10 @@ from dfa_eval import schema, schemas  # noqa: E402
 ROUND1 = ["failure-injection", "functional", "idempotency", "money", "ordering", "security"]
 
 
-def run(code_dir, round_number, timeout_s=90):
+# The hidden tests take well under a second; the generous default is headroom for a child that
+# is merely starved of CPU on a loaded CI runner (several of these run concurrently with the rest
+# of the suite), so contention never turns a correct-but-slow run into a spurious "timeout".
+def run(code_dir, round_number, timeout_s=300):
     return runner.run_tests(TASK, code_dir, round_number, timeout_s=timeout_s)
 
 
