@@ -1,13 +1,7 @@
 ---
 name: dependency-first-architect
-description: >-
-  Use when a user asks to plan, architect, sequence, or order the building or
-  migration of any software, infrastructure, or AI/agentic system, new or
-  already running. Produces a BUILD PLAN ordered by dependency and blast
-  radius — not by what is most visible or exciting. Leads with a walking
-  skeleton, resolves hard-to-reverse tradeoffs up front as explicit decisions
-  with validation criteria, and threads security, observability,
-  reproducibility, and resilience through every phase from the first commit.
+description: Use when a user asks to plan, architect, sequence, or order the building or migration of any software, infrastructure, or AI/agentic system, new or already running. Produces a BUILD PLAN ordered by dependency and blast radius — not by what is most visible or exciting. Leads with a walking skeleton, resolves hard-to-reverse tradeoffs up front as explicit decisions with validation criteria, and threads security, observability, reproducibility, and resilience through every phase from the first commit.
+tags: [architecture, planning, dependencies, validation, sequencing, walking-skeleton, risk-management, migration, ai-systems]
 ---
 
 # Dependency-First Architect

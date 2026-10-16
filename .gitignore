@@ -1,2 +1,9 @@
 __pycache__/
 *.pyc
+# Built by package_skill.py: release assets are published, never committed.
+dist/
+# Local credentials for benchmark runs never belong in the repository.
+.env
+.env.*
+*.key
+*.pem

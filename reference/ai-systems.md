@@ -56,8 +56,8 @@ permissioned corpus, enforce the caller's access at retrieval (a risk/security d
 ### 5. Model access
 A thin, swappable interface to the model(s): provider abstraction, retries, fallback model,
 structured-output parsing. The call seam exists from Phase 0; this layer hardens it.
-- Exit check: switching to the fallback model is a config change, and the eval suite passes on it
-  at the stated threshold.
+- Exit check: switching to the fallback model is a config change, and the evaluation suite passes
+  on it at the stated threshold.
 
 ### 6. Memory
 What persists across turns/sessions: short-term conversation state and long-term store, with
@@ -71,20 +71,20 @@ How steps compose: single call, chain, or multi-agent. Keep it the simplest shap
 
 ### 8. Routing
 Send each request to the right model/tool/path by difficulty, cost, or capability.
-- Exit check: on the eval set, routed quality is within the stated margin of the strongest
+- Exit check: on the evaluation set, routed quality is within the stated margin of the strongest
   model's, at lower cost, with both paths logged.
 
 ### 9. Feedback
-Capture outcomes (thumbs, corrections, eval scores) and route them back into prompts,
+Capture outcomes (thumbs, corrections, evaluation scores) and route them back into prompts,
 retrieval tuning, or training data.
-- Exit check: corrections enter through review, and the next eval run improves the target metric
-  with no regression elsewhere. (Change alone is not improvement; unreviewed feedback is a
+- Exit check: corrections enter through review, and the next evaluation run improves the target
+  metric with no regression elsewhere. (Change alone is not improvement; unreviewed feedback is a
   poisoning path.)
 
 ## Notes
 - Every sublayer still obeys the cross-cutting columns (security, observability,
   reproducibility, resilience). Observability here means per-step traces, token/cost metrics,
-  and eval scores — from day zero.
+  and evaluation scores — from day zero.
 - Prefer prompt+RAG over fine-tuning until a Tradeoff gate's flip condition is met; it is the
   less rigid, more reversible choice (SKILL principle 2). Fine-tuning a model is usually R2;
   training on customer or personal data is R3.

@@ -61,40 +61,81 @@ Every plan has the same ten sections ([template](reference/plan-template.md)):
 
 ## Install
 
-**Claude Code**: the full skill, for all your projects (this clones the whole repository, about
-90 MB on disk, mostly evaluation records). Until you ask for a plan, only the skill's ~0.5 KB
-description is in context.
+Install a release, not this repository. The repository is the development project (about 90 MB,
+mostly evaluation records); the skill your agent loads is six files: Markdown instructions and the
+license, with no scripts or URLs. Each
+[release](https://github.com/NiravRVaghasiya/dependency-first-architect/releases), from v2.0.1 on,
+carries these assets, built from the tagged commit by `package_skill.py`
+([what is in them, and how they are checked](docs/distribution.md)):
+
+| Asset | For | Contents |
+|---|---|---|
+| `dependency-first-architect-v2.0.1.zip` | Claude Code, and agents that load a skill folder | the folder `dependency-first-architect/`: `SKILL.md`, the 4 reference files it names, `LICENSE` |
+| `cursor-dependency-first-architect.mdc` | Cursor | one project rule |
+| `codex-AGENTS.md` | Codex | a block to append to `AGENTS.md` |
+| `codex-lazy-dependency-first-architect.md`, `codex-lazy-AGENTS-snippet.md` | Codex, lazy install | the whole skill as one file, and a 1 KB pointer to it |
+| `SHA256SUMS` | checking a download | the SHA-256 of every asset and of every file in the zip |
+
+Download the asset for your agent and `SHA256SUMS` into an empty folder, from the release page or
+with the [GitHub CLI](https://cli.github.com/), and check them before you install. The commands
+are bash (Linux, macOS, Git Bash); on macOS, use `shasum -a 256` where they say `sha256sum`.
 
 ```bash
-git clone --depth 1 https://github.com/NiravRVaghasiya/dependency-first-architect ~/.claude/skills/dependency-first-architect
+D="$(mktemp -d)"   # an empty folder for the download
+gh release download v2.0.1 --repo NiravRVaghasiya/dependency-first-architect --dir "$D" --pattern dependency-first-architect-v2.0.1.zip --pattern SHA256SUMS
+(cd "$D" && sha256sum -c --ignore-missing SHA256SUMS)
 ```
 
-**Cursor**: run in your project root.
+**Claude Code**: unzip into your personal skills folder (or into a project's `.claude/skills/`,
+for that project only). Until you ask for a plan, only the skill's ~0.5 KB description is in
+context.
 
 ```bash
-mkdir -p .cursor/rules && curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/dependency-first-architect/main/adapters/cursor-dependency-first-architect.mdc -o .cursor/rules/dependency-first-architect.mdc
+mkdir -p ~/.claude/skills && unzip "$D/dependency-first-architect-v2.0.1.zip" -d ~/.claude/skills/
 ```
 
-**Codex**: run in your project root. This appends the skill (about 16 KB) to `AGENTS.md`, which
-Codex reads in every session.
+In PowerShell, compare `(Get-FileHash dependency-first-architect-v2.0.1.zip).Hash` with its line
+in `SHA256SUMS`, then run
+`Expand-Archive dependency-first-architect-v2.0.1.zip -DestinationPath $HOME\.claude\skills`.
+
+**Cursor**: download and check `cursor-dependency-first-architect.mdc` the same way
+(`--pattern cursor-dependency-first-architect.mdc`), then, in your project root:
 
 ```bash
-{ printf '\n'; curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/dependency-first-architect/main/adapters/AGENTS.md; } >> AGENTS.md
+mkdir -p .cursor/rules && cp "$D/cursor-dependency-first-architect.mdc" .cursor/rules/dependency-first-architect.mdc
 ```
 
-To update a Codex install, first delete the old block from `AGENTS.md`, because the command
-appends: from the `<!--` line above `BEGIN dependency-first-architect` through
-`<!-- END dependency-first-architect -->`. Then run it again.
+**Codex**: download and check `codex-AGENTS.md`, then, in your project root (this appends the
+skill, about 16 KB, to `AGENTS.md`, which Codex reads in every session):
+
+```bash
+{ printf '\n'; cat "$D/codex-AGENTS.md"; } >> AGENTS.md
+```
 
 <details>
 <summary><b>Codex: lazy install</b> (about 1 KB in <code>AGENTS.md</code>; not yet tested in Codex)</summary>
 
-Codex reads the whole skill, reference files included, only when a request matches. Update it the
-same way: delete the old block, then run both commands again.
+Codex reads the whole skill, reference files included, only when a request matches. Download and
+check both `codex-lazy-*` assets (`--pattern 'codex-lazy-*'`), then, in your project root:
 
 ```bash
-mkdir -p .codex && curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/dependency-first-architect/main/adapters/codex/dependency-first-architect.md -o .codex/dependency-first-architect.md
-{ printf '\n'; curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/dependency-first-architect/main/adapters/codex/AGENTS-snippet.md; } >> AGENTS.md
+mkdir -p .codex && cp "$D/codex-lazy-dependency-first-architect.md" .codex/dependency-first-architect.md
+{ printf '\n'; cat "$D/codex-lazy-AGENTS-snippet.md"; } >> AGENTS.md
+```
+
+</details>
+
+<details>
+<summary><b>Build the package yourself</b> (from a commit you reviewed, or before v2.0.1 is published)</summary>
+
+The build is reproducible: at a release tag it gives the same bytes and the same `SHA256SUMS` as
+the release. It needs Python 3.9 or newer and nothing else, and writes only `dist/`.
+
+```bash
+git clone https://github.com/NiravRVaghasiya/dependency-first-architect dfa-source
+cd dfa-source && git checkout v2.0.1   # or the commit you reviewed
+python package_skill.py
+D="$PWD/dist/release"                  # then install from "$D" as above
 ```
 
 </details>
@@ -102,12 +143,25 @@ mkdir -p .codex && curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/
 Then ask your agent to plan something. In Claude Code you can also call it by name:
 `/dependency-first-architect <your request>`. Cursor and the standard Codex install get the method
 without its reference files (plan template, worked examples, AI layer); the lazy Codex install
-includes them.
+includes them. Other agents that load skill folders can use the zip, but only Claude Code has been
+evaluated, and some skill validators reject the frontmatter's `tags` key
+([details](docs/distribution.md#frontmatter)).
+
+**Updating.** Delete what the old version installed, then install the new release: the
+`dependency-first-architect` skills folder, the Cursor rule, or the block in `AGENTS.md` (from the
+`<!--` line above `BEGIN dependency-first-architect` through
+`<!-- END dependency-first-architect -->`; the Codex commands append, so a second run adds a
+second copy).
+
+**Migrating from an install made before v2.0.1.** Earlier instructions cloned the whole repository
+into `~/.claude/skills/dependency-first-architect`, or downloaded the adapters from `main`. Those
+installs keep working, unpinned. To switch, delete the clone (or the Cursor rule, or the
+`AGENTS.md` block) and install a release as above; the skill's name, trigger and method are
+unchanged.
 
 > [!NOTE]
-> These files are instructions your agent follows. To pin a version, clone with `--branch vX.Y.Z`
-> or put a tag or a full commit SHA in place of `main` in the URLs, and read the diff before you
-> update. See [SECURITY.md](SECURITY.md).
+> These files are instructions your agent follows. Install a version you have reviewed, keep its
+> `SHA256SUMS`, and read the diff before you update. See [SECURITY.md](SECURITY.md).
 
 ## How it works
 
@@ -309,19 +363,31 @@ row above (+1.9 EQ [+1.2, +2.5]):
 
 ## Contributing
 
+This repository is the development project. Users receive only what `package_skill.py` lists:
+
+| Path | What it is | Shipped? |
+|---|---|---|
+| `SKILL.md`, `reference/` (except `evals.md`), `LICENSE` | the method | yes: these 6 files are the skill package |
+| `adapters/` | the Cursor and Codex versions, generated by `build.py` | as separate release assets |
+| `build.py`, `package_skill.py`, `.github/` | maintainer tools: generate the adapters, build and check releases | no |
+| `eval/`, `examples/`, `tests/`, `docs/`, `reference/evals.md` | evaluation harness and records, self-tests, documentation | no |
+
 **`SKILL.md` is the single source of truth.** Change the method in `SKILL.md` or `reference/`,
 run `python build.py`, and commit what it regenerates. Never edit `adapters/` by hand; CI fails on
 drift.
 
 ```bash
 python build.py --check                # adapters and SHA256SUMS match SKILL.md
+python package_skill.py                # dist/: the skill package and release assets, checked
 python -m unittest discover -s tests   # offline self-tests, no model calls
 python eval/run.py check               # committed runs, reports, matrix, and this README's evidence block
 ```
 
 To try the benchmark against real models, start with the smoke config, a setup check that stops
-at a \$10 cost cap (its last run cost \$1.78). Real runs need the `claude` CLI or an
-OpenAI-compatible endpoint; see [eval/README.md](eval/README.md).
+at a \$10 cost cap. Real runs need the `claude` CLI or an
+OpenAI-compatible endpoint, send the prompts and plans to that provider, and cost money; keys are
+read from environment variables only when a stage calls a model. See
+[eval/README.md](eval/README.md#credentials-network-and-cost).
 
 ```bash
 python eval/run.py plan --config eval/experiments/smoke.json                                 # dry run: the calls it would make

@@ -6,6 +6,77 @@ All notable changes to this project are recorded here. The format follows
 [`VERSION`](VERSION). `python build.py --check` fails if this file has no entry for it, and
 `python build.py --release-tag vX.Y.Z` fails unless that entry has a release date.
 
+## [2.0.1] — Unreleased
+
+A distributable package, and hardening of the development tools. The method is unchanged: no
+principle, step, field or plan section changed, so plans should be the same as with 2.0.0. The
+committed evaluation runs measured 2.0.0 (`SKILL.md` sha256 `362e6e5b…`); no run has measured
+2.0.1.
+
+### Added
+
+- **A skill package, and release assets for each agent.** `python package_skill.py` builds
+  `dist/`: the folder an agent installs (`SKILL.md`, the four reference files it names, and
+  `LICENSE`: 6 files, no scripts) and the release assets (that folder as a zip, the Cursor and
+  Codex adapters, and `SHA256SUMS` for every asset and every file in the zip). The package is an
+  explicit allowlist, not a copy of the repository. The build fails on a missing file, a symbolic
+  link or junction, a stray file, invalid frontmatter, a missing method heading, a reference or
+  link that does not resolve inside the package, stale adapters, or 50 files or more. Content
+  rules also fail it on the usual forms of URLs, download commands, pipes into a shell, code
+  execution, destructive commands, Claude Code's `!` shell syntax, environment variables, credentials, HTML comments
+  and any character outside a short list (docs/distribution.md). It writes nothing until every
+  check passes, deletes nothing but its own earlier output (never a folder it did not make), and
+  rebuilds unchanged sources byte for byte (a stored zip with fixed timestamps and modes). Every
+  rule is bounded, so a long line cannot stall the build.
+- **`tags` in the `SKILL.md` frontmatter:** architecture, planning, dependencies, validation,
+  sequencing, walking-skeleton, risk-management, migration, ai-systems.
+- **A release workflow** (`.github/workflows/release.yml`). On a tag it runs every CI check on
+  Ubuntu, rebuilds and checks the assets, and uploads them as a workflow artifact. Run by hand
+  with `draft_release`, it creates a draft GitHub release, which a maintainer publishes. It never
+  publishes on its own.
+- **`docs/distribution.md`:** what the package holds and why, how it is built and checked, and a
+  review of each finding of a skill-submission scan.
+- **Tests:** `tests/test_package.py` (layout, exclusions, file count, frontmatter, references and
+  links, content rules with planted examples and prose that must pass, reproducibility, exit
+  codes, output-directory safety, and no hidden characters in any tracked file outside the run
+  records in `eval/results/`), plus tests for the hardening below.
+
+### Changed
+
+- **`SKILL.md` frontmatter:** `description` is one plain line instead of a folded block, with the
+  same text, so line-based readers and YAML read the same value.
+- **Wording:** "eval" is now "evaluation" in `reference/ai-systems.md` (5 places) and
+  `reference/validation.md` (2). Scanners read the bare word as a call to `eval`.
+- **Installation:** the README installs a release asset of a stated version into an empty
+  folder, checked against `SHA256SUMS`, or a package built from a reviewed commit. It no longer
+  clones the whole repository into the skills folder, or downloads files from `main` with `curl`
+  and appends one to `AGENTS.md` unchecked. Existing installs keep working; the README says how to
+  switch.
+- **`eval/run.py check`** reads the v1.0.0 judge prompt from `examples/scoring/run_eval.py` by
+  parsing the file, instead of importing and running it, and refuses any binding of those names
+  other than the one top-level literal (a star import included).
+- **`build.render()`** takes the source root, so `package_skill.py` and the tests can render the
+  adapters from a copy.
+
+### Security
+
+- **openai-compatible provider:** it sends the API key only to an https `base_url` (plain http only
+  to localhost, and never through a proxy), never follows a redirect (urllib would re-send the key
+  to the new host), reads it only from a variable named `*_API_KEY` (a config could otherwise send
+  `GITHUB_TOKEN` or AWS secrets as a bearer token) and `OPENAI_API_KEY` only for OpenAI's own
+  endpoint, strips spaces around the key and refuses one with a space or line break inside instead
+  of leaking it in an exception message, and redacts the key from any error or response it
+  records, literal or repr-, JSON- or URL-encoded (a placeholder under 8 characters, such as
+  `none` for a local server, is left alone, so the reply is not rewritten).
+- **`import-v1`** no longer runs the local `claude --version` (the record keeps the version v1
+  used), so the test suite runs no model CLI.
+- **The outcome runner's code screen** also refuses `from urllib import request`-style imports of
+  the modules and functions it bans (`from os import *`, `posix` and `nt` included), and reads
+  each file as Python decodes it, so a coding cookie
+  (UTF-7) can no longer hide an import. It remains a heuristic, not a sandbox (SECURITY.md). New
+  outcome runs pin this runner; committed runs keep the copy they used.
+- **`.gitignore`** ignores `dist/`, `.env` files and key files.
+
 ## [2.0.0] — Unreleased
 
 Version 2 of the method:
@@ -287,5 +358,6 @@ Retroactively designated: the state at commit 7ec18f4 (untagged).
   `examples/scoring/`, the raw scores, the tally script and the harness.
 - MIT license.
 
-[2.0.0]: https://github.com/NiravRVaghasiya/dependency-first-architect/compare/7ec18f469395fce4f352caa26d983b22b5a71a0f...HEAD
+[2.0.1]: https://github.com/NiravRVaghasiya/dependency-first-architect/compare/fff678a6285e2117e96f9bfc87f1977dec991d64...HEAD
+[2.0.0]: https://github.com/NiravRVaghasiya/dependency-first-architect/compare/7ec18f469395fce4f352caa26d983b22b5a71a0f...fff678a6285e2117e96f9bfc87f1977dec991d64
 [1.0.0]: https://github.com/NiravRVaghasiya/dependency-first-architect/tree/7ec18f469395fce4f352caa26d983b22b5a71a0f

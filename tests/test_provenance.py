@@ -11,7 +11,9 @@ import json
 import shutil
 import sys
 import tempfile
+import subprocess
 import unittest
+import unittest.mock
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -153,6 +155,25 @@ class PlanRunTest(unittest.TestCase):
 
 
 class ImportedPlanTest(unittest.TestCase):
+    def test_import_runs_no_cli_and_records_the_version_v1_used(self):
+        tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
+        asked = AssertionError("import-v1 asked a local CLI for its version")
+        real_run = subprocess.run
+
+        def git_only(args, *rest, **kwargs):  # the manifest records the repository commit
+            if Path(args[0]).stem.lower() != "git":
+                raise AssertionError(f"import-v1 ran {args!r}")
+            return real_run(args, *rest, **kwargs)
+        with unittest.mock.patch.object(generate, "tool_versions", side_effect=asked), \
+                unittest.mock.patch("subprocess.run", git_only):  # what `claude --version` uses
+            importer.import_v1_examples(tmp / "v1", [{"id": "j", "provider": "fake",
+                                                      "model": "m"}], log=QUIET)
+        generation = json.loads((ROOT / "examples" / "scoring" / "generation.json")
+                                .read_text(encoding="utf-8"))
+        manifest = json.loads((tmp / "v1" / "manifest.json").read_text(encoding="utf-8"))
+        self.assertEqual(manifest["tools"], {"claude": generation.get("claude_cli", "unknown")})
+
     def test_an_imported_plan_must_keep_the_v1_recorded_hash(self):
         tmp = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)

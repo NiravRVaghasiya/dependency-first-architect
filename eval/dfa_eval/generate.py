@@ -309,7 +309,9 @@ def tool_versions(config, repo_root):
     return {}
 
 
-def new_manifest(run_dir, config, config_path, repo_root, packages):
+def new_manifest(run_dir, config, config_path, repo_root, packages, tools=None):
+    """The manifest of a new run. `tools` (default: asked of each tool, e.g. `claude
+    --version`) is for runs whose calls were made elsewhere, such as imported plans."""
     notes = [f"{cid}: {', '.join(pkg['excluded'])} not packaged in the session plugin (SKILL.md "
              "names it only to say it is not loaded while planning; it is the scoring rubric)"
              for cid, pkg in packages.items() if pkg["excluded"]]
@@ -327,7 +329,7 @@ def new_manifest(run_dir, config, config_path, repo_root, packages):
         "seed": config["seed"],
         "platform": {"python": platform.python_version(), "implementation":
                      platform.python_implementation(), "platform": platform.platform()},
-        "tools": tool_versions(config, repo_root),
+        "tools": tool_versions(config, repo_root) if tools is None else tools,
     }
     if notes:
         manifest["notes"] = "\n".join(notes)

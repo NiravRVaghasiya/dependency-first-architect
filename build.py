@@ -242,9 +242,13 @@ def build_codex_stub(name, description, lines):
             f"{END_MARKER}\n")
 
 
-def render(version):
-    """Generate every adapter in memory from SKILL.md, reference/ and VERSION: {path: content}."""
-    skill = read_lf(SKILL)
+def render(version, root=ROOT):
+    """Generate every adapter in memory from SKILL.md, reference/ and VERSION: {path: content}.
+
+    The sources are read from `root` (package_skill.py and the tests pass a copy); the keys are
+    always the adapters' paths in this repository."""
+    root = Path(root)
+    skill = read_lf(root / "SKILL.md")
     try:
         text = skill.decode("utf-8")
     except UnicodeDecodeError:
@@ -260,7 +264,7 @@ def render(version):
     references = []
     for rel in CODEX_LAZY_REFERENCES:
         try:
-            references.append((rel, read_lf(ROOT / rel).decode("utf-8")))
+            references.append((rel, read_lf(root / rel).decode("utf-8")))
         except FileNotFoundError:
             raise ValueError(f"{rel} is missing; the lazy Codex adapter appends it") from None
     return {

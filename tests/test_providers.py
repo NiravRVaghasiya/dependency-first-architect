@@ -1,13 +1,16 @@
 """Providers: parsing what the Claude CLI prints, the model check, and every provider's contract.
 
 No test calls a network or a real model: the Claude CLI is replaced by a stub script, HTTP by a
-patched urlopen, agents by small Python scripts, and the fake provider is offline by design.
+patched providers.urlopen or a fake transport handler, agents by small Python scripts, and the
+fake provider is offline by design.
 Standard library only:  python -m unittest discover -s tests -v
 """
 
+import email.message
 import io
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -16,7 +19,9 @@ import threading
 import time
 import unittest
 import urllib.error
+import urllib.parse
 import urllib.request
+import urllib.response
 from pathlib import Path
 from unittest import mock
 
@@ -605,7 +610,7 @@ class OpenAICompatibleTest(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.tmp)
         self.spec = {"id": "gpt", "provider": "openai-compatible", "model": "gpt-9",
                      "effort": None, "options": {"base_url": "https://llm.example.test/v1/",
-                                                 "api_key_env": "DFA_TEST_KEY",
+                                                 "api_key_env": "DFA_TEST_API_KEY",
                                                  "price_in_per_mtok": 2.0,
                                                  "price_out_per_mtok": 8.0}}
         self.requests = []
@@ -620,12 +625,15 @@ class OpenAICompatibleTest(unittest.TestCase):
         provider = providers.make_provider(self.spec, ROOT)
         plugin, _ = workspace.build_plugin(ROOT, DFA, self.tmp / "plugin")
         system = workspace.render_instructions(plugin / "skills" / DFA)
-        with mock.patch.dict(os.environ, {"DFA_TEST_KEY": "sk-secret"}), \
-                mock.patch("urllib.request.urlopen", self.urlopen(self.RESPONSE)):
+        with mock.patch.dict(os.environ, {"DFA_TEST_API_KEY": "sk-secret"}), \
+                mock.patch.object(providers, "urlopen", self.urlopen(self.RESPONSE)):
             out = provider.generate("Plan X.", self.tmp, [plugin], system, 42, 30)
         request, timeout = self.requests[0]
         self.assertEqual(request.full_url, "https://llm.example.test/v1/chat/completions")
         self.assertEqual(request.get_header("Authorization"), "Bearer sk-secret")
+        # Unredirected: urllib never copies it onto a redirect, should one be followed.
+        self.assertEqual(request.unredirected_hdrs.get("Authorization"), "Bearer sk-secret")
+        self.assertNotIn("Authorization", request.headers)
         self.assertEqual(timeout, 30)
         body = json.loads(request.data.decode("utf-8"))
         self.assertEqual(body["model"], "gpt-9")
@@ -649,17 +657,17 @@ class OpenAICompatibleTest(unittest.TestCase):
         with mock.patch.dict(os.environ, {}, clear=True):
             with self.assertRaises(providers.ProviderError) as caught:
                 provider.preflight()
-            self.assertIn("DFA_TEST_KEY", str(caught.exception))
+            self.assertIn("DFA_TEST_API_KEY", str(caught.exception))
             out = provider.generate("x", self.tmp, [], None, None, 5)
-        self.assertIn("DFA_TEST_KEY is not set", out.error)
+        self.assertIn("DFA_TEST_API_KEY is not set", out.error)
 
     def test_judge_with_and_without_json_schema_mode(self):
         reply = dict(self.RESPONSE, choices=[{"message": {
             "content": 'Here you go:\n```json\n{"p_methodology": 0.25, "cues": []}\n```'}}])
         provider = providers.make_provider(dict(self.spec, options=dict(self.spec["options"],
                                                                         json_schema=True)), ROOT)
-        with mock.patch.dict(os.environ, {"DFA_TEST_KEY": "k"}), \
-                mock.patch("urllib.request.urlopen", self.urlopen(reply)):
+        with mock.patch.dict(os.environ, {"DFA_TEST_API_KEY": "k"}), \
+                mock.patch.object(providers, "urlopen", self.urlopen(reply)):
             out = provider.judge("Probe.", schemas.PROBE_RESPONSE, self.tmp, 1, 30)
             plain = providers.make_provider(self.spec, ROOT)
             plain.judge("Probe.", schemas.PROBE_RESPONSE, self.tmp, 1, 30)
@@ -677,8 +685,8 @@ class OpenAICompatibleTest(unittest.TestCase):
             raise urllib.error.HTTPError(request.full_url, 429, "Too Many Requests", {},
                                          io.BytesIO(b'{"error": "rate limited"}'))
         provider = providers.make_provider(self.spec, ROOT)
-        with mock.patch.dict(os.environ, {"DFA_TEST_KEY": "k"}), \
-                mock.patch("urllib.request.urlopen", fail):
+        with mock.patch.dict(os.environ, {"DFA_TEST_API_KEY": "k"}), \
+                mock.patch.object(providers, "urlopen", fail):
             out = provider.generate("x", self.tmp, [], None, None, 5)
         self.assertIn("HTTP 429", out.error)
         self.assertIn("rate limited", out.raw)
@@ -686,6 +694,225 @@ class OpenAICompatibleTest(unittest.TestCase):
     def test_no_agent_sessions(self):
         with self.assertRaises(NotImplementedError):
             providers.make_provider(self.spec, ROOT).agent("x", self.tmp, ["Read"], "plan", 5)
+
+    def test_the_key_goes_only_to_an_https_or_loopback_endpoint(self):
+        def provider(base_url):
+            return providers.make_provider(dict(self.spec, options=dict(self.spec["options"],
+                                                                        base_url=base_url)), ROOT)
+        for allowed in ("https://llm.example.test/v1", "http://localhost:8000/v1",
+                        "http://127.0.0.1:11434/v1", "http://[::1]:8000/v1"):
+            self.assertTrue(provider(allowed).url().endswith("/chat/completions"), allowed)
+        refused = ("http://llm.example.test/v1", "ftp://llm.example.test/v1", "llm.example.test",
+                   "https://user:pw@llm.example.test/v1", "https://llm.example.test/v1?key=x",
+                   "http://localhost.example.test/v1", 42)
+        with mock.patch.dict(os.environ, {"DFA_TEST_API_KEY": "sk-secret"}), \
+                mock.patch.object(providers, "urlopen", self.urlopen(self.RESPONSE)):
+            for base_url in refused:
+                with self.assertRaises(providers.ProviderError, msg=base_url):
+                    provider(base_url).preflight()
+                out = provider(base_url).generate("x", self.tmp, [], None, None, 5)
+                self.assertIn("base_url", out.error)
+                self.assertNotIn("sk-secret", out.error)
+        self.assertEqual(self.requests, [])  # nothing was sent anywhere
+
+    def test_only_an_api_key_variable_can_be_sent(self):
+        def provider(api_key_env):
+            return providers.make_provider(dict(self.spec, options=dict(
+                self.spec["options"], api_key_env=api_key_env)), ROOT)
+        environment = {"GITHUB_TOKEN": "ghs-value", "AWS_SECRET_ACCESS_KEY": "aws-value",
+                       "OPENAI_API_KEY": "sk-default"}
+        with mock.patch.dict(os.environ, environment), \
+                mock.patch.object(providers, "urlopen", self.urlopen(self.RESPONSE)):
+            for name in ("GITHUB_TOKEN", "AWS_SECRET_ACCESS_KEY", "openai_api_key", "API_KEY",
+                         "X_API_KEY_2", 7):
+                with self.assertRaisesRegex(providers.ProviderError, "ending in _API_KEY"):
+                    provider(name).preflight()
+                out = provider(name).generate("x", self.tmp, [], None, None, 5)
+                self.assertIn("ending in _API_KEY", out.error)
+            # Without api_key_env, OPENAI_API_KEY goes to OpenAI's endpoint and nowhere else.
+            options = {k: v for k, v in self.spec["options"].items() if k != "api_key_env"}
+            elsewhere = providers.make_provider(dict(self.spec, options=options), ROOT)
+            with self.assertRaisesRegex(providers.ProviderError, "api_key_env must name"):
+                elsewhere.preflight()
+            self.assertIn("api_key_env must name",
+                          elsewhere.generate("x", self.tmp, [], None, None, 5).error)
+            named = providers.make_provider(dict(self.spec, options=dict(
+                options, api_key_env="OPENAI_API_KEY")), ROOT)  # named outright: still refused
+            with self.assertRaisesRegex(providers.ProviderError, "sent only to"):
+                named.preflight()
+            self.assertEqual(self.requests, [])
+            del options["base_url"]
+            default = providers.make_provider(dict(self.spec, options=options), ROOT)
+            self.assertIsNone(default.generate("x", self.tmp, [], None, None, 5).error)
+        request = self.requests[0][0]
+        self.assertEqual(request.full_url, "https://api.openai.com/v1/chat/completions")
+        self.assertEqual(request.get_header("Authorization"), "Bearer sk-default")
+        for request, _ in self.requests:
+            self.assertNotIn("ghs-value", repr(request.header_items()))
+
+    def test_plain_http_to_localhost_skips_proxies_https_keeps_them(self):
+        built = []
+        real_build = urllib.request.build_opener
+
+        class Transport(urllib.request.BaseHandler):
+            handler_order = 100
+
+            def http_open(self, req):
+                body = json.dumps(OpenAICompatibleTest.RESPONSE).encode("utf-8")
+                response = urllib.response.addinfourl(io.BytesIO(body), email.message.Message(),
+                                                      req.full_url, 200)
+                response.msg = "OK"
+                return response
+            https_open = http_open
+
+        def build_opener(*handlers):
+            built.append(handlers)
+            return real_build(*handlers, Transport)
+        for base_url, bypass in (("http://localhost:8000/v1", True),
+                                 ("https://llm.example.test/v1", False)):
+            provider = providers.make_provider(dict(self.spec, options=dict(
+                self.spec["options"], base_url=base_url)), ROOT)
+            with mock.patch.dict(os.environ, {"DFA_TEST_API_KEY": "sk-secret",
+                                              "HTTP_PROXY": "http://proxy.example.test:3128",
+                                              "http_proxy": "http://proxy.example.test:3128"}), \
+                    mock.patch("urllib.request.build_opener", build_opener):
+                self.assertIsNone(provider.generate("x", self.tmp, [], None, None, 5).error)
+            proxies = [h.proxies for h in built[-1] if isinstance(h, urllib.request.ProxyHandler)]
+            self.assertEqual(proxies, [{}] if bypass else [], base_url)
+
+    def test_a_short_placeholder_key_leaves_the_reply_alone(self):
+        # A local server (Ollama, vLLM) needs no key, so users set a placeholder such as
+        # `none`; masking it would rewrite "Exceptions: none." and break the JSON.
+        reply = dict(self.RESPONSE, choices=[{"message": {"content": "Exceptions: none."}}],
+                     usage={"prompt_tokens": 1000, "completion_tokens": 1})
+        provider = providers.make_provider(dict(self.spec, options=dict(
+            self.spec["options"], base_url="http://localhost:11434/v1")), ROOT)
+        for placeholder in ("none", "1"):
+            with mock.patch.dict(os.environ, {"DFA_TEST_API_KEY": placeholder}), \
+                    mock.patch.object(providers, "urlopen", self.urlopen(reply)):
+                out = provider.generate("x", self.tmp, [], None, None, 5)
+            self.assertIsNone(out.error, placeholder)
+            self.assertEqual(out.text, "Exceptions: none.")
+            self.assertEqual(out.usage["output_tokens"], 1)
+
+    def test_a_deeply_nested_reply_is_still_read(self):
+        body = ('{"choices": [{"message": {"content": "the plan"}}], "usage": {}, "debug": '
+                + "[" * 500 + "]" * 500 + "}")
+        provider = providers.make_provider(self.spec, ROOT)
+        with mock.patch.dict(os.environ, {"DFA_TEST_API_KEY": "sk-secret-value"}), \
+                mock.patch.object(providers, "urlopen",
+                                  lambda request, timeout=None: FakeResponse(body.encode())):
+            out = provider.generate("x", self.tmp, [], None, None, 5)
+        self.assertIsNone(out.error)
+        self.assertEqual(out.text, "the plan")
+
+    def test_an_escaped_echo_of_the_key_is_not_recorded(self):
+        def echo(request, timeout=None):
+            key = request.get_header("Authorization").split()[1]
+            escaped = "".join(f"\\u{ord(ch):04x}" for ch in key)  # JSON for the same text
+            body = ('{"model": "gpt-9", "choices": [{"message": {"content": "You sent '
+                    + escaped + '"}}], "usage": {}}')
+            return FakeResponse(body.encode("utf-8"))
+        provider = providers.make_provider(self.spec, ROOT)
+        with mock.patch.dict(os.environ, {"DFA_TEST_API_KEY": "sk-secret-value"}), \
+                mock.patch.object(providers, "urlopen", echo):
+            out = provider.generate("x", self.tmp, [], None, None, 5)
+        self.assertEqual(out.text, "You sent <redacted>")
+        self.assertNotIn("sk-secret-value", json.dumps(json.loads(out.raw), ensure_ascii=False))
+        self.assertNotIn("sk-secret-value", out.raw)
+
+    def test_a_key_with_a_line_break_is_refused_and_never_shown(self):
+        provider = providers.make_provider(self.spec, ROOT)
+        for value in ("sk-secret\r\nX-Injected: 1", "sk-se cret", "sk-secret\tX"):
+            with mock.patch.dict(os.environ, {"DFA_TEST_API_KEY": value}):
+                with self.assertRaises(providers.ProviderError) as caught:
+                    provider.preflight()
+                out = provider.generate("x", self.tmp, [], None, None, 5)
+            self.assertIn("cannot carry", str(caught.exception))
+            self.assertNotIn("sk-se", str(caught.exception) + out.error + out.raw)
+        with mock.patch.dict(os.environ, {"DFA_TEST_API_KEY": "  sk-secret\r\n"}), \
+                mock.patch.object(providers, "urlopen", self.urlopen(self.RESPONSE)):
+            self.assertIsNone(provider.generate("x", self.tmp, [], None, None, 5).error)
+        self.assertEqual(self.requests[0][0].get_header("Authorization"), "Bearer sk-secret")
+
+    def test_a_key_the_endpoint_or_an_exception_repeats_is_redacted(self):
+        def echo(request, timeout=None):
+            body = json.dumps({"error": f"bad key {request.get_header('Authorization')}"})
+            raise urllib.error.HTTPError(request.full_url, 401, "Unauthorized", {},
+                                         io.BytesIO(body.encode("utf-8")))
+
+        def explode(request, timeout=None):
+            raise OSError(f"cannot send {request.get_header('Authorization')!r}")
+
+        def url_encoded(request, timeout=None):
+            key = request.get_header("Authorization").split()[1]
+            body = json.dumps({"error": "bad key " + urllib.parse.quote(key, safe="") + " / "
+                               + urllib.parse.quote_plus(key)})
+            raise urllib.error.HTTPError(request.full_url, 401, "Unauthorized", {},
+                                         io.BytesIO(body.encode("utf-8")))
+        provider = providers.make_provider(self.spec, ROOT)
+        def url_encoded_variants(request, timeout=None):
+            key = request.get_header("Authorization").split()[1]
+            quoted = urllib.parse.quote(key)  # the default keeps "/" as is
+            lower = re.sub("%[0-9A-F]{2}", lambda m: m.group(0).lower(), quoted)
+            raise urllib.error.HTTPError(request.full_url, 401, "Unauthorized", {},
+                                         io.BytesIO(f"{quoted} {lower}".encode("utf-8")))
+        for fake, key in ((echo, "sk-secret-value"), (explode, "sk-secret-value"),
+                          (url_encoded, "sk-ab+cd/ef=gh12345678"),
+                          (url_encoded_variants, "Ab/Cd+Ef=Gh12345")):
+            with mock.patch.dict(os.environ, {"DFA_TEST_API_KEY": key}), \
+                    mock.patch.object(providers, "urlopen", fake):
+                out = provider.generate("x", self.tmp, [], None, None, 5)
+            recorded = out.error + out.raw + repr(out.__dict__)
+            for form in (key, urllib.parse.quote(key, safe=""), urllib.parse.quote_plus(key),
+                         urllib.parse.quote(key),
+                         re.sub("%[0-9A-F]{2}", lambda m: m.group(0).lower(),
+                                urllib.parse.quote(key))):
+                self.assertNotIn(form, recorded, fake.__name__)
+            self.assertIn("<redacted>", out.error)
+
+    def test_redirects_are_refused_so_the_key_is_not_re_sent(self):
+        seen = []
+
+        class Transport(urllib.request.BaseHandler):
+            """Answers every https request: the API host redirects, any other host is the
+            attacker's and records what reached it."""
+            handler_order = 100  # before the real HTTPSHandler, so nothing leaves this process
+
+            def https_open(self, req):
+                seen.append((req.host, req.get_header("Authorization")))
+                headers = email.message.Message()
+                code = 200
+                if req.host == "llm.example.test":
+                    headers["Location"] = "https://attacker.example.test/collect"
+                    code = 302
+                response = urllib.response.addinfourl(io.BytesIO(b"{}"), headers,
+                                                      req.full_url, code)
+                response.msg = "Found" if code == 302 else "OK"
+                return response
+
+        def request():
+            return urllib.request.Request("https://llm.example.test/v1/chat/completions",
+                                          data=b"{}", method="POST",
+                                          headers={"Authorization": "Bearer sk-secret"})
+        no_proxy = urllib.request.ProxyHandler({})  # this host's proxy settings must not apply
+        urllib.request.build_opener(no_proxy, Transport).open(request(), timeout=5)  # stock
+        self.assertEqual(seen[-1], ("attacker.example.test", "Bearer sk-secret"))
+        seen.clear()
+        with self.assertRaises(urllib.error.HTTPError) as caught:
+            urllib.request.build_opener(no_proxy, providers._NoRedirect, Transport).open(
+                request(), timeout=5)
+        self.assertEqual(caught.exception.code, 302)
+        self.assertEqual(seen, [("llm.example.test", "Bearer sk-secret")])
+        built = []
+        real_build = urllib.request.build_opener
+        with mock.patch("urllib.request.build_opener",
+                        lambda *handlers: built.append(handlers)
+                        or real_build(*handlers, urllib.request.ProxyHandler({}), Transport)):
+            with self.assertRaises(urllib.error.HTTPError):
+                providers.urlopen(request(), timeout=5)
+        self.assertEqual(built, [(providers._NoRedirect,)])
+        self.assertEqual(seen[-1][0], "llm.example.test")
 
 
 STUB_AGENT = r'''

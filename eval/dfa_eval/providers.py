@@ -46,6 +46,7 @@ import subprocess
 import threading
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -712,23 +713,130 @@ class ClaudeCliProvider(Provider):
         return self._stream(run, [], workdir, need_text=False)
 
 
+LOOPBACK_HOSTS = ("localhost", "127.0.0.1", "::1")
+API_KEY_ENV = re.compile(r"[A-Z][A-Z0-9_]*_API_KEY")
+OPENAI_BASE_URL = "https://api.openai.com/v1"  # the only endpoint OPENAI_API_KEY goes to unasked
+
+
+MIN_REDACTED = 8  # shorter "keys" are placeholders (`none` for a local server), not secrets
+
+
+def _redact(text, secret):
+    """`text` with every occurrence of `secret` masked: as is, and as repr(), JSON and URL
+    encoding escape it. A placeholder shorter than MIN_REDACTED is left alone: masking `none`
+    or `1` would rewrite the plan and the JSON around it."""
+    if not secret or not text or len(secret) < MIN_REDACTED:
+        return text
+    escaped = json.dumps(secret)[1:-1]
+    encoded = {urllib.parse.quote(secret), urllib.parse.quote(secret, safe=""),
+               urllib.parse.quote_plus(secret)}
+    encoded |= {re.sub("%[0-9A-F]{2}", lambda m: m.group(0).lower(), form) for form in encoded}
+    forms = {secret, repr(secret)[1:-1], escaped, escaped.replace("/", "\\/"), *encoded}
+    for form in sorted(forms, key=len, reverse=True):
+        text = text.replace(form, "<redacted>")
+    return text
+
+
+def _holds(value, secret):
+    """True if any string in decoded JSON `value` (keys included) contains `secret`."""
+    if isinstance(value, str):
+        return secret in value
+    if isinstance(value, list):
+        return any(_holds(item, secret) for item in value)
+    if isinstance(value, dict):
+        return any(_holds(k, secret) or _holds(v, secret) for k, v in value.items())
+    return False
+
+
+def _scrub(value, secret):
+    """Decoded JSON `value` with `secret` masked in every string, keys included."""
+    if isinstance(value, str):
+        return value.replace(secret, "<redacted>")
+    if isinstance(value, list):
+        return [_scrub(item, secret) for item in value]
+    if isinstance(value, dict):
+        return {_scrub(k, secret): _scrub(v, secret) for k, v in value.items()}
+    return value
+
+
+def _redact_response(raw, secret):
+    """A response with `secret` masked however the endpoint wrote it. Literal and common escaped
+    forms are masked in place; if the JSON still decodes to text holding the secret (escaped as
+    \\u0073…), the response is re-serialized from the masked data, as recording it verbatim
+    would record the key."""
+    raw = _redact(raw, secret)
+    if not secret or len(secret) < MIN_REDACTED:
+        return raw
+    try:
+        data = json.loads(raw)
+        return json.dumps(_scrub(data, secret), ensure_ascii=False) if _holds(data, secret) else raw
+    except (ValueError, RecursionError):  # not JSON, or nested too deep to walk
+        return raw
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    """Turn every redirect into an HTTP error. urllib follows a 301/302/303 by re-sending the
+    request's headers, the Authorization header with the API key included, to wherever it
+    points: another host, or plain http."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+def urlopen(request, timeout):
+    """urllib.request.urlopen for a request that carries a credential: no redirects, and no
+    proxy for plain http, which url() allows only to this machine (a proxy would read the key in
+    clear text; an https proxy tunnel never sees it)."""
+    handlers = [_NoRedirect]
+    if request.type == "http":
+        handlers.append(urllib.request.ProxyHandler({}))
+    return urllib.request.build_opener(*handlers).open(request, timeout=timeout)
+
+
 class OpenAICompatibleProvider(Provider):
     name = "openai-compatible"
     supports_seed = True
 
     def _key(self):
+        """The API key, read from the environment only when a call is about to be made. Only a
+        variable named *_API_KEY may be sent, so a config cannot turn another credential
+        (GITHUB_TOKEN, AWS_SECRET_ACCESS_KEY, …) into a bearer token, and OPENAI_API_KEY is the
+        default only for OpenAI's own endpoint. Errors name the variable, never its value."""
         env = self.options.get("api_key_env", "OPENAI_API_KEY")
-        key = os.environ.get(env)
+        base = self.options.get("base_url", OPENAI_BASE_URL)
+        if env == "OPENAI_API_KEY" and not (isinstance(base, str)
+                                            and base.rstrip("/") == OPENAI_BASE_URL):
+            raise ProviderError("options.api_key_env must name the variable that holds the key "
+                                f"for {base!r}: OPENAI_API_KEY is sent only to {OPENAI_BASE_URL}")
+        if not isinstance(env, str) or not API_KEY_ENV.fullmatch(env):
+            raise ProviderError(f"options.api_key_env {env!r} must name an environment variable "
+                                "ending in _API_KEY (for example OPENAI_API_KEY)")
+        key = (os.environ.get(env) or "").strip()
         if not key:
             raise ProviderError(f"environment variable {env} is not set (options.api_key_env "
                                 f"names the variable that holds the API key)")
+        if not all("!" <= ch <= "~" for ch in key):
+            raise ProviderError(f"environment variable {env} holds a space, line break or other "
+                                "character an HTTP header cannot carry (its value is not shown)")
         return key
 
     def preflight(self):
+        self.url()
         self._key()
 
     def url(self):
-        base = self.options.get("base_url", "https://api.openai.com/v1")
+        """The endpoint the key is sent to: https, or plain http to this machine only, with no
+        credentials, query or fragment of its own."""
+        base = self.options.get("base_url", OPENAI_BASE_URL)
+        parts = urllib.parse.urlsplit(base) if isinstance(base, str) else None
+        if (parts is None or not parts.hostname
+                or not (parts.scheme == "https"
+                        or (parts.scheme == "http" and parts.hostname in LOOPBACK_HOSTS))):
+            raise ProviderError(f"options.base_url {base!r} must be an https URL (plain http "
+                                "only to localhost): the API key travels in its headers")
+        if "@" in parts.netloc or parts.query or parts.fragment:
+            raise ProviderError(f"options.base_url {base!r} must not carry credentials, a "
+                                "query or a fragment")
         return base.rstrip("/") + "/chat/completions"
 
     def body(self, messages, seed=None, extra=None):
@@ -742,25 +850,30 @@ class OpenAICompatibleProvider(Provider):
         return body
 
     def _post(self, body, timeout_s):
-        """(response text, seconds, error or None); never raises, never echoes the key."""
+        """(response text, seconds, error or None); never raises, and neither the text nor the
+        error holds the key, even if an exception or the endpoint repeats it."""
         started = time.monotonic()
+        key = None
         try:
-            request = urllib.request.Request(
-                self.url(), data=json.dumps(body).encode("utf-8"), method="POST",
-                headers={"Content-Type": "application/json",
-                         "Authorization": f"Bearer {self._key()}"})
-            with urllib.request.urlopen(request, timeout=timeout_s) as response:
+            url = self.url()
+            key = self._key()
+            request = urllib.request.Request(url, data=json.dumps(body).encode("utf-8"),
+                                             method="POST",
+                                             headers={"Content-Type": "application/json"})
+            # Unredirected, and urlopen refuses redirects: the key reaches this URL only.
+            request.add_unredirected_header("Authorization", f"Bearer {key}")
+            with urlopen(request, timeout=timeout_s) as response:
                 raw = response.read().decode("utf-8", errors="replace")
-            return raw, time.monotonic() - started, None
+            return _redact_response(raw, key), time.monotonic() - started, None
         except urllib.error.HTTPError as exc:
             try:
-                raw = exc.read().decode("utf-8", errors="replace")
+                raw = _redact_response(exc.read().decode("utf-8", errors="replace"), key)
             except OSError:
                 raw = ""
             return raw, time.monotonic() - started, f"HTTP {exc.code}: {_tail(raw, 400)}"
         except (urllib.error.URLError, http.client.HTTPException, OSError, ValueError,
                 ProviderError) as exc:
-            return "", time.monotonic() - started, f"request failed: {exc}"
+            return "", time.monotonic() - started, _redact(f"request failed: {exc}", key)
 
     def complete(self, messages, timeout_s, seed=None, extra=None):
         raw, seconds, error = self._post(self.body(messages, seed, extra), timeout_s)
@@ -770,7 +883,7 @@ class OpenAICompatibleProvider(Provider):
             return out
         try:
             data = json.loads(raw)
-        except ValueError:
+        except (ValueError, RecursionError):
             out.error = f"the response is not JSON: {_tail(raw, 300)}"
             return out
         if not isinstance(data, dict):

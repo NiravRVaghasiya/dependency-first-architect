@@ -143,6 +143,37 @@ agent CLI, e.g. Codex or Cursor, installing the real adapter file into the works
 derived per generation and passed to providers that honor them; the Claude CLI does not, and
 records say so (`seed_honored: false`).
 
+### Credentials, network and cost
+
+None of this is part of the skill: the package users install holds no code, and nothing here runs
+when it is installed or used. Only the stages that call a model use the network or a credential:
+`generate`, `judge`, `probe`, `all`, `outcomes plan` and `outcomes implement`. `plan` (the dry
+run), `check`, `blind`, `lint`, `aggregate`, `report`, `matrix`, `evidence`, `import-v1` and the
+test suite are offline and need no key.
+
+| Provider | Credential | Sent to | What is sent |
+|---|---|---|---|
+| `claude-cli` | whatever the `claude` CLI uses: `ANTHROPIC_API_KEY`, or a Bedrock or Vertex configuration (`--bare` ignores a claude.ai login). The CLI reads it; the harness does not. | Anthropic, or the Bedrock or Vertex endpoint the CLI is set up for | the request and the skill's files (as a session plugin); for judging, a blinded plan and the rubric |
+| `openai-compatible` | the variable `options.api_key_env` names (it must end in `_API_KEY`), else `OPENAI_API_KEY`, which goes only to the default `base_url`; read when the stage starts and on each request | `options.base_url` + `/chat/completions`, default `https://api.openai.com/v1`: https only (plain http only to localhost, never through a proxy), no redirects | the same, with the skill's files inlined in the system prompt |
+| `command` | whatever the wrapped agent CLI uses | wherever that CLI sends its requests | the prompt, and the adapter file installed in its working directory |
+| `fake` | none | nothing | nothing (offline; tests and CI) |
+
+- Error messages name a missing variable, never a value, and the `openai-compatible` provider
+  redacts its key from anything it records (a placeholder under 8 characters, for a local
+  server, is left alone). The `claude-cli` and `command` providers start their
+  program with your whole environment, so run real benchmarks where the environment holds only
+  the credentials that provider needs.
+- A config is code: it chooses the programs a `command` provider runs (`argv`) or a `claude-cli`
+  provider runs (`executable`), and where a key is sent.
+  So is a run's `manifest.json`, which a stage given no `--config` uses. Run only configs and run
+  directories you have reviewed.
+- Real runs bill your provider account. The committed runs recorded $199.16 (pilot-core), $16.66
+  (the outcome run), $11.45 (pilot-models), $7.45 (pilot-length), $7.38 (the v1 re-judge) and
+  $5.27 (pilot-models-haiku). `--max-cost-usd` stops a stage once the run's recorded cost
+  reaches the cap, which only works when the provider reports costs. The Claude CLI does. An
+  `openai-compatible` provider does only when `price_in_per_mtok` and `price_out_per_mtok` are
+  set. A `command` provider never does, so the cap cannot stop it.
+
 ### Re-judging the published v1.0.0 plans
 
 ```bash

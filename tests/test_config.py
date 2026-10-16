@@ -151,6 +151,68 @@ class BenchmarkTest(unittest.TestCase):
         self.assertNotIn(config.config_sha256(config.load_config(path)), shas)
 
 
+class V1HarnessConstantsTest(unittest.TestCase):
+    """`check` reads the v1.0.0 judge prompt from examples/scoring/run_eval.py by parsing it,
+    without running the file, and gets what importing it would give."""
+
+    def read(self, source):
+        from dfa_eval import cli
+        tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, tmp)
+        (tmp / "examples" / "scoring").mkdir(parents=True)
+        (tmp / "examples" / "scoring" / "run_eval.py").write_text(source, encoding="utf-8")
+        return cli._v1_harness_constants(tmp)
+
+    def test_parsed_values_equal_the_imported_module(self):
+        from dfa_eval import cli
+        parsed = cli._v1_harness_constants(ROOT)
+        run_eval = load_run_eval()
+        self.assertEqual(parsed, {"RUBRIC": run_eval.RUBRIC, "JUDGE_TASK": run_eval.JUDGE_TASK,
+                                  "DIMENSIONS": run_eval.DIMENSIONS})
+        self.assertEqual(cli.check_v1_rubric(ROOT), [])
+
+    def test_only_plain_literals_assigned_once_are_read(self):
+        good = 'RUBRIC = """r"""\nJUDGE_TASK = "j {plan}"\nDIMENSIONS = ["a", "b"]\n'
+        self.assertEqual(self.read(good), {"RUBRIC": "r", "JUDGE_TASK": "j {plan}",
+                                           "DIMENSIONS": ["a", "b"]})
+        self.assertEqual(self.read("import os\n" + good + "def f():\n    return RUBRIC\n"),
+                         self.read(good))  # reading the names anywhere is fine
+        refused = {
+            "is not a string literal": good.replace('"""r"""', '"r" + os.getcwd()'),
+            "is not a string literal or a list": good.replace('["a", "b"]', '["a", f"{x}"]'),
+            "must be assigned once": good + 'RUBRIC = "again"\n',
+            "must be assigned once, as": good + 'RUBRIC += "more"\n',
+            "must be assigned once, as `DIMENSIONS": good.replace('DIMENSIONS = ["a", "b"]',
+                                                                  'DIMENSIONS, X = ["a"], 1'),
+            "defines no DIMENSIONS": good.replace('DIMENSIONS = ["a", "b"]\n', ""),
+            "does not parse": good + "def (:\n",
+        }
+        for expected, source in refused.items():
+            with self.assertRaisesRegex(ValueError, re.escape(expected), msg=expected):
+                self.read(source)
+        # Any other binding, anywhere, could give the module a value the parse never sees; even
+        # a function's local one is refused rather than reasoned about.
+        for rebinding in ("if True:\n    RUBRIC = 'rebound'\n", "for RUBRIC in 'ab':\n    pass\n",
+                          "def f():\n    RUBRIC = 1\n",
+                          "from string import ascii_letters as RUBRIC\n",
+                          "def RUBRIC():\n    pass\n",
+                          "class JUDGE_TASK:\n    pass\n", "(DIMENSIONS := [])\n",
+                          "def f():\n    global RUBRIC\n    RUBRIC = 'x'\n", "del RUBRIC\n",
+                          "with open('x') as JUDGE_TASK:\n    pass\n",
+                          "try:\n    pass\nexcept Exception as RUBRIC:\n    pass\n"):
+            with self.assertRaisesRegex(ValueError, "must be assigned once", msg=rebinding):
+                self.read(good + rebinding)
+        for mutation in ("DIMENSIONS[0] = 'z'\n", "DIMENSIONS.append('c')\n",
+                         "del DIMENSIONS[0]\n", "DIMENSIONS.sort()\n",
+                         "DIMENSIONS += ['c']\n"):
+            with self.assertRaisesRegex(ValueError, "must be assigned once", msg=mutation):
+                self.read(good + mutation)
+        self.assertEqual(self.read(good + "X = JUDGE_TASK.format(plan=1)\n")["JUDGE_TASK"],
+                         "j {plan}")  # reading a string constant, even by attribute, is fine
+        with self.assertRaisesRegex(ValueError, r"import \*` could rebind"):
+            self.read(good + "from string import *\n")
+
+
 def minimal(**overrides):
     cfg = {
         "schema": "dfa-eval/config@1",

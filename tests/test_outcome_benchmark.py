@@ -146,6 +146,31 @@ class RunnerIsolationTest(unittest.TestCase):
                        *sorted(p for p in (TASK / "mutants").iterdir() if p.is_dir())]:
             self.assertEqual(runner.screen_code(folder), [], folder.name)
 
+    def test_the_screen_sees_from_imports_and_the_code_as_python_decodes_it(self):
+        def screen(source, encoding="utf-8"):
+            code = self.tmp / f"screen-{len(list(self.tmp.iterdir()))}"
+            (code / "ledger").mkdir(parents=True)
+            (code / "ledger" / "service.py").write_bytes(source.encode(encoding))
+            return "\n".join(runner.screen_code(code))
+        for source, reason in (("from urllib import request\n", "imports urllib.request"),
+                               ("from http import client as c\n", "imports http.client"),
+                               ("from asyncio import subprocess\n", "imports asyncio.subprocess"),
+                               ("from os import system\nsystem('x')\n", "imports os.system"),
+                               ("from shutil import rmtree\n", "imports shutil.rmtree"),
+                               ("from os import *\nsystem('x')\n", "imports os.system"),
+                               ("from shutil import *\n", "imports shutil.rmtree"),
+                               ("from posix import system\n", "imports posix"),
+                               ("from nt import system\n", "imports nt")):
+            self.assertIn(reason, screen(source), source)
+        # A UTF-7 coding cookie hides `import subprocess` from a UTF-8 reading of the file.
+        hidden = "# -*- coding: utf-7 -*-\n" + "import subprocess\n".encode("utf-7").decode()
+        smuggled = "# -*- coding: utf-7 -*-\n+AGk-mport subprocess\n"
+        self.assertIn("imports subprocess", screen(smuggled))
+        self.assertIn("imports subprocess", screen(hidden))
+        for source in ("from urllib import parse\n", "from http import HTTPStatus\n",
+                       "from decimal import Decimal\n", "from . import store\n"):
+            self.assertEqual(screen(source), "", source)
+
     def reference_variant(self, old, new, round_number=1):
         """A reference solution with one legitimate change, in a temp code dir."""
         code = self.tmp / f"variant-r{round_number}"
