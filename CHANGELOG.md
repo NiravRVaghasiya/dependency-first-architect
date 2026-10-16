@@ -6,7 +6,7 @@ All notable changes to this project are recorded here. The format follows
 [`VERSION`](VERSION). `python build.py --check` fails if this file has no entry for it, and
 `python build.py --release-tag vX.Y.Z` fails unless that entry has a release date.
 
-## [2.0.1] — Unreleased
+## [2.0.1] — 2026-10-16
 
 A distributable package, and hardening of the development tools. The method is unchanged: no
 principle, step, field or plan section changed, so plans should be the same as with 2.0.0. The
