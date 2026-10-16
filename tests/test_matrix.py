@@ -9,6 +9,7 @@ Standard library only:  python -m unittest discover -s tests -v
 import copy
 import json
 import math
+import re
 import shutil
 import sys
 import tempfile
@@ -100,6 +101,40 @@ class MatrixTestCase(unittest.TestCase):
         return hits[0]
 
 
+def install_version():
+    """The release the README installs: the newest final version from 2.0.1 on (the first with
+    release assets) whose CHANGELOG entry has a release date. Until that first release, VERSION. A
+    version still being developed is not installable, so the README keeps naming the last one."""
+    sys.path.insert(0, str(ROOT))
+    try:
+        import build
+    finally:
+        sys.path.pop(0)
+    text = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+    dated = []
+    for version, label in build.CHANGELOG_HEADING.findall(text):
+        if not build.SEMVER.fullmatch(version) or "-" in version.split("+")[0]:
+            continue  # a `## [Unreleased]` heading, or a pre-release nobody installs by default
+        core = tuple(int(n) for n in re.split(r"[-+]", version)[0].split("."))
+        if core >= (2, 0, 1) and build.is_date(label.strip().lstrip("—–-").strip()):
+            dated.append((core, version))
+    return max(dated)[1] if dated else (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+
+
+def package_skill_assets():
+    """The release asset names package_skill.py gives the adapters, by role."""
+    sys.path.insert(0, str(ROOT))
+    try:
+        import build
+        import package_skill
+    finally:
+        sys.path.pop(0)
+    names = package_skill.ADAPTER_ASSETS
+    return {"cursor": names[build.CURSOR], "codex": names[build.CODEX],
+            "codex-lazy": names[build.CODEX_LAZY], "codex-lazy-stub": names[build.CODEX_STUB],
+            "codex-lazy-path": build.CODEX_LAZY_INSTALLED}
+
+
 class AgentsFileTest(unittest.TestCase):
     def test_declares_the_three_agents_and_their_artifacts_exist(self):
         agents = matrix.load_agents(ROOT)
@@ -110,12 +145,40 @@ class AgentsFileTest(unittest.TestCase):
         for entry in (cursor, codex):
             self.assertTrue((ROOT / entry["artifact"]).is_file(), entry["artifact"])
             self.assertIn(Path(entry["artifact"]).name, entry["install"])
-        self.assertIn("~/.claude/skills/dependency-first-architect", claude["install"])
+        # Claude Code installs the release zip, whose one folder is the skill's; Cursor and
+        # Codex install their release asset, from the folder the README downloads into.
+        self.assertIn(f'"$D/dependency-first-architect-v{install_version()}.zip" '
+                      "-d ~/.claude/skills/", claude["install"])
+        assets = package_skill_assets()
+        self.assertIn(f'cp "$D/{assets["cursor"]}" .cursor/rules/', cursor["install"])
+        self.assertIn(f'cat "$D/{assets["codex"]}"; }} >> AGENTS.md', codex["install"])
 
     def test_install_commands_match_the_readme(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         for entry in matrix.load_agents(ROOT):
             self.assertIn(entry["install"], readme, entry["agent"])
+
+    def test_readme_installs_the_latest_release_checked_and_without_remote_scripts(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        version = install_version()
+        self.assertIn(f"gh release download v{version} --repo NiravRVaghasiya/"
+                      "dependency-first-architect --dir", readme)
+        self.assertIn('(cd "$D" && sha256sum -c --ignore-missing SHA256SUMS)', readme)
+        # Every zip the README names is that release's, so a partial update cannot leave a
+        # download of one version and an install of another.
+        self.assertEqual(set(re.findall(r"dependency-first-architect-v([0-9][^\s`\"]*)\.zip",
+                                        readme)), {version})
+        for unsafe in ("curl ", "wget ", "raw.githubusercontent.com", "| sh", "| bash"):
+            self.assertNotIn(unsafe, readme)
+        self.assertNotRegex(readme, r"git clone[^\n]*\.claude/skills")  # no repository install
+        self.assertEqual(set(re.findall(r"git checkout v([0-9][^\s`]*)", readme)), {version})
+        assets = package_skill_assets()
+        for asset in [f"dependency-first-architect-v{version}.zip", *assets.values()]:
+            if asset != assets["codex-lazy-path"]:
+                self.assertIn(f"`{asset}`", readme, asset)
+        # The lazy Codex install puts its file where the generated stub tells Codex to read it.
+        self.assertIn(f'cp "$D/{assets["codex-lazy"]}" {assets["codex-lazy-path"]}', readme)
+        self.assertIn(f'cat "$D/{assets["codex-lazy-stub"]}"; }} >> AGENTS.md', readme)
 
     def test_malformed_agents_file_is_rejected(self):
         tmp = Path(tempfile.mkdtemp())

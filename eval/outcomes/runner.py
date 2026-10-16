@@ -54,7 +54,7 @@ def scrubbed_env(environ=None):
 # It is a heuristic, not a sandbox (see SECURITY.md).
 FORBIDDEN_IMPORTS = ("subprocess", "socket", "ctypes", "multiprocessing", "asyncio.subprocess",
                      "ftplib", "smtplib", "telnetlib", "requests", "http.client", "http.server",
-                     "urllib.request")
+                     "urllib.request", "posix", "nt")  # posix, nt: os's own system() and friends
 FORBIDDEN_CALLS = ("os.system", "os.popen", "os.remove", "os.unlink", "os.rmdir",
                    "os.removedirs", "os.kill", "os.fork", "os.execv", "os.execl", "os.spawnv",
                    "os.startfile", "shutil.rmtree", "eval", "exec", "__import__")
@@ -90,17 +90,25 @@ def screen_code(code_dir):
         if rel.startswith("ledgerkit/"):
             continue
         try:
-            tree = ast.parse(path.read_text(encoding="utf-8", errors="replace"), filename=rel)
-        except SyntaxError:
+            # Bytes, so a coding cookie is honoured exactly as import will honour it: decoding
+            # here differently would screen text other than the code that runs.
+            tree = ast.parse(path.read_bytes(), filename=rel)
+        except (SyntaxError, ValueError):
             continue  # it will fail to import, and the tests will report that
         for node in ast.walk(tree):
             names = []
             if isinstance(node, ast.Import):
                 names = [alias.name for alias in node.names]
             elif isinstance(node, ast.ImportFrom) and node.module:
-                names = [node.module]
+                # `from urllib import request` imports urllib.request; `from os import system`
+                # makes a bare system() call that the call check below cannot name, and so does
+                # `from os import *`.
+                names = [node.module] + [f"{node.module}.{alias.name}" for alias in node.names]
+                if any(alias.name == "*" for alias in node.names):
+                    names += [f for f in FORBIDDEN_CALLS if f.startswith(node.module + ".")]
             for name in names:
-                if any(name == f or name.startswith(f + ".") for f in FORBIDDEN_IMPORTS):
+                if (any(name == f or name.startswith(f + ".") for f in FORBIDDEN_IMPORTS)
+                        or name in FORBIDDEN_CALLS):
                     problems.append(f"{rel}:{node.lineno}: imports {name}")
             if isinstance(node, ast.Call):
                 func = node.func

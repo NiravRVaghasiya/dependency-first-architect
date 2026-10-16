@@ -1,0 +1,103 @@
+name: Release package
+
+# Builds the release assets (the skill package zip, the Cursor and Codex adapters, SHA256SUMS)
+# from a release tag and runs every CI check on Ubuntu. It never publishes on its own: a tag
+# push only builds, checks and uploads the assets as a workflow artifact for review. A
+# maintainer who runs it by hand with draft_release ticked gets a DRAFT release with those
+# assets, and publishes it after reviewing it and the tag's CI run (Ubuntu and Windows).
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing signed release tag to package (vX.Y.Z)"
+        required: true
+        type: string
+      draft_release:
+        description: "Also create a DRAFT GitHub release with the assets (it stays unpublished)"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: Build and check the release assets
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    outputs:
+      sums: ${{ steps.sums.outputs.sha256 }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.tag && format('refs/tags/{0}', inputs.tag) || github.ref }}
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.x"
+      - name: Release tag matches VERSION and a dated CHANGELOG entry; adapters in sync
+        run: python build.py --release-tag "$TAG"
+      - name: SHA256SUMS matches the checkout
+        run: sha256sum -c SHA256SUMS
+      - name: Scorecard and README numbers match the raw judge scores
+        run: python examples/scoring/tally.py --check
+      - name: Committed eval runs, reports, matrix and rubrics are consistent
+        run: python eval/run.py check
+      - name: Self-tests
+        run: python -m unittest discover -s tests
+      - name: Build the package and the release assets, and check them
+        run: python package_skill.py
+      - name: Assets and package files match SHA256SUMS
+        run: |
+          (cd dist/release && sha256sum -c --ignore-missing SHA256SUMS)
+          (cd dist && sha256sum -c --ignore-missing release/SHA256SUMS)
+      - id: sums
+        name: Fingerprint of the assets
+        run: echo "sha256=$(sha256sum dist/release/SHA256SUMS | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-assets-${{ env.TAG }}
+          path: dist/release/
+          if-no-files-found: error
+
+  draft-release:
+    name: Create a draft release (manual runs only)
+    needs: package
+    if: github.event_name == 'workflow_dispatch' && inputs.draft_release
+    runs-on: ubuntu-latest
+    # Add required reviewers to this environment in the repository settings to gate this job.
+    environment: release
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ inputs.tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ format('refs/tags/{0}', inputs.tag) }}
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.x"
+      - name: Rebuild the assets (the build is reproducible)
+        run: python package_skill.py
+      - name: The rebuild is byte-identical to what the package job checked
+        env:
+          EXPECTED: ${{ needs.package.outputs.sums }}
+        run: test "$(sha256sum dist/release/SHA256SUMS | cut -d' ' -f1)" = "$EXPECTED"
+      - name: Release notes from the version's CHANGELOG section
+        run: |
+          awk -v v="${TAG#v}" 'index($0, "## [" v "]") == 1 {on = 1; next} /^## \[/ {on = 0} on' \
+            CHANGELOG.md > "$RUNNER_TEMP/release-notes.md"
+          test -s "$RUNNER_TEMP/release-notes.md"
+      - name: Create the draft release (a maintainer publishes it)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "$TAG" --draft --verify-tag --title "$TAG" \
+            --notes-file "$RUNNER_TEMP/release-notes.md" dist/release/*

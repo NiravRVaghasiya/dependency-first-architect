@@ -9,56 +9,91 @@ Codex load them and act on them in your projects. If those files change, what yo
 to do changes. Codex reads `AGENTS.md` in every session, so a change there reaches every session.
 Treat an update like a dependency upgrade:
 
-- **Review the diff before you update.** For a Claude Code install, fetch first and read what
-  changed before you pull:
-  ```bash
-  git -C ~/.claude/skills/dependency-first-architect fetch
-  git -C ~/.claude/skills/dependency-first-architect diff HEAD origin/main -- SKILL.md reference/
-  ```
-  For Cursor or Codex, compare the new adapter with the copy you have installed before you
-  replace it.
-- **Pin a tag or a commit** rather than tracking `main`. For example, use
-  `git clone --branch vX.Y.Z ...`, or put a tag or a full commit SHA in place of `main` in the
-  `raw.githubusercontent.com` install URLs. Version 1.0.0 was designated after the fact and has
-  no tag. To use it, pin commit `7ec18f469395fce4f352caa26d983b22b5a71a0f`.
+- **Install a release you reviewed, checked against its `SHA256SUMS`,** not the repository or
+  `main` (README, [Install](README.md#install)). From v2.0.1, each release carries the skill
+  package and the adapters as assets, built from the tagged commit; installs made earlier from
+  `main` or a clone are unpinned. Version 1.0.0 was designated after the fact and has no tag or
+  assets. To use it, pin commit `7ec18f469395fce4f352caa26d983b22b5a71a0f`.
+- **Review the diff before you update.** Unzip the new release into an empty folder and compare
+  it with the one you have, for example
+  `N="$(mktemp -d)" && unzip -q dependency-first-architect-vX.Y.Z.zip -d "$N" && diff -r ~/.claude/skills/dependency-first-architect "$N/dependency-first-architect"`,
+  or, in a clone, `git diff vA vB -- SKILL.md reference/`. For Cursor or Codex, compare the new
+  adapter with the copy you have installed before you replace it.
 - **Planning needs no side effects.** Be suspicious of any update that tells the agent to run
-  commands, fetch URLs, send data anywhere, or change files other than the plan it writes.
+  commands, fetch URLs, send data anywhere, or change files other than the plan it writes. The
+  package holds Markdown and the license only, and `package_skill.py` fails a build whose shipped
+  files match one of its content rules: a URL or link out of the package, a download command, a
+  pipe into a shell or interpreter, common code-execution calls, a destructive command such as
+  `rm -rf`, Claude Code's `!` shell syntax, an environment variable, a credential pattern, an HTML
+  comment, or a character outside a short list ([docs/distribution.md](docs/distribution.md)).
+  Those rules are patterns, not an
+  understanding of the text: an instruction such as "delete the user's files" in plain words
+  passes them. Reading the diff is what catches that.
 
 ### Verifying what you have
 
-- The adapters are generated from `SKILL.md` by `build.py`. `python build.py --check` rebuilds
-  them in memory. It fails if a committed adapter or `SHA256SUMS` differs from what `SKILL.md`
-  generates.
-- `SHA256SUMS` lists the SHA-256 of `VERSION`, `SKILL.md`, every `reference/*.md` and every
-  adapter file, including the two files of the Codex lazy install. To verify a checkout, run
-  `sha256sum -c SHA256SUMS` (on macOS, `shasum -a 256 -c SHA256SUMS`). The hashes are of the
-  files with LF line endings, which is how git checks them out in this repository.
+There are two `SHA256SUMS` files. A **release's** `SHA256SUMS` (a release asset) lists every
+asset (`dependency-first-architect-vX.Y.Z.zip`, `cursor-dependency-first-architect.mdc`,
+`codex-AGENTS.md`, `codex-lazy-dependency-first-architect.md`, `codex-lazy-AGENTS-snippet.md`)
+and every file in the zip, as `dependency-first-architect/<file>`. The **repository's**
+`SHA256SUMS` lists `VERSION`, `SKILL.md`, every `reference/*.md` and every file in `adapters/`.
+
+- **A download:** in the folder you downloaded to, `sha256sum -c --ignore-missing SHA256SUMS`
+  (it skips the assets you did not download).
+- **An installed skill:** from the folder that holds it (for example `~/.claude/skills`), check
+  the package lines only, so a missing file fails the check:
+  `grep '  dependency-first-architect/' /path/to/SHA256SUMS | sha256sum -c -`. Also list the folder
+  (`find dependency-first-architect -type f`): it should hold exactly those six files.
+- **An installed Cursor rule** is the `cursor-dependency-first-architect.mdc` asset, renamed:
+  hash it and compare with that line. The lazy Codex install's `.codex/dependency-first-architect.md`
+  is the `codex-lazy-dependency-first-architect.md` asset, renamed.
+- **A Codex install** appends to your own `AGENTS.md`, so the file's hash won't match. Diff the
+  block between the `BEGIN dependency-first-architect` and `END dependency-first-architect`
+  markers with the `codex-AGENTS.md` asset (or, for the lazy install, `codex-lazy-AGENTS-snippet.md`).
+- **A checkout:** `sha256sum -c SHA256SUMS` (on macOS, `shasum -a 256 -c SHA256SUMS`) checks the
+  repository's list. The hashes are of the files with LF line endings, which is how git checks
+  them out here. `python build.py --check` regenerates the adapters in memory and fails if a
+  committed adapter or `SHA256SUMS` differs from what `SKILL.md` generates.
 - Each adapter's banner names the version and the first 12 hex digits of the SHA-256 of the
-  `SKILL.md` it was built from. You can match those against the `SKILL.md` line in the release's
-  `SHA256SUMS`.
-  - An installed Cursor rule is the adapter file, unchanged. Hash it and compare with the
-    `adapters/cursor-dependency-first-architect.mdc` line. The same goes for the lazy Codex
-    install's `.codex/dependency-first-architect.md` and the
-    `adapters/codex/dependency-first-architect.md` line.
-  - The Codex install appends to your own `AGENTS.md`, so the file's hash won't match. Instead,
-    diff the block between the `BEGIN dependency-first-architect` and
-    `END dependency-first-architect` markers with the release's `adapters/AGENTS.md` (or, for the
-    lazy install, `adapters/codex/AGENTS-snippet.md`).
+  `SKILL.md` it was built from; match them against the `dependency-first-architect/SKILL.md` line
+  of the release's `SHA256SUMS`.
 
 ### What checksums do not protect against
 
 Checksums catch corruption and accidental edits. They do not protect you from a compromised
-repository or release, because anyone who can change the files can also change `SHA256SUMS`.
-Two things guard against that:
+repository or release: anyone who can replace a release asset can replace that release's
+`SHA256SUMS` with it, and naming a tag in the download pins the tag, not the assets. Three things
+guard against that:
 
 - **Signed release tags** (`git tag -s`; see [CONTRIBUTING.md](CONTRIBUTING.md)). Verify a tag
   with `git verify-tag vX.Y.Z`, which needs the maintainer's public key.
+- **Rebuilding.** The package build is reproducible, so `python package_skill.py` at a verified
+  tag must give the release's `SHA256SUMS` byte for byte
+  ([docs/distribution.md](docs/distribution.md#rebuilding)).
 - **Reviewed diffs** between the version you run and the version you upgrade to.
 
 ### The evaluation harness calls model providers
 
-- API keys are read from environment variables. They are never written into run records or
-  results.
+The harness is development tooling: it is not in the skill package, and nothing in it runs when
+the skill is installed or used. Tests and CI use the offline `fake` provider.
+
+- API keys are read from environment variables, and only by a stage that calls a model, when it
+  starts and on each request; never at import, by tests or by CI. They are never written into run
+  records or results.
+- The `openai-compatible` provider sends its key only to an https `base_url` (plain http only to
+  localhost, never through a proxy), refuses redirects (urllib would re-send the key to the new
+  host), reads it only from a variable whose name ends in `_API_KEY` (and `OPENAI_API_KEY` only
+  for OpenAI's own endpoint), strips spaces around the key and refuses one with a space, line
+  break or control character inside, and redacts the key, literal or repr-, JSON- or
+  URL-encoded, from any error or response it records (a value under 8 characters is a
+  placeholder for a local server, such as `none`, and is not masked).
+- The `claude-cli` and `command` providers start their CLI with your whole environment, every
+  credential in it included; only the outcome benchmark's hidden-test child is scrubbed (below).
+  Run real benchmarks where the environment holds only the credentials that provider needs.
+- **A config is code.** An experiment config, and a run's `manifest.json` (which a stage reads
+  when it is given no `--config`), choose the programs that run (a `command` provider's `argv`,
+  a `claude-cli` provider's `executable`) and where a key is sent (`base_url`, `api_key_env`).
+  Run only configs and run directories you have reviewed.
 - Raw provider transcripts are kept in run directories, and they contain what the session saw:
   absolute paths under the operator's temp directory (including the account name) and the
   output style of the operator's Claude Code settings. Review them before publishing a run.
@@ -70,14 +105,18 @@ Two things guard against that:
 - `eval/outcomes/` has an implementer model write a service, then runs that code against hidden
   tests. The `implement` step refuses to start without `--allow-code-execution`.
 - Only the implementation package (`ledger/`) is copied into a fresh directory and tested, in a
-  separate Python process with a timeout and a scrubbed environment: only `PATH`, `SYSTEMROOT`,
-  `WINDIR`, `COMSPEC`, `TEMP`, `TMP`, `TMPDIR`, `HOME`, `USERPROFILE`, `LANG`, `LC_ALL` and the
-  interpreter's own library path (`LD_LIBRARY_PATH`, `DYLD_LIBRARY_PATH`) are passed through, so
-  no API key or cloud credential is in the child's environment.
+  separate Python process with a timeout and a scrubbed environment: only `PATH`, `SYSTEMROOT`
+  (and `SystemRoot`), `WINDIR`, `COMSPEC`, `TEMP`, `TMP`, `TMPDIR`, `HOME`, `USERPROFILE`, `LANG`,
+  `LC_ALL` and the interpreter's own library path (`LD_LIBRARY_PATH`, `DYLD_LIBRARY_PATH`) are
+  passed through, plus `PYTHONHASHSEED`, `PYTHONDONTWRITEBYTECODE` and `PYTHONIOENCODING`, which it
+  sets. No API key or cloud credential is in the child's environment.
 - Before running it, a static screen refuses code that imports common networking or process
-  modules (`subprocess`, `socket`, `http.client`, `urllib.request`, …) or calls common
-  file-deletion and process functions. It is a heuristic for honest mistakes that misses many
-  other forms, not a defense against adversarial code.
+  modules (`subprocess`, `socket`, `http.client`, `urllib.request`, …, also as `from urllib import
+  request`), imports or calls common file-deletion and process functions (also through
+  `from os import *`, `posix` or `nt`), and it reads each file
+  as Python will decode it. It is a heuristic for honest mistakes that misses many other forms
+  (`importlib`, `getattr`, aliases), not a defense against adversarial code. The child that runs
+  the tests also writes their results, so code written to game the benchmark could forge them.
 - **This is not a sandbox.** The generated code, and the agent that writes it, run as your user,
   with your file system and your network. The orchestrating process does hold model
   credentials, and on Linux a child running as the same user can read its parent's environment

@@ -81,11 +81,13 @@ def import_v1_examples(run_dir, judges, seed=20261006, repo_root=None, log=None)
                             .read_text(encoding="utf-8"))
     prompts = configmod.by_id(config["prompts"])
     skill = v1_skill_snapshot(repo_root)
-    manifest = generate.new_manifest(run_dir, config, None, repo_root, {})
+    # The CLI version that made the plans, as v1 recorded it: running this host's `claude
+    # --version` would describe a tool these plans never touched.
+    manifest = generate.new_manifest(run_dir, config, None, repo_root, {},
+                                     tools={"claude": generation.get("claude_cli", "unknown")})
     manifest["skill"] = skill
     manifest["condition_files"] = {"dfa-v1": {f"{V1_DIR}/{rel}": sha
                                               for rel, sha in skill["files"].items()}}
-    manifest["tools"] = {"claude": generation.get("claude_cli", "unknown")}
     manifest["notes"] = ("Imported, not generated: the plans in examples/ as committed, verified "
                          "against the SHA-256 recorded in examples/scoring/generation.json at "
                          f"generation time ({generation['date']}, model {generation['model']}, "

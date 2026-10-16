@@ -20,6 +20,7 @@ by hand.
 
 | Agent | Model | Skill version | Configuration | Runs | Status | Measured result |
 |---|---|---|---|---|---|---|
+| Claude Code | — | 2.0.1 | install artifact `SKILL.md + reference/`; no committed run at this version | 0 | Supported | — |
 | Claude Code | claude-opus-5-5 (effort high) | 2.0.0 | webhook-ledger-v1 run 2026-10-03-outcomes-webhook-ledger: 1 prompts; conditions baseline, dfa, generic-control; 5 runs per cell; judges none | 15 | Tested | — |
 | Claude Code | claude-opus-5-5 (effort high) | 2.0.0 | [pilot-core run 2026-10-03-pilot-core](../eval/results/2026-10-03-pilot-core/REPORT.md): 8 prompts; conditions baseline, dfa, dfa-v1, generic-control; 5 runs per cell; judges claude-fable-5, claude-sonnet-5-5 | 160 | Experimentally evaluated | dfa − baseline: adherence +11.6 [10.6, 12.6]; EQ +8.2 [5.3, 11.0] (t-CI over 8 prompts) |
 | Claude Code | claude-opus-5-5 (effort high) | 2.0.0 | [pilot-length run 2026-10-03-pilot-length](../eval/results/2026-10-03-pilot-length/REPORT.md): 5 prompts; conditions baseline-capped, dfa-capped; 3 runs per cell; judges claude-sonnet-5-5 | 30 | Experimentally evaluated | dfa-capped − baseline-capped: adherence +11.2 [9.6, 12.8]; EQ +9.6 [7.0, 12.2] (t-CI over 5 prompts) |
@@ -28,8 +29,8 @@ by hand.
 | Claude Code | claude-haiku-4-5-20251001 | 2.0.0 | [pilot-models-haiku run 2026-10-03-pilot-models-haiku](../eval/results/2026-10-03-pilot-models-haiku/REPORT.md): 5 prompts; conditions baseline, dfa; 3 runs per cell; judges claude-sonnet-5-5 | 30 | Experimentally evaluated | dfa − baseline: adherence +14.5 [11.9, 17.0]; EQ +14.9 [7.6, 22.3] (t-CI over 5 prompts) |
 | Claude Code | claude-opus-5-5 (effort max) | 1.0.0 (commit 3ba6b70) | [v1-examples-rejudge run 2026-10-03-v1-examples-rejudge](../eval/results/2026-10-03-v1-examples-rejudge/REPORT.md): 5 prompts; conditions baseline, dfa-v1; 1 run per cell; judges claude-fable-5, claude-sonnet-5-5 | 10 | Tested | dfa-v1 − baseline: adherence +8.4 [4.4, 12.4]; EQ +3.4 [0.9, 5.9] (t-CI over 5 prompts) |
 | Claude Code | claude-opus-5-5 (effort max) | 1.0.0 (commit 3ba6b70) | [v1.0.0 pilot](../examples/SCORECARD.md): with vs without the skill; 5 prompts; 1 run per arm; 3 judges on the generator's own model | 10 | Tested | with − without: adherence (v1 rubric) +7.2 [2.6, 11.8] (t-CI over 5 prompts); EQ not measured |
-| Cursor | — | 2.0.0 | install artifact `adapters/cursor-dependency-first-architect.mdc`; no committed run at this version | 0 | Supported | — |
-| Codex | — | 2.0.0 | install artifact `adapters/AGENTS.md`; no committed run at this version | 0 | Supported | — |
+| Cursor | — | 2.0.1 | install artifact `adapters/cursor-dependency-first-architect.mdc`; no committed run at this version | 0 | Supported | — |
+| Codex | — | 2.0.1 | install artifact `adapters/AGENTS.md`; no committed run at this version | 0 | Supported | — |
 
 Runs counts the plans a row's evidence produced. Measured result quotes mean differences
 (treatment − control) with 95% t-intervals across prompts from the run's summary.json: adherence
@@ -37,10 +38,10 @@ is methodology adherence, scored with the skill author's own rubric, so a high v
 written with the skill is expected by construction; EQ is an LLM judge's engineering-quality score
 of the written plan, not of outcomes. Read each run's REPORT.md for the caveats.
 
-## Install artifacts (skill version 2.0.0)
+## Install artifacts (skill version 2.0.1)
 
 | Agent | Artifact | Install | Notes |
 |---|---|---|---|
-| Claude Code | `SKILL.md + reference/` | `git clone --depth 1 https://github.com/NiravRVaghasiya/dependency-first-architect ~/.claude/skills/dependency-first-architect` | The full skill: SKILL.md plus the reference files it loads on demand (plan template, validation examples, AI layer). Invoke with /dependency-first-architect or let the description trigger it. |
-| Cursor | `adapters/cursor-dependency-first-architect.mdc` | `mkdir -p .cursor/rules && curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/dependency-first-architect/main/adapters/cursor-dependency-first-architect.mdc -o .cursor/rules/dependency-first-architect.mdc` | Generated from SKILL.md by build.py (alwaysApply: false). The reference/ files are not bundled, so plans do not get the exact output template. |
-| Codex | `adapters/AGENTS.md` | `{ printf '\n'; curl -fsSL https://raw.githubusercontent.com/NiravRVaghasiya/dependency-first-architect/main/adapters/AGENTS.md; } >> AGENTS.md` | Generated from SKILL.md by build.py and read in every session (about 16 KB). The reference/ files are not bundled, so plans do not get the exact output template. Alternative lazy install (adapters/codex/, see README): a ~1 KB AGENTS.md block that tells Codex to read the whole skill, reference files included, from .codex/dependency-first-architect.md only when a request matches; not yet tested in Codex. |
+| Claude Code | `SKILL.md + reference/` | `mkdir -p ~/.claude/skills && unzip "$D/dependency-first-architect-v2.0.1.zip" -d ~/.claude/skills/` | The skill package: release asset dependency-first-architect-vX.Y.Z.zip, built by package_skill.py, holding SKILL.md, the reference files it loads on demand (plan template, validation examples, AI layer, layer map) and LICENSE. Download it with SHA256SUMS and check it before installing (README). Invoke with /dependency-first-architect or let the description trigger it. |
+| Cursor | `adapters/cursor-dependency-first-architect.mdc` | `mkdir -p .cursor/rules && cp "$D/cursor-dependency-first-architect.mdc" .cursor/rules/dependency-first-architect.mdc` | Generated from SKILL.md by build.py (alwaysApply: false) and published as the release asset of the same name; check it against SHA256SUMS first. The reference/ files are not bundled, so plans do not get the exact output template. |
+| Codex | `adapters/AGENTS.md` | `{ printf '\n'; cat "$D/codex-AGENTS.md"; } >> AGENTS.md` | Generated from SKILL.md by build.py, published as the release asset codex-AGENTS.md (check it against SHA256SUMS first), and read in every session (about 16 KB). The reference/ files are not bundled, so plans do not get the exact output template. Alternative lazy install (release assets codex-lazy-*, from adapters/codex/; see README): a ~1 KB AGENTS.md block that tells Codex to read the whole skill, reference files included, from .codex/dependency-first-architect.md only when a request matches; not yet tested in Codex. |

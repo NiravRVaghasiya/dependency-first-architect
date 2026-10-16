@@ -17,6 +17,7 @@ CI runs all of these on Ubuntu and on Windows. Run them before you open a pull r
 ```bash
 python build.py --check                    # adapters and SHA256SUMS match SKILL.md; CHANGELOG.md has an entry for VERSION
 sha256sum -c SHA256SUMS                    # the listed files match their checksums (macOS: shasum -a 256 -c SHA256SUMS)
+python package_skill.py                    # dist/: the skill package and release assets, built and checked
 python examples/scoring/tally.py --check   # the v1.0.0 scorecard matches its raw judge scores
 python eval/run.py check                   # committed eval runs: schemas, summaries, reports, matrix, rubric provenance, README evidence block
 python -m unittest discover -s tests -v    # self-tests; offline, temp dirs only
@@ -36,7 +37,8 @@ Limits section.
    and `<!-- /claude-code-only -->`. `build.py` leaves those spans out of the adapters.
 2. **Never hand-edit `adapters/` or `SHA256SUMS`.** After any change to `SKILL.md`, `VERSION` or
    `reference/*.md`, run `python build.py` and commit what it regenerates. `--check` fails until
-   you do.
+   you do. After a `VERSION` change, also run `python eval/run.py matrix` (the matrix lists the
+   version); `eval/run.py check` fails until you do.
 3. **Every methodology change needs a CHANGELOG entry and a version bump.** "Methodology change"
    means any change to `SKILL.md` or `reference/`. Bump `VERSION`, then describe the change under
    `## [X.Y.Z] — Unreleased` in `CHANGELOG.md`, saying exactly what changed. Choose the bump by
@@ -56,6 +58,13 @@ Limits section.
    - Agent status labels follow the definitions in `docs/evaluation-matrix.md`.
 5. **Standard library only, Python 3.9+.** Tests never touch the network or a real model, and
    they write only to temp directories.
+6. **The package is an allowlist.** Users get exactly `PACKAGE_FILES` in `package_skill.py`
+   ([docs/distribution.md](docs/distribution.md)). If `SKILL.md` names a new reference file, add
+   it there; the build fails until you do, and fails if a listed reference is never named. What
+   ships is instructions only, and the build's content rules (listed in docs/distribution.md)
+   refuse the usual forms of URLs, commands, code, environment variables, credentials and hidden
+   text. They are patterns, so review every change to what ships as well. If a rule misreads
+   ordinary prose (the word "eval"), reword the prose; do not weaken the rule.
 
 ## Adding an adapter
 
@@ -68,6 +77,9 @@ Limits section.
 
    If users append the adapter to a file of their own, keep the BEGIN line and the END marker
    so that an installed copy can be replaced.
+
+   **`package_skill.py`:** give the file a release asset name in `ADAPTER_ASSETS`. Adapters are
+   release assets of their own, never part of the skill package.
 2. **`tests/test_build.py`:** add the file to `FILES` and `GENERATED`, and add a test for its
    format.
 3. **`eval/agents.json`:** add the agent (`agent`, `artifact`, `install`, `notes`), then
@@ -121,21 +133,36 @@ Limits section.
 2. **Update `CHANGELOG.md`:** replace `Unreleased` with the release date
    (`## [X.Y.Z] — YYYY-MM-DD`), and point the version's link at the tag
    (`.../compare/<previous>...vX.Y.Z`).
-3. **Regenerate and commit:** run `python build.py` (the adapter banners carry the version),
-   then commit.
-4. **Run every check above, plus the release check:**
+3. **Point the README's install commands at the version** (`gh release download vX.Y.Z`, every
+   zip name, and `git checkout vX.Y.Z` in "Build the package yourself") and update
+   `eval/agents.json` to match. The README always installs the newest
+   version whose CHANGELOG entry has a release date (pre-releases aside; until the first dated
+   release from 2.0.1 on, `VERSION`), so this belongs in the release commit, not in the commit
+   that bumps `VERSION`; until then it keeps naming the last release.
+   `tests/test_matrix.py` checks both files against the CHANGELOG.
+4. **Regenerate and commit:** run `python build.py` (the adapter banners carry the version) and
+   `python eval/run.py matrix`, then commit.
+5. **Run every check above, plus the release check:**
    ```bash
    python build.py --release-tag vX.Y.Z
+   python package_skill.py
    ```
-5. **Create a signed tag and push it.** Signing needs a key configured for git. CI runs the
-   release check again on the tag.
+6. **Create a signed tag and push it.** Signing needs a key configured for git. On the tag, CI
+   runs the release check again, and the `Release package` workflow
+   (`.github/workflows/release.yml`) builds and checks the assets and uploads them as a workflow
+   artifact. Nothing is published yet.
    ```bash
    git tag -s vX.Y.Z -m "vX.Y.Z"
    git push origin main vX.Y.Z
    ```
-6. **Publish the release** with `SHA256SUMS` attached, using the version's CHANGELOG section as
-   the release notes:
+7. **Publish the release.** Either run the `Release package` workflow by hand with the tag and
+   `draft_release` ticked, which creates a draft release with the assets and the version's
+   CHANGELOG section as notes (add required reviewers to the `release` environment in the
+   repository settings to gate that job), or build and upload locally:
    ```bash
+   python package_skill.py
    awk -v v="X.Y.Z" 'index($0, "## [" v "]") == 1 {on = 1; next} /^## \[/ {on = 0} on' CHANGELOG.md > release-notes.md
-   gh release create vX.Y.Z --verify-tag --title "vX.Y.Z" --notes-file release-notes.md SHA256SUMS
+   gh release create vX.Y.Z --draft --verify-tag --title "vX.Y.Z" --notes-file release-notes.md dist/release/*
    ```
+   Before publishing the draft, check that its `SHA256SUMS` equals `dist/release/SHA256SUMS` from
+   a build at the tag, and that the zip holds only `dependency-first-architect/` and its 6 files.

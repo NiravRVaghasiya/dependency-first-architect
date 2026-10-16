@@ -28,6 +28,8 @@ jobs:
       - name: SHA256SUMS matches a fresh checkout
         shell: bash
         run: sha256sum -c SHA256SUMS
+      - name: The skill package builds and passes its checks (dist/)
+        run: python package_skill.py
       - name: Scorecard and README numbers match the raw judge scores
         run: python examples/scoring/tally.py --check
       - name: Committed eval runs, reports, matrix and rubrics are consistent

@@ -32,7 +32,7 @@ Four independent examples, each from a different system.
 | **Hypothesis** | One Postgres primary carries the projected write load at the 12-month data size | For answerable questions, the index returns a supporting passage in the top 5 | Card entry only in the provider's hosted fields keeps our PCI DSS scope at SAQ A (reduced, not zero) | Answers cost less per resolved conversation than the human handling they replace |
 | **Method** | Benchmark at 2× projected peak on data sized to the 12-month projection, long enough to include autovacuum and checkpoints | ≥ 200 labeled real questions with known source passages, per index version | Data-flow review against SAQ A eligibility, confirmed with the acquirer or a QSA | Meter cost per turn on shadow traffic, then cost per resolved conversation on a 5% canary for one week |
 | **Acceptance threshold** | p99 commit < 50 ms at 2,000 writes/s (ASSUMPTION: projected peak 1,000 writes/s) | hit rate@5 ≥ 0.90 (ASSUMPTION; about ±4 points of sampling error at 200 questions) | Acquirer or QSA sign-off: no card number is stored, processed, or transmitted by our systems; a PAN scan of logs and databases finds none | UNKNOWN: needs the human cost per ticket from the support lead, before Phase 4 |
-| **Evidence** | Benchmark report stored with the build | Eval report in CI for each index version | Completed SAQ A and attestation of compliance | Cost dashboard export for the canary week |
+| **Evidence** | Benchmark report stored with the build | Evaluation report in CI for each index version | Completed SAQ A and attestation of compliance | Cost dashboard export for the canary week |
 | **Unlocks (and if it fails)** | A single-primary data model with sharding deferred; if it fails, the partitioning decision opens | Prompt and answer-format tuning; if it fails, re-chunk or change the embedding model before tuning | Taking live card payments; if it fails, re-scope the card flow | General availability; if it fails, narrow the rollout or route more to humans |
 
 Shadow traffic alone cannot measure cost per resolved conversation: users never see the answers,
@@ -64,7 +64,7 @@ Anti-patterns:
 | Tier | Examples |
 |---|---|
 | **R1** | A library behind an interface, internal naming, log message wording, UI styling, the test runner |
-| **R2** | Queue technology (R3 if it is the system of record and consumers rely on replay), ORM, an internal service boundary, cache topology, the CI system, a structured log schema once alerts or SIEM rules parse it, the UI framework, fine-tuning a model (weeks of data and eval work; a hosted fine-tune is tied to one provider's base model) |
+| **R2** | Queue technology (R3 if it is the system of record and consumers rely on replay), ORM, an internal service boundary, cache topology, the CI system, a structured log schema once alerts or SIEM rules parse it, the UI framework, fine-tuning a model (weeks of data and evaluation work; a hosted fine-tune is tied to one provider's base model) |
 | **R3** | The data model and identifiers once real data exists, tenancy and isolation, the consistency model, a public API with consumers you cannot update in lockstep, trust boundaries, data residency, data gravity at a vendor, training on customer or personal data (removable only by retraining) |
 
 Cost of being wrong: making a storage bucket public is one click to undo, but the exposure cannot

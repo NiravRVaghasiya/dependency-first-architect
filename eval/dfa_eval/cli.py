@@ -19,6 +19,7 @@ Repository checks:
 """
 
 import argparse
+import ast
 import difflib
 import importlib
 import importlib.util
@@ -565,12 +566,65 @@ def check_outcome_summary(run_dir):
 # check (CI)
 # --------------------------------------------------------------------------------------------
 
-def _load_run_eval(repo_root):
-    path = Path(repo_root) / "examples" / "scoring" / "run_eval.py"
-    spec = importlib.util.spec_from_file_location("dfa_v1_run_eval", path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+V1_HARNESS = Path("examples") / "scoring" / "run_eval.py"
+
+
+def _v1_harness_constants(repo_root, names=("RUBRIC", "JUDGE_TASK", "DIMENSIONS")):
+    """{name: value} for top-level constants of the v1.0.0 harness, read by parsing
+    examples/scoring/run_eval.py, never by running it. Each must be assigned exactly once, at
+    top level, to a string literal or a list of them; anything else is an error rather than a
+    guess at what running the file would produce."""
+    where = V1_HARNESS.as_posix()
+    path = Path(repo_root) / V1_HARNESS
+    try:
+        tree = ast.parse(path.read_bytes(), filename=where)
+    except SyntaxError as exc:
+        raise ValueError(f"{where} does not parse: {exc}") from None
+    found = {}
+    for node in tree.body:  # the one binding allowed: `NAME = <literal>` at top level
+        if (isinstance(node, ast.Assign) and len(node.targets) == 1
+                and isinstance(node.targets[0], ast.Name) and node.targets[0].id in names):
+            name = node.targets[0].id
+            if name in found:
+                raise ValueError(f"{where}: {name} must be assigned once, as `{name} = ...`")
+            found[name] = (node, _string_literal(node.value, f"{where}: {name}"))
+    for node in ast.walk(tree):  # anything else that could rebind one, anywhere in the file
+        bound = set()
+        if isinstance(node, ast.Name) and isinstance(node.ctx, (ast.Store, ast.Del)):
+            bound = {node.id}
+        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            bound = {node.name}
+        elif isinstance(node, (ast.Import, ast.ImportFrom)):
+            if any(alias.name == "*" for alias in node.names):  # may bind any name at all
+                raise ValueError(f"{where}: `from ... import *` could rebind "
+                                 f"{', '.join(names)}")
+            bound = {(alias.asname or alias.name).split(".")[0] for alias in node.names}
+        elif isinstance(node, (ast.Global, ast.Nonlocal)):
+            bound = set(node.names)
+        elif isinstance(node, ast.ExceptHandler) and node.name:
+            bound = {node.name}
+        elif (isinstance(node, (ast.Attribute, ast.Subscript)) and isinstance(node.value, ast.Name)
+              and isinstance(found.get(node.value.id, (None, None))[1], list)):
+            bound = {node.value.id}  # DIMENSIONS[0] = ..., DIMENSIONS.append(...): a mutation
+        elif type(node).__name__ in ("MatchAs", "MatchStar", "MatchMapping"):  # Python 3.10+
+            bound = {getattr(node, "name", None), getattr(node, "rest", None)} - {None}
+        for name in sorted(bound & set(names)):
+            if name not in found or node is not found[name][0].targets[0]:
+                raise ValueError(f"{where}: {name} must be assigned once, as `{name} = ...`")
+    missing = [name for name in names if name not in found]
+    if missing:
+        raise ValueError(f"{where} defines no {', '.join(missing)}")
+    return {name: value for name, (_, value) in found.items()}
+
+
+def _string_literal(node, where):
+    """The value of a string literal, or of a list of string literals; nothing else."""
+    if isinstance(node, ast.Constant) and isinstance(node.value, str):
+        return node.value
+    if isinstance(node, ast.List) and all(isinstance(item, ast.Constant)
+                                          and isinstance(item.value, str) for item in node.elts):
+        return [item.value for item in node.elts]
+    raise ValueError(f"{where} is not a string literal or a list of them")
 
 
 def _one_newline(text):
@@ -665,14 +719,14 @@ def check_authoring(root):
 def check_v1_rubric(root):
     """methodology-adherence-v1 must be exactly the v1.0.0 judge prompt in run_eval.py."""
     problems = []
-    run_eval = _load_run_eval(root)
+    v1 = _v1_harness_constants(root)
     rubric = json.loads(_lf(root / configmod.RUBRICS_DIR / "methodology-adherence-v1.json"))
     where = "eval/rubrics/methodology-adherence-v1.json"
-    if rubric.get("rubric_text") != run_eval.RUBRIC:
+    if rubric.get("rubric_text") != v1["RUBRIC"]:
         problems.append(f"{where}: rubric_text differs from examples/scoring/run_eval.py RUBRIC")
-    if rubric.get("judge_template") != run_eval.JUDGE_TASK:
+    if rubric.get("judge_template") != v1["JUDGE_TASK"]:
         problems.append(f"{where}: judge_template differs from run_eval.py JUDGE_TASK")
-    if [d.get("name") for d in rubric.get("dimensions", [])] != run_eval.DIMENSIONS:
+    if [d.get("name") for d in rubric.get("dimensions", [])] != v1["DIMENSIONS"]:
         problems.append(f"{where}: dimension names differ from run_eval.py DIMENSIONS")
     if rubric.get("kind_suffix") != " system" or rubric.get("scale") != {"min": 0, "max": 2}:
         problems.append(f"{where}: v1 used kind + ' system' and a 0-2 scale")
