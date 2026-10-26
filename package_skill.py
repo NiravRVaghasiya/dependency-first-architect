@@ -12,8 +12,10 @@ Output:
                                 SKILL.md at its root
   release/                      what a release publishes: the package as a zip (that folder at
                                 the zip's root), the Cursor and Codex adapters build.py generates
-                                (separate assets, never in the package), and SHA256SUMS for every
-                                asset and every file in the package
+                                (separate assets, never in the package), the installer (a Python
+                                script that carries the package and the adapters it installs,
+                                made from installer/install.py), and SHA256SUMS for every asset
+                                and every file in the package
 Everything is built and checked in memory before the output directory is touched, and checked
 again on disk afterwards; any problem exits 1 and says which file. Unchanged sources rebuild to
 byte-identical output on every OS. Nothing is ever deleted except the output directory itself,
@@ -21,8 +23,10 @@ and only when it is empty or carries the marker an earlier build left in it.
 """
 
 import argparse
+import ast
 import hashlib
 import io
+import json
 import os
 import posixpath
 import re
@@ -64,6 +68,34 @@ ADAPTER_ASSETS = {
     build.CODEX_LAZY: "codex-lazy-dependency-first-architect.md",
     build.CODEX_STUB: "codex-lazy-AGENTS-snippet.md",
 }
+# The installer: installer/install.py with its placeholder line replaced by the release's version,
+# its SHA256SUMS (less the installer's own line) and the files it installs, so installing needs
+# no other download. It may import only these modules: no network, no subprocess.
+INSTALLER_SOURCE = "installer/install.py"
+INSTALLER_PLACEHOLDER = "VERSION = MANIFEST = PAYLOAD = RELEASED = None\n"
+INSTALLER_DATA = ("VERSION", "MANIFEST", "PAYLOAD", "RELEASED")
+# The package files of earlier releases, so the installer can tell an older install it may replace
+# from one somebody edited, which it must not delete.
+RELEASED_SUMS = "installer/released-package-sums.txt"
+RELEASED_LINE = re.compile(rf"#[^\n]*|[0-9a-f]{{64}}  {PACKAGE_NAME}/[A-Za-z0-9_./-]+")
+INSTALLER_PAYLOAD = tuple(f"{PACKAGE_NAME}/{rel}" for rel in PACKAGE_FILES) + tuple(
+    ADAPTER_ASSETS[path] for path in (build.CURSOR, build.CODEX_LAZY, build.CODEX_STUB))
+INSTALLER_IMPORTS = frozenset({"argparse", "hashlib", "os", "pathlib", "re", "secrets", "stat",
+                               "sys"})
+# Names the installer may not use, imported, called or reached as an attribute: code execution,
+# starting or replacing a process, and environment variables. A guard against mistakes in the
+# reviewed template, not a sandbox for a hostile one.
+INSTALLER_BANNED_NAMES = re.compile(r"eval|exec\w*|compile|__import__|__builtins__|breakpoint|"
+                                    r"globals|locals|vars|\w*system|\w*popen\w*|\w*spawn\w*|"
+                                    r"fork\w*|startfile|kill\w*|getenv\w*|putenv|unsetenv|"
+                                    r"environb?|load_module|exec_module")
+INSTALLER_MAX_BYTES = 1_000_000
+
+
+def installer_name(version):
+    return f"install-{PACKAGE_NAME}-v{version}.py"
+
+
 # The adapters' banner names the repository it was generated from; no other URL may ship.
 ADAPTER_URLS = (build.REPO_URL,)
 ZIP_DATE = (1980, 1, 1, 0, 0, 0)  # the earliest a zip can hold: the bytes never record a build time
@@ -439,6 +471,150 @@ def source_files(root):
     return files, problems
 
 
+def py_text(text, indent):
+    """`text` as a parenthesized run of Python string literals, one per line of `text`, in ASCII
+    (a JSON string is a Python string literal), so the installer reads like the file it holds."""
+    lines = text.splitlines(keepends=True)
+    if len(lines) < 2:
+        return json.dumps(text)
+    inner = "".join(f"{indent}    {json.dumps(line)}\n" for line in lines)
+    return f"(\n{inner}{indent})"
+
+
+def render_installer(template, version, manifest, payload, released):
+    """The installer: `template` with its placeholder line replaced by the release data."""
+    data = [f"VERSION = {json.dumps(version)}",
+            f"MANIFEST = {py_text(manifest, '')}",
+            "PAYLOAD = {"]
+    for name, content in payload.items():
+        data.append(f"    {json.dumps(name)}: {py_text(content.decode('utf-8'), '    ')},")
+    data += ["}", f"RELEASED = {py_text(released, '')}"]
+    return template.replace(INSTALLER_PLACEHOLDER, "\n".join(data) + "\n", 1)
+
+
+def installer_problems(text, version, manifest, payload, released):
+    """What is wrong with a rendered installer: it must be ASCII Python with LF line ends, import
+    only INSTALLER_IMPORTS, use none of INSTALLER_BANNED_NAMES, and carry exactly the release
+    data, assigned once and never changed (read back with ast.literal_eval, which runs nothing)."""
+    name = installer_name(version)
+    if len(text) > INSTALLER_MAX_BYTES:
+        return [f"{name}: {len(text)} bytes; the limit is {INSTALLER_MAX_BYTES}"]
+    if not text.isascii() or "\r" in text:
+        return [f"{name}: must be ASCII with LF line endings"]
+    if not text.startswith("#!/usr/bin/env python3\n"):
+        return [f"{name}: must start with #!/usr/bin/env python3"]
+    try:
+        tree = ast.parse(text, filename=name, feature_version=(3, 9))
+    except SyntaxError as exc:
+        return [f"{name}: not Python 3.9 ({exc})"]
+    problems = []
+    parents = {child: node for node in ast.walk(tree) for child in ast.iter_child_nodes(node)}
+
+    def problem(node, message):
+        problems.append(f"{name} line {getattr(node, 'lineno', '?')}: {message}")
+
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            modules = ([alias.name for alias in node.names] if isinstance(node, ast.Import)
+                       else [node.module or "."])
+            for module in modules:
+                if module.split(".")[0] not in INSTALLER_IMPORTS:
+                    problem(node, f"imports {module}, which is not in INSTALLER_IMPORTS")
+            used = [part for alias in node.names for part in (alias.name, alias.asname) if part]
+        else:
+            used = [node.attr] if isinstance(node, ast.Attribute) else [
+                node.id] if isinstance(node, ast.Name) else []
+        for word in used:
+            if INSTALLER_BANNED_NAMES.fullmatch(word.split(".")[-1]):
+                problem(node, f"uses {word}, which the installer may not (INSTALLER_BANNED_NAMES)")
+        # The release data is bound once, at the top level, and never changed afterwards.
+        if isinstance(node, (ast.Global, ast.Nonlocal)) and set(node.names) & set(INSTALLER_DATA):
+            problem(node, "rebinds the release data")
+        targets = (node.targets if isinstance(node, ast.Assign) else [node.target]
+                   if isinstance(node, (ast.AugAssign, ast.AnnAssign)) else [])
+        for target in targets:
+            for part in ast.walk(target):
+                base = part.value if isinstance(part, (ast.Subscript, ast.Attribute)) else None
+                if isinstance(base, ast.Name) and base.id in INSTALLER_DATA:
+                    problem(node, f"changes {base.id}")
+                if (isinstance(part, ast.Name) and part.id in INSTALLER_DATA
+                        and not (node in tree.body and isinstance(node, ast.Assign))):
+                    problem(node, f"rebinds {part.id}")
+        if (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+                and isinstance(node.func.value, ast.Name) and node.func.value.id in INSTALLER_DATA):
+            problem(node, f"calls a method of {node.func.value.id}")
+        # Read only as the arguments of Release(...); never deleted, aliased or bound otherwise.
+        if isinstance(node, ast.Name) and node.id in INSTALLER_DATA:
+            parent = parents.get(node)
+            if isinstance(node.ctx, ast.Del):
+                problem(node, f"deletes {node.id}")
+            elif isinstance(node.ctx, ast.Load) and not (
+                    isinstance(parent, ast.Call) and node in parent.args
+                    and isinstance(parent.func, ast.Name) and parent.func.id == "Release"):
+                problem(node, f"reads {node.id} other than as an argument of Release()")
+            elif isinstance(node.ctx, ast.Store) and not (
+                    isinstance(parent, ast.Assign) and parent in tree.body):
+                problem(node, f"rebinds {node.id}")
+        if isinstance(node, ast.Delete):
+            for target in node.targets:
+                if any(isinstance(n, ast.Name) and n.id in INSTALLER_DATA for n in ast.walk(target)):
+                    problem(node, "deletes from the release data")
+        bound = ([alias.asname or alias.name.split(".")[0] for alias in node.names]
+                 if isinstance(node, (ast.Import, ast.ImportFrom)) else
+                 [node.name] if isinstance(node, (ast.ExceptHandler, ast.FunctionDef,
+                                                  ast.ClassDef)) and node.name else [])
+        for word in bound:
+            if word in INSTALLER_DATA:
+                problem(node, f"rebinds {word}")
+    found = {}
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(
+                node.targets[0], ast.Name) and node.targets[0].id in INSTALLER_DATA:
+            try:
+                found.setdefault(node.targets[0].id, []).append(ast.literal_eval(node.value))
+            except ValueError:
+                problem(node, f"{node.targets[0].id} is not a literal")
+    expected = {"VERSION": version, "MANIFEST": manifest, "RELEASED": released,
+                "PAYLOAD": {key: value.decode("utf-8") for key, value in payload.items()}}
+    for key, value in expected.items():
+        if found.get(key) != [value]:
+            problems.append(f"{name}: {key} must be assigned once, to the release's own data")
+    return problems
+
+
+def released_sums(root):
+    """(text, problems) of RELEASED_SUMS: comment lines and `<sha256>  <package path>` lines."""
+    path = Path(root) / RELEASED_SUMS
+    if is_link(path) or not path.is_file():
+        return "", [f"{RELEASED_SUMS}: missing, or reached through a link"]
+    try:
+        text = build.read_lf(path).decode("ascii")
+    except UnicodeDecodeError:
+        return "", [f"{RELEASED_SUMS}: must be ASCII"]
+    bad = [f"{RELEASED_SUMS} line {number}: not `# ...` or `<sha256>  {PACKAGE_NAME}/<file>`"
+           for number, line in enumerate(text.splitlines(), 1) if not RELEASED_LINE.fullmatch(line)]
+    return text, bad
+
+
+def make_installer(root, version, manifest, payload):
+    """(installer bytes, problems), from installer/install.py and RELEASED_SUMS under `root`."""
+    source = Path(root) / INSTALLER_SOURCE
+    if is_link(source) or is_link(source.parent) or not source.is_file():
+        return b"", [f"{INSTALLER_SOURCE}: missing, or reached through a link"]
+    try:
+        template = build.read_lf(source).decode("ascii")
+    except UnicodeDecodeError:
+        return b"", [f"{INSTALLER_SOURCE}: must be ASCII"]
+    if template.count(INSTALLER_PLACEHOLDER) != 1:
+        return b"", [f"{INSTALLER_SOURCE}: must hold the line {INSTALLER_PLACEHOLDER.strip()!r} "
+                     "exactly once"]
+    released, problems = released_sums(root)
+    if problems:
+        return b"", problems
+    text = render_installer(template, version, manifest, payload, released)
+    return text.encode("ascii"), installer_problems(text, version, manifest, payload, released)
+
+
 def plan(root=ROOT):
     """(outputs, problems): every file a build writes, {POSIX path under the output dir: bytes},
     made from the sources under `root` and checked in memory. Nothing is written."""
@@ -494,6 +670,13 @@ def plan(root=ROOT):
 
     summed = dict(assets)
     summed.update((f"{PACKAGE_NAME}/{rel}", data) for rel, data in files.items())
+    # The installer carries the sums of everything else, so it is made before SHA256SUMS lists it.
+    manifest = build.render_sums(summed)
+    payload = {name: summed[name] for name in INSTALLER_PAYLOAD}
+    installer, problems = make_installer(root, version, manifest, payload)
+    if problems:
+        return {}, problems
+    assets[installer_name(version)] = summed[installer_name(version)] = installer
     assets["SHA256SUMS"] = build.render_sums(summed).encode("utf-8")
     outputs = {f"{PACKAGE_NAME}/{rel}": data for rel, data in files.items()}
     outputs.update((f"{RELEASE}/{name}", data) for name, data in assets.items())
@@ -619,8 +802,11 @@ def main(argv=None):
     print(f"Release assets in {out / RELEASE}:")
     for rel in sorted(rel for rel in outputs if rel.startswith(f"{RELEASE}/")):
         print(f"  {sha256(outputs[rel])}  {len(outputs[rel]):>6} bytes  {rel}")
+    installer = next(rel for rel in outputs if rel.startswith(f"{RELEASE}/install-"))
+    print(f"Installer SHA-256 (the README's install blocks and the CHANGELOG entry record it): "
+          f"{sha256(outputs[installer])}")
     print("Checks passed: allowlist, frontmatter, method headings, links, content rules, "
-          "adapters in sync, zip layout, file count, output tree.")
+          "adapters in sync, zip layout, file count, installer, output tree.")
     return 0
 
 

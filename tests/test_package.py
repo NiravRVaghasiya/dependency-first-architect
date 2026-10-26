@@ -47,6 +47,7 @@ def copy_sources(dest):
         shutil.copyfile(ROOT / rel, dest / rel)
     shutil.copytree(ROOT / "reference", dest / "reference")
     shutil.copytree(ROOT / "adapters", dest / "adapters")
+    shutil.copytree(ROOT / "installer", dest / "installer")
     return dest
 
 
@@ -146,8 +147,10 @@ class BuiltPackageTest(unittest.TestCase):
     def test_release_assets_and_checksums(self):
         release = self.out / "release"
         adapters = {name: path for path, name in pkg.ADAPTER_ASSETS.items()}
+        installer = pkg.installer_name(self.version)
         self.assertEqual(sorted(p.name for p in release.iterdir()),
-                         sorted([*adapters, f"{NAME}-v{self.version}.zip", "SHA256SUMS"]))
+                         sorted([*adapters, f"{NAME}-v{self.version}.zip", installer,
+                                 "SHA256SUMS"]))
         for name, path in adapters.items():  # the adapters as committed, and never in the zip
             self.assertEqual((release / name).read_bytes(), build.read_lf(path), name)
         entries, malformed = build.parse_sums((release / "SHA256SUMS").read_text("utf-8"))

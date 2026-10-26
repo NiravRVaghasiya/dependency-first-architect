@@ -213,9 +213,12 @@ class BannerTest(TempTree):
         self.assertPasses(self.run_build())
         digest = hashlib.sha256(self.read("SKILL.md")).hexdigest()
         version_line = f"Version 3.1.4-rc.1 · built from SKILL.md sha256 {digest[:12]}"
-        reference_line = ("Reference files (reference/*.md) are not bundled in this adapter; "
-                          "see the repository.")
-        for rel, indent in ((CODEX, ""), (CURSOR, " ")):
+        not_bundled = ("Reference files (reference/*.md) are not bundled in this adapter; "
+                       "see the repository.")
+        appended = ("The reference files the Claude Code version loads on demand are appended as "
+                    "appendices.")
+        for rel, indent, reference_line in ((CODEX, "", not_bundled), (CURSOR, " ", appended),
+                                            (CODEX_LAZY, "", appended)):
             with self.subTest(adapter=rel):
                 lines = self.read(rel).decode("utf-8").split("\n")
                 begin = lines.index(indent + BEGIN_LINE)
@@ -289,12 +292,13 @@ class ChecksumsTest(TempTree):
         self.assertPasses(self.run_build())
         self.assertPasses(self.run_build("--check"))
 
-    def test_edited_bundled_reference_drifts_the_lazy_codex_adapter(self):
+    def test_edited_bundled_reference_drifts_the_adapters_that_append_it(self):
         self.edit("reference/plan-template.md", "# BUILD PLAN", "# BUILD PLAN (edited)")
         result = self.run_build("--check")
-        self.assertFails(result, "1 adapter(s) out of sync", f"+++ {CODEX_LAZY}")
+        self.assertFails(result, "2 adapter(s) out of sync", f"+++ {CODEX_LAZY}", f"+++ {CURSOR}")
         self.assertPasses(self.run_build())
         self.assertIn(b"# BUILD PLAN (edited)", self.read(CODEX_LAZY))
+        self.assertIn(b"# BUILD PLAN (edited)", self.read(CURSOR))
 
     def test_edited_reference_file_fails(self):
         path = self.tmp / "reference" / "layer-map.md"  # bundled in no adapter
@@ -529,7 +533,12 @@ class ClaudeCodeOnlyBuildTest(TempTree):
         codex = self.read(CODEX).decode("utf-8")
         self.assertTrue(codex.endswith("**When to use:** Use when testing the build.\n\n" + body),
                         codex)
-        self.assertTrue(self.read(CURSOR).decode("utf-8").endswith("-->\n\n" + body))
+        # The Cursor rule carries the same method, then the reference files as appendices.
+        cursor = self.read(CURSOR).decode("utf-8")
+        method = body[:-len(END_MARKER) - 1]
+        self.assertIn("-->\n\n" + method + "## Appendices\n", cursor)
+        self.assertTrue(cursor.endswith("\n\n" + END_MARKER + "\n"))
+        self.assertNotIn("only-claude", cursor)
         self.assertPasses(self.run_build("--check"))
 
     def test_real_adapters_carry_no_markers(self):
@@ -609,10 +618,11 @@ class FrontmatterTest(unittest.TestCase):
 
     def test_cursor_description_is_one_yaml_line(self):
         lines = [BEGIN_LINE]
-        plain = build.build_cursor("n", "Plan builds — any size.", "# Body\n", lines)
+        plain = build.build_cursor("n", "Plan builds — any size.", "# Body\n", lines, [])
         self.assertEqual(plain.split("\n")[1], "description: Plan builds — any size.")
         # ": " and " #" would change what YAML reads, so such a description is quoted.
-        quoted = build.build_cursor("n", 'Use when: planning #1 "big" builds', "# Body\n", lines)
+        quoted = build.build_cursor("n", 'Use when: planning #1 "big" builds', "# Body\n", lines,
+                                    [])
         self.assertEqual(quoted.split("\n")[1],
                          'description: "Use when: planning #1 \\"big\\" builds"')
 
@@ -626,6 +636,12 @@ class LazyCodexTest(unittest.TestCase):
         cls.stub = outputs[build.CODEX_STUB]
         cls.lazy = outputs[build.CODEX_LAZY]
         cls.full = outputs[build.CODEX]
+        cls.cursor = outputs[build.CURSOR]
+
+    def test_cursor_rule_carries_the_same_whole_skill_as_the_lazy_file(self):
+        skill = self.lazy.split("**When to use:** ", 1)[1].split("\n\n", 1)[1]
+        self.assertIn("## Appendix C: `reference/ai-systems.md`", skill)
+        self.assertTrue(self.cursor.endswith("-->\n\n" + skill))
 
     def test_stub_is_small_and_points_at_the_file(self):
         self.assertLess(len(self.stub.encode("utf-8")), len(self.full.encode("utf-8")) / 8)

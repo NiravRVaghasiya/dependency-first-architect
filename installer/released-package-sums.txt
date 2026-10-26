@@ -1,0 +1,10 @@
+# The package files of each earlier release, as its SHA256SUMS lists them (LF line endings).
+# The installer replaces or deletes an installed skill folder only if every file in it is one
+# of these, or one of the release it belongs to. Add each release's lines when it ships.
+# v2.0.1
+7a6d7c66739b4cbbcdbed948e1048cb771503ac950b4eeab862868879fd9622b  dependency-first-architect/LICENSE
+34a02e0291fe3364cbd0d689c921f65feca0bcccd95bac4357b9fea67d59171e  dependency-first-architect/SKILL.md
+204235c5d0689c2e8b5b7a71265a78be45efc40a28e68939cdabfde790c44810  dependency-first-architect/reference/ai-systems.md
+ff4531a685bfdd0cb2940f2138f689193e0a93f7eee69524d2dbfdaeb7525169  dependency-first-architect/reference/layer-map.md
+95ccaec942bf8a640ff4d830daada167a340b6b652242e2ed41aec6d24605c2a  dependency-first-architect/reference/plan-template.md
+5887591787e06276e6a677356377730f4723cdb8f154ab0b248ef505a42e8ac0  dependency-first-architect/reference/validation.md

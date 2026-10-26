@@ -61,107 +61,207 @@ Every plan has the same ten sections ([template](reference/plan-template.md)):
 
 ## Install
 
-Install a release, not this repository. The repository is the development project (about 90 MB,
-mostly evaluation records); the skill your agent loads is six files: Markdown instructions and the
-license, with no scripts or URLs. Each
-[release](https://github.com/NiravRVaghasiya/dependency-first-architect/releases), from v2.0.1 on,
-carries these assets, built from the tagged commit by `package_skill.py`
-([what is in them, and how they are checked](docs/distribution.md)):
+The skill is a few Markdown files that your coding agent reads when you ask it to plan. It works
+with **Claude Code**, **Cursor** and **Codex**. One installer sets it up in a project: it works out
+which agent the project uses (or asks you once), writes only the skill's files, checks each one
+against the release's SHA-256 sums, and tells you how to try it.
 
-| Asset | For | Contents |
-|---|---|---|
-| `dependency-first-architect-v2.0.1.zip` | Claude Code, and agents that load a skill folder | the folder `dependency-first-architect/`: `SKILL.md`, the 4 reference files it names, `LICENSE` |
-| `cursor-dependency-first-architect.mdc` | Cursor | one project rule |
-| `codex-AGENTS.md` | Codex | a block to append to `AGENTS.md` |
-| `codex-lazy-dependency-first-architect.md`, `codex-lazy-AGENTS-snippet.md` | Codex, lazy install | the whole skill as one file, and a 1 KB pointer to it |
-| `SHA256SUMS` | checking a download | the SHA-256 of every asset and of every file in the zip |
+**You need** Python 3.9 or newer. Check with `python3 --version` (Windows: `py --version`). No
+Python? See [Manual installation](#manual-installation).
 
-Download the asset for your agent and `SHA256SUMS` into an empty folder, from the release page or
-with the [GitHub CLI](https://cli.github.com/), and check them before you install. The commands
-are bash (Linux, macOS, Git Bash); on macOS, use `shasum -a 256` where they say `sha256sum`.
+**1.** Open a terminal in your project's folder. **2.** Paste the block for your system.
+
+macOS, Linux, WSL, or Git Bash on Windows (in Git Bash, if `python3` is not found, use `py -3`):
 
 ```bash
-D="$(mktemp -d)"   # an empty folder for the download
-gh release download v2.0.1 --repo NiravRVaghasiya/dependency-first-architect --dir "$D" --pattern dependency-first-architect-v2.0.1.zip --pattern SHA256SUMS
-(cd "$D" && sha256sum -c --ignore-missing SHA256SUMS)
+f=install-dependency-first-architect-v2.1.0.py; t="$(mktemp -d)"
+curl -fsSL -o "$t/$f" "https://github.com/NiravRVaghasiya/dependency-first-architect/releases/download/v2.1.0/$f" || echo "Download failed."
+h="$(sha256sum "$t/$f" 2>/dev/null || shasum -a 256 "$t/$f" 2>/dev/null)"
+if [ "${h%% *}" = "206dbfbc2b458e839704112f1cec610147d663d29850bdb4a6bfd9a66526f81c" ]; then python3 -I "$t/$f"; else echo "Not run: the installer is missing or does not match its published checksum."; fi
 ```
 
-**Claude Code**: unzip into your personal skills folder (or into a project's `.claude/skills/`,
-for that project only). Until you ask for a plan, only the skill's ~0.5 KB description is in
-context.
+Windows PowerShell:
+
+```powershell
+$f = "install-dependency-first-architect-v2.1.0.py"; $d = Join-Path ([IO.Path]::GetTempPath()) ([guid]::NewGuid()); $null = New-Item -ItemType Directory $d; $t = Join-Path $d $f
+curl.exe -fsSL -o $t "https://github.com/NiravRVaghasiya/dependency-first-architect/releases/download/v2.1.0/$f"
+if ((Test-Path $t) -and (Get-FileHash $t).Hash -eq "206dbfbc2b458e839704112f1cec610147d663d29850bdb4a6bfd9a66526f81c") { py -3 -I $t } else { "Not run: the installer is missing or does not match its published checksum." }
+```
+
+**3.** If the project shows signs of more than one agent, or of none, the installer asks which one
+to install for. Then it reports what it did:
+
+```text
+Dependency-First Architect 2.1.0, in /home/you/my-app
+  Claude Code: installed .claude/skills/dependency-first-architect/ (checked against the release's SHA-256 sums)
+Done. To try it:
+  Claude Code: start a new Claude Code session and ask: "Plan a customer-support chatbot over our help-center docs." (or type /dependency-first-architect followed by your request)
+```
+
+**Did it work?** The installer ends with `Done.` only after reading every file back and matching
+it against the release. Then ask your agent for a plan, as it says. The plan comes back in the ten
+sections listed [above](#what-a-plan-looks-like). To check an install later, run the installer
+again with `--verify` (see [Options](#options)).
+
+What it writes in your project, and nothing else (no scripts, no evaluation records, none of the
+rest of this repository):
+
+| Agent | Files |
+|---|---|
+| Claude Code | `.claude/skills/dependency-first-architect/`: `SKILL.md`, the 4 reference files it loads on demand, `LICENSE` |
+| Cursor | `.cursor/rules/dependency-first-architect.mdc`: one rule that holds the method and its reference files; Cursor loads it when a request matches |
+| Codex | `.codex/dependency-first-architect.md`, the whole skill, and a 1 KB block in `AGENTS.md` that tells Codex to read it when a request matches; the rest of `AGENTS.md` is left as it is |
+
+These files are part of your project: commit them to share the skill with your team.
+
+> [!NOTE]
+> These files are instructions your agent follows. The block above runs one file: the installer
+> for v2.1.0, and only if its SHA-256 matches the value printed here. See
+> [How the download is checked](#how-the-download-is-checked).
+
+### Options
+
+To use one, paste the block again with the option added after `python3 -I "$t/$f"`
+(PowerShell: `py -3 -I $t`) in its last line, for example `python3 -I "$t/$f" --uninstall`:
+
+| Option | What it does |
+|---|---|
+| `--agent claude-code`, `--agent cursor`, `--agent codex` | install for that agent instead of detecting it (repeat it for several) |
+| `--global` | Claude Code only: install in `~/.claude/skills`, for all your projects, instead of this project |
+| `--dry-run` | show what would change, and change nothing (also with `--uninstall`) |
+| `--verify` | check that what is installed is exactly this release |
+| `--uninstall` | remove what the installer wrote, and nothing else |
+| `--project DIR` | install in another folder (by default: the git repository around the current folder) |
+
+In the same terminal, once the block has run (and its checksum matched), these lines install
+for one agent without the question. In bash:
 
 ```bash
-mkdir -p ~/.claude/skills && unzip "$D/dependency-first-architect-v2.0.1.zip" -d ~/.claude/skills/
+python3 -I "$t/$f" --agent claude-code
+python3 -I "$t/$f" --agent cursor
+python3 -I "$t/$f" --agent codex
 ```
 
-In PowerShell, compare `(Get-FileHash dependency-first-architect-v2.0.1.zip).Hash` with its line
-in `SHA256SUMS`, then run
-`Expand-Archive dependency-first-architect-v2.0.1.zip -DestinationPath $HOME\.claude\skills`.
+In PowerShell: `py -3 -I $t --agent claude-code`, and the same with `cursor` or `codex`.
 
-**Cursor**: download and check `cursor-dependency-first-architect.mdc` the same way
-(`--pattern cursor-dependency-first-architect.mdc`), then, in your project root:
+### Updating and removing
 
-```bash
-mkdir -p .cursor/rules && cp "$D/cursor-dependency-first-architect.mdc" .cursor/rules/dependency-first-architect.mdc
-```
+- **Update:** paste the block from the README of the newer release (add `--global` for a
+  Claude Code install in `~/.claude/skills`). Each release's block names its own version and
+  checksum. The installer replaces only files it wrote, and a rerun of the same version changes
+  nothing.
+- **Remove:** run the installer with `--uninstall` (and `--global` for `~/.claude/skills`). It
+  deletes the files in the table above, removes its block from `AGENTS.md` (and `AGENTS.md`
+  itself only if nothing else is left in it), and leaves everything else alone.
+- **Your own changes are kept.** The installer replaces or deletes the skill folder only if every
+  file in it is a file of a released version. If you edited `SKILL.md` or added a file, it stops
+  and tells you, and changes nothing. The Cursor rule and the Codex files say they are generated
+  and not to be edited: the installer replaces them.
+- **Installed by hand before v2.1.0?** Earlier instructions put Claude Code's copy in
+  `~/.claude/skills`, so run the installer with `--global` to update it, or with
+  `--global --uninstall` to remove it before a project install. For Cursor and Codex, run it in
+  the project: it updates the Cursor rule and the `AGENTS.md` blocks, merges the extra copies
+  that repeated appends left into one block, and keeps your own text. It never deletes a clone of
+  this repository in `~/.claude/skills/dependency-first-architect`: it stops and asks you to move
+  it.
 
-**Codex**: download and check `codex-AGENTS.md`, then, in your project root (this appends the
-skill, about 16 KB, to `AGENTS.md`, which Codex reads in every session):
+### How the download is checked
 
-```bash
-{ printf '\n'; cat "$D/codex-AGENTS.md"; } >> AGENTS.md
-```
+- The block downloads one file, the installer of v2.1.0, from that release. It runs the
+  installer only if the file's SHA-256 equals the value in this README, which is part of the
+  release's commit (and in [CHANGELOG.md](CHANGELOG.md)).
+- The installer carries the release's files and their SHA-256 sums. It checks every file before
+  it writes anything. It makes no network connection and starts no other program. The block runs
+  it with Python's `-I` (isolated mode), so files lying next to it are not imported in place of
+  Python's own modules.
+- It writes only the paths in the table above. It replaces a file only if this installer wrote
+  it. Every write goes to a temporary file first and is then renamed into place, so an
+  interrupted run leaves the old install or the new one, and the next run finishes the job.
+- For a stronger check, rebuild the release from its tag and compare
+  ([docs/distribution.md](docs/distribution.md#rebuilding)). [SECURITY.md](SECURITY.md) says what
+  checksums do and do not protect against.
+
+### Manual installation
 
 <details>
-<summary><b>Codex: lazy install</b> (about 1 KB in <code>AGENTS.md</code>; not yet tested in Codex)</summary>
+<summary><b>Without Python, or file by file</b></summary>
 
-Codex reads the whole skill, reference files included, only when a request matches. Download and
-check both `codex-lazy-*` assets (`--pattern 'codex-lazy-*'`), then, in your project root:
+Download the files your agent needs, plus `SHA256SUMS`, from the
+[v2.1.0 release](https://github.com/NiravRVaghasiya/dependency-first-architect/releases/tag/v2.1.0)
+into a new, empty folder. Then check them. In bash (on macOS, use `shasum -a 256` where it says
+`sha256sum`):
 
 ```bash
-mkdir -p .codex && cp "$D/codex-lazy-dependency-first-architect.md" .codex/dependency-first-architect.md
-{ printf '\n'; cat "$D/codex-lazy-AGENTS-snippet.md"; } >> AGENTS.md
+D="$(mktemp -d)"; echo "$D"   # 1. a new, empty folder: download the assets into it
+(cd "$D" && sha256sum -c --ignore-missing SHA256SUMS)   # 2. once they are there: check them
 ```
+
+In PowerShell, compare `(Get-FileHash <file>).Hash` with the file's line in `SHA256SUMS`.
+
+| Agent | Release asset | Install it (from your project's folder) |
+|---|---|---|
+| Claude Code | `dependency-first-architect-v2.1.0.zip` | unzip it into the empty folder, then move its `dependency-first-architect` folder into `.claude/skills/` (or `~/.claude/skills/` for all projects). Don't unzip over an older copy: delete that first. |
+| Cursor | `cursor-dependency-first-architect.mdc` | copy it to `.cursor/rules/dependency-first-architect.mdc` |
+| Codex | `codex-lazy-dependency-first-architect.md`, `codex-lazy-AGENTS-snippet.md` | copy the first to `.codex/dependency-first-architect.md`. Open `AGENTS.md` in an editor and paste the second at the end, once. |
+| Codex, one-file variant | `codex-AGENTS.md` | paste it at the end of `AGENTS.md`, once. Codex then reads about 16 KB in every session, and gets the method without its reference files (plan template, worked examples, AI layer). |
+
+For example, Claude Code from bash (when `$D` holds the checked zip):
+
+```bash
+unzip -q "$D/dependency-first-architect-v2.1.0.zip" -d "$D" && mkdir -p .claude/skills && mv "$D/dependency-first-architect" .claude/skills/
+```
+
+The installer itself is also a release asset, `install-dependency-first-architect-v2.1.0.py`.
+Download it the same way, check it against `SHA256SUMS`, then run it with `python3 -I`.
 
 </details>
 
 <details>
-<summary><b>Build the package yourself</b> (from a commit you reviewed, or before v2.0.1 is published)</summary>
+<summary><b>Build the release yourself</b> (from a commit you reviewed)</summary>
 
 The build is reproducible: at a release tag it gives the same bytes and the same `SHA256SUMS` as
 the release. It needs Python 3.9 or newer and nothing else, and writes only `dist/`.
 
 ```bash
 git clone https://github.com/NiravRVaghasiya/dependency-first-architect dfa-source
-cd dfa-source && git checkout v2.0.1   # or the commit you reviewed
-python package_skill.py
-D="$PWD/dist/release"                  # then install from "$D" as above
+cd dfa-source && git checkout v2.1.0   # or the commit you reviewed
+python3 package_skill.py
+cd /path/to/your/project && python3 -I /path/to/dfa-source/dist/release/install-dependency-first-architect-v2.1.0.py
 ```
 
 </details>
 
-Then ask your agent to plan something. In Claude Code you can also call it by name:
-`/dependency-first-architect <your request>`. Cursor and the standard Codex install get the method
-without its reference files (plan template, worked examples, AI layer); the lazy Codex install
-includes them. Other agents that load skill folders can use the zip, but only Claude Code has been
-evaluated, and some skill validators reject the frontmatter's `tags` key
+<details>
+<summary><b>Troubleshooting</b></summary>
+
+- **`python3: command not found`, or Windows says "Python was not found".** Install Python 3.9
+  or newer from python.org (on Windows, keep "py launcher" ticked), or use
+  [Manual installation](#manual-installation). If `py` is not found but `python` is, use `python`
+  in its place.
+- **`Download failed.`, or `curl` reports 404.** Check that you are online and that the
+  [v2.1.0 release](https://github.com/NiravRVaghasiya/dependency-first-architect/releases/tag/v2.1.0)
+  exists. A proxy may need `curl`'s `--proxy` option.
+- **`Not run: ... checksum`.** Don't run the file. Paste the block again. If the checksum still
+  differs, report it ([SECURITY.md](SECURITY.md)).
+- **`Could not tell which coding agent this project uses`, or `No agent chosen`.** The installer
+  could not ask, for example because an agent ran it, or it got no answer. Add
+  `--agent claude-code`, `--agent cursor` or `--agent codex`.
+- **`Stopped: ... was not written by this installer`, `... holds files this installer did not put
+  there` or `... differs from every released version`.** A file or folder of yours, or a copy you
+  edited, is at a path the installer uses. It is never overwritten or deleted. Move it (or undo the
+  edit) and run again.
+- **`Stopped: ... is read-only`.** Some version-control and sync tools make files read-only. Make
+  the file writable (for example, check it out for editing) and run again.
+- **`FAILED to write ...`.** Another program has the file open (on Windows, often the agent
+  itself). Close it and run again. The agent named in the message is as it was before the run.
+- **The agent does not use the skill.** Start a new session in the project. Run the installer with
+  `--verify`. In Claude Code, `/dependency-first-architect <your request>` calls it by name.
+
+</details>
+
+Other agents that load skill folders can use the zip, but only Claude Code has been evaluated, and
+some skill validators reject the frontmatter's `tags` key
 ([details](docs/distribution.md#frontmatter)).
-
-**Updating.** Delete what the old version installed, then install the new release: the
-`dependency-first-architect` skills folder, the Cursor rule, or the block in `AGENTS.md` (from the
-`<!--` line above `BEGIN dependency-first-architect` through
-`<!-- END dependency-first-architect -->`; the Codex commands append, so a second run adds a
-second copy).
-
-**Migrating from an install made before v2.0.1.** Earlier instructions cloned the whole repository
-into `~/.claude/skills/dependency-first-architect`, or downloaded the adapters from `main`. Those
-installs keep working, unpinned. To switch, delete the clone (or the Cursor rule, or the
-`AGENTS.md` block) and install a release as above; the skill's name, trigger and method are
-unchanged.
-
-> [!NOTE]
-> These files are instructions your agent follows. Install a version you have reviewed, keep its
-> `SHA256SUMS`, and read the diff before you update. See [SECURITY.md](SECURITY.md).
 
 ## How it works
 
@@ -355,7 +455,8 @@ row above (+1.9 EQ [+1.2, +2.5]):
   5.5 on the same five prompts: about 4,100), and 13 of its 15 plans included the skill's internal
   checklist, which is meant to stay out of the plan.
 - **Cursor and Codex are supported, not evaluated.** Their adapters are generated and checked, but
-  no committed run has used them.
+  no committed run has used them, and nothing here has checked how Cursor loads a rule this long
+  or that Codex reads the file its `AGENTS.md` block points to.
 - **Not yet validated:** [production outcomes](eval/outcomes/README.md#what-it-does-not-measure),
   each rule on its own (no experiment removes one at a time), judges outside the Claude family,
   expert review of the rubrics, and requests that come with a real codebase. See
@@ -369,6 +470,7 @@ This repository is the development project. Users receive only what `package_ski
 |---|---|---|
 | `SKILL.md`, `reference/` (except `evals.md`), `LICENSE` | the method | yes: these 6 files are the skill package |
 | `adapters/` | the Cursor and Codex versions, generated by `build.py` | as separate release assets |
+| `installer/install.py` | the installer's template; `package_skill.py` fills in the release's files and checksums | as a release asset (it writes the files above, never itself) |
 | `build.py`, `package_skill.py`, `.github/` | maintainer tools: generate the adapters, build and check releases | no |
 | `eval/`, `examples/`, `tests/`, `docs/`, `reference/evals.md` | evaluation harness and records, self-tests, documentation | no |
 
