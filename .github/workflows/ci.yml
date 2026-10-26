@@ -30,6 +30,16 @@ jobs:
         run: sha256sum -c SHA256SUMS
       - name: The skill package builds and passes its checks (dist/)
         run: python package_skill.py
+      - name: The built installer installs, reruns, verifies and uninstalls in a new project
+        shell: bash
+        run: |
+          p="$RUNNER_TEMP/installer-project" && mkdir -p "$p/.git"
+          i="$(ls dist/release/install-dependency-first-architect-v*.py)"
+          python -I "$i" --project "$p" --agent claude-code --agent cursor --agent codex
+          python -I "$i" --project "$p" | grep -q "nothing to change"
+          python -I "$i" --project "$p" --verify
+          python -I "$i" --project "$p" --uninstall
+          test "$(ls -A "$p")" = ".git"
       - name: Scorecard and README numbers match the raw judge scores
         run: python examples/scoring/tally.py --check
       - name: Committed eval runs, reports, matrix and rubrics are consistent

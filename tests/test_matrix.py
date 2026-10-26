@@ -7,6 +7,7 @@ Standard library only:  python -m unittest discover -s tests -v
 """
 
 import copy
+import hashlib
 import json
 import math
 import re
@@ -121,6 +122,32 @@ def install_version():
     return max(dated)[1] if dated else (ROOT / "VERSION").read_text(encoding="utf-8").strip()
 
 
+def changelog_installer_hash(version):
+    """The `Installer SHA-256` that CHANGELOG.md's entry for `version` records."""
+    text = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+    section = text.split(f"## [{version}]", 1)[1].split("\n## [", 1)[0]
+    found = re.findall(r"Installer SHA-256: `([0-9a-f]{64})`", section)
+    return found[0] if len(found) == 1 else None
+
+
+def built_installer():
+    """(name, bytes) of the installer package_skill.py builds from this checkout."""
+    sys.path.insert(0, str(ROOT))
+    try:
+        import package_skill
+    finally:
+        sys.path.pop(0)
+    outputs, problems = package_skill.plan(ROOT)
+    assert problems == [], problems
+    name = package_skill.installer_name((ROOT / "VERSION").read_text(encoding="utf-8").strip())
+    return name, outputs[f"release/{name}"]
+
+
+def code_blocks(text):
+    """[(language, code)] for every fenced block in Markdown `text`."""
+    return re.findall(r"^```(\w*)\n(.*?)^```$", text, re.MULTILINE | re.DOTALL)
+
+
 def package_skill_assets():
     """The release asset names package_skill.py gives the adapters, by role."""
     sys.path.insert(0, str(ROOT))
@@ -144,14 +171,9 @@ class AgentsFileTest(unittest.TestCase):
         self.assertTrue((ROOT / "SKILL.md").is_file() and (ROOT / "reference").is_dir())
         for entry in (cursor, codex):
             self.assertTrue((ROOT / entry["artifact"]).is_file(), entry["artifact"])
-            self.assertIn(Path(entry["artifact"]).name, entry["install"])
-        # Claude Code installs the release zip, whose one folder is the skill's; Cursor and
-        # Codex install their release asset, from the folder the README downloads into.
-        self.assertIn(f'"$D/dependency-first-architect-v{install_version()}.zip" '
-                      "-d ~/.claude/skills/", claude["install"])
-        assets = package_skill_assets()
-        self.assertIn(f'cp "$D/{assets["cursor"]}" .cursor/rules/', cursor["install"])
-        self.assertIn(f'cat "$D/{assets["codex"]}"; }} >> AGENTS.md', codex["install"])
+        # Every agent installs through the one installer, choosing itself with --agent.
+        for entry, agent in ((claude, "claude-code"), (cursor, "cursor"), (codex, "codex")):
+            self.assertEqual(entry["install"], f'python3 -I "$t/$f" --agent {agent}')
 
     def test_install_commands_match_the_readme(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -161,24 +183,58 @@ class AgentsFileTest(unittest.TestCase):
     def test_readme_installs_the_latest_release_checked_and_without_remote_scripts(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         version = install_version()
-        self.assertIn(f"gh release download v{version} --repo NiravRVaghasiya/"
-                      "dependency-first-architect --dir", readme)
-        self.assertIn('(cd "$D" && sha256sum -c --ignore-missing SHA256SUMS)', readme)
-        # Every zip the README names is that release's, so a partial update cannot leave a
-        # download of one version and an install of another.
-        self.assertEqual(set(re.findall(r"dependency-first-architect-v([0-9][^\s`\"]*)\.zip",
-                                        readme)), {version})
-        for unsafe in ("curl ", "wget ", "raw.githubusercontent.com", "| sh", "| bash"):
+        name = f"install-dependency-first-architect-v{version}.py"
+        url = ("https://github.com/NiravRVaghasiya/dependency-first-architect/releases/download/"
+               f"v{version}/$f")
+        self.assertIn(f"f={name};", readme)  # bash
+        self.assertIn(f'$f = "{name}"', readme)  # PowerShell
+        self.assertEqual(readme.count(f'"{url}"'), 2, "one pinned download per block")
+        # Every version the README downloads, links, names or checks out is that release, so a
+        # partial update cannot leave a download of one version and an install of another.
+        for pattern in (r"releases/(?:download|tag)/v([0-9][^/\s`\")]*)",
+                        r"dependency-first-architect-v([0-9][^\s`\"]*?)\.(?:zip|py)",
+                        r"git checkout v([0-9][^\s`]*)"):
+            self.assertEqual(set(re.findall(pattern, readme)), {version}, pattern)
+        # The installer's checksum: the same in both blocks, recorded in the release's CHANGELOG
+        # entry, and (while the README names the version being built) the built installer's.
+        hashes = set(re.findall(r'"([0-9a-f]{64})"', readme))
+        self.assertEqual(len(hashes), 1, hashes)
+        digest = hashes.pop()
+        self.assertEqual(changelog_installer_hash(version), digest)
+        if version == (ROOT / "VERSION").read_text(encoding="utf-8").strip():
+            built, data = built_installer()
+            self.assertEqual(built, name)
+            self.assertEqual(hashlib.sha256(data).hexdigest(), digest,
+                             "the README's installer checksum is stale: rebuild and update it")
+        # The installer runs only once its checksum matched; nothing is piped into a shell.
+        bash = next(code for lang, code in code_blocks(readme) if f"f={name}" in code)
+        ps = next(code for lang, code in code_blocks(readme) if f'$f = "{name}"' in code)
+        self.assertIn(f'if [ "${{h%% *}}" = "{digest}" ]; then python3 -I "$t/$f"; else', bash)
+        self.assertIn(f'(Get-FileHash $t).Hash -eq "{digest}") {{ py -3 -I $t }} else', ps)
+        for lang, code in code_blocks(readme):
+            for line in code.splitlines():
+                if re.search(r"\bcurl(\.exe)?\s", line):
+                    self.assertIn(url, line)  # downloads only the pinned installer
+        for unsafe in ("wget ", "raw.githubusercontent.com", "releases/latest", "Invoke-Expression",
+                       "iex (", ">> AGENTS.md"):
             self.assertNotIn(unsafe, readme)
+        # A pipe into a shell or interpreter (`||`, a table's `| show`, are not).
+        self.assertNotRegex(readme, r"(?<!\|)\|\s*(?:sudo\s+)?(?:sh|bash|zsh|python3?|py|iex|pwsh|"
+                                    r"powershell)\b")
         self.assertNotRegex(readme, r"git clone[^\n]*\.claude/skills")  # no repository install
-        self.assertEqual(set(re.findall(r"git checkout v([0-9][^\s`]*)", readme)), {version})
+        # Every release asset the README names is one package_skill.py builds, and vice versa.
         assets = package_skill_assets()
-        for asset in [f"dependency-first-architect-v{version}.zip", *assets.values()]:
-            if asset != assets["codex-lazy-path"]:
-                self.assertIn(f"`{asset}`", readme, asset)
-        # The lazy Codex install puts its file where the generated stub tells Codex to read it.
-        self.assertIn(f'cp "$D/{assets["codex-lazy"]}" {assets["codex-lazy-path"]}', readme)
-        self.assertIn(f'cat "$D/{assets["codex-lazy-stub"]}"; }} >> AGENTS.md', readme)
+        published = {f"dependency-first-architect-v{version}.zip", name, "SHA256SUMS",
+                     assets["cursor"], assets["codex"], assets["codex-lazy"],
+                     assets["codex-lazy-stub"]}
+        for asset in published:
+            self.assertIn(f"`{asset}`", readme, asset)
+        named = set(re.findall(r"`((?:cursor|codex)-[\w.-]+\.mdc?|dependency-first-architect-v"
+                               r"[\w.-]+\.zip|install-dependency-first-architect-v[\w.-]+\.py)`",
+                               readme))
+        self.assertLessEqual(named, published)
+        # Where each agent's files go is where the generated files expect them.
+        self.assertIn(f"`{assets['codex-lazy-path']}`", readme)
 
     def test_malformed_agents_file_is_rejected(self):
         tmp = Path(tempfile.mkdtemp())

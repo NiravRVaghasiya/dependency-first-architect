@@ -2,19 +2,19 @@
   {
     "agent": "Claude Code",
     "artifact": "SKILL.md + reference/",
-    "install": "mkdir -p ~/.claude/skills && unzip \"$D/dependency-first-architect-v2.0.1.zip\" -d ~/.claude/skills/",
-    "notes": "The skill package: release asset dependency-first-architect-vX.Y.Z.zip, built by package_skill.py, holding SKILL.md, the reference files it loads on demand (plan template, validation examples, AI layer, layer map) and LICENSE. Download it with SHA256SUMS and check it before installing (README). Invoke with /dependency-first-architect or let the description trigger it."
+    "install": "python3 -I \"$t/$f\" --agent claude-code",
+    "notes": "The installer (release asset install-dependency-first-architect-vX.Y.Z.py, run by the README's checked download block) writes the skill package to .claude/skills/dependency-first-architect/ in the project, or ~/.claude/skills with --global: SKILL.md, the reference files it loads on demand (plan template, validation examples, AI layer, layer map) and LICENSE. The same files are the release zip. Invoke with /dependency-first-architect or let the description trigger it."
   },
   {
     "agent": "Cursor",
     "artifact": "adapters/cursor-dependency-first-architect.mdc",
-    "install": "mkdir -p .cursor/rules && cp \"$D/cursor-dependency-first-architect.mdc\" .cursor/rules/dependency-first-architect.mdc",
-    "notes": "Generated from SKILL.md by build.py (alwaysApply: false) and published as the release asset of the same name; check it against SHA256SUMS first. The reference/ files are not bundled, so plans do not get the exact output template."
+    "install": "python3 -I \"$t/$f\" --agent cursor",
+    "notes": "Generated from SKILL.md by build.py (alwaysApply: false, so it loads when a request matches) with the reference files appended as appendices; the installer writes it to .cursor/rules/dependency-first-architect.mdc. Also a release asset of the same name, for a manual install."
   },
   {
     "agent": "Codex",
-    "artifact": "adapters/AGENTS.md",
-    "install": "{ printf '\\n'; cat \"$D/codex-AGENTS.md\"; } >> AGENTS.md",
-    "notes": "Generated from SKILL.md by build.py, published as the release asset codex-AGENTS.md (check it against SHA256SUMS first), and read in every session (about 16 KB). The reference/ files are not bundled, so plans do not get the exact output template. Alternative lazy install (release assets codex-lazy-*, from adapters/codex/; see README): a ~1 KB AGENTS.md block that tells Codex to read the whole skill, reference files included, from .codex/dependency-first-architect.md only when a request matches; not yet tested in Codex."
+    "artifact": "adapters/codex/dependency-first-architect.md",
+    "install": "python3 -I \"$t/$f\" --agent codex",
+    "notes": "The installer writes the whole skill, reference files appended, to .codex/dependency-first-architect.md, and a ~1 KB block (adapters/codex/AGENTS-snippet.md) into AGENTS.md that tells Codex to read it when a request matches; the rest of AGENTS.md is kept. Not yet tested in Codex. Manual alternative: the release asset codex-AGENTS.md (adapters/AGENTS.md), the method without its reference files, read in every session (about 16 KB)."
   }
 ]

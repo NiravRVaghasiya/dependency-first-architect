@@ -6,6 +6,76 @@ All notable changes to this project are recorded here. The format follows
 [`VERSION`](VERSION). `python build.py --check` fails if this file has no entry for it, and
 `python build.py --release-tag vX.Y.Z` fails unless that entry has a release date.
 
+## [2.1.0] — 2026-10-26
+
+An installer for beginners, and a complete Cursor rule. The method is unchanged: `SKILL.md` and
+`reference/` are byte for byte those of 2.0.1 (`SKILL.md` sha256 `34a02e02…`).
+
+Installer SHA-256: `7a64b49e459b52100cf94402b48ed08c2ae76d350b8b43c3bc7956a9edb4b200`
+(`install-dependency-first-architect-v2.1.0.py`; the README's install block checks it).
+
+### Added
+
+- **An installer** (`installer/install.py`, published as the release asset
+  `install-dependency-first-architect-vX.Y.Z.py`). The README's install is one block to paste
+  for bash or PowerShell. It downloads the pinned installer, checks it against the SHA-256 that
+  the README and this entry record, and runs it. The installer:
+  - finds the agent from the project (`.claude/`, `CLAUDE.md`, `.cursor/`, `AGENTS.md`,
+    `.codex/`), and asks one question when that is unclear, or exits with `--agent` hints when it
+    cannot ask;
+  - installs in the project by default (Claude Code: `--global` for `~/.claude/skills`);
+  - writes only the skill's files;
+  - offers `--dry-run`, `--verify` and `--uninstall`.
+
+  It carries the release's files and their SHA-256 sums, built in by `package_skill.py`, and
+  checks them before writing. It makes no network connection and starts no other program, and
+  its own code reads no environment variable (the standard library reads the usual few: the home
+  folder for `Path.home()`, and the terminal width and language for `argparse`'s messages). `package_skill.py` checks the rendered file: ASCII, an allowlist of imports, no
+  code-execution, process or environment names, and its embedded data, read back with
+  `ast.literal_eval` and never changed after it is assigned.
+- **Safe updates and removal.** Every write goes through a temporary name and a rename, and an
+  interrupted run is recovered on the next one. Files and folders the installer did not write
+  are never overwritten or deleted. That covers a clone of the repository in the skills folder,
+  a file you added there, and an edited `SKILL.md`: every file in the folder must be a file of a
+  released version, whose sums `installer/released-package-sums.txt` keeps. Read-only files
+  stop the run before anything is written. When Codex's `AGENTS.md` cannot be written, its
+  other file is put back.
+  - **`AGENTS.md`:** it manages one marked block and keeps every other byte (line endings and
+    BOM included). It collapses the duplicate blocks that repeated `>>` appends left, refuses
+    damaged blocks or UTF-16, and warns when `AGENTS.md` outgrows what Codex reads by default.
+  - **Reruns** change nothing.
+- **`tests/test_installer.py`:**
+  - the generated installer and its static checks;
+  - detection and the question;
+  - a fresh install per agent, and reruns;
+  - `AGENTS.md` merging and its round trip;
+  - preservation of files the installer did not write;
+  - links and junctions;
+  - updates, interrupted and failed writes, verify and uninstall;
+  - the README's own install blocks, run against a local copy (success, failed download and
+    checksum mismatch).
+- **CI** runs the built installer end to end: install, rerun, verify and uninstall.
+
+### Changed
+
+- **The Cursor rule holds the whole skill.** The reference files (plan template, worked
+  examples, AI layer) are now appended to it as appendices, as in the lazy Codex file. Until
+  now, Cursor plans did not get the exact output template. The rule is still `alwaysApply:
+  false`, so Cursor reads only its description until a request matches. It is now about 40 KB.
+- **Codex installs through the lazy layout by default:** the whole skill in
+  `.codex/dependency-first-architect.md`, and a 1 KB block in `AGENTS.md`. The block now says the
+  path is relative to the folder that holds `AGENTS.md`. The 16 KB one-block install
+  (`codex-AGENTS.md`) remains a manual option.
+- **Adapter banners** say that the installer manages the block, instead of telling you to rerun
+  an append.
+- **`build.py`** checks the sentinels in the method part of each adapter, so an appendix that
+  happens to name a section cannot hide a missing one.
+- **README:** the Install section now covers what the skill is, the supported agents, the one
+  block, how to confirm the install worked, and what gets written. Options, updating, the trust
+  boundary, manual installation, building from source and troubleshooting follow in their own
+  sections. `SECURITY.md`, `docs/distribution.md` and `CONTRIBUTING.md` (release steps) describe
+  the installer.
+
 ## [2.0.1] — 2026-10-16
 
 A distributable package, and hardening of the development tools. The method is unchanged: no
@@ -358,6 +428,7 @@ Retroactively designated: the state at commit 7ec18f4 (untagged).
   `examples/scoring/`, the raw scores, the tally script and the harness.
 - MIT license.
 
-[2.0.1]: https://github.com/NiravRVaghasiya/dependency-first-architect/compare/fff678a6285e2117e96f9bfc87f1977dec991d64...HEAD
+[2.1.0]: https://github.com/NiravRVaghasiya/dependency-first-architect/compare/v2.0.1...v2.1.0
+[2.0.1]: https://github.com/NiravRVaghasiya/dependency-first-architect/compare/fff678a6285e2117e96f9bfc87f1977dec991d64...v2.0.1
 [2.0.0]: https://github.com/NiravRVaghasiya/dependency-first-architect/compare/7ec18f469395fce4f352caa26d983b22b5a71a0f...fff678a6285e2117e96f9bfc87f1977dec991d64
 [1.0.0]: https://github.com/NiravRVaghasiya/dependency-first-architect/tree/7ec18f469395fce4f352caa26d983b22b5a71a0f

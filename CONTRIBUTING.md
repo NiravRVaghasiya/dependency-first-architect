@@ -17,7 +17,7 @@ CI runs all of these on Ubuntu and on Windows. Run them before you open a pull r
 ```bash
 python build.py --check                    # adapters and SHA256SUMS match SKILL.md; CHANGELOG.md has an entry for VERSION
 sha256sum -c SHA256SUMS                    # the listed files match their checksums (macOS: shasum -a 256 -c SHA256SUMS)
-python package_skill.py                    # dist/: the skill package and release assets, built and checked
+python package_skill.py                    # dist/: the skill package, release assets and installer, built and checked
 python examples/scoring/tally.py --check   # the v1.0.0 scorecard matches its raw judge scores
 python eval/run.py check                   # committed eval runs: schemas, summaries, reports, matrix, rubric provenance, README evidence block
 python -m unittest discover -s tests -v    # self-tests; offline, temp dirs only
@@ -32,9 +32,10 @@ Limits section.
 ## Rules
 
 1. **`SKILL.md` is canonical.** Change the method there and in `reference/`. Never put a change
-   only in `adapters/`. The adapters do not ship `reference/`, so put any instruction that only
-   Claude Code can follow, such as loading a reference file, between `<!-- claude-code-only -->`
-   and `<!-- /claude-code-only -->`. `build.py` leaves those spans out of the adapters.
+   only in `adapters/`. An adapter is a single file, so put any instruction that only Claude Code
+   can follow, such as loading a reference file, between `<!-- claude-code-only -->` and
+   `<!-- /claude-code-only -->`. `build.py` leaves those spans out of the adapters. The Cursor
+   rule and the lazy Codex file then append the reference files (`APPENDED_REFERENCES`).
 2. **Never hand-edit `adapters/` or `SHA256SUMS`.** After any change to `SKILL.md`, `VERSION` or
    `reference/*.md`, run `python build.py` and commit what it regenerates. `--check` fails until
    you do. After a `VERSION` change, also run `python eval/run.py matrix` (the matrix lists the
@@ -76,7 +77,7 @@ Limits section.
    lazy Codex `AGENTS-snippet.md`, is not).
 
    If users append the adapter to a file of their own, keep the BEGIN line and the END marker
-   so that an installed copy can be replaced.
+   so that an installed copy can be replaced. The installer finds its blocks and files by them.
 
    **`package_skill.py`:** give the file a release asset name in `ADAPTER_ASSETS`. Adapters are
    release assets of their own, never part of the skill package.
@@ -85,8 +86,10 @@ Limits section.
 3. **`eval/agents.json`:** add the agent (`agent`, `artifact`, `install`, `notes`), then
    regenerate the matrix with `python eval/run.py matrix`. A new agent is listed as
    **Supported**.
-4. **`README.md`:** add the install command, character for character as in `eval/agents.json`
-   (`tests/test_matrix.py` checks this).
+4. **The installer and `README.md`:** teach `installer/install.py` the agent's paths, add the
+   asset to `INSTALLER_PAYLOAD` in `package_skill.py` and to `PAYLOAD_NAMES` in the installer,
+   and test it in `tests/test_installer.py`. Add the agent's `--agent` line to the README
+   character for character as in `eval/agents.json` (`tests/test_matrix.py` checks this).
 5. **Moving past Supported:** run the benchmark with a `command` provider that installs the
    adapter file verbatim (`options.adapter_file`, `options.instructions_path`; see
    `eval/README.md`), then commit the run.
@@ -133,15 +136,23 @@ Limits section.
 2. **Update `CHANGELOG.md`:** replace `Unreleased` with the release date
    (`## [X.Y.Z] — YYYY-MM-DD`), and point the version's link at the tag
    (`.../compare/<previous>...vX.Y.Z`).
-3. **Point the README's install commands at the version** (`gh release download vX.Y.Z`, every
-   zip name, and `git checkout vX.Y.Z` in "Build the package yourself") and update
-   `eval/agents.json` to match. The README always installs the newest
+3. **Point the README's install commands at the version**: the installer name and download URL in
+   both install blocks, every zip name, release link and `git checkout vX.Y.Z`. Run
+   `python build.py` first (the adapter banners carry the version), then `python package_skill.py`.
+   Put the installer's SHA-256, which it prints on its `Installer SHA-256` line, in both blocks and
+   as `Installer SHA-256: <hex>` in the version's CHANGELOG entry. Update `eval/agents.json` to
+   match. The installer's bytes depend on `SKILL.md`, `reference/`, `LICENSE`, the adapters,
+   `VERSION`, `installer/install.py` and `installer/released-package-sums.txt`, so take the hash
+   after the last change to any of them. The README always installs the newest
    version whose CHANGELOG entry has a release date (pre-releases aside; until the first dated
    release from 2.0.1 on, `VERSION`), so this belongs in the release commit, not in the commit
    that bumps `VERSION`; until then it keeps naming the last release.
    `tests/test_matrix.py` checks both files against the CHANGELOG.
-4. **Regenerate and commit:** run `python build.py` (the adapter banners carry the version) and
-   `python eval/run.py matrix`, then commit.
+4. **Regenerate and commit:** run `python eval/run.py matrix`, then commit. After the release
+   is published, add its `dependency-first-architect/` lines from `SHA256SUMS`, under a
+   `# vX.Y.Z` heading, to `installer/released-package-sums.txt`, so later installers recognize
+   that version's skill folder (`tests/test_installer.py` checks that every dated release is
+   there).
 5. **Run every check above, plus the release check:**
    ```bash
    python build.py --release-tag vX.Y.Z
@@ -166,3 +177,5 @@ Limits section.
    ```
    Before publishing the draft, check that its `SHA256SUMS` equals `dist/release/SHA256SUMS` from
    a build at the tag, and that the zip holds only `dependency-first-architect/` and its 6 files.
+   Once it is published, run the README's install block in an empty project to confirm the
+   download URL and checksum work.
