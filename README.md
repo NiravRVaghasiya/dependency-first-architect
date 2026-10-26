@@ -77,7 +77,7 @@ macOS, Linux, WSL, or Git Bash on Windows (in Git Bash, if `python3` is not foun
 f=install-dependency-first-architect-v2.1.0.py; t="$(mktemp -d)"
 curl -fsSL -o "$t/$f" "https://github.com/NiravRVaghasiya/dependency-first-architect/releases/download/v2.1.0/$f" || echo "Download failed."
 h="$(sha256sum "$t/$f" 2>/dev/null || shasum -a 256 "$t/$f" 2>/dev/null)"
-if [ "${h%% *}" = "7a64b49e459b52100cf94402b48ed08c2ae76d350b8b43c3bc7956a9edb4b200" ]; then python3 -I "$t/$f"; else echo "Not run: the installer is missing or does not match its published checksum."; fi
+if [ "${h%% *}" = "206dbfbc2b458e839704112f1cec610147d663d29850bdb4a6bfd9a66526f81c" ]; then python3 -I "$t/$f"; else echo "Not run: the installer is missing or does not match its published checksum."; fi
 ```
 
 Windows PowerShell:
@@ -85,7 +85,7 @@ Windows PowerShell:
 ```powershell
 $f = "install-dependency-first-architect-v2.1.0.py"; $d = Join-Path ([IO.Path]::GetTempPath()) ([guid]::NewGuid()); $null = New-Item -ItemType Directory $d; $t = Join-Path $d $f
 curl.exe -fsSL -o $t "https://github.com/NiravRVaghasiya/dependency-first-architect/releases/download/v2.1.0/$f"
-if ((Test-Path $t) -and (Get-FileHash $t).Hash -eq "7a64b49e459b52100cf94402b48ed08c2ae76d350b8b43c3bc7956a9edb4b200") { py -3 -I $t } else { "Not run: the installer is missing or does not match its published checksum." }
+if ((Test-Path $t) -and (Get-FileHash $t).Hash -eq "206dbfbc2b458e839704112f1cec610147d663d29850bdb4a6bfd9a66526f81c") { py -3 -I $t } else { "Not run: the installer is missing or does not match its published checksum." }
 ```
 
 **3.** If the project shows signs of more than one agent, or of none, the installer asks which one

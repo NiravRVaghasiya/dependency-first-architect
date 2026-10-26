@@ -131,7 +131,7 @@ def is_link(path):
     run rather than being trusted."""
     try:
         info = os.lstat(path)
-    except FileNotFoundError:
+    except (FileNotFoundError, NotADirectoryError):  # a file where a folder would be: POSIX
         return False
     except OSError as exc:
         raise Stop(f"cannot examine {path}: {exc}") from None

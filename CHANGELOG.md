@@ -11,7 +11,7 @@ All notable changes to this project are recorded here. The format follows
 An installer for beginners, and a complete Cursor rule. The method is unchanged: `SKILL.md` and
 `reference/` are byte for byte those of 2.0.1 (`SKILL.md` sha256 `34a02e02…`).
 
-Installer SHA-256: `7a64b49e459b52100cf94402b48ed08c2ae76d350b8b43c3bc7956a9edb4b200`
+Installer SHA-256: `206dbfbc2b458e839704112f1cec610147d663d29850bdb4a6bfd9a66526f81c`
 (`install-dependency-first-architect-v2.1.0.py`; the README's install block checks it).
 
 ### Added
