@@ -20,7 +20,7 @@ by hand.
 
 | Agent | Model | Skill version | Configuration | Runs | Status | Measured result |
 |---|---|---|---|---|---|---|
-| Claude Code | — | 2.1.0 | install artifact `SKILL.md + reference/`; no committed run at this version | 0 | Supported | — |
+| Claude Code | — | 2.2.0 | install artifact `SKILL.md + reference/`; no committed run at this version | 0 | Supported | — |
 | Claude Code | claude-opus-5-5 (effort high) | 2.0.0 | webhook-ledger-v1 run 2026-10-03-outcomes-webhook-ledger: 1 prompts; conditions baseline, dfa, generic-control; 5 runs per cell; judges none | 15 | Tested | — |
 | Claude Code | claude-opus-5-5 (effort high) | 2.0.0 | [pilot-core run 2026-10-03-pilot-core](../eval/results/2026-10-03-pilot-core/REPORT.md): 8 prompts; conditions baseline, dfa, dfa-v1, generic-control; 5 runs per cell; judges claude-fable-5, claude-sonnet-5-5 | 160 | Experimentally evaluated | dfa − baseline: adherence +11.6 [10.6, 12.6]; EQ +8.2 [5.3, 11.0] (t-CI over 8 prompts) |
 | Claude Code | claude-opus-5-5 (effort high) | 2.0.0 | [pilot-length run 2026-10-03-pilot-length](../eval/results/2026-10-03-pilot-length/REPORT.md): 5 prompts; conditions baseline-capped, dfa-capped; 3 runs per cell; judges claude-sonnet-5-5 | 30 | Experimentally evaluated | dfa-capped − baseline-capped: adherence +11.2 [9.6, 12.8]; EQ +9.6 [7.0, 12.2] (t-CI over 5 prompts) |
@@ -29,8 +29,8 @@ by hand.
 | Claude Code | claude-haiku-4-5-20251001 | 2.0.0 | [pilot-models-haiku run 2026-10-03-pilot-models-haiku](../eval/results/2026-10-03-pilot-models-haiku/REPORT.md): 5 prompts; conditions baseline, dfa; 3 runs per cell; judges claude-sonnet-5-5 | 30 | Experimentally evaluated | dfa − baseline: adherence +14.5 [11.9, 17.0]; EQ +14.9 [7.6, 22.3] (t-CI over 5 prompts) |
 | Claude Code | claude-opus-5-5 (effort max) | 1.0.0 (commit 3ba6b70) | [v1-examples-rejudge run 2026-10-03-v1-examples-rejudge](../eval/results/2026-10-03-v1-examples-rejudge/REPORT.md): 5 prompts; conditions baseline, dfa-v1; 1 run per cell; judges claude-fable-5, claude-sonnet-5-5 | 10 | Tested | dfa-v1 − baseline: adherence +8.4 [4.4, 12.4]; EQ +3.4 [0.9, 5.9] (t-CI over 5 prompts) |
 | Claude Code | claude-opus-5-5 (effort max) | 1.0.0 (commit 3ba6b70) | [v1.0.0 pilot](../examples/SCORECARD.md): with vs without the skill; 5 prompts; 1 run per arm; 3 judges on the generator's own model | 10 | Tested | with − without: adherence (v1 rubric) +7.2 [2.6, 11.8] (t-CI over 5 prompts); EQ not measured |
-| Cursor | — | 2.1.0 | install artifact `adapters/cursor-dependency-first-architect.mdc`; no committed run at this version | 0 | Supported | — |
-| Codex | — | 2.1.0 | install artifact `adapters/codex/dependency-first-architect.md`; no committed run at this version | 0 | Supported | — |
+| Cursor | — | 2.2.0 | install artifact `adapters/cursor-dependency-first-architect.mdc`; no committed run at this version | 0 | Supported | — |
+| Codex | — | 2.2.0 | install artifact `adapters/codex/dependency-first-architect.md`; no committed run at this version | 0 | Supported | — |
 
 Runs counts the plans a row's evidence produced. Measured result quotes mean differences
 (treatment − control) with 95% t-intervals across prompts from the run's summary.json: adherence
@@ -38,7 +38,7 @@ is methodology adherence, scored with the skill author's own rubric, so a high v
 written with the skill is expected by construction; EQ is an LLM judge's engineering-quality score
 of the written plan, not of outcomes. Read each run's REPORT.md for the caveats.
 
-## Install artifacts (skill version 2.1.0)
+## Install artifacts (skill version 2.2.0)
 
 | Agent | Artifact | Install | Notes |
 |---|---|---|---|

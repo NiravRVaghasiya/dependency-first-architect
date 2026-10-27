@@ -22,6 +22,11 @@ Common misses:
   account) in launch week — or, worse, in week one of Phase 0.
 - Scaling an AI feature before cost per resolved conversation is measured on real traffic.
 - Ordering by code imports while a decision is still open, so the code is rewritten when it lands.
+- Testing a control built into the data model (cross-user isolation) only at launch, after the
+  model is fixed.
+- Scheduling a property customers pay for, such as content freshness, after paid launch.
+- Letting a deploy kill a long job that then retries from the start, paying for its model calls
+  twice.
 
 ## 2. Validation gates
 
@@ -93,6 +98,14 @@ on every row from day one.
 
 Rows that do not bind are left out (here, storage cost). Unknowns are fine; fabricated certainty
 is not. The walking skeleton measures the first real values, and later gates check against them.
+
+Budget consistency, two misses from one plan. First, a scale-to-zero database and app tier save
+idle cost but add cold starts to a p95 < 500 ms read target, and a job queue that polls the
+database keeps it awake anyway: serving published, immutable content from a CDN takes the database
+off the read path, and an always-on database is priced into the budget. Second, a 30% cache
+hit-rate target cannot hold with the user's free text in the cache key: normalizing requests into a
+small set of presets bounds the key's cardinality, and the plan states who can see a cached result
+and whether a hit counts against quota.
 
 ## 5. Methodology exceptions
 

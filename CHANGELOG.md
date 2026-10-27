@@ -6,6 +6,27 @@ All notable changes to this project are recorded here. The format follows
 [`VERSION`](VERSION). `python build.py --check` fails if this file has no entry for it, and
 `python build.py --release-tag vX.Y.Z` fails unless that entry has a release date.
 
+## [2.2.0] — Unreleased
+
+Guidance tightened; the plan's shape is unchanged.
+
+### Changed
+- `SKILL.md`, dependencies: a control built into a schema, data-access layer or contract is
+  designed and tested in the phase that builds that layer; paid-for properties count as controls
+  before charging; a person counts as met only with enough capacity, and privileged roles are
+  risk/security dependencies.
+- `SKILL.md`, Step 3: when output is stored for reuse, the plan also considers who may see a
+  cached artifact and whether reuse counts against quota or billing.
+- `SKILL.md`, Step 4 and `reference/plan-template.md`: a pre-production environment when there
+  are schema migrations; safe shutdown, time limits, retries that don't pay twice, and caps on
+  paid calls when there are jobs; the V0 rollback runs with a job in flight.
+- `SKILL.md`, Step 7: an external availability probe, and isolated backups with a tested restore.
+- `SKILL.md`, Step 10: a check that each budget holds against the design, not only its label.
+- `reference/ai-systems.md`: approver capacity, MFA, an audit log and a second approver.
+
+### Added
+- `reference/validation.md`: three common misses and a budget-consistency example.
+
 ## [2.1.0] — 2026-10-26
 
 An installer for beginners, and a complete Cursor rule. The method is unchanged: `SKILL.md` and

@@ -41,6 +41,9 @@ An agent loop can spend unbounded tokens and time. Set budgets before capability
 Decide which actions require a human before they execute (writes, spend, external messages,
 irreversible operations). Low-risk reads run autonomously, unless the agent also has an outbound
 channel: reading private data plus any way out is a leak. High-blast-radius actions gate.
+- An approver is a capacity and an attack surface: state approvals per day against expected volume
+  (labeled) and what happens when the queue backs up. Approver accounts use MFA, every approval is
+  logged, and bulk or catalog-wide changes need a second approver.
 - Exit check: a gated action cannot run without an approval bound to that exact action,
   enforced by the tool executor (not the model), and logged.
 

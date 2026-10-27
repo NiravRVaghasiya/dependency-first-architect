@@ -70,8 +70,9 @@ plan will not change are listed once as constraints, not as rows.
 
 If an exception changes Phase 0, say so in one line and cite it (E…).
 Exit check (V0): a real request succeeds with one trace across every tier; a deploy and a
-rollback succeed through the pipeline; an injected failure fires an alert; the first values of
-the measurable budgets are recorded as baselines, not targets.
+rollback succeed through the pipeline, with a job in flight when the system runs jobs; an injected
+failure fires an alert; the first values of the measurable budgets are recorded as baselines, not
+targets.
 
 ## 5. Phases (Phase 1 onward; dependency order; within a phase, rework widest first, exposure smallest first)
 For each phase:
