@@ -6,7 +6,7 @@ All notable changes to this project are recorded here. The format follows
 [`VERSION`](VERSION). `python build.py --check` fails if this file has no entry for it, and
 `python build.py --release-tag vX.Y.Z` fails unless that entry has a release date.
 
-## [2.2.0] — 2026-10-27
+## 2.2.0 — 2026-10-27
 
 An installer for beginners, a complete Cursor rule, and tighter guidance. The plan's shape is
 unchanged. Version 2.1.0 was prepared but never published; its changes ship here.
