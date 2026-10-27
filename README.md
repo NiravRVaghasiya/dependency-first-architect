@@ -32,18 +32,18 @@ It is only Markdown instructions, no code.
 last line):
 
 ```bash
-f=install-dependency-first-architect-v2.1.0.py; t="$(mktemp -d)"
-curl -fsSL -o "$t/$f" "https://github.com/NiravRVaghasiya/dependency-first-architect/releases/download/v2.1.0/$f" || echo "Download failed."
+f=install-dependency-first-architect-v2.2.0.py; t="$(mktemp -d)"
+curl -fsSL -o "$t/$f" "https://github.com/NiravRVaghasiya/dependency-first-architect/releases/download/v2.2.0/$f" || echo "Download failed."
 h="$(sha256sum "$t/$f" 2>/dev/null || shasum -a 256 "$t/$f" 2>/dev/null)"
-if [ "${h%% *}" = "206dbfbc2b458e839704112f1cec610147d663d29850bdb4a6bfd9a66526f81c" ]; then python3 -I "$t/$f"; else echo "Not run: the installer is missing or does not match its published checksum."; fi
+if [ "${h%% *}" = "049cebdad78b00cb661413318fb074991a8cd4898a806d8fc1dba201ce795bbd" ]; then python3 -I "$t/$f"; else echo "Not run: the installer is missing or does not match its published checksum."; fi
 ```
 
 **Windows PowerShell:**
 
 ```powershell
-$f = "install-dependency-first-architect-v2.1.0.py"; $d = Join-Path ([IO.Path]::GetTempPath()) ([guid]::NewGuid()); $null = New-Item -ItemType Directory $d; $t = Join-Path $d $f
-curl.exe -fsSL -o $t "https://github.com/NiravRVaghasiya/dependency-first-architect/releases/download/v2.1.0/$f"
-if ((Test-Path $t) -and (Get-FileHash $t).Hash -eq "206dbfbc2b458e839704112f1cec610147d663d29850bdb4a6bfd9a66526f81c") { py -3 -I $t } else { "Not run: the installer is missing or does not match its published checksum." }
+$f = "install-dependency-first-architect-v2.2.0.py"; $d = Join-Path ([IO.Path]::GetTempPath()) ([guid]::NewGuid()); $null = New-Item -ItemType Directory $d; $t = Join-Path $d $f
+curl.exe -fsSL -o $t "https://github.com/NiravRVaghasiya/dependency-first-architect/releases/download/v2.2.0/$f"
+if ((Test-Path $t) -and (Get-FileHash $t).Hash -eq "049cebdad78b00cb661413318fb074991a8cd4898a806d8fc1dba201ce795bbd") { py -3 -I $t } else { "Not run: the installer is missing or does not match its published checksum." }
 ```
 
 The installer finds which agent your project uses (or asks you once) and prints `Done.` when every
@@ -104,7 +104,7 @@ In PowerShell: `py -3 -I $t --agent claude-code` (or `cursor`, `codex`).
 <summary>Without Python: download the files yourself</summary>
 
 1. From the
-   [v2.1.0 release](https://github.com/NiravRVaghasiya/dependency-first-architect/releases/tag/v2.1.0),
+   [v2.2.0 release](https://github.com/NiravRVaghasiya/dependency-first-architect/releases/tag/v2.2.0),
    download the file for your agent and `SHA256SUMS` into a new, empty folder.
 2. Check them: in that folder, run `sha256sum -c --ignore-missing SHA256SUMS` (macOS:
    `shasum -a 256 -c --ignore-missing SHA256SUMS`; PowerShell: compare
@@ -113,19 +113,19 @@ In PowerShell: `py -3 -I $t --agent claude-code` (or `cursor`, `codex`).
 
 | Agent | Download | Put it here |
 |---|---|---|
-| Claude Code | `dependency-first-architect-v2.1.0.zip` | unzip it and move its `dependency-first-architect` folder into `.claude/skills/` (delete an older copy first) |
+| Claude Code | `dependency-first-architect-v2.2.0.zip` | unzip it and move its `dependency-first-architect` folder into `.claude/skills/` (delete an older copy first) |
 | Cursor | `cursor-dependency-first-architect.mdc` | `.cursor/rules/dependency-first-architect.mdc` |
 | Codex | `codex-lazy-dependency-first-architect.md` and `codex-lazy-AGENTS-snippet.md` | the first to `.codex/dependency-first-architect.md`; paste the second at the end of `AGENTS.md`, once |
 | Codex, one file | `codex-AGENTS.md` | paste it at the end of `AGENTS.md`, once (smaller, without the reference files) |
 
-The installer itself, `install-dependency-first-architect-v2.1.0.py`, is in the release too.
+The installer itself, `install-dependency-first-architect-v2.2.0.py`, is in the release too.
 
 To build the release yourself from a commit you reviewed (it gives the same bytes as the release;
 [details](docs/distribution.md#rebuilding)):
 
 ```bash
 git clone https://github.com/NiravRVaghasiya/dependency-first-architect dfa-source
-cd dfa-source && git checkout v2.1.0
+cd dfa-source && git checkout v2.2.0
 python3 package_skill.py
 ```
 
