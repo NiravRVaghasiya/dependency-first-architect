@@ -2,81 +2,34 @@
 
 # Dependency-First Architect
 
-**Build plans ordered by what everything else depends on, not by what is most visible.**
+**Your coding agent plans what everything else depends on first.**
 
 A planning skill for Claude Code, Cursor, and Codex
 
 [![CI](https://github.com/NiravRVaghasiya/dependency-first-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/NiravRVaghasiya/dependency-first-architect/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-[Example](#what-a-plan-looks-like) · [Install](#install) · [How it works](#how-it-works) · [Evidence](#evidence) · [Limits](#limits) · [Contributing](#contributing)
+[Install](#install) · [What you get](#what-you-get) · [Evidence](#evidence) · [Limits](#limits) · [Contributing](#contributing)
 
 </div>
 
 ---
 
-A *skill* is a set of instructions your coding agent loads. This one changes how it plans. Ask
-Claude Code, Cursor, or Codex to "plan a customer-support chatbot over our help-center docs", and
-instead of a list of components you get a **build plan in dependency order**, in ten fixed
-sections. What everything else rests on comes first, each risky assumption gets a test with a pass
-bar, and the plan keeps real users out until those tests pass.
+Ask your agent to "plan a customer-support chatbot over our help-center docs". With this skill,
+you get a **build plan in dependency order** instead of a list of components: the foundations
+first, a test for every risky assumption, and no real users until those tests pass.
 
-It is Markdown instructions only, with no code. It is for anyone who asks an agent to plan,
-architect, or sequence software, infrastructure, or an AI system, new or already running. It has
-been measured in Claude Code; the Cursor and Codex versions are supported but not yet evaluated
-([Evidence](#evidence)).
-
-## What it changes
-
-| Plans written without it tend to… | With the skill, the plan… |
-|---|---|
-| build the layers one at a time and wire them together at the end | starts with a **walking skeleton** (Phase 0): the thinnest version that works end to end, with one real request through every tier, in production, monitored, and rolled back once as a drill |
-| state tradeoffs without saying what would change them | settles hard-to-reverse decisions up front as **Tradeoff gates**: a default, the assumption behind it, and what would flip it, with effort scaled to how hard it is to undo (R1 easy, R2 costly, R3 hard) |
-| present guessed numbers as requirements | labels every budget and threshold **REQUIREMENT**, **BASELINE**, **ASSUMPTION**, or **UNKNOWN** |
-| add security and monitoring in a final phase | puts **security, observability, reproducibility, and resilience** in every phase, from the first commit |
-
-Each assumption the plan rests on (that something is fast, safe, correct, or cheap enough) becomes
-a numbered **validation gate** (V0, V1, …): a test with a pass bar. Work that depends on it can be
-started, but not finished, until it passes; "it runs" doesn't count. For AI systems, defenses
-against prompt injection, cost and latency limits, and human approval come before new features.
-
-## What a plan looks like
-
-> **You:** Plan a customer-support RAG chatbot over our help-center docs.
-
-Three excerpts from a plan Opus 5.5 wrote with the skill during evaluation (the first run of the
-first prompt; verbatim; … marks cuts;
-[full plan](eval/results/2026-10-03-pilot-core/generations/P1.dfa.opus-5.5.r01.md)):
-
-| Part | Excerpt |
-|---|---|
-| **Tradeoff gate** | **What gets indexed**<br>*Reversibility:* R3: a non-public article shown to the public can't be unshown<br>*Default:* Index only articles the CMS marks public and published. …<br>*Assumption:* The CMS visibility flags are accurate<br>*Validated by:* V1<br>*Flip condition:* Non-public content is needed → retrieval checks the caller's permissions … |
-| **Walking skeleton** | **Real request:** A staff member asks in the live help-center widget, "How do I reset my password?" The answer streams back and cites the password-reset article. …<br>**Who can reach it:** Staff only, through an SSO allow-list behind the flag. No customer traffic until V1, V2, V3 and V5 pass. |
-| **Validation gate** | **V5**<br>*Hypothesis:* Answers state only what the cited passages support, and risky or unanswerable questions decline or hand off. …<br>*Acceptance threshold:* ≥ 95% of answers fully supported; 0 unsupported promises in the policy set; … (all ASSUMPTION). Head of Support and legal sign off on the policy set …<br>*Unlocks:* Customer exposure. If it fails: failing topics go snippets-only or human-only, then re-run |
-
-Every plan has the same ten sections ([template](reference/plan-template.md)):
-
-| Sections 1–5 | Sections 6–10 |
-|---|---|
-| 1. Classification and constraints | 6. Validation gates |
-| 2. Dependency map | 7. Cross-cutting concerns |
-| 3. Tradeoff gates | 8. AI layer (AI systems only) |
-| 4. Walking skeleton (Phase 0) | 9. Methodology exceptions |
-| 5. Phases | 10. Deliberately deferred |
+It is only Markdown instructions, no code.
 
 ## Install
 
-One installer sets the skill up in your project for **Claude Code**, **Cursor**, or **Codex**. It
-works out which agent the project uses (or asks you once), writes only the skill's files, and
-checks each one against the release.
+**1. Check that you have Python 3.9 or newer.** Run `python3 --version` (on Windows,
+`py --version`). No Python? [Install by hand](#install-by-hand) instead.
 
-**You need** Python 3.9 or newer (`python3 --version`; on Windows, `py --version`). No Python? See
-[Manual installation](#manual-installation-and-troubleshooting).
-
-Open a terminal in your project's folder and paste the block for your system.
+**2. Open a terminal in your project's folder and paste the block for your system.**
 
 **macOS, Linux, WSL, Git Bash** (in Git Bash, if `python3` is not found, change it to `py -3` in the
-block's last line):
+last line):
 
 ```bash
 f=install-dependency-first-architect-v2.1.0.py; t="$(mktemp -d)"
@@ -93,59 +46,41 @@ curl.exe -fsSL -o $t "https://github.com/NiravRVaghasiya/dependency-first-archit
 if ((Test-Path $t) -and (Get-FileHash $t).Hash -eq "206dbfbc2b458e839704112f1cec610147d663d29850bdb4a6bfd9a66526f81c") { py -3 -I $t } else { "Not run: the installer is missing or does not match its published checksum." }
 ```
 
-When it finishes, it says what it did and how to try it:
+The installer finds which agent your project uses (or asks you once) and prints `Done.` when every
+file is in place and checked.
 
-```text
-Dependency-First Architect 2.1.0, in /home/you/my-app
-  Claude Code: installed .claude/skills/dependency-first-architect/ (checked against the release's SHA-256 sums)
-Done. To try it:
-  Claude Code: start a new Claude Code session and ask: "Plan a customer-support chatbot over our help-center docs." (or type /dependency-first-architect followed by your request)
-```
+**3. Try it.** Start a new session of your agent and ask: *"Plan a customer-support chatbot over
+our help-center docs."* In Claude Code you can also type `/dependency-first-architect` followed by
+your request.
 
-If the project shows signs of more than one agent, or of none, it first asks which one to install
-for.
-
-**Did it work?** `Done.` appears only after every file was read back and matched. Then ask your
-agent for a plan: it comes back in the ten sections above. To check later, paste the block again
-with `--verify` added to its last line (see [Options](#options)).
-
-It writes these files, and nothing else (no scripts, none of the rest of this repository):
+The installer writes only these files. Commit them to share the skill with your team.
 
 | Agent | Files in your project |
 |---|---|
-| Claude Code | `.claude/skills/dependency-first-architect/`: `SKILL.md`, the 4 reference files it reads when needed, `LICENSE` |
-| Cursor | `.cursor/rules/dependency-first-architect.mdc`: one rule that holds the whole skill, loaded when a request matches |
-| Codex | `.codex/dependency-first-architect.md` (the whole skill) and a short block in `AGENTS.md` that points to it; the rest of `AGENTS.md` is kept |
-
-Commit them to share the skill with your team.
-
-**What it costs in context.** Claude Code reads only the skill's short description until you ask
-for a plan, then `SKILL.md` (about 17 KB) and, as needed, its reference files (about 26 KB in all).
-Cursor loads its 40 KB rule when a request matches. Codex reads the short block in every session,
-and its 40 KB file when a request matches. Plans also come out longer, about 2.7 times the length
-of a plan without the skill ([Evidence](#evidence)).
+| Claude Code | `.claude/skills/dependency-first-architect/` (`SKILL.md`, 4 reference files, `LICENSE`) |
+| Cursor | `.cursor/rules/dependency-first-architect.mdc` |
+| Codex | `.codex/dependency-first-architect.md`, plus a short block in `AGENTS.md` that points to it (the rest of `AGENTS.md` is kept) |
 
 > [!NOTE]
-> These files are instructions your agent follows. The block runs the v2.1.0 installer only if its
-> SHA-256 matches the value printed above, and the installer makes no network connection. See
-> [How the download is checked](#how-the-download-is-checked).
+> The block runs the installer only if its SHA-256 matches the one above, and the installer makes
+> no network connection. Details: [SECURITY.md](SECURITY.md) and
+> [docs/distribution.md](docs/distribution.md#the-installer).
 
 ### Options
 
-Add an option after `python3 -I "$t/$f"` (PowerShell: `py -3 -I $t`) in the block's last line,
-for example `python3 -I "$t/$f" --uninstall`:
+Add an option at the end of the block's last command, after `python3 -I "$t/$f"` (PowerShell:
+`py -3 -I $t`):
 
 | Option | What it does |
 |---|---|
-| `--agent claude-code`, `--agent cursor`, `--agent codex` | install for that agent instead of detecting it (repeat it for several) |
+| `--agent claude-code`, `--agent cursor`, `--agent codex` | install for that agent instead of detecting it |
 | `--global` | Claude Code only: install in `~/.claude/skills`, for all your projects |
-| `--dry-run` | show what would change, and change nothing (also with `--uninstall`) |
+| `--dry-run` | show what would change, and change nothing |
 | `--verify` | check that what is installed is exactly this release |
 | `--uninstall` | remove what the installer wrote, and nothing else |
-| `--project DIR` | install in another folder (default: the git repository you are in, else the current folder) |
+| `--project DIR` | install in another folder |
 
-To choose the agent yourself instead of answering the question: in the same terminal, once the
-block has run and its checksum matched (it printed no `Not run` line), run one of these. In bash:
+For example, to pick the agent yourself in bash, after the block has run without a `Not run` line:
 
 ```bash
 python3 -I "$t/$f" --agent claude-code
@@ -153,173 +88,124 @@ python3 -I "$t/$f" --agent cursor
 python3 -I "$t/$f" --agent codex
 ```
 
-In PowerShell: `py -3 -I $t --agent claude-code`, or the same with `cursor` or `codex`.
+In PowerShell: `py -3 -I $t --agent claude-code` (or `cursor`, `codex`).
 
-### Updating and removing
+### Update or remove
 
-- **Update:** paste the block from a newer release's README. A rerun of the same version changes
-  nothing.
-- **Remove:** run the installer with `--uninstall`. It removes only its own files and its block in
-  `AGENTS.md` (and `AGENTS.md` itself, or a folder, only if nothing else is left in it).
-- **All projects (Claude Code):** add `--global` to the update or remove command for the copy in
-  `~/.claude/skills`. Claude Code installs made before v2.1.0 are there.
-- **Your files are kept.** In the Claude Code skill folder, an edited `SKILL.md`, a file you added,
-  or an old clone of this repository makes the installer stop and tell you, before it writes
-  anything. The Cursor rule and the Codex file are marked as generated, so an update replaces them,
-  edits included. In `AGENTS.md`, only its own block changes; it also merges the duplicate blocks
-  that older install commands left.
+- **Update:** paste the block from a newer release's README.
+- **Remove:** run the installer with `--uninstall`. Add `--global` for the copy in
+  `~/.claude/skills`.
+- **Your own files are safe.** If you edited the Claude Code skill or added files to its folder,
+  the installer stops and tells you before it writes anything.
 
-### How the download is checked
-
-- The block downloads one file, the v2.1.0 installer. It runs it only if the file's SHA-256 equals
-  the value in this README, which is part of the release's commit (and of
-  [CHANGELOG.md](CHANGELOG.md)). `-I` (Python's isolated mode) keeps files lying next to it from
-  being imported.
-- The installer carries the release's files and their SHA-256 sums, and checks them before
-  writing anything. It makes no network connection and starts no other program.
-- Every write goes to a temporary file and is then renamed into place, so an interrupted run
-  leaves the old install or the new one, and the next run finishes the job.
-- For a stronger check, rebuild the release from its tag and compare
-  ([docs/distribution.md](docs/distribution.md#rebuilding)). [SECURITY.md](SECURITY.md) says what
-  checksums do and do not protect against.
-
-### Manual installation and troubleshooting
+### Install by hand
 
 <details>
-<summary><b>Install by hand</b> (without Python)</summary>
+<summary>Without Python: download the files yourself</summary>
 
-From the
-[v2.1.0 release](https://github.com/NiravRVaghasiya/dependency-first-architect/releases/tag/v2.1.0),
-download the files for your agent and `SHA256SUMS` into a new, empty folder, then check them. In
-bash (on macOS, use `shasum -a 256` for `sha256sum`):
+1. From the
+   [v2.1.0 release](https://github.com/NiravRVaghasiya/dependency-first-architect/releases/tag/v2.1.0),
+   download the file for your agent and `SHA256SUMS` into a new, empty folder.
+2. Check them: in that folder, run `sha256sum -c --ignore-missing SHA256SUMS` (macOS:
+   `shasum -a 256 -c --ignore-missing SHA256SUMS`; PowerShell: compare
+   `(Get-FileHash <file>).Hash` with the file's line in `SHA256SUMS`).
+3. Put them in your project:
 
-```bash
-D="$(mktemp -d)"; echo "$D"   # 1. makes a new, empty folder: put the downloaded assets in the path it prints
-(cd "$D" && sha256sum -c --ignore-missing SHA256SUMS)   # 2. once they are there: check them
-```
-
-In PowerShell, compare `(Get-FileHash <file>).Hash` with the file's line in `SHA256SUMS`.
-
-| Agent | Release asset | Then, from your project's folder |
+| Agent | Download | Put it here |
 |---|---|---|
-| Claude Code | `dependency-first-architect-v2.1.0.zip` | unzip it, and move its `dependency-first-architect` folder into `.claude/skills/` (or `~/.claude/skills/`). Delete an older copy first; don't unzip over it. |
-| Cursor | `cursor-dependency-first-architect.mdc` | copy it to `.cursor/rules/dependency-first-architect.mdc` |
-| Codex | `codex-lazy-dependency-first-architect.md`, `codex-lazy-AGENTS-snippet.md` | copy the first to `.codex/dependency-first-architect.md`; paste the second at the end of `AGENTS.md`, once |
-| Codex, one file | `codex-AGENTS.md` | paste it at the end of `AGENTS.md`, once. Codex then reads about 16 KB in every session, without the reference files (plan template, worked examples, AI layer). |
+| Claude Code | `dependency-first-architect-v2.1.0.zip` | unzip it and move its `dependency-first-architect` folder into `.claude/skills/` (delete an older copy first) |
+| Cursor | `cursor-dependency-first-architect.mdc` | `.cursor/rules/dependency-first-architect.mdc` |
+| Codex | `codex-lazy-dependency-first-architect.md` and `codex-lazy-AGENTS-snippet.md` | the first to `.codex/dependency-first-architect.md`; paste the second at the end of `AGENTS.md`, once |
+| Codex, one file | `codex-AGENTS.md` | paste it at the end of `AGENTS.md`, once (smaller, without the reference files) |
 
-For example, Claude Code in bash, once `$D` holds the checked zip:
+The installer itself, `install-dependency-first-architect-v2.1.0.py`, is in the release too.
 
-```bash
-unzip -q "$D/dependency-first-architect-v2.1.0.zip" -d "$D" && mkdir -p .claude/skills && mv "$D/dependency-first-architect" .claude/skills/
-```
-
-The installer is a release asset too, `install-dependency-first-architect-v2.1.0.py`: check it
-against `SHA256SUMS` and run it with `python3 -I`. Other agents that load skill folders can use the
-zip too (not evaluated); some skill validators reject its frontmatter's `tags` key
-([details](docs/distribution.md#frontmatter)).
-
-</details>
-
-<details>
-<summary><b>Build the release yourself</b> (from a commit you reviewed)</summary>
-
-The build is reproducible: at a release tag it gives the same bytes and `SHA256SUMS` as the
-release. It needs Python 3.9 or newer and writes only `dist/`.
+To build the release yourself from a commit you reviewed (it gives the same bytes as the release;
+[details](docs/distribution.md#rebuilding)):
 
 ```bash
 git clone https://github.com/NiravRVaghasiya/dependency-first-architect dfa-source
-cd dfa-source && git checkout v2.1.0   # or the commit you reviewed
+cd dfa-source && git checkout v2.1.0
 python3 package_skill.py
-cd /path/to/your/project && python3 -I /path/to/dfa-source/dist/release/install-dependency-first-architect-v2.1.0.py
 ```
+
+The installer is then in `dist/release/`.
 
 </details>
 
+### Troubleshooting
+
 <details>
-<summary><b>Troubleshooting</b></summary>
+<summary>Common messages and what to do</summary>
 
 | You see | What to do |
 |---|---|
-| `python3: command not found`, or "Python was not found" | Install Python 3.9+ from python.org (on Windows, keep "py launcher" ticked), or install by hand. If `py` is missing but `python` works, use `python`. |
-| `Download failed.`, or a 404 | Check that you are online and that the [v2.1.0 release](https://github.com/NiravRVaghasiya/dependency-first-architect/releases/tag/v2.1.0) exists. Behind a proxy, add `curl`'s `--proxy` option. |
-| `Not run: ... checksum` | Don't run the file. Paste the block again; if it still differs, report it ([SECURITY.md](SECURITY.md)). |
-| `Could not tell which coding agent this project uses`, or `No agent chosen` | The installer could not ask (for example, your agent ran it). Add `--agent claude-code`, `--agent cursor` or `--agent codex`. |
-| `Stopped: ... was not written by this installer`, `... holds files this installer did not put there`, or `... differs from every released version` | A file of yours, or a copy you edited, is where the installer writes. Move it (or undo the edit) and run again. |
-| `Stopped: ... is read-only` | Make the file writable (for example, check it out for editing) and run again. |
-| `FAILED to write ...` | Another program has the file open (on Windows, often the agent). Close it and run again; nothing of that agent changed. |
-| The agent ignores the skill | Start a new session in the project and run the installer with `--verify`. In Claude Code, `/dependency-first-architect <your request>` calls it by name. |
+| `python3: command not found`, or "Python was not found" | Install Python 3.9+ from python.org (on Windows, keep "py launcher" ticked), or [install by hand](#install-by-hand). |
+| `Download failed.`, or a 404 | Check that you are online. Behind a proxy, add `curl`'s `--proxy` option. |
+| `Not run: ... checksum` | Don't run the file. Paste the block again; if it still fails, report it ([SECURITY.md](SECURITY.md)). |
+| `Could not tell which coding agent this project uses`, or `No agent chosen` | Add `--agent claude-code`, `--agent cursor` or `--agent codex`. |
+| `Stopped: ...` | A file of yours is where the installer writes, or a file is read-only. Move it, undo the edit, or make it writable, and run again. |
+| `FAILED to write ...` | Another program has the file open (on Windows, often the agent). Close it and run again. |
+| The agent ignores the skill | Start a new session and run the installer with `--verify`. |
 
 </details>
 
-## How it works
+## What you get
 
-Work is ordered by what depends on what, and by how much breaks if a choice is wrong. The choices
-that would force the most rework (data schema, auth model, data contracts, API shape) are decided
-first and tested before the work that depends on them. A rollout goes to a small slice first (a
-canary, one site, or one customer) and widens only after its check passes.
+Every plan has the same ten sections ([template](reference/plan-template.md)):
+
+| Sections 1–5 | Sections 6–10 |
+|---|---|
+| 1. Classification and constraints | 6. Validation gates |
+| 2. Dependency map | 7. Cross-cutting concerns |
+| 3. Tradeoff gates | 8. AI layer (AI systems only) |
+| 4. Walking skeleton (Phase 0) | 9. Methodology exceptions |
+| 5. Phases | 10. Deliberately deferred |
+
+What the skill changes:
+
+- **A walking skeleton first.** Phase 0 sends one real request through every part of the system,
+  in production, monitored, with a rollback tried once.
+- **Hard-to-undo choices decided up front**, each with a default and what would change it.
+- **A test for every risky assumption** (V0, V1, …), with a pass bar. Real users wait until the
+  tests that protect them pass.
+- **Honest numbers.** Every target is labeled as a requirement, a baseline, an assumption, or
+  unknown.
+- **Security and monitoring in every phase**, not saved for the end. For AI systems, defenses and
+  cost limits come before new features.
+
+See a [full example plan](eval/results/2026-10-03-pilot-core/generations/P1.dfa.opus-5.5.r01.md).
 
 <p align="center">
   <img src="docs/layer-map.svg" alt="Layer map: build bottom-up. Blueprint (Tradeoff gates), cells (primitives), energy (infra and CI/CD), skeleton (walking skeleton), organs (features), and skin (UI) last, with security, observability, reproducibility and resilience through every layer">
 </p>
 
-<p align="center"><sub>Use the picture to remember the order; plans follow <a href="SKILL.md">SKILL.md</a> (<a href="reference/layer-map.md">about the analogy</a>).</sub></p>
-
-Plans scale to the system (a small build gets three phases or fewer), and any departure from the
-method is declared as a numbered exception. The full method is in [`SKILL.md`](SKILL.md); worked
-examples are in [`reference/validation.md`](reference/validation.md).
+<p align="center"><sub>The order, as a picture. The full method is in <a href="SKILL.md">SKILL.md</a>.</sub></p>
 
 ## Evidence
 
-**In short** (Claude Code, plans by Opus 5.5): plans follow the method, and LLM judges rate them
-above plans from the same model without a skill (the *bare model*). An independently written
-planning skill (the *control*) scores slightly higher, with plans about twice as long. So the gain
-is not shown to be specific to this method, and no effect on the code built from the plans has
-been measured. The numbers come from the repository's [evaluation harness](eval/README.md); CI
-recomputes the full results below from the committed records, and the summary table is copied
-from them by hand.
+Measured in Claude Code, with plans by Opus 5.5 on skill v2.0.0. Later versions keep the same
+method with tighter guidance, and no run has measured them yet.
 
-<!-- Hand-copied from the generated block below. No check compares this table or the Limits
-figures with the records, so update them whenever the block changes. -->
+<!-- Hand-copied from the generated block below. No check compares these figures with the
+records, so update them whenever the block changes. -->
 
-| Question | What the runs show |
-|---|---|
-| Do plans follow the method? | **Yes.** Adherence +11.6 of 20 [+10.6, +12.6] over the bare model, with 92% of skill plans at the maximum. Expected: the rubric checks what the skill asks for, not quality. |
-| Do LLM judges rate them higher? | **Than the bare model's, yes:** engineering quality +8.2 of 44 [+5.3, +11.0]. **Than an independently written planning skill's, no:** slightly lower, −1.2 [−1.9, −0.5]; both judges agree on the sign. |
-| Is it just longer plans? | **Partly.** Skill plans are about 2.7 times as long as the bare model's, and the control's about twice as long as the skill's. Told to stay under 1,500 words, the skill still scored +9.6 [+7.0, +12.2], though its plans ran longer. |
-| Were the judges blind? | **To labels, not to style.** The probe judge could always tell skill plans from the bare model's (leakage AUC 1.00), so judge scores may partly reward the skill's recognizable format. |
-| Does the plan change the code built from it? | **No measurable difference:** +0.01 [−0.05, +0.07] in hidden-test pass rate against a bare-model plan. The one outcome task is at its ceiling for this implementer, so it cannot yet separate plans ([details](eval/outcomes/README.md#what-the-first-run-showed-about-the-task-itself)). |
-
-<sub>Measured on skill v2.0.0; v2.1.0 ships the same method (see the CHANGELOG), but no run has
-measured it. Plans by Opus 5.5, 95% intervals, copied by hand from the generated tables
-below. Rows 1–4: the core pilot (8 prompts × 5 runs; engineering quality judged by Sonnet 5.5 and
-Fable 5, adherence and the leakage probe by Sonnet 5.5); row 3 adds a length-capped run (5 prompts
-× 3 runs). Row 5: the outcome run (one coding task, 5 attempts per arm, Sonnet 5.5
-implementing).</sub>
+- **Plans follow the method:** adherence +11.6 of 20 [+10.6, +12.6] over the same model without a
+  skill.
+- **LLM judges rate them higher than without a skill** (engineering quality +8.2 of 44
+  [+5.3, +11.0]), **but slightly lower than an independently written planning skill**
+  (−1.2 [−1.9, −0.5]).
+- **Plans are longer:** about 2.7 times the length of a plan without a skill.
+- **No measured effect yet on the code built from a plan** (+0.01 [−0.05, +0.07] in hidden-test
+  pass rate).
 
 <details>
-<summary><b>Full results from every committed run</b>, and what each measure means</summary>
+<summary><b>Full results from every committed run</b></summary>
 
-- **Adherence** (/20) is the skill author's own rubric. It checks what the skill asks for, so
-  plans written with the skill score high by construction: it shows the method is followed,
-  nothing more.
-- **EQ** (engineering quality, /44) and **EQ-core** (/36, without the two dimensions that overlap
-  the method) come from a rubric whose anchors and scoring rules were written by a model session
-  that never saw the skill (the maintainer chose the dimension names). LLM judges score the
-  *written plan*, not a built system.
-- **Checklist** (0–1) is coverage of per-prompt lists of domain considerations, written the same
-  blind way.
-- **Words** is plan length, and **EQ per 1k tokens** is engineering quality per 1,000 visible
-  tokens, a guard against "longer is better".
-- **Leakage AUC** is how well a judge can tell from the text alone which plans followed a method
-  (0.5 = cannot tell, 1.0 = always can). Near 1.0, judges effectively know the condition, and
-  their scores may reward the method's recognizable structure.
-- **Outcome columns** are the share of hidden tests passed by code an implementer built from each
-  plan (or from no plan). Round 1 is the brief; round 2 adds a change request and re-runs every
-  round-1 test (regression). **Rework lines** are lines added plus removed between the rounds.
-- **Intervals** are 95%: t across prompts (5 to 8) for plan scores, a bootstrap over attempts for
-  outcomes. They are wide, and no p-values are reported. Every judge is a Claude model. The v2
-  sessions ran with the operator's Claude Code settings (the built-in Concise output style), and
-  those runs' flags say so.
+Adherence (/20) is the skill author's own rubric, so skill plans score high by construction. EQ
+(engineering quality, /44) is an LLM judge's score of the written plan, from a rubric written
+without seeing the skill. Intervals are 95%. Every judge is a Claude model. Protocol and
+limitations: [eval/README.md](eval/README.md).
 
 <!-- BEGIN GENERATED evidence: eval/dfa_eval/evidence.py -->
 
@@ -423,12 +309,7 @@ _Generated from the committed runs by `eval/dfa_eval/evidence.py`; `python eval/
 - recorded cost $7.38
 <!-- END GENERATED evidence -->
 
-Protocol, interpretation, and limitations: [eval/README.md](eval/README.md). Per-agent status:
-[evaluation matrix](docs/evaluation-matrix.md). Run reports: [eval/results/](eval/results/README.md).
-
-The v1.0.0 pilot is kept as published ([plans and scorecard](examples/README.md)). Its judges,
-baseline and self-scoring differ from v2's, so compare the versions through the `dfa − dfa-v1`
-row above (+1.9 EQ [+1.2, +2.5]):
+The v1.0.0 pilot is kept as published ([plans and scorecard](examples/README.md)):
 
 <!-- BEGIN GENERATED score callout: examples/scoring/tally.py -->
 > **v1.0.0, methodology adherence.** In Claude Code (same model, the 5 fixed prompts in [`reference/evals.md`](reference/evals.md), one run per arm, 3 judges on the same model, blind to the arm), plans scored **12.8/20 without the skill and 20.0/20 with it (+7.2)** on the skill's own rubric. On a deliberately skill-unfavorable reading (every dispute from an adversarial audit accepted, and the D9 rubric artifact removed), the difference is still **+5.6**. That rubric checks what the skill asks for, and v1's plans self-scored against it before answering, so this shows the method is followed, not that the plans are better engineering. [Scorecard, method and raw scores →](examples/SCORECARD.md)
@@ -438,39 +319,29 @@ row above (+1.9 EQ [+1.2, +2.5]):
 
 ## Limits
 
-- **It shapes how a model plans, not what it knows.** The model still supplies the domain
-  knowledge and can be wrong about technologies, limits, and costs.
+- **It shapes how a model plans, not what it knows.** The model can still be wrong about
+  technologies, limits, and costs.
 - **Gates name checks; they don't run them.** Someone still has to.
-- **Behavior varies by model.** With the skill, Haiku 4.5 wrote plans of about 5,300 words (Opus
-  5.5 on the same five prompts: about 4,100), and 13 of its 15 plans included the skill's internal
-  checklist, which is meant to stay out of the plan.
-- **Cursor and Codex are supported, not evaluated.** No committed run has used them, and nothing
-  here has checked how Cursor loads a rule this long or that Codex reads the file its `AGENTS.md`
-  block points to.
-- **Not yet validated:** [production outcomes](eval/outcomes/README.md#what-it-does-not-measure),
-  each rule on its own, judges outside the Claude family, expert review of the rubrics, and
-  requests that come with a real codebase. See [Limitations](eval/README.md#limitations).
+- **Results vary by model**, and Cursor and Codex are supported but not yet evaluated.
+- **Not yet validated:** effects on
+  [production outcomes](eval/outcomes/README.md#what-it-does-not-measure) and judges outside the
+  Claude family. See [Limitations](eval/README.md#limitations).
 
 ## Contributing
 
-This repository is the development project. Users get only the release assets: the files in the
-[Install](#install) table, the zip, `codex-AGENTS.md`, `SHA256SUMS` and the installer
-([what ships, and how it is checked](docs/distribution.md)). **`SKILL.md` is the single source of
-truth:** change the method there or in `reference/`, run `python build.py`, and commit what it
-regenerates. Never edit `adapters/` (the generated Cursor and Codex versions) by hand; CI fails if
-they drift from `SKILL.md`.
+**`SKILL.md` is the single source of truth.** Change the method there or in `reference/`, run
+`python build.py`, and commit what it regenerates. Never edit `adapters/` by hand.
 
 ```bash
 python build.py --check                # adapters and SHA256SUMS match SKILL.md
-python package_skill.py                # dist/: the skill package, release assets and installer, checked
-python -m unittest discover -s tests   # offline self-tests, no model calls
-python eval/run.py check               # committed runs, reports, matrix, and this README's evidence block
+python package_skill.py                # build and check the release
+python -m unittest discover -s tests   # offline tests, no model calls
+python eval/run.py check               # committed eval runs and this README's evidence block
 ```
 
-Running the benchmark against real models costs money and sends prompts to the provider; start
-with the smoke config ([eval/README.md](eval/README.md#credentials-network-and-cost)). Setup,
-rules, and how to add adapters, prompts, or outcome tasks are in [CONTRIBUTING.md](CONTRIBUTING.md);
-changes are in [CHANGELOG.md](CHANGELOG.md).
+Running the benchmark against real models costs money
+([eval/README.md](eval/README.md#credentials-network-and-cost)). More in
+[CONTRIBUTING.md](CONTRIBUTING.md); changes in [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
