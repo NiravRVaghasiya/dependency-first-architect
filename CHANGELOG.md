@@ -6,7 +6,7 @@ All notable changes to this project are recorded here. The format follows
 [`VERSION`](VERSION). `python build.py --check` fails if this file has no entry for it, and
 `python build.py --release-tag vX.Y.Z` fails unless that entry has a release date.
 
-## [2.2.0] — Unreleased
+## 2.2.0 — 2026-10-27
 
 Guidance tightened; the plan's shape is unchanged.
 
