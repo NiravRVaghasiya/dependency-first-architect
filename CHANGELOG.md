@@ -6,34 +6,13 @@ All notable changes to this project are recorded here. The format follows
 [`VERSION`](VERSION). `python build.py --check` fails if this file has no entry for it, and
 `python build.py --release-tag vX.Y.Z` fails unless that entry has a release date.
 
-## [2.2.0] — Unreleased
+## [2.2.0] — 2026-10-27
 
-Guidance tightened; the plan's shape is unchanged.
+An installer for beginners, a complete Cursor rule, and tighter guidance. The plan's shape is
+unchanged. Version 2.1.0 was prepared but never published; its changes ship here.
 
-### Changed
-- `SKILL.md`, dependencies: a control built into a schema, data-access layer or contract is
-  designed and tested in the phase that builds that layer; paid-for properties count as controls
-  before charging; a person counts as met only with enough capacity, and privileged roles are
-  risk/security dependencies.
-- `SKILL.md`, Step 3: when output is stored for reuse, the plan also considers who may see a
-  cached artifact and whether reuse counts against quota or billing.
-- `SKILL.md`, Step 4 and `reference/plan-template.md`: a pre-production environment when there
-  are schema migrations; safe shutdown, time limits, retries that don't pay twice, and caps on
-  paid calls when there are jobs; the V0 rollback runs with a job in flight.
-- `SKILL.md`, Step 7: an external availability probe, and isolated backups with a tested restore.
-- `SKILL.md`, Step 10: a check that each budget holds against the design, not only its label.
-- `reference/ai-systems.md`: approver capacity, MFA, an audit log and a second approver.
-
-### Added
-- `reference/validation.md`: three common misses and a budget-consistency example.
-
-## [2.1.0] — 2026-10-26
-
-An installer for beginners, and a complete Cursor rule. The method is unchanged: `SKILL.md` and
-`reference/` are byte for byte those of 2.0.1 (`SKILL.md` sha256 `34a02e02…`).
-
-Installer SHA-256: `206dbfbc2b458e839704112f1cec610147d663d29850bdb4a6bfd9a66526f81c`
-(`install-dependency-first-architect-v2.1.0.py`; the README's install block checks it).
+Installer SHA-256: `049cebdad78b00cb661413318fb074991a8cd4898a806d8fc1dba201ce795bbd`
+(`install-dependency-first-architect-v2.2.0.py`; the README's install block checks it).
 
 ### Added
 
@@ -51,7 +30,8 @@ Installer SHA-256: `206dbfbc2b458e839704112f1cec610147d663d29850bdb4a6bfd9a66526
   It carries the release's files and their SHA-256 sums, built in by `package_skill.py`, and
   checks them before writing. It makes no network connection and starts no other program, and
   its own code reads no environment variable (the standard library reads the usual few: the home
-  folder for `Path.home()`, and the terminal width and language for `argparse`'s messages). `package_skill.py` checks the rendered file: ASCII, an allowlist of imports, no
+  folder for `Path.home()`, and the terminal width and language for `argparse`'s messages).
+  `package_skill.py` checks the rendered file: ASCII, an allowlist of imports, no
   code-execution, process or environment names, and its embedded data, read back with
   `ast.literal_eval` and never changed after it is assigned.
 - **Safe updates and removal.** Every write goes through a temporary name and a rename, and an
@@ -76,9 +56,22 @@ Installer SHA-256: `206dbfbc2b458e839704112f1cec610147d663d29850bdb4a6bfd9a66526
   - the README's own install blocks, run against a local copy (success, failed download and
     checksum mismatch).
 - **CI** runs the built installer end to end: install, rerun, verify and uninstall.
+- `reference/validation.md`: three common misses and a budget-consistency example.
 
 ### Changed
 
+- `SKILL.md`, dependencies: a control built into a schema, data-access layer or contract is
+  designed and tested in the phase that builds that layer; paid-for properties count as controls
+  before charging; a person counts as met only with enough capacity, and privileged roles are
+  risk/security dependencies.
+- `SKILL.md`, Step 3: when output is stored for reuse, the plan also considers who may see a
+  cached artifact and whether reuse counts against quota or billing.
+- `SKILL.md`, Step 4 and `reference/plan-template.md`: a pre-production environment when there
+  are schema migrations; safe shutdown, time limits, retries that don't pay twice, and caps on
+  paid calls when there are jobs; the V0 rollback runs with a job in flight.
+- `SKILL.md`, Step 7: an external availability probe, and isolated backups with a tested restore.
+- `SKILL.md`, Step 10: a check that each budget holds against the design, not only its label.
+- `reference/ai-systems.md`: approver capacity, MFA, an audit log and a second approver.
 - **The Cursor rule holds the whole skill.** The reference files (plan template, worked
   examples, AI layer) are now appended to it as appendices, as in the lazy Codex file. Until
   now, Cursor plans did not get the exact output template. The rule is still `alwaysApply:
@@ -91,11 +84,11 @@ Installer SHA-256: `206dbfbc2b458e839704112f1cec610147d663d29850bdb4a6bfd9a66526
   an append.
 - **`build.py`** checks the sentinels in the method part of each adapter, so an appendix that
   happens to name a section cannot hide a missing one.
-- **README:** the Install section now covers what the skill is, the supported agents, the one
-  block, how to confirm the install worked, and what gets written. Options, updating, the trust
-  boundary, manual installation, building from source and troubleshooting follow in their own
-  sections. `SECURITY.md`, `docs/distribution.md` and `CONTRIBUTING.md` (release steps) describe
-  the installer.
+- **README:** installation is three steps: check for Python 3.9 or newer, paste the block for
+  bash or PowerShell, and try it. A table lists the files the installer writes. Options,
+  updating and removal, installing by hand (including building the release from a reviewed
+  commit) and troubleshooting follow. `SECURITY.md`, `docs/distribution.md` and
+  `CONTRIBUTING.md` (release steps) describe the installer.
 
 ## [2.0.1] — 2026-10-16
 
@@ -449,7 +442,7 @@ Retroactively designated: the state at commit 7ec18f4 (untagged).
   `examples/scoring/`, the raw scores, the tally script and the harness.
 - MIT license.
 
-[2.1.0]: https://github.com/NiravRVaghasiya/dependency-first-architect/compare/v2.0.1...v2.1.0
+[2.2.0]: https://github.com/NiravRVaghasiya/dependency-first-architect/compare/v2.0.1...v2.2.0
 [2.0.1]: https://github.com/NiravRVaghasiya/dependency-first-architect/compare/fff678a6285e2117e96f9bfc87f1977dec991d64...v2.0.1
 [2.0.0]: https://github.com/NiravRVaghasiya/dependency-first-architect/compare/7ec18f469395fce4f352caa26d983b22b5a71a0f...fff678a6285e2117e96f9bfc87f1977dec991d64
 [1.0.0]: https://github.com/NiravRVaghasiya/dependency-first-architect/tree/7ec18f469395fce4f352caa26d983b22b5a71a0f

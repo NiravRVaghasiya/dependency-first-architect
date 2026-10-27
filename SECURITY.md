@@ -12,7 +12,7 @@ Treat an update like a dependency upgrade:
 - **Install a release you reviewed,** not the repository or `main` (README,
   [Install](README.md#install)). From v2.0.1, each release carries the skill package and the
   adapters as assets, built from the tagged commit; installs made earlier from `main` or a clone
-  are unpinned. From v2.1.0 the README's install block downloads that release's installer and runs
+  are unpinned. From v2.2.0 the README's install block downloads that release's installer and runs
   it only if its SHA-256 equals the value in the README (and in that version's CHANGELOG entry).
   The installer carries the release's files and their sums, checks them before writing, makes no
   network connection, starts no other program, and writes only the paths the README lists. It
