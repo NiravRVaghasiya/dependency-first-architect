@@ -33,7 +33,7 @@ Choices the spec leaves open, fixed here so reruns agree:
 - Contrast effect sizes at generation level (hedges_g, cliffs_delta) use the generations of the
   prompts where both arms have data, the same prompts the paired differences use.
 - The cluster bootstrap seed is derive_seed(run seed, "contrast:<treatment>:<control>:<generator>")
-  with derive_seed as in config.py (first 8 hex digits of sha256("<base>:<key>")).
+  with config.derive_seed (first 8 hex digits of sha256("<base>:<key>")).
 - Leakage accuracy counts p_methodology > 0.5 as a "methodology" guess (0.5 itself as "none").
 - Cap compliance compares exactly: words * 10 <= cap * 11.
 - Cost sums every record that passed its schema, whatever its status: failed calls cost money.
@@ -42,7 +42,6 @@ Choices the spec leaves open, fixed here so reruns agree:
 """
 
 import difflib
-import hashlib
 import json
 import math
 import statistics
@@ -68,11 +67,6 @@ COMPLETE_CASE = "; a generation counts only if every configured judge x repeat s
 SUPERSEDED = "superseded"
 CALL_RECORD_SCHEMAS = {s["properties"]["schema"]["const"]: s
                        for s in (schemas.GENERATION, schemas.JUDGMENT, schemas.PROBE)}
-
-
-def derive_seed(base, key):
-    """Same derivation as config.derive_seed: a stable 32-bit seed per (base seed, key)."""
-    return int(hashlib.sha256(f"{base}:{key}".encode("utf-8")).hexdigest()[:8], 16)
 
 
 # --- loading --------------------------------------------------------------------------------
@@ -416,7 +410,7 @@ def _contrasts(run, ok_by_cell, values, registry, same_model_generators, lost):
         for g in run.generators:
             if not (run.allowed(g, t) and run.allowed(g, c)):
                 continue
-            bootstrap_seed = derive_seed(seed, f"contrast:{t}:{c}:{g['id']}")
+            bootstrap_seed = configmod.derive_seed(seed, f"contrast:{t}:{c}:{g['id']}")
             per_judge = [m for m in registry if m.startswith("eq_total@")]
             for m in list(CONTRAST_METRICS) + per_judge:
                 if m in registry:
