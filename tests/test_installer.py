@@ -735,7 +735,9 @@ class InterruptionTest(InstallerCase):
         folder = self.project / ".claude" / "skills" / NAME
         old_skill = PACKAGE["SKILL.md"].replace(b"## Procedure", b"## Old procedure")
         self.write("SKILL.md", old_skill, folder)
-        self.enterContext(knowing({"SKILL.md": old_skill}))
+        patcher = knowing({"SKILL.md": old_skill})
+        patcher.start()  # not enterContext(): that is Python 3.11+
+        self.addCleanup(patcher.stop)
         real_rename, calls = os.rename, []
 
         def flaky(src, dst):
